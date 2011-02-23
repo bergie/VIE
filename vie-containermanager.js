@@ -14,12 +14,13 @@ VIE.ContainerManager = {
         var containerProperties = {};
 
         jQuery.each(jQuery('[property]', element), function(index, objectProperty) {
-            var objectProperty = jQuery(objectProperty);
-            var propertyName = objectProperty.attr('property');
+        	var propertyName;
+            objectProperty = jQuery(objectProperty);
+            propertyName = objectProperty.attr('property');
 
             if (emptyValues) {
                 containerProperties[propertyName] = '';
-                return true;
+                return;
             }
 
             containerProperties[propertyName] = objectProperty.html();
@@ -32,7 +33,7 @@ VIE.ContainerManager = {
      * @private
      */
     _getContainerValue: function(element, propertyName) {
-        var element = jQuery(element);
+        element = jQuery(element);
 
         if (typeof element.attr(propertyName) !== 'undefined')
         {
@@ -47,7 +48,7 @@ VIE.ContainerManager = {
     },
 
     cloneContainer: function(element) {
-        var element = jQuery(element).clone(false);
+        element = jQuery(element).clone(false);
 
         if (typeof element.attr('about') !== 'undefined')
         {
@@ -61,7 +62,7 @@ VIE.ContainerManager = {
     },
 
     getViewForContainer: function(element) {
-        var element = jQuery(element);
+        element = jQuery(element);
         var type = VIE.ContainerManager._getContainerValue(element, 'typeof');
 
         if (typeof VIE.ContainerManager.views[type] !== 'undefined') {
@@ -82,7 +83,7 @@ VIE.ContainerManager = {
         viewProperties.render = function() {
             var model = this.model;
             jQuery('[property]', this.el).each(function(index, propertyElement) {
-                var propertyElement = jQuery(propertyElement);
+                propertyElement = jQuery(propertyElement);
                 var property = propertyElement.attr('property');
                 propertyElement.html(model.get(property));
             });
@@ -140,7 +141,7 @@ VIE.ContainerManager = {
     /**
      * Override this to seek additional properties from the element to include to the instance
      */
-    findAdditionalInstanceProperties: function(element, properties) {
+    findAdditionalInstanceProperties: function(element, modelInstance) {
     },
 
     getInstanceForContainer: function(element) {
@@ -150,11 +151,10 @@ VIE.ContainerManager = {
 
         properties.id = VIE.ContainerManager._getContainerValue(element, 'about');
 
-        VIE.ContainerManager.findAdditionalInstanceProperties(element, properties);
-
         var modelInstance = new model(properties);
         modelInstance.view = new view({model: modelInstance, el: element});
 
+        VIE.ContainerManager.findAdditionalInstanceProperties(element, modelInstance);
         VIE.ContainerManager.instances.push(modelInstance);
 
         return modelInstance;
