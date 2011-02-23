@@ -8,7 +8,7 @@ A web editing tool has to understand the contents of the page. It has to underst
 
 RDFa is a way to describe the meaning of particular HTML elements using simple attributes. For example:
 
-    <div typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+    <div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
         <h1 property="dcterms:title">News item title</h1>
         <div property="sioc:content">News item contents</div>
     </div>
@@ -29,6 +29,7 @@ Having contents of a page described via RDFa makes it very easy to extract the c
 
 With Backbone, the content extracted from the RDFa-annotated HTML page is easily manageable via JavaScript. Consider for example:
 
+    var objectInstance = VIE.ContainerManager.getInstanceForContainer(jQuery('#myarticle'));
     objectInstance.set({title: 'Hello, world'});
     objectInstance.save(null, {
         success: function(savedModel, response) {
