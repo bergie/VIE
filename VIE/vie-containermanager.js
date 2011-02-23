@@ -41,6 +41,10 @@ VIE.ContainerManager = {
         return element.find('[' + propertyName + ']').attr(propertyName);
     },
 
+    getContainerIdentifier: function(element) {
+        return VIE.ContainerManager._getContainerValue(element, 'about');
+    },
+
     cloneContainer: function(element) {
         var element = jQuery(element).clone(false);
 
@@ -55,10 +59,7 @@ VIE.ContainerManager = {
         return element;
     },
 
-    /**
-     * @access private
-     */
-    _getViewForContainer: function(element) {
+    getViewForContainer: function(element) {
         var element = jQuery(element);
         var type = VIE.ContainerManager._getContainerValue(element, 'typeof');
 
@@ -144,7 +145,7 @@ VIE.ContainerManager = {
     getInstanceForContainer: function(element) {
         var model = VIE.ContainerManager.getModelForContainer(element);
         var properties = VIE.ContainerManager._getContainerProperties(element, false);
-        var view = VIE.ContainerManager._getViewForContainer(element);
+        var view = VIE.ContainerManager.getViewForContainer(element);
 
         properties.id = VIE.ContainerManager._getContainerValue(element, 'about');
 
