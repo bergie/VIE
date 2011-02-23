@@ -9,10 +9,10 @@ VIE.ContainerManager = {
     /**
      * @private
      */
-    _getContainerProperties: function(objectContainer, emptyValues) {
+    _getContainerProperties: function(element, emptyValues) {
         var containerProperties = {};
 
-        jQuery.each(jQuery('[property]', objectContainer), function(index, objectProperty) {
+        jQuery.each(jQuery('[property]', element), function(index, objectProperty) {
             var objectProperty = jQuery(objectProperty);
             var propertyName = objectProperty.attr('property');
 
@@ -31,14 +31,14 @@ VIE.ContainerManager = {
      * @private
      */
     _getContainerValue: function(element, propertyName) {
-        var element= jQuery(element);
+        var element = jQuery(element);
 
-        if (typeof objectContainer.attr(propertyName) !== 'undefined')
+        if (typeof element.attr(propertyName) !== 'undefined')
         {
             // Direct match with container
-            return objectContainer.attr(propertyName);
+            return element.attr(propertyName);
         }
-        return objectContainer.find('[' + propertyName + ']').attr(propertyName);
+        return element.find('[' + propertyName + ']').attr(propertyName);
     },
 
     cloneContainer: function(element) {
@@ -101,7 +101,7 @@ VIE.ContainerManager = {
         }
 
         // Parse the relevant properties from DOM
-        var modelPropertiesFromRdf = VIE.ContainerManager._getContainerProperties(objectContainer, true);
+        var modelPropertiesFromRdf = VIE.ContainerManager._getContainerProperties(element, true);
         var modelProperties = jQuery.extend({}, modelPropertiesFromRdf);
 
         modelProperties.initialize = function() {
