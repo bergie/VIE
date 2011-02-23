@@ -5,7 +5,7 @@ if (typeof VIE === 'undefined') {
 VIE.ContainerManager = {
     models: {},
     views: {},
-	instances: [],
+    instances: [],
 
     /**
      * @private
@@ -155,12 +155,12 @@ VIE.ContainerManager = {
         var modelInstance = new model(properties);
         modelInstance.view = new view({model: modelInstance, el: element});
 
-		VIE.ContainerManager.instances.push(modelInstance);
+        VIE.ContainerManager.instances.push(modelInstance);
 
         return modelInstance;
     },
 
-	cleanup: function() {
-		VIE.ContainerManager.instances = [];
-	}
+    cleanup: function() {
+        VIE.ContainerManager.instances = [];
+    }
 };
