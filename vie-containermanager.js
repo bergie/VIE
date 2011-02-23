@@ -104,6 +104,8 @@ VIE.ContainerManager = {
         var modelPropertiesFromRdf = VIE.ContainerManager._getContainerProperties(element, true);
         var modelProperties = jQuery.extend({}, modelPropertiesFromRdf);
 
+        modelProperties.type = type;
+
         modelProperties.initialize = function() {
             var modelInstance = this;
             var populateProperties = {};
@@ -120,6 +122,8 @@ VIE.ContainerManager = {
             }
         };
 
+        VIE.ContainerManager.findAdditionalModelProperties(element, modelProperties);
+
         VIE.ContainerManager.models[type] = Backbone.Model.extend(modelProperties);
 
         return VIE.ContainerManager.models[type];
@@ -128,7 +132,13 @@ VIE.ContainerManager = {
     /**
      * Override this to seek additional properties from the element to include to the model
      */
-    findAdditionalProperties: function(element, properties) {
+    findAdditionalModelProperties: function(element, properties) {
+    },
+
+    /**
+     * Override this to seek additional properties from the element to include to the instance
+     */
+    findAdditionalInstanceProperties: function(element, properties) {
     },
 
     getInstanceForContainer: function(element) {
@@ -137,7 +147,8 @@ VIE.ContainerManager = {
         var view = VIE.ContainerManager._getViewForContainer(element);
 
         properties.id = VIE.ContainerManager._getContainerValue(element, 'about');
-        VIE.ContainerManager.findAdditionalProperties(element, properties);
+
+        VIE.ContainerManager.findAdditionalInstanceProperties(element, properties);
 
         var modelInstance = new model(properties);
         modelInstance.view = new view({model: modelInstance, el: element});
