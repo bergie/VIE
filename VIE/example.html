@@ -18,24 +18,31 @@
                     jQuery(this).vieSemanticAloha();
                 });
 
-                // Register for editable deactivation to get content
-                jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
-                    jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
+                jQuery('#savebutton').bind('click', function() {
+                    console.log("Foo");
+                    // Go through all Backbone model instances loaded for the page
+                    jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
+                        var modifiedProperties = {};
 
-                        objectInstance.bind('change:' + propertyName, function(instance, changedValue) {
-                            instance.save(null);
-                            alert(instance.id + ' ' + propertyName + ' was changed, see JS console for more information');
-                        });
-
-                        GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
+                        // Go through editables of the model instance
+                        jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
                             if (!editableInstance.isModified()) {
+                                // This editable hasn't been modified, skip
                                 return true;
                             }
-
-                            var modifiedProperties = {};
+                            // Copy editable contents to the modifiedProperties object
                             modifiedProperties[propertyName] = editableInstance.getContents();
-                            objectInstance.set(modifiedProperties); 
                         });
+
+                        if (jQuery.isEmptyObject(modifiedProperties))
+                        {
+                            // No modified editables for this object, skip
+                            return true;
+                        }
+
+                        // Set the modified properties to the model instance
+                        objectInstance.set(modifiedProperties);
+                        objectInstance.save(null);
                     });
                 });
             });
@@ -49,16 +56,27 @@
         <script src="vie-aloha.js"></script>
     </head>
     <body>
-        <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
-            <h1 property="dcterms:title">News item title</h1>
-            <div property="sioc:content">
-                <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
-                </p>
-                <p>
-                    Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
-                </p>
-            </div>
-        </article>
+        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>
+
+        <div typeof="http://purl.org/dc/dcmitype/Collection">
+            <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                <h1 property="dcterms:title">News item title</h1>
+                <div property="sioc:content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                    </p>
+                    <p>
+                        Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
+                    </p>
+                </div>
+           </article>
+
+            <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                <h1 property="dcterms:title">Another item</h1>
+                <div property="sioc:content">
+                    <p>Hello, world!</p>
+                </div>
+            </article>
+        </div>
     </body>
 </html>
