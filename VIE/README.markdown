@@ -44,5 +44,6 @@ This JS would work across all the different CMS implementations. Backbone.js pro
 * [Midgard Create](https://github.com/bergie/midgardmvc_ui_create)
 * [WordPress](https://github.com/Jotschi/Aloha-Editor-Wordpress-Plugin)
 * Typo3
+* [KaraCos](http://gitorious.org/karacos2-wsgi-web-applications-engine/karacos2-wsgi-web-applications-engine)
 * Gentics Enterprise CMS
 * Drupal
