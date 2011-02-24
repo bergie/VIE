@@ -109,22 +109,6 @@ VIE.ContainerManager = {
 
         modelProperties.type = type;
 
-        modelProperties.initialize = function() {
-            var modelInstance = this;
-            var populateProperties = {};
-            jQuery.each(modelPropertiesFromRdf, function(propName, propValue) {
-
-                if (!modelInstance.get(propName)) {
-                    populateProperties[propName] = modelInstance.getPlaceholder(propName);
-                }
-
-            });
-
-            if (!jQuery.isEmptyObject(populateProperties)) {
-                modelInstance.set(populateProperties);
-            }
-        };
-
         VIE.ContainerManager.findAdditionalModelProperties(element, modelProperties);
 
         VIE.ContainerManager.models[type] = Backbone.Model.extend(modelProperties);
