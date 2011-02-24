@@ -56,7 +56,7 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 
 * [Midgard Create](https://github.com/bergie/midgardmvc_ui_create)
 * [WordPress](https://github.com/Jotschi/Aloha-Editor-Wordpress-Plugin)
-* Typo3
+* [TYPO3](http://git.typo3.org/TYPO3v5/Distributions/Base.git)
 * [KaraCos](http://gitorious.org/karacos2-wsgi-web-applications-engine/karacos2-wsgi-web-applications-engine)
 * Gentics Enterprise CMS
 * Drupal
