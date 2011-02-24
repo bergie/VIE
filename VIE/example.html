@@ -10,7 +10,7 @@
 
                 // Implement our own Backbone.sync method
                 Backbone.sync = function(method, model, options) {
-                    console.log(method, JSON.stringify(model));
+                    console.log(method, model.toJSON());
                 };
 
                 // Make all RDFa entities editable
