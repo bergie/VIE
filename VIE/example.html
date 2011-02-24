@@ -4,16 +4,34 @@
         <title>VIE example</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script>
-            GENTICS_Aloha_base = 'http://github.com/alohaeditor/Aloha-Editor/raw/master/WebContent/';
+            GENTICS_Aloha_base = 'https://github.com/alohaeditor/Aloha-Editor/raw/master/WebContent/';
 
             jQuery(document).ready(function() {
+                // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
                     jQuery(this).vieSemanticAloha();
                 });
+
+                // Register for editable deactivation to get content
+                jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
+                    jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
+
+                        GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
+                            if (!editableInstance.isModified()) {
+                                return true;
+                            }
+
+                            var modifiedProperties = {};
+                            modifiedProperties[propertyName] = editableInstance.getContents();
+                            objectInstance.set(modifiedProperties);
+                            console.log(propertyName + ' has value ' + objectInstance.get(propertyName)); 
+                        });
+                    });
+                });
             });
         </script>
-        <script src="http://github.com/alohaeditor/Aloha-Editor/raw/master/WebContent/core/include.js"></script>
-        <script src="http://github.com/alohaeditor/Aloha-Plugin-Format/raw/master/plugin.js"></script>
+        <script src="https://github.com/alohaeditor/Aloha-Editor/raw/master/WebContent/core/include.js"></script>
+        <script src="https://github.com/alohaeditor/Aloha-Plugin-Format/raw/master/plugin.js"></script>
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
         <script src="vie-containermanager.js"></script>
