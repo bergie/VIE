@@ -7,6 +7,12 @@
             GENTICS_Aloha_base = 'https://github.com/alohaeditor/Aloha-Editor/raw/master/WebContent/';
 
             jQuery(document).ready(function() {
+
+                // Implement our own Backbone.sync method
+                Backbone.sync = function(method, model) {
+                    console.log(method, JSON.stringify(model));
+                };
+
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
                     jQuery(this).vieSemanticAloha();
@@ -16,6 +22,11 @@
                 jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
                     jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
 
+                        objectInstance.bind('change:' + propertyName, function(instance, changedValue) {
+                            instance.save(null);
+                            alert(instance.id + ' ' + propertyName + ' was changed, see JS console for more information');
+                        });
+
                         GENTICS.Aloha.EventRegistry.subscribe(editableInstance, 'editableDeactivated', function() {
                             if (!editableInstance.isModified()) {
                                 return true;
@@ -23,8 +34,7 @@
 
                             var modifiedProperties = {};
                             modifiedProperties[propertyName] = editableInstance.getContents();
-                            objectInstance.set(modifiedProperties);
-                            console.log(propertyName + ' has value ' + objectInstance.get(propertyName)); 
+                            objectInstance.set(modifiedProperties); 
                         });
                     });
                 });
