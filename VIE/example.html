@@ -9,7 +9,7 @@
             jQuery(document).ready(function() {
 
                 // Implement our own Backbone.sync method
-                Backbone.sync = function(method, model) {
+                Backbone.sync = function(method, model, options) {
                     console.log(method, JSON.stringify(model));
                 };
 
@@ -19,7 +19,6 @@
                 });
 
                 jQuery('#savebutton').bind('click', function() {
-                    console.log("Foo");
                     // Go through all Backbone model instances loaded for the page
                     jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
                         var modifiedProperties = {};
@@ -41,9 +40,22 @@
                         }
 
                         // Set the modified properties to the model instance
-                        objectInstance.set(modifiedProperties);
-                        objectInstance.save(null);
+                        objectInstance.save(modifiedProperties, {
+                            success: function(savedModel, response) {
+                                alert(savedModel.id + " was saved, see JS console for details");
+                                jQuery.each(modifiedProperties, function(propertyName, propertyValue) {
+                                    savedModel.editables[propertyName].setUnmodified();
+                                });
+                            },
+                            error: function(response) {
+                                console.log("Save failed");
+                            }
+                        });
                     });
+                });
+
+                jQuery('#tweakbutton').bind('click', function() {
+                    VIE.ContainerManager.instances[0].set({'dcterms:title': 'Hello, world!'});
                 });
             });
         </script>
@@ -56,7 +68,7 @@
         <script src="vie-aloha.js"></script>
     </head>
     <body>
-        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>
+        <p>Click on the content below to edit it, then <button id="savebutton">Save</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
         <div typeof="http://purl.org/dc/dcmitype/Collection">
             <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
