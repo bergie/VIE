@@ -9,11 +9,7 @@ VIE.ContainerManager = {
     instanceSingletons: {},
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
-        return jQuery(element).find('[property]').andSelf().filter(function() {
-            if (!jQuery(this).is('[property]')) {
-                return false;
-            }
-
+        return jQuery(element).find('[property]').add(jQuery(element).filter('[property]')).filter(function() {
             if (jQuery(this).closest('[typeof][about]').index(element) !== 0) {
                 // The property is under another entity, skip
                 return false;
