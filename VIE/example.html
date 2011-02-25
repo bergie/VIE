@@ -32,26 +32,13 @@
                 jQuery('#savebutton').bind('click', function() {
                     // Go through all Backbone model instances loaded for the page
                     jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
-                        var modifiedProperties = {};
-
-                        // Go through editables of the model instance
-                        jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
-                            if (!editableInstance.isModified()) {
-                                // This editable hasn't been modified, skip
-                                return true;
-                            }
-                            // Copy editable contents to the modifiedProperties object
-                            modifiedProperties[propertyName] = editableInstance.getContents();
-                        });
-
-                        if (jQuery.isEmptyObject(modifiedProperties))
-                        {
-                            // No modified editables for this object, skip
+                        if (!VIE.AlohaEditable.refreshFromEditables(objectInstance)) {
+                            // No changes to this object, skip
                             return true;
-                        }
+                        }               
 
                         // Set the modified properties to the model instance
-                        objectInstance.save(modifiedProperties, {
+                        objectInstance.save(null, {
                             success: function(savedModel, response) {
                                 alert(savedModel.id + " was saved, see JS console for details");
                                 jQuery.each(modifiedProperties, function(propertyName, propertyValue) {
