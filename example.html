@@ -13,8 +13,17 @@
                     console.log(method, model.toJSON());
                 };
 
+                // Load collections from page so they can be managed
+                VIE.CollectionManager.loadCollections();
+
+                // Functionality for adding items
+                jQuery('#addbutton').bind('click', function() {
+                    VIE.CollectionManager.collections[0].add([{}]);
+                });
+
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
+                    console.log(this);
                     jQuery(this).vieSemanticAloha();
                 });
 
@@ -65,10 +74,11 @@
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
         <script src="vie-containermanager.js"></script>
+        <script src="vie-collectionmanager.js"></script>
         <script src="vie-aloha.js"></script>
     </head>
     <body>
-        <p>Click on the content below to edit it, then <button id="savebutton">Save</button> or <button id="tweakbutton">Change via JS</button>.</p>
+        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add items</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
         <div xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" typeof="http://purl.org/dc/dcmitype/Collection" rel="dcterms:hasPart">
             <article typeof="sioc:Post" about="http://example.net/blog/news_item">
