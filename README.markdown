@@ -61,3 +61,5 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * Gentics Enterprise CMS
 * Drupal
 * Jekyll
+
+See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
