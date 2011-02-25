@@ -6,6 +6,7 @@ VIE.ContainerManager = {
     models: {},
     views: {},
     instances: [],
+    instanceSingletons: {},
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
         var childProperties = jQuery(element).find('[property]');
@@ -105,7 +106,7 @@ VIE.ContainerManager = {
             element.attr('about', '');
         }
         element.find('[about]').attr('about', '');
-        element.find('[property]').html('');
+        VIE.ContainerManager.findContainerProperties(element, false).html('');
 
         return element;
     },
@@ -123,7 +124,6 @@ VIE.ContainerManager = {
         viewProperties.initialize = function() {
             _.bindAll(this, 'render');
             this.model.bind('change', this.render);
-            this.model.view = this;
         };
         viewProperties.tagName = element.get(0).nodeName;
         viewProperties.make = function(tagName, attributes, content) { 
@@ -131,10 +131,10 @@ VIE.ContainerManager = {
         };
         viewProperties.render = function() {
             var model = this.model;
-            jQuery('[property]', this.el).each(function(index, propertyElement) {
-                propertyElement = jQuery(propertyElement);
-                var property = propertyElement.attr('property');
-                propertyElement.html(model.get(property));
+            VIE.ContainerManager.findContainerProperties(this.el, true).each(function() {
+                var propertyElement = jQuery(this);
+                var propertyName = propertyElement.attr('property');
+                propertyElement.html(model.get(propertyName));
             });
             return this;
         };
@@ -185,9 +185,20 @@ VIE.ContainerManager = {
         var view = VIE.ContainerManager.getViewForContainer(element);
 
         properties.id = VIE.ContainerManager._getContainerValue(element, 'about');
+        if (properties.id === '') {
+            var modelInstance = new model(properties);
+            modelInstance.views = [];
+        }
+        else 
+        {
+            if (VIE.ContainerManager.instanceSingletons[properties.id] === undefined) {
+                VIE.ContainerManager.instanceSingletons[properties.id] = new model(properties);
+                VIE.ContainerManager.instanceSingletons[properties.id].views = [];
+            }
+            var modelInstance = VIE.ContainerManager.instanceSingletons[properties.id];
+        }
 
-        var modelInstance = new model(properties);
-        modelInstance.view = new view({model: modelInstance, el: element});
+        modelInstance.views.push(new view({model: modelInstance, el: element}));
 
         VIE.ContainerManager.findAdditionalInstanceProperties(element, modelInstance);
         VIE.ContainerManager.instances.push(modelInstance);
