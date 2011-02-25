@@ -13,9 +13,6 @@
                     console.log(method, model.toJSON());
                 };
 
-                // Load collections from page so they can be managed
-                VIE.CollectionManager.loadCollections();
-
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
                     jQuery(this).vieSemanticAloha();
@@ -25,7 +22,6 @@
                     // Go through all Backbone model instances loaded for the page
                     jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
                         var modifiedProperties = {};
-                        console.log(objectInstance);
 
                         // Go through editables of the model instance
                         jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
@@ -58,10 +54,6 @@
                     });
                 });
 
-                jQuery('#addbutton').bind('click', function() {
-                    VIE.CollectionManager.collections[0].add([{}]);
-                });
-
                 jQuery('#tweakbutton').bind('click', function() {
                     VIE.ContainerManager.instances[0].set({'dcterms:title': 'Hello, world!'});
                 });
@@ -73,14 +65,13 @@
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
         <script src="vie-containermanager.js"></script>
-        <script src="vie-collectionmanager.js"></script>
         <script src="vie-aloha.js"></script>
     </head>
     <body>
-        <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add item</button> or <button id="tweakbutton">Change via JS</button>.</p>
+        <p>Click on the content below to edit it, then <button id="savebutton">Save</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
-        <div typeof="http://purl.org/dc/dcmitype/Collection">
-            <article typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+        <div xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" typeof="http://purl.org/dc/dcmitype/Collection" rel="dcterms:hasPart">
+            <article typeof="sioc:Post" about="http://example.net/blog/news_item">
                 <h1 property="dcterms:title">News item title</h1>
                 <div property="sioc:content">
                     <p>
