@@ -8,11 +8,31 @@ VIE.ContainerManager = {
     instances: [],
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
-        return jQuery(element).find('[property]').filter(function() {
-            var closestObject = jQuery(this).closest('[typeof][about]');
-            return jQuery(this).closest('[typeof][about]').index(element) === 0 &&
-                   (allowPropertiesInProperties || !jQuery(this).parents('[property]').lenght);
+        var childProperties = jQuery(element).find('[property]');
+
+        if (jQuery(element).attr('property') !== undefined) {
+            // The element itself is a property
+            childProperties.push(element);
+        }
+
+        childProperties = jQuery(childProperties).filter(function() {
+            if (jQuery(this).closest('[typeof][about]').index(element) !== 0) {
+                // The property is under another entity, skip
+                return false;
+            }
+
+            if (!allowPropertiesInProperties) {
+                if (!jQuery(this).parents('[property]').length) {
+                    return true;
+                }
+                // This property is under another property, skip
+                return false;
+            }
+
+            return true;
         });
+
+        return childProperties;
     },
 
     /**
