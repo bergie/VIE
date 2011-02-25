@@ -134,7 +134,15 @@ VIE.ContainerManager = {
             VIE.ContainerManager.findContainerProperties(this.el, true).each(function() {
                 var propertyElement = jQuery(this);
                 var propertyName = propertyElement.attr('property');
-                propertyElement.html(model.get(propertyName));
+
+                if (model.get(propertyName) instanceof Array) {
+                    // For now we don't deal with multivalued properties in Views
+                    return true;
+                }
+
+                if (propertyElement.html() !== model.get(propertyName)) {
+                    propertyElement.html(model.get(propertyName));
+                }
             });
             return this;
         };
@@ -196,12 +204,27 @@ VIE.ContainerManager = {
                 VIE.ContainerManager.instanceSingletons[properties.id].views = [];
             }
             var modelInstance = VIE.ContainerManager.instanceSingletons[properties.id];
+
+            modelInstance.set(properties);
         }
 
-        modelInstance.views.push(new view({model: modelInstance, el: element}));
+        var viewExists = false;
+        jQuery.each(modelInstance.views, function() {
+            // Check whether we already have this view instantiated for the element
+            if (this.el.get(0) == element.get(0)) {
+                viewExists = true;
+                return false;
+            }
+        });
+        if (!viewExists) {
+            modelInstance.views.push(new view({model: modelInstance, el: element}));
+        }
 
         VIE.ContainerManager.findAdditionalInstanceProperties(element, modelInstance);
-        VIE.ContainerManager.instances.push(modelInstance);
+
+        if (jQuery.inArray(modelInstance, VIE.ContainerManager.instances) === -1) {
+            VIE.ContainerManager.instances.push(modelInstance);
+        }
 
         return modelInstance;
     },

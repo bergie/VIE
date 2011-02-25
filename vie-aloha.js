@@ -31,8 +31,14 @@ VIE.AlohaEditable = {
         jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
             if (!editableInstance.isModified()) {
                 // This editable hasn't been modified, skip
-                return false;
+                return true;
             }
+
+            // Refresh possible RDFa objects from inside the editable
+            jQuery('[typeof][about]', editableInstance.obj).each(function() {
+                var childInstance = VIE.ContainerManager.getInstanceForContainer(jQuery(this));
+            });
+
             // Copy editable contents to the modifiedProperties object
             modifiedProperties[propertyName] = editableInstance.getContents();
         });
