@@ -1,5 +1,8 @@
 <!doctype html>
-<html>
+<html
+    version="HTML+RDFa 1.0"
+    xmlns:sioc="http://rdfs.org/sioc/ns#" 
+    xmlns:dcterms="http://purl.org/dc/terms/">
     <head>
         <title>VIE example</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -80,7 +83,7 @@
     <body>
         <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add items</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
-        <div xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:dcterms="http://purl.org/dc/terms/" typeof="http://purl.org/dc/dcmitype/Collection" rel="dcterms:hasPart">
+        <div typeof="http://purl.org/dc/dcmitype/Collection" rel="dcterms:hasPart">
             <article typeof="sioc:Post" about="http://example.net/blog/news_item">
                 <h1 property="dcterms:title">News item title</h1>
                 <div property="sioc:content">
