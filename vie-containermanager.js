@@ -7,16 +7,45 @@ VIE.ContainerManager = {
     views: {},
     instances: [],
 
+    findContainerProperties: function(element, allowPropertiesInProperties) {
+        return jQuery(element).find('[property]').filter(function() {
+            var closestObject = jQuery(this).closest('[typeof][about]');
+            return jQuery(this).closest('[typeof][about]').index(element) === 0 &&
+                   (allowPropertiesInProperties || !jQuery(this).parents('[property]').lenght);
+        });
+    },
+
     /**
      * @private
      */
     _getContainerProperties: function(element, emptyValues) {
         var containerProperties = {};
 
-        jQuery('[property]', element).each(function(index, objectProperty) {
+        VIE.ContainerManager.findContainerProperties(element, true).each(function() {
         	var propertyName;
-            objectProperty = jQuery(objectProperty);
+            var objectProperty = jQuery(this);
             propertyName = objectProperty.attr('property');
+
+            if (typeof containerProperties[propertyName] !== 'undefined') {
+                if (containerProperties[propertyName] instanceof Array) {
+                    if (emptyValues) {
+                        return;
+                    }
+                    containerProperties[propertyName].push(objectProperty.html());
+                    return;
+                }
+                // Multivalued property, convert to Array
+                var previousValue = containerProperties[propertyName];
+                containerProperties[propertyName] = [];
+
+                if (emptyValues) {
+                    return;
+                }
+
+                containerProperties[propertyName].push(previousValue);
+                containerProperties[propertyName].push(objectProperty.html());
+                return;
+            }
 
             if (emptyValues) {
                 containerProperties[propertyName] = '';
