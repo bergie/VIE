@@ -9,14 +9,11 @@ VIE.ContainerManager = {
     instanceSingletons: {},
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
-        var childProperties = jQuery(element).find('[property]');
+        return jQuery(element).find('[property]').andSelf().filter(function() {
+            if (!jQuery(this).is('[property]')) {
+                return false;
+            }
 
-        if (jQuery(element).attr('property') !== undefined) {
-            // The element itself is a property
-            childProperties.push(element);
-        }
-
-        childProperties = jQuery(childProperties).filter(function() {
             if (jQuery(this).closest('[typeof][about]').index(element) !== 0) {
                 // The property is under another entity, skip
                 return false;
@@ -32,8 +29,6 @@ VIE.ContainerManager = {
 
             return true;
         });
-
-        return childProperties;
     },
 
     /**
