@@ -161,6 +161,22 @@ VIE.ContainerManager = {
             return type;
         }
 
+        modelProperties.toJSONLD = function() {
+            var instance = this;
+            var instanceLD = {"@":"<" + instance.id + ">"};
+
+            // This can have only one type here, in rdf more types can be allowed
+            instanceLD.a = instance.getType();
+            for(var property in instance.attributes) if(instance.attributes.hasOwnProperty(property)){ //  && typeof instance.attributes[property] != "function"
+                if(["id"].indexOf(property) == -1)
+                    instanceLD[property] = instance.attributes[property];
+            }
+            console.info(instance.attributes);
+            return JSON.stringify(instanceLD);
+        }
+
+        modelProperties.getInstanceForJSONLD = function(){}
+
         VIE.ContainerManager.findAdditionalModelProperties(element, modelProperties);
 
         VIE.ContainerManager.models[type] = Backbone.Model.extend(modelProperties);
