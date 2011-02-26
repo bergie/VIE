@@ -28,10 +28,6 @@ VIE.CollectionManager = {
 
         var collectionInstance = new Collection({});
 
-        collectionInstance.bind('add', function(itemInstance) {
-            VIE.ContainerManager.instances.push(itemInstance);
-        });
-
         collectionInstance.view = VIE.CollectionManager._getViewForCollection(preparedNewElement, element, collectionInstance);
 
         VIE.CollectionManager.collections.push(collectionInstance);
@@ -43,7 +39,6 @@ VIE.CollectionManager = {
      * @private
      */
     _getViewForCollection: function(element, collectionElement, collectionInstance) {
-       var itemView = VIE.ContainerManager.getViewForContainer(element);
         var collectionView = Backbone.View.extend({
             collection: collectionInstance,
             el: collectionElement,
@@ -55,12 +50,10 @@ VIE.CollectionManager = {
             },
 
             addItem: function(itemInstance) {
-                var itemInstanceView = new itemView({model: itemInstance});
-                var itemViewElement = itemInstanceView.render().el;
-                this.el.prepend(itemViewElement);
+                itemInstance = VIE.ContainerManager.registerInstance(itemInstance, VIE.ContainerManager.cloneContainer(element));
+                var itemViewElement = itemInstance.views[0].render().el;
+                this.el.append(itemViewElement);
                 itemViewElement.show();
-
-                itemViewElement.vieSemanticAloha();
             },
 
             removeItem: function(itemInstance) {
