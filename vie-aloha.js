@@ -1,5 +1,13 @@
 (function($){
-    $.fn.vieSemanticAloha = function() {
+    $.fn.vieSemanticAloha = function(options) {
+        
+        // Default settings
+        var opt = { 
+                beforeEditing: null
+        };
+        $.extend(opt, options);
+
+
         this.each(function() {
             var containerInstance = VIE.ContainerManager.getInstanceForContainer(jQuery(this));
             if (typeof containerInstance.editables === 'undefined') {
@@ -7,6 +15,14 @@
             }
             VIE.ContainerManager.findContainerProperties(this, false).each(function() {
                 var containerProperty = jQuery(this);
+
+                // Call the configured beforeEditing function that may modify 
+                // the content of the editable before editing is possible
+                if(opt.beforeEditing != null) {
+                    opt.beforeEditing(containerProperty);
+                }
+
+
                 var propertyName = containerProperty.attr('property');
 
                 if (containerInstance.get(propertyName) instanceof Array) {
