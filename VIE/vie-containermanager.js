@@ -144,6 +144,8 @@ VIE.ContainerManager = {
             return this;
         };
 
+        VIE.ContainerManager.findAdditionalViewProperties(element, viewProperties);
+
         VIE.ContainerManager.views[type] = Backbone.View.extend(viewProperties);
 
         return VIE.ContainerManager.views[type];
@@ -186,6 +188,12 @@ VIE.ContainerManager = {
         VIE.ContainerManager.models[type] = Backbone.Model.extend(modelProperties);
 
         return VIE.ContainerManager.models[type];
+    },
+
+    /**
+     * Override this to seek additional information from the element to include to the view
+     */
+    findAdditionalViewProperties: function(element, properties) {
     },
 
     /**
