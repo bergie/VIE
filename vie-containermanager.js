@@ -14,8 +14,8 @@ VIE.ContainerManager = {
         }
         return jQuery(element).find('[property]').add(jQuery(element).filter('[property]')).filter(function() {
             var closestRDFaEntity = jQuery(this).closest('[typeof][about]');
-            if (   closestRDFaEntity.index(element) !== 0
-                && closestRDFaEntity.length !== 0) {
+            if (closestRDFaEntity.index(element) !== 0 && 
+                closestRDFaEntity.length !== 0) {
                 // The property is under another entity, skip
                 console.log("Wrong entity", element, closestRDFaEntity, this);
                 return false;
@@ -40,7 +40,7 @@ VIE.ContainerManager = {
         var containerProperties = {};
 
         VIE.ContainerManager.findContainerProperties(element, true).each(function() {
-        	var propertyName;
+            var propertyName;
             var objectProperty = jQuery(this);
             propertyName = objectProperty.attr('property');
 
@@ -166,7 +166,7 @@ VIE.ContainerManager = {
 
         modelProperties.getType = function() {
             return type;
-        }
+        };
 
         modelProperties.toJSONLD = function() {
             var instance = this;
@@ -179,9 +179,9 @@ VIE.ContainerManager = {
                     instanceLD[property] = instance.attributes[property];
             }
             return instanceLD;
-        }
+        };
 
-        modelProperties.getInstanceForJSONLD = function(){}
+        modelProperties.getInstanceForJSONLD = function(){};
 
         VIE.ContainerManager.findAdditionalModelProperties(element, modelProperties);
 
@@ -243,14 +243,15 @@ VIE.ContainerManager = {
         var model = VIE.ContainerManager.getModelForContainer(element);
         var properties = VIE.ContainerManager._getContainerProperties(element, false);
         properties.id = VIE.ContainerManager._getContainerValue(element, 'about');
+        var modelInstance;
 
-        if (   !properties.id
-            || VIE.ContainerManager.instanceSingletons[properties.id] === undefined) {
-            var modelInstance = new model(properties);
+        if (!properties.id ||
+            VIE.ContainerManager.instanceSingletons[properties.id] === undefined) {
+            modelInstance = new model(properties);
         }
         else 
         {
-            var modelInstance = VIE.ContainerManager.instanceSingletons[properties.id];
+            modelInstance = VIE.ContainerManager.instanceSingletons[properties.id];
             modelInstance.set(properties);
         }
 
