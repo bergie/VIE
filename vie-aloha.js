@@ -18,7 +18,7 @@
 
                 // Call the configured beforeEditing function that may modify 
                 // the content of the editable before editing is possible
-                if(opt.beforeEditing != null) {
+                if (opt.beforeEditing !== null) {
                     opt.beforeEditing(containerProperty);
                 }
 
@@ -33,8 +33,8 @@
                 containerInstance.editables[propertyName] = new GENTICS.Aloha.Editable(containerProperty);
                 containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
-        })
-    }
+        });
+    };
 })(jQuery);
 
 if (typeof VIE === 'undefined') {

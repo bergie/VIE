@@ -9,6 +9,7 @@ VIE.ContainerManager = {
     instanceSingletons: {},
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
+        element = jQuery(element);
         if (!element.attr('typeof')) {
             element = element.children('[typeof][about]');
         }
