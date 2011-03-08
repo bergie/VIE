@@ -389,7 +389,7 @@
                 // Direct match with container
                 return element.attr(propertyName);
             }
-            return element.find('[' + propertyName + ']').attr(propertyName);
+            return element.children('[' + propertyName + ']').attr(propertyName);
         },
 
         findElementProperties: function(subject, element, allowPropertiesInProperties) {
