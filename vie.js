@@ -11,6 +11,13 @@
         VIE = this.VIE = {};
     }
 
+    // Require underscore using CommonJS require if it isn't yet loaded
+    var _ = this._;
+    if (!_ && (typeof require !== 'undefined')) _ = require('underscore')._;
+    if (!_) {
+        throw 'VIE requires underscore.js to be available';
+    }
+
     // Require Backbone using CommonJS require if it isn't yet loaded
     var Backbone = this.Backbone;
     if (!Backbone && (typeof require !== 'undefined')) Backbone = require('backbone');
@@ -127,6 +134,7 @@
     
         // Create a Backbone model instance for a RDFa-marked element
         getInstance: function(element) {
+            element = jQuery(element);
             var entityInstance;
             var viewInstance;
             var jsonld;
@@ -159,7 +167,7 @@
         getInstances: function(element) {
             var entities = [];
             jQuery('[typeof]', element).each(function() {
-                entities.push(VIE.RDFaModels.getInstance(this));
+                entities.push(VIE.RDFaEntities.getInstance(this));
             });
             return entities;
         }
@@ -242,6 +250,7 @@
             jQuery('[xmlns\\:' + prefix + ']').each(function() {
                 VIE.RDFa.Namespaces[prefix] = jQuery(this).attr('xmlns:' + prefix);
             });
+
             return VIE.RDFa.Namespaces[prefix];
         },
 
@@ -348,6 +357,7 @@
 
     VIE.cleanup = function() {
         VIE.EntityManager.Entities = {};
+        VIE.EntityManager.allEntities = [];
         VIE.EntityManager.Types = {};
         VIE.RDFaEntities.Views = [];
         VIE.RDFa.Namespaces = {};
