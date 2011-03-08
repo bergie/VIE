@@ -5,13 +5,19 @@ var VIE = require('../vie.js');
 VIE.RDFa.predicateSelector = '[property]';
 
 exports['test inheriting subject'] = function(test) {
-    var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein<span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
+    var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
-    var entities = VIE.RDFa.readEntities(html);
-    test.equal(entities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
+    var jsonldEntities = VIE.RDFa.readEntities(html);
+    test.equal(jsonldEntities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
 
-    var entities = VIE.RDFaEntities.getInstances(html);
-    test.equal(entities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
+    test.equal(jsonldEntities[1]['foaf:name'], 'Albert Einstein');
+    test.equal(jsonldEntities[0]['dbp:conventionalLongName'], 'Federal Republic of Germany');
+
+    var backboneEntities = VIE.RDFaEntities.getInstances(html);
+    test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
+
+    test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
+    test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
 
     test.done();
 };
