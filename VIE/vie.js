@@ -105,7 +105,7 @@
 
     // Mapping between RDFa and Backbone models
     VIE.RDFaEntities = {
-        Views: {},
+        Views: [],
     
         // Create a Backbone model instance for a RDFa-marked element
         getInstance: function(element) {
@@ -116,12 +116,23 @@
             jsonld = VIE.RDFa.readEntity(element);
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
 
-            // Create a view for the RDFa
-            viewInstance = new VIE.RDFaView({
-                model: entityInstance, 
-                el: element,
-                tagName: element.get(0).nodeName
+            jQuery.each(VIE.RDFaEntities.Views, function() {
+                // Check whether we already have this view instantiated for the element
+                if (this.el.get(0) == element.get(0)) {
+                    viewInstance = this;
+                    return false;
+                }
             });
+
+            if (!viewInstance) {
+                // Create a view for the RDFa
+                viewInstance = new VIE.RDFaView({
+                    model: entityInstance, 
+                    el: element,
+                    tagName: element.get(0).nodeName
+                });
+                VIE.RDFaEntities.Views.push(viewInstance);
+            }
 
             return entityInstance;
         },
