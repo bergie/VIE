@@ -52,6 +52,12 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * [Example with Aloha Editor](https://github.com/bergie/VIE/raw/master/example.html)
 * [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
 
+### Running Unit Tests
+
+You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
+
+    $ nodeunit test/rdfa.js
+
 ## Implementations
 
 * [Midgard Create](https://github.com/bergie/midgardmvc_ui_create)
