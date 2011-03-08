@@ -26,7 +26,27 @@
     }
 
     // Backbone Model for RDF entities
-    VIE.RDFEntity = Backbone.Model.extend({});
+    VIE.RDFEntity = Backbone.Model.extend({
+        namespaces: {},
+        type: '',
+
+        toJSONLD: function() {
+            var instance = this;
+            var instanceLD = {"@":"<" + instance.id + ">"};
+
+            instanceLD['#'] = instance.namespaces;
+
+            if (instance.type) {
+                instanceLD.a = instance.type;
+            }
+
+            for (var property in instance.attributes) if(instance.attributes.hasOwnProperty(property)) { //  && typeof instance.attributes[property] != "function"
+                if (["id"].indexOf(property) == -1)
+                    instanceLD[property] = instance.attributes[property];
+            }
+            return instanceLD;
+        }
+    });
 
     // Backbone View for RDF entities represented in RDFa 
     VIE.RDFaView = Backbone.View.extend({
@@ -37,20 +57,7 @@
         },
 
         render: function() {
-            var model = this.model;
-            VIE.RDFa.findElementProperties(this.el, true).each(function() {
-                var propertyElement = jQuery(this);
-                var propertyName = propertyElement.attr('property');
-
-                if (model.get(propertyName) instanceof Array) {
-                    // For now we don't deal with multivalued properties in Views
-                    return true;
-                }
-
-                if (propertyElement.html() !== model.get(propertyName)) {
-                    propertyElement.html(model.get(propertyName));
-                }
-            });
+            VIE.RDFa.writeEntity(this.el, this.model.toJSON());
             return this;
         }
     });
@@ -58,6 +65,7 @@
     // Entity Manager keeps track of all RDFa entities loaded via VIE
     VIE.EntityManager = {
         Entities: {},
+        allEntities: [],
 
         Types: {},
 
@@ -84,10 +92,20 @@
 
             entityInstance = new VIE.RDFEntity(properties);
 
+            if (typeof jsonld['#'] !== 'undefined') {
+                entityInstance.namespaces = jsonld['#'];
+            }
+
+            if (typeof jsonld.a !== 'undefined') {
+                entityInstance.type = jsonld.a;
+            }
+
             if (typeof jsonld['@'] !== 'undefined') {
                 entityInstance.id = jsonld['@'];
                 VIE.EntityManager.Entities[entityInstance.id] = entityInstance;
             }
+
+            VIE.EntityManager.allEntities.push(entityInstance);
 
             return entityInstance;
         },
@@ -162,7 +180,7 @@
             entity = VIE.RDFa._getElementProperties(element, false);
 
             // Resolve namespaces
-            for (propertyName in entity) {
+            for (var propertyName in entity) {
                 var propertyParts = propertyName.split(':');
                 if (propertyParts.length === 1) {
                     // No namespace for element
@@ -194,6 +212,28 @@
             return entities;
         },
 
+        writeEntity: function(element, jsonld) {
+            VIE.RDFa.findElementProperties(element, true).each(function() {
+                var propertyElement = jQuery(this);
+                var propertyName = propertyElement.attr('property');
+
+                if (typeof jsonld[propertyName] === 'undefined') {
+                    // Entity doesn't contain this property
+                    return true;
+                }
+
+                if (jsonld[propertyName] instanceof Array) {
+                    // For now we don't deal with multivalued properties in Views
+                    return true;
+                }
+
+                if (propertyElement.html() !== jsonld[propertyName]) {
+                    propertyElement.html(jsonld[propertyName]);
+                }
+            });
+            return this;
+        },
+
         _resolveNamespace: function(prefix, element) {
             if (typeof VIE.RDFa.Namespaces[prefix] !== 'undefined') {
                 return VIE.RDFa.Namespaces[prefix];
@@ -201,8 +241,8 @@
             
             jQuery('[xmlns\\:' + prefix + ']').each(function() {
                 VIE.RDFa.Namespaces[prefix] = jQuery(this).attr('xmlns:' + prefix);
-                return VIE.RDFa.Namespaces[prefix];
             });
+            return VIE.RDFa.Namespaces[prefix];
         },
 
         // Get the value of attribute from the element or from one of its children
@@ -280,6 +320,13 @@
 
             return containerProperties;
         }
+    };
+
+    VIE.cleanup = function() {
+        VIE.EntityManager.Entities = {};
+        VIE.EntityManager.Types = {};
+        VIE.RDFaEntities.Views = [];
+        VIE.RDFa.Namespaces = {};
     };
 
 }).call(this);
