@@ -201,7 +201,7 @@
         // Resolved prefix->namespace pairs
         Namespaces: {},
 
-        subjectSelector: '[about],[typeof],[src]',
+        subjectSelector: '[about],[typeof],[src],html',
         predicateSelector: '[property],[rel]',
 
         // Get a JSON-LD en
@@ -210,6 +210,7 @@
             var subject;
             var namespaces = {};
             var namespace;
+            var type;
 
             subject = VIE.RDFa.getSubject(element);
 
@@ -237,7 +238,10 @@
             }
 
             // Read typeof from element
-            entity.a = VIE.RDFa._getElementValue(element, 'typeof');
+            type = VIE.RDFa._getElementValue(element, 'typeof');
+            if (type) {
+                entity.a = type;
+            }
 
             if (typeof subject == 'string') {
                 entity['@'] = subject;
@@ -351,6 +355,14 @@
                 }
                 if (jQuery(this).attr('typeof')) {
                     subject = this;
+                    return true;
+                }
+
+                // Handle baseURL also outside browser context
+                if (jQuery(this).get(0).nodeName == 'HTML') {
+                    jQuery(this).find('base').each(function() {
+                        subject = jQuery(this).attr('href');
+                    });
                 }
             });
 
