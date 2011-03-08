@@ -20,7 +20,6 @@ exports['test inheriting subject'] = function(test) {
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
 
     VIE.cleanup();
-
     test.done();
 };
 
@@ -44,6 +43,41 @@ exports['test updating views'] = function(test) {
     });
 
     VIE.cleanup();
+    test.done();
+};
 
+exports['test global entity'] = function(test) {
+    var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
+
+    var jsonldEntities = VIE.RDFa.readEntities(html);
+    
+    // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
+    test.equal(jsonldEntities.length, 1);
+    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    VIE.cleanup();
+
+    var html = jQuery('<html><head><title>Jo\'s Blog</title></head><body><h1><span property="dc:creator">Jo</span>\'s blog</h1><p>Welcome to my blog.</p></body></html>');
+
+   var jsonldEntities = VIE.RDFa.readEntities(html);
+    
+    // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
+    test.equal(jsonldEntities.length, 1);
+    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+
+    VIE.cleanup();
+    test.done();
+};
+
+exports['test global entity with base URL'] = function(test) {
+    var html = jQuery('<html><head><base href="http://www.example.org/jo/blog" /><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
+
+    var jsonldEntities = VIE.RDFa.readEntities(html);
+    
+    // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
+    test.equal(jsonldEntities.length, 1);
+    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['@'], 'http://www.example.org/jo/blog');
+
+    VIE.cleanup();
     test.done();
 };
