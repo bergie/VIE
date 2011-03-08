@@ -141,6 +141,10 @@
             var subject;
 
             jsonld = VIE.RDFa.readEntity(element);
+            if (!jsonld) {
+                return null;
+            }
+
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
 
             jQuery.each(VIE.RDFaEntities.Views, function() {
@@ -167,17 +171,24 @@
         // Get a list of Backbone model instances for all RDFa-marked content in an element
         getInstances: function(element) {
             var entities = [];
+            var entity;
 
             if (typeof element === 'undefined') {
                 element = jQuery(document);
 
                 // We're working with the full document scope, add the document itself as an entity
-                jQuery('[about]', element).andSelf().each(function() {
-                    entities.push(VIE.RDFa.readEntity(this));
+                jQuery('[about],[src]', element).andSelf().each(function() {
+                    entity = VIE.RDFaEntities.getInstance(this);
+                    if (entity) {
+                        entities.push(entity);
+                    }
                 });
             } else {
-                jQuery('[about]', element).andSelf().each(function() {
-                    entities.push(VIE.RDFaEntities.getInstance(this));
+                jQuery('[about],[src]', element).each(function() {
+                    entity = VIE.RDFaEntities.getInstance(this);
+                    if (entity) {
+                        entities.push(entity);
+                    }
                 });
             }
 
@@ -200,6 +211,10 @@
 
             // Read properties from element
             entity = VIE.RDFa._getElementProperties(subject, element, false);
+            if (jQuery.isEmptyObject(entity)) {
+                // No properties, skip creating entity
+                return null;
+            }
 
             // Resolve namespaces
             for (var propertyName in entity) {
@@ -222,26 +237,26 @@
             return entity;
         },
 
-        getSubject: function(element) {
-            if (element === document) {
-                return document.baseURI;
-            }
-            return jQuery(element).closest('[about]').attr('about');
-        },
-
         readEntities: function(element) {
             var entities = [];
+            var entity;
 
             if (typeof element === 'undefined') {
                 element = jQuery(document);
 
                 // We're working with the full document scope, add the document itself as an entity
-                jQuery('[about]', element).andSelf().each(function() {
-                    entities.push(VIE.RDFa.readEntity(this));
+                jQuery('[about],[src]', element).andSelf().each(function() {
+                    entity = VIE.RDFa.readEntity(this);
+                    if (entity) {
+                        entities.push(entity);
+                    }
                 });
             } else {
-                jQuery('[about]', element).andSelf().each(function() {
-                    entities.push(VIE.RDFa.readEntity(this));
+                jQuery('[about],[src]', element).each(function() {
+                    entity = VIE.RDFa.readEntity(this);
+                    if (entity) {
+                        entities.push(entity);
+                    }
                 });
             }
 
@@ -286,10 +301,27 @@
             var content = element.attr('content');
             if (content) {
                 element.attr('content', value);
+                return;
             }
 
             // Property has inline value
             element.html(value);
+        },
+
+        getSubject: function(element) {
+            if (element === document) {
+                return document.baseURI;
+            }
+            var subject;
+            jQuery(element).closest('[about],[src]').each(function() {
+                if (jQuery(this).attr('about')) {
+                    subject = jQuery(this).attr('about');
+                }
+                if (jQuery(this).attr('src')) {
+                    subject = jQuery(this).attr('src');
+                }
+            });
+            return subject;
         },
 
         _resolveNamespace: function(prefix, element) {
