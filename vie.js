@@ -138,7 +138,6 @@
             var entityInstance;
             var viewInstance;
             var jsonld;
-            var subject;
 
             jsonld = VIE.RDFa.readEntity(element);
             if (!jsonld) {
@@ -177,14 +176,14 @@
                 element = jQuery(document);
 
                 // We're working with the full document scope, add the document itself as an entity
-                jQuery('[about],[src]', element).andSelf().each(function() {
+                jQuery(VIE.RDFa.subjectSelector, element).andSelf().each(function() {
                     entity = VIE.RDFaEntities.getInstance(this);
                     if (entity) {
                         entities.push(entity);
                     }
                 });
             } else {
-                jQuery('[about],[src]', element).each(function() {
+                jQuery(VIE.RDFa.subjectSelector, element).each(function() {
                     entity = VIE.RDFaEntities.getInstance(this);
                     if (entity) {
                         entities.push(entity);
@@ -200,6 +199,8 @@
     VIE.RDFa = {
         // Resolved prefix->namespace pairs
         Namespaces: {},
+
+        subjectSelector: '[about],[typeof],[src]',
 
         // Get a JSON-LD en
         readEntity: function(element) {
@@ -232,8 +233,9 @@
             // Read typeof from element
             entity.a = VIE.RDFa._getElementValue(element, 'typeof');
 
-            entity['@'] = subject;
-
+            if (typeof subject == 'string') {
+                entity['@'] = subject;
+            }
             return entity;
         },
 
@@ -245,14 +247,14 @@
                 element = jQuery(document);
 
                 // We're working with the full document scope, add the document itself as an entity
-                jQuery('[about],[src]', element).andSelf().each(function() {
+                jQuery(VIE.RDFa.subjectSelector, element).andSelf().each(function() {
                     entity = VIE.RDFa.readEntity(this);
                     if (entity) {
                         entities.push(entity);
                     }
                 });
             } else {
-                jQuery('[about],[src]', element).each(function() {
+                jQuery(VIE.RDFa.subjectSelector, element).each(function() {
                     entity = VIE.RDFa.readEntity(this);
                     if (entity) {
                         entities.push(entity);
@@ -264,7 +266,7 @@
         },
 
         writeEntity: function(element, jsonld) {
-            VIE.RDFa.findElementProperties(jsonld['@'].substring(1, jsonld['@'].length - 1), element, true).each(function() {
+            VIE.RDFa.findElementProperties(VIE.RDFa.getSubject(element), element, true).each(function() {
                 var propertyElement = jQuery(this);
                 var propertyName = propertyElement.attr('property');
 
@@ -315,14 +317,20 @@
                 }
             }
             var subject;
-            jQuery(element).closest('[about],[src]').each(function() {
+            jQuery(element).closest(VIE.RDFa.subjectSelector).each(function() {
                 if (jQuery(this).attr('about')) {
                     subject = jQuery(this).attr('about');
+                    return true;
                 }
                 if (jQuery(this).attr('src')) {
                     subject = jQuery(this).attr('src');
+                    return true;
+                }
+                if (jQuery(this).attr('typeof')) {
+                    subject = this;
                 }
             });
+
             return subject;
         },
 
