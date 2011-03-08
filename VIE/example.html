@@ -31,7 +31,7 @@
 
                 jQuery('#savebutton').bind('click', function() {
                     // Go through all Backbone model instances loaded for the page
-                    jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
+                    jQuery.each(VIE.EntityManager.allEntities, function(index, objectInstance) {
                         if (!VIE.AlohaEditable.refreshFromEditables(objectInstance)) {
                             // No changes to this object, skip
                             return true;
@@ -53,7 +53,7 @@
                 });
 
                 jQuery('#tweakbutton').bind('click', function() {
-                    VIE.ContainerManager.instances[0].set({'dcterms:title': 'Hello, world!'});
+                    VIE.EntityManager.allEntities[0].set({'dcterms:title': 'Hello, world!'});
                 });
             });
         </script>
