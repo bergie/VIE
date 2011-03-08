@@ -227,8 +227,8 @@
                     return true;
                 }
 
-                if (propertyElement.html() !== jsonld[propertyName]) {
-                    propertyElement.html(jsonld[propertyName]);
+                if (VIE.RDFa._readPropertyValue(propertyElement) !== jsonld[propertyName]) {
+                    VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
                 }
             });
             return this;
@@ -281,20 +281,44 @@
             });
         },
 
+        _readPropertyValue: function(element) {
+            // Property has machine-readable content value
+            var content = element.attr('content');
+            if (content) {
+                return content;
+            }
+
+            // Property has inline value
+            return element.html();
+        },
+
+        _writePropertyValue: function(element, value) {
+            // Property has machine-readable content value
+            var content = element.attr('content');
+            if (content) {
+                element.attr('content', value);
+            }
+
+            // Property has inline value
+            element.html(value);
+        },
+
         _getElementProperties: function(element, emptyValues) {
             var containerProperties = {};
 
             VIE.RDFa.findElementProperties(element, true).each(function() {
                 var propertyName;
+                var propertyValue;
                 var objectProperty = jQuery(this);
                 propertyName = objectProperty.attr('property');
+                propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
 
                 if (typeof containerProperties[propertyName] !== 'undefined') {
                     if (containerProperties[propertyName] instanceof Array) {
                         if (emptyValues) {
                             return;
                         }
-                        containerProperties[propertyName].push(objectProperty.html());
+                        containerProperties[propertyName].push(propertyValue);
                         return;
                     }
                     // Multivalued property, convert to Array
@@ -306,7 +330,7 @@
                     }
 
                     containerProperties[propertyName].push(previousValue);
-                    containerProperties[propertyName].push(objectProperty.html());
+                    containerProperties[propertyName].push(propertyValue);
                     return;
                 }
 
@@ -315,7 +339,7 @@
                     return;
                 }
 
-                containerProperties[propertyName] = objectProperty.html();
+                containerProperties[propertyName] = propertyValue;
             });
 
             return containerProperties;
