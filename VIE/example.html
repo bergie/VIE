@@ -13,7 +13,7 @@
 
                 // Implement our own Backbone.sync method
                 Backbone.sync = function(method, model, options) {
-                    console.log(method, model.toJSON());
+                    console.log(method, model.toJSONLD());
                 };
 
                 // Load collections from page so they can be managed
@@ -62,6 +62,7 @@
         <script src="http://aloha-editor.org/aloha-0.9.3/aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script>
         <script src="underscore-min.js"></script>
         <script src="backbone-min.js"></script>
+        <script src="vie.js"></script>
         <script src="vie-containermanager.js"></script>
         <script src="vie-collectionmanager.js"></script>
         <script src="vie-aloha.js"></script>
