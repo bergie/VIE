@@ -181,23 +181,16 @@
             var entity;
 
             if (typeof element === 'undefined') {
+                // We're working with the full document scope
                 element = jQuery(document);
-
-                // We're working with the full document scope, add the document itself as an entity
-                jQuery(VIE.RDFa.subjectSelector, element).andSelf().each(function() {
-                    entity = VIE.RDFaEntities.getInstance(this);
-                    if (entity) {
-                        entities.push(entity);
-                    }
-                });
-            } else {
-                jQuery(VIE.RDFa.subjectSelector, element).each(function() {
-                    entity = VIE.RDFaEntities.getInstance(this);
-                    if (entity) {
-                        entities.push(entity);
-                    }
-                });
             }
+
+            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
+                entity = VIE.RDFaEntities.getInstance(this);
+                if (entity) {
+                    entities.push(entity);
+                }
+            });
 
             return entities;
         }
@@ -209,6 +202,7 @@
         Namespaces: {},
 
         subjectSelector: '[about],[typeof],[src]',
+        predicateSelector: '[property],[rel]',
 
         // Get a JSON-LD en
         readEntity: function(element) {
@@ -256,23 +250,16 @@
             var entity;
 
             if (typeof element === 'undefined') {
+                // We're working with the full document scope
                 element = jQuery(document);
-
-                // We're working with the full document scope, add the document itself as an entity
-                jQuery(VIE.RDFa.subjectSelector, element).andSelf().each(function() {
-                    entity = VIE.RDFa.readEntity(this);
-                    if (entity) {
-                        entities.push(entity);
-                    }
-                });
-            } else {
-                jQuery(VIE.RDFa.subjectSelector, element).each(function() {
-                    entity = VIE.RDFa.readEntity(this);
-                    if (entity) {
-                        entities.push(entity);
-                    }
-                });
             }
+
+            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
+                entity = VIE.RDFa.readEntity(this);
+                if (entity) {
+                    entities.push(entity);
+                }
+            });
 
             return entities;
         },
@@ -394,7 +381,7 @@
         },
 
         findElementProperties: function(subject, element, allowPropertiesInProperties) {
-            return jQuery(element).find('[property],[rel]').add(jQuery(element).filter('[property],[rel]')).filter(function() {
+            return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
                 if (VIE.RDFa.getSubject(this) !== subject) {
                     // The property is under another entity, skip
                     return false;
