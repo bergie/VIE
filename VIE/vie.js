@@ -309,8 +309,10 @@
         },
 
         getSubject: function(element) {
-            if (element === document) {
-                return document.baseURI;
+            if (typeof document !== 'undefined') {
+                if (element === document) {
+                    return document.baseURI;
+                }
             }
             var subject;
             jQuery(element).closest('[about],[src]').each(function() {
