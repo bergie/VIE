@@ -28,6 +28,33 @@
     // Backbone Model for RDF entities
     VIE.RDFEntity = Backbone.Model.extend({});
 
+    // Backbone View for RDF entities represented in RDFa 
+    VIE.RDFaView = Backbone.View.extend({
+        // Ensure view gets updated when properties of the entity change
+        initialize: function() {
+            _.bindAll(this, 'render');
+            this.model.bind('change', this.render);
+        },
+
+        render: function() {
+            var model = this.model;
+            VIE.RDFa.findElementProperties(this.el, true).each(function() {
+                var propertyElement = jQuery(this);
+                var propertyName = propertyElement.attr('property');
+
+                if (model.get(propertyName) instanceof Array) {
+                    // For now we don't deal with multivalued properties in Views
+                    return true;
+                }
+
+                if (propertyElement.html() !== model.get(propertyName)) {
+                    propertyElement.html(model.get(propertyName));
+                }
+            });
+            return this;
+        }
+    });
+
     // Entity Manager keeps track of all RDFa entities loaded via VIE
     VIE.EntityManager = {
         Entities: {},
@@ -77,14 +104,26 @@
     };
 
     // Mapping between RDFa and Backbone models
-    VIE.RDFaModels = {
-       // Create a Backbone model instance for a RDFa-marked element
+    VIE.RDFaEntities = {
+        Views: {},
+    
+        // Create a Backbone model instance for a RDFa-marked element
         getInstance: function(element) {
             var entityInstance;
+            var viewInstance;
             var jsonld;
 
             jsonld = VIE.RDFa.readEntity(element);
-            return VIE.EntityManager.getByJSONLD(jsonld);
+            entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
+
+            // Create a view for the RDFa
+            viewInstance = new VIE.RDFaView({
+                model: entityInstance, 
+                el: element,
+                tagName: element.get(0).nodeName
+            });
+
+            return entityInstance;
         },
 
         // Get a list of Backbone model instances for all RDFa-marked content in an element
@@ -94,8 +133,7 @@
                 entities.push(VIE.RDFaModels.getInstance(this));
             });
             return entities;
-        },
-
+        }
     },
 
     // RDFa reading and writing utilities
@@ -154,7 +192,6 @@
                 VIE.RDFa.Namespaces[prefix] = jQuery(this).attr('xmlns:' + prefix);
                 return VIE.RDFa.Namespaces[prefix];
             });
-            console.log(VIE.RDFa.Namespaces);
         },
 
         // Get the value of attribute from the element or from one of its children
