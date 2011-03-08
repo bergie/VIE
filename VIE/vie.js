@@ -39,9 +39,17 @@
 
         toJSONLD: function() {
             var instance = this;
-            var instanceLD = {"@":"<" + instance.id + ">"};
+            var instanceLD = {};
 
-            instanceLD['#'] = instance.namespaces;
+            if (typeof instance.id !== 'undefined') {
+                instanceLD['@'] = '<' + instance.id + '>';
+            } else {
+                instanceLD['@'] = instance.cid.replace('c', '_:bnode');
+            }
+
+            if (instance.namespaces.length > 0) {
+                instanceLD['#'] = instance.namespaces;
+            }
 
             if (instance.type) {
                 instanceLD.a = instance.type;
@@ -301,6 +309,22 @@
             if (resource) {
                 return '<' + resource + '>';
             }
+            var href = element.attr('href');
+            if (href) {
+                return '<' + href + '>';
+            }
+
+            if (element.attr('rel')) {
+                // Relation, we should look for identified child objects
+                var value = [];
+                jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
+                    var subject = VIE.RDFa.getSubject(this);
+                    if (typeof subject == 'string') {
+                        value.push('<' + subject + '>');
+                    }
+                });
+                return value;
+            }
 
             // Property has inline value
             return element.html();
@@ -395,6 +419,7 @@
                 var propertyName;
                 var propertyValue;
                 var objectProperty = jQuery(this);
+
                 propertyName = objectProperty.attr('property');
                 if (!propertyName) {
                     propertyName = objectProperty.attr('rel');
