@@ -207,6 +207,7 @@
             var entity;
             var subject;
             var namespaces = {};
+            var namespace;
 
             subject = VIE.RDFa.getSubject(element);
 
@@ -224,7 +225,10 @@
                     // No namespace for element
                     continue;
                 }
-                namespaces[propertyParts[0]] = VIE.RDFa._resolveNamespace(propertyParts[0], element);
+                namespace = VIE.RDFa._resolveNamespace(propertyParts[0], element);
+                if (namespace) {
+                    namespaces[propertyParts[0]] = namespace;
+                }
             }
             if (!jQuery.isEmptyObject(namespaces)) {
                 entity['#'] = namespaces;
@@ -293,6 +297,10 @@
             if (content) {
                 return content;
             }
+            var resource = element.attr('resource');
+            if (resource) {
+                return '<' + resource + '>';
+            }
 
             // Property has inline value
             return element.html();
@@ -304,6 +312,10 @@
             if (content) {
                 element.attr('content', value);
                 return;
+            }
+            var resource = element.attr('resource');
+            if (resource) {
+                element.attr('resource', value);
             }
 
             // Property has inline value
@@ -358,7 +370,7 @@
         },
 
         findElementProperties: function(subject, element, allowPropertiesInProperties) {
-            return jQuery(element).find('[property]').add(jQuery(element).filter('[property]')).filter(function() {
+            return jQuery(element).find('[property],[rel]').add(jQuery(element).filter('[property],[rel]')).filter(function() {
                 if (VIE.RDFa.getSubject(this) !== subject) {
                     // The property is under another entity, skip
                     return false;
@@ -384,6 +396,10 @@
                 var propertyValue;
                 var objectProperty = jQuery(this);
                 propertyName = objectProperty.attr('property');
+                if (!propertyName) {
+                    propertyName = objectProperty.attr('rel');
+                }
+
                 propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
 
                 if (typeof containerProperties[propertyName] !== 'undefined') {
