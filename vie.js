@@ -64,7 +64,7 @@
         },
 
         render: function() {
-            VIE.RDFa.writeEntity(this.el, this.model.toJSON());
+            VIE.RDFa.writeEntity(this.el, this.model.toJSONLD());
             return this;
         }
     });
@@ -138,6 +138,7 @@
             var entityInstance;
             var viewInstance;
             var jsonld;
+            var subject;
 
             jsonld = VIE.RDFa.readEntity(element);
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
@@ -166,9 +167,20 @@
         // Get a list of Backbone model instances for all RDFa-marked content in an element
         getInstances: function(element) {
             var entities = [];
-            jQuery('[typeof]', element).each(function() {
-                entities.push(VIE.RDFaEntities.getInstance(this));
-            });
+
+            if (typeof element === 'undefined') {
+                element = jQuery(document);
+
+                // We're working with the full document scope, add the document itself as an entity
+                jQuery('[about]', element).andSelf().each(function() {
+                    entities.push(VIE.RDFa.readEntity(this));
+                });
+            } else {
+                jQuery('[about]', element).andSelf().each(function() {
+                    entities.push(VIE.RDFaEntities.getInstance(this));
+                });
+            }
+
             return entities;
         }
     },
@@ -181,11 +193,13 @@
         // Get a JSON-LD en
         readEntity: function(element) {
             var entity;
-            var identifier;
+            var subject;
             var namespaces = {};
 
+            subject = VIE.RDFa.getSubject(element);
+
             // Read properties from element
-            entity = VIE.RDFa._getElementProperties(element, false);
+            entity = VIE.RDFa._getElementProperties(subject, element, false);
 
             // Resolve namespaces
             for (var propertyName in entity) {
@@ -203,25 +217,39 @@
             // Read typeof from element
             entity.a = VIE.RDFa._getElementValue(element, 'typeof');
 
-            // Read identifier from element, if any
-            identifier =  VIE.RDFa._getElementValue(element, 'about');
-            if (identifier) {
-                entity['@'] = identifier;
-            }
+            entity['@'] = subject;
 
             return entity;
         },
 
+        getSubject: function(element) {
+            if (element === document) {
+                return document.baseURI;
+            }
+            return jQuery(element).closest('[about]').attr('about');
+        },
+
         readEntities: function(element) {
             var entities = [];
-            jQuery('[typeof]', element).each(function() {
-                entities.push(VIE.RDFa.readEntity(this));
-            });
+
+            if (typeof element === 'undefined') {
+                element = jQuery(document);
+
+                // We're working with the full document scope, add the document itself as an entity
+                jQuery('[about]', element).andSelf().each(function() {
+                    entities.push(VIE.RDFa.readEntity(this));
+                });
+            } else {
+                jQuery('[about]', element).andSelf().each(function() {
+                    entities.push(VIE.RDFa.readEntity(this));
+                });
+            }
+
             return entities;
         },
 
         writeEntity: function(element, jsonld) {
-            VIE.RDFa.findElementProperties(element, true).each(function() {
+            VIE.RDFa.findElementProperties(jsonld['@'].substring(1, jsonld['@'].length - 1), element, true).each(function() {
                 var propertyElement = jQuery(this);
                 var propertyName = propertyElement.attr('property');
 
@@ -240,6 +268,28 @@
                 }
             });
             return this;
+        },
+
+        _readPropertyValue: function(element) {
+            // Property has machine-readable content value
+            var content = element.attr('content');
+            if (content) {
+                return content;
+            }
+
+            // Property has inline value
+            return element.html();
+        },
+
+        _writePropertyValue: function(element, value) {
+            // Property has machine-readable content value
+            var content = element.attr('content');
+            if (content) {
+                element.attr('content', value);
+            }
+
+            // Property has inline value
+            element.html(value);
         },
 
         _resolveNamespace: function(prefix, element) {
@@ -265,15 +315,9 @@
             return element.find('[' + propertyName + ']').attr(propertyName);
         },
 
-        findElementProperties: function(element, allowPropertiesInProperties) {
-            element = jQuery(element);
-            if (!element.attr('typeof')) {
-                element = element.children('[typeof][about]');
-            }
+        findElementProperties: function(subject, element, allowPropertiesInProperties) {
             return jQuery(element).find('[property]').add(jQuery(element).filter('[property]')).filter(function() {
-                var closestRDFaEntity = jQuery(this).closest('[typeof][about]');
-                if (closestRDFaEntity.index(element) !== 0 && 
-                    closestRDFaEntity.length !== 0) {
+                if (VIE.RDFa.getSubject(this) !== subject) {
                     // The property is under another entity, skip
                     return false;
                 }
@@ -290,32 +334,10 @@
             });
         },
 
-        _readPropertyValue: function(element) {
-            // Property has machine-readable content value
-            var content = element.attr('content');
-            if (content) {
-                return content;
-            }
-
-            // Property has inline value
-            return element.html();
-        },
-
-        _writePropertyValue: function(element, value) {
-            // Property has machine-readable content value
-            var content = element.attr('content');
-            if (content) {
-                element.attr('content', value);
-            }
-
-            // Property has inline value
-            element.html(value);
-        },
-
-        _getElementProperties: function(element, emptyValues) {
+        _getElementProperties: function(subject, element, emptyValues) {
             var containerProperties = {};
 
-            VIE.RDFa.findElementProperties(element, true).each(function() {
+            VIE.RDFa.findElementProperties(subject, element, true).each(function() {
                 var propertyName;
                 var propertyValue;
                 var objectProperty = jQuery(this);
