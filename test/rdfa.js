@@ -139,3 +139,15 @@ exports['test example from README'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['test example from wikipedia'] = function(test) {
+    var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.</p>');
+
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    test.equal(objectInstance.get('dc:title'), 'Wikinomics');
+    test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
+
+    VIE.cleanup();
+    test.done();
+};
