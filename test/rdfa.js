@@ -24,6 +24,28 @@ exports['test inheriting subject'] = function(test) {
     test.done();
 };
 
+exports['test subject singletons'] = function(test) {
+   var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
+
+    var backboneEntities = VIE.RDFaEntities.getInstances(html);
+
+    test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
+
+    var individualInstance = VIE.EntityManager.getBySubject('http://dbpedia.org/resource/Albert_Einstein');
+    test.equal(individualInstance.get('foaf:name'), 'Albert Einstein');
+
+    individualInstance.set({'foaf:name': 'Al Einstein'});
+    test.equal(backboneEntities[1].get('foaf:name'), 'Al Einstein');
+
+    // And then the interesting bit, check that it changed in the HTML as well
+    jQuery('[property="foaf:name"]', html).each(function() {
+        test.equal(jQuery(this).html(), 'Al Einstein', 'Check that the change actually affected the HTML');
+    });
+
+    VIE.cleanup();
+    test.done();
+};
+
 exports['test updating views'] = function(test) {
     var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 

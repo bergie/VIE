@@ -88,7 +88,7 @@
 
         Types: {},
 
-        getById: function(id) {
+        getBySubject: function(id) {
             if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
                 return null;
             }
@@ -102,7 +102,7 @@
             properties = VIE.EntityManager._JSONtoProperties(jsonld);
 
             if (typeof jsonld['@'] !== 'undefined') {
-                entityInstance = VIE.EntityManager.getById(jsonld['@']);
+                entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
                 if (entityInstance) {  
                     entityInstance.set(properties);
                     return entityInstance;
