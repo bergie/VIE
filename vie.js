@@ -1,9 +1,48 @@
-/**
- * VIE - Vienna IKS Editables
- * (c) 2011 Henri Bergius, IKS Consortium
- */
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://wiki.iks-project.eu/index.php/VIE
+//
+//  [VIE](http://wiki.iks-project.eu/index.php/VIE) enables you to make
+//  [RDFa](http://en.wikipedia.org/wiki/RDFa) -annotated content on your
+//  web pages editable.
+//
+//  For example, if your page contains the following mark-up:
+//
+//     <p xmlns:dc="http://purl.org/dc/elements/1.1/"
+//        about="http://www.example.com/books/wikinomics">
+//       In his latest book
+//       <cite property="dc:title">Wikinomics</cite>,
+//       <span property="dc:creator">Don Tapscott</span>
+//       explains deep changes in technology,
+//       demographics and business.
+//       The book is due to be published in
+//       <span property="dc:date" content="2006-10-01">October 2006</span>.
+//     </p>
+//
+// Then with VIE you can get a proper Backbone Model object for that. First
+// scan your page for RDFa entities:
+//
+//     VIE.RDFaEntities.getInstances();
+//
+// And then just access the entity by subject:
+//
+//     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+//     alert(objectInstance.get('dc:title')); // "Wikinomics"
+//
+// Properties of the entity may also be modified, and these changes will 
+// also happen on the page itself:
+//
+//     myBook.set({'dc:title':'Wikinomics, Second Edition'});
+//
+// You can also access the entities via the `VIE.EntityManager.allEntities` array.
 (function() {
-    // Export the VIE namespace for both CommonJS and the browser
+    // Initial setup
+    // -------------
+    //
+    // The VIE library is fully contained inside a `VIE` namespace. The 
+    // namespace is available in both CommonJS and the browser.
     var VIE;
     if (typeof exports !== 'undefined') {
         VIE = exports;
@@ -11,32 +50,83 @@
         VIE = this.VIE = {};
     }
 
-    // Require underscore using CommonJS require if it isn't yet loaded
+    // ### Handle dependencies
+    //
+    // VIE tries to load its dependencies automatically. 
+    // Please note that this autoloading functionality only works on the server.
+    // On browser Backbone needs to be included manually.
+
+    // Require [underscore.js](http://documentcloud.github.com/underscore/) 
+    // using CommonJS require if it isn't yet loaded.
+    //
+    // On node.js underscore.js can be installed via:
+    //
+    //     npm install underscore
     var _ = this._;
     if (!_ && (typeof require !== 'undefined')) { _ = require('underscore')._; }
     if (!_) {
         throw 'VIE requires underscore.js to be available';
     }
 
-    // Require Backbone using CommonJS require if it isn't yet loaded
+    // Require [Backbone.js](http://documentcloud.github.com/backbone/) 
+    // using CommonJS require if it isn't yet loaded.
+    //
+    // On node.js Backbone.js can be installed via:
+    //
+    //     npm install backbone
     var Backbone = this.Backbone;
     if (!Backbone && (typeof require !== 'undefined')) { Backbone = require('backbone'); }
     if (!Backbone) {
         throw 'VIE requires Backbone.js to be available';
     }
 
-    // Require jQuery using CommonJS require if it isn't yet loaded
+    // Require [jQuery](http://jquery.com/) using CommonJS require if it 
+    // isn't yet loaded.
+    //
+    // On node.js jQuery can be installed via:
+    //
+    //     npm install jquery
     var jQuery = this.jQuery;
     if (!jQuery && (typeof require !== 'undefined')) { jQuery = require('jquery'); }
     if (!jQuery) {
         throw 'VIE requires jQuery to be available';
     }
 
-    // Backbone Model for RDF entities
+    // VIE.RDFEntity
+    // -------------
+    //
+    // VIE.RDFEntity defines a common [Backbone Model](http://documentcloud.github.com/backbone/#Model) 
+    // for RDF entities handled in VIE.
     VIE.RDFEntity = Backbone.Model.extend({
         namespaces: {},
         type: '',
 
+        // VIE's entities have a method for generating [JSON-LD](http://json-ld.org/)
+        // representations of themselves. JSON-LD is a lightweight format for handling
+        // Linked Data (RDF) information.
+        //
+        // Using the book example from above, we could call:
+        //
+        //     myBook.toJSONLD();
+        //
+        // And we would get a JSON object looking like the following:
+        //
+        //     {
+        //         '@': '<http://www.example.com/books/wikinomics>',
+        //         'dc:title': 'Wikinomics',
+        //         'dc:creator': 'Don Tapscott',
+        //         'dc:date': '2006-10-01' 
+        //     }
+        //
+        // Calling `JSON.stringify()` for this object would produce:
+        //
+        //
+        //     {
+        //         "@": "<http://www.example.com/books/wikinomics>",
+        //         "dc:title": "Wikinomics",
+        //         "dc:creator": "Don Tapscott",
+        //         "dc:date": "2006-10-01"
+        //     }
         toJSONLD: function() {
             var instance = this;
             var instanceLD = {};
@@ -57,7 +147,7 @@
             }
 
             for (property in instance.attributes) {
-                if (instance.attributes.hasOwnProperty(property)) { //  && typeof instance.attributes[property] != "function"
+                if (instance.attributes.hasOwnProperty(property)) {
                     if (['id'].indexOf(property) === -1) {
                         instanceLD[property] = instance.attributes[property];
                     }
@@ -67,27 +157,54 @@
         }
     });
 
-    // Backbone View for RDF entities represented in RDFa 
+    // VIE.RDFaView
+    // -------------
+    //
+    // VIE.RDFEntity defines a common [Backbone View](http://documentcloud.github.com/backbone/#View) 
+    // for all RDFa -annotated elements on a page that have been loaded as
+    // `VIE.RDFEntity` objects.
     VIE.RDFaView = Backbone.View.extend({
-        // Ensure view gets updated when properties of the entity change
+
+        // We ensure view gets updated when properties of the Entity change.
         initialize: function() {
             _.bindAll(this, 'render');
             this.model.bind('change', this.render);
         },
 
+        // Rendering a view means writing the properties of the Entity back to
+        // the element containing our RDFa annotations.
         render: function() {
             VIE.RDFa.writeEntity(this.el, this.model.toJSONLD());
             return this;
         }
     });
 
-    // Entity Manager keeps track of all RDFa entities loaded via VIE
+    // VIE.EntityManager
+    // -------------
+    //
+    // VIE.EntityManager keeps track of all RDFa entities loaded via VIE. This
+    // means that entities matched by a common subject can be treated as singletons.
+    //
+    // It is possible to access all loaded entities via the 
+    // `VIE.EntityManager.allEntities` array.
     VIE.EntityManager = {
         Entities: {},
         allEntities: [],
 
         Types: {},
 
+        // ### VIE.EntityManager.getBySubject
+        //
+        // It is possible to get an entity that has been loaded from the page
+        // via the `getBySubject` method. If the entity cannot be found this method
+        // will return `null`.
+        //
+        // The entities accessed this way are singletons, so multiple calls to same
+        // subject will all return the same `VIE.RDFEntity` instance.
+        //
+        // Example:
+        //
+        //     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
         getBySubject: function(id) {
             if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
                 return null;
@@ -95,9 +212,32 @@
             return VIE.EntityManager.Entities[id];
         },
 
+        // ### VIE.EntityManager.getByJSONLD
+        //
+        // Another way to get or load entities is by passing EntityManager a valid
+        // JSON-LD object.
+        //
+        // This can be either called with a JavaScript object representing JSON-LD,
+        // or with a JSON-LD string.
+        //
+        // Example:
+        //
+        //     var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
+        //     var objectInstance = VIE.EntityManager.getByJSONLD(json);
+        //
+        // The entities accessed this way are singletons, so multiple calls to same
+        // subject (`@` in JSON-LD) will all return the same `VIE.RDFEntity` instance.
         getByJSONLD: function(jsonld) {
             var entityInstance;
             var properties;
+
+            if (typeof jsonld !== 'object') {
+                try {
+                    jsonld = jQuery.parseJSON(jsonld);
+                } catch (e) {
+                    return null;
+                }
+            }
 
             properties = VIE.EntityManager._JSONtoProperties(jsonld);
 
@@ -129,7 +269,8 @@
             return entityInstance;
         },
 
-        // Clean up JSON-LD so that it can be used as properties in a Backbone Model
+        // Helper for cleaning up JSON-LD so that it can be used as properties
+        // of a Backbone Model
         _JSONtoProperties: function(jsonld) {
             var properties;
             properties = jQuery.extend({}, jsonld);
