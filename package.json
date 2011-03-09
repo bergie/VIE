@@ -1,0 +1,15 @@
+{
+  "name"          : "vie",
+  "description"   : "RDFa processing with Backbone.js and JSON-LD.",
+  "url"           : "http://wiki.iks-project.eu/index.php/VIE",
+  "keywords"      : ["util", "rdfa", "model", "template", "server", "client", "browser"],
+  "author"        : "Henri Bergius <henri.bergius@iki.fi>",
+  "contributors"  : [],
+  "dependencies"  : {
+    "backbone"  : ">=0.3.3",
+    "jquery"    : ">=1.5.0"
+  },
+  "lib"           : ".",
+  "main"          : "vie.js",
+  "version"       : "0.0.2"
+}
