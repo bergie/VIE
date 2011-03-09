@@ -6,7 +6,7 @@ VIE.ContainerManager = {
     instances: VIE.EntityManager.allEntities,
 
     findContainerProperties: function(element, allowPropertiesInProperties) {
-        return VIE.RDFa.findElementProperties(element, allowPropertiesInProperties);
+        return VIE.RDFa.findPredicateElements(element, allowPropertiesInProperties);
     },
 
     getContainerIdentifier: function(element) {
@@ -22,7 +22,7 @@ VIE.ContainerManager = {
             element.attr('about', '');
         }
         element.find('[about]').attr('about', '');
-        VIE.RDFa.findElementProperties(element, false).html('');
+        VIE.RDFa.findPredicateElementsForSubject(element, false).html('');
 
         return element;
     },
