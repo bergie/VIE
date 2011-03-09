@@ -29,7 +29,7 @@
 // And then just access the entity by subject:
 //
 //     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
-//     alert(objectInstance.get('dc:title')); // "Wikinomics"
+//     alert(myBook.get('dc:title')); // "Wikinomics"
 //
 // Properties of the entity may also be modified, and these changes will 
 // also happen on the page itself:
@@ -91,6 +91,116 @@
     if (!jQuery) {
         throw 'VIE requires jQuery to be available';
     }
+
+    // VIE.EntityManager
+    // -------------
+    //
+    // VIE.EntityManager keeps track of all RDFa entities loaded via VIE. This
+    // means that entities matched by a common subject can be treated as singletons.
+    //
+    // It is possible to access all loaded entities via the 
+    // `VIE.EntityManager.allEntities` array.
+    VIE.EntityManager = {
+        Entities: {},
+        allEntities: [],
+
+        Types: {},
+
+        // ### VIE.EntityManager.getBySubject
+        //
+        // It is possible to get an entity that has been loaded from the page
+        // via the `getBySubject` method. If the entity cannot be found this method
+        // will return `null`.
+        //
+        // The entities accessed this way are singletons, so multiple calls to same
+        // subject will all return the same `VIE.RDFEntity` instance.
+        //
+        // Example:
+        //
+        //     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+        getBySubject: function(id) {
+            if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
+                return null;
+            }
+            return VIE.EntityManager.Entities[id];
+        },
+
+        // ### VIE.EntityManager.getByJSONLD
+        //
+        // Another way to get or load entities is by passing EntityManager a valid
+        // JSON-LD object.
+        //
+        // This can be either called with a JavaScript object representing JSON-LD,
+        // or with a JSON-LD string.
+        //
+        // Example:
+        //
+        //     var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
+        //     var objectInstance = VIE.EntityManager.getByJSONLD(json);
+        getByJSONLD: function(jsonld) {
+            var entityInstance;
+            var properties;
+
+            if (typeof jsonld !== 'object') {
+                try {
+                    jsonld = jQuery.parseJSON(jsonld);
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            properties = VIE.EntityManager._JSONtoProperties(jsonld);
+
+            // The entities accessed this way are singletons, so multiple calls 
+            // to same subject (`@` in JSON-LD) will all return the same   
+            // `VIE.RDFEntity` instance.
+            if (typeof jsonld['@'] !== 'undefined') {
+                entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
+                if (entityInstance) {  
+                    entityInstance.set(properties);
+                    return entityInstance;
+                }
+            }
+
+            entityInstance = new VIE.RDFEntity(properties);
+
+            // Namespace prefixes are handled by the `#` property of JSON-LD.
+            // We map this to the `namespaces` property of our `VIE.RDFEntity` 
+            // instance.
+            if (typeof jsonld['#'] !== 'undefined') {
+                entityInstance.namespaces = jsonld['#'];
+            }
+
+            // Types are handled by the `a` property of JSON-LD. We map this
+            // to the `type` property of our `VIE.RDFEntity` instance.
+            if (typeof jsonld.a !== 'undefined') {
+                entityInstance.type = jsonld.a;
+            }
+
+            // Subjects are handled by the `@` property of JSON-LD. We map this
+            // to the `id` property of our `VIE.RDFEntity` instance.
+            if (typeof jsonld['@'] !== 'undefined') {
+                entityInstance.id = jsonld['@'];
+                VIE.EntityManager.Entities[entityInstance.id] = entityInstance;
+            }
+
+            // All new entities must be added to the `allEntities` list.
+            VIE.EntityManager.allEntities.push(entityInstance);
+
+            return entityInstance;
+        },
+
+        // Helper for cleaning up JSON-LD so that it can be used as properties
+        // of a Backbone Model
+        _JSONtoProperties: function(jsonld) {
+            var properties;
+            properties = jQuery.extend({}, jsonld);
+            delete properties['@'];
+            delete properties.a;
+            delete properties['#'];
+            return properties;
+        }
+    };
 
     // VIE.RDFEntity
     // -------------
@@ -156,13 +266,107 @@
             return instanceLD;
         }
     });
+    
+    // VIE.RDFaEntities
+    // -------------
+    //
+    // VIE.RDFaEntities provide mapping between RDFa on a page and Backbone Views.
+    // When you load RDFa entities from a page, new `VIE.RDFEntity` objects will
+    // be instantiated for them, and the DOM element the RDFa comes from will
+    // be registered as a `VIE.RDFaView` instance.
+    //
+    // If you're working with RDFa -annotated content and want to access it as
+    // Backbone Models, then VIE.RDFaEntities is the main access point.
+    VIE.RDFaEntities = {
+        // RDFaEntities manages a list of Views so that every view instance will be
+        // a singleton.
+        Views: [],
 
+        // ### VIE.RDFaEntities.getInstance
+        //
+        // The `getInstance` method can be used for retrieving a single Backbone
+        // Model for a given RDFa -annotated DOM element. It accepts 
+        // [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // and returns a `VIE.RDFEntity` instance matching the content. If no valid
+        // RDFa entities can be found from the element, then it returns `null`.
+        //
+        // Example:
+        //
+        //     var myBook = VIE.RDFaEntities.getInstance('p[about]');
+        //     alert(myBook.get('dc:title')); // "Wikinomics"
+        getInstance: function(element) {
+            element = jQuery(element);
+            var entityInstance;
+            var viewInstance;
+            var jsonld;
+
+            jsonld = VIE.RDFa.readEntity(element);
+            if (!jsonld) {
+                return null;
+            }
+
+            entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
+
+            // Check whether we already have a View instantiated for the DOM element
+            jQuery.each(VIE.RDFaEntities.Views, function() {
+                if (this.el.get(0) === element.get(0)) {
+                    viewInstance = this;
+                    return false;
+                }
+            });
+
+            // If no matching View was found, create a view for the RDFa
+            if (!viewInstance) {
+                viewInstance = new VIE.RDFaView({
+                    model: entityInstance, 
+                    el: element,
+                    tagName: element.get(0).nodeName
+                });
+                VIE.RDFaEntities.Views.push(viewInstance);
+            }
+
+            return entityInstance;
+        },
+
+        // ### VIE.RDFaEntities.getInstances
+        //
+        // Get a list of Backbone Model instances for all RDFa-marked content in 
+        // an element. The method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // as argument. If no selector is given, then the whole HTML document will
+        // be searched.
+        //
+        // Example:
+        //
+        //     var allInstances = VIE.RDFaEntities.getInstances();
+        //     alert(allInstances[0].get('dc:title')); // "Wikinomics"
+        getInstances: function(element) {
+            var entities = [];
+            var entity;
+
+            if (typeof element === 'undefined') {
+                element = jQuery(document);
+            }
+
+            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
+                entity = VIE.RDFaEntities.getInstance(this);
+                if (entity) {
+                    entities.push(entity);
+                }
+            });
+
+            return entities;
+        }
+    };
+    
     // VIE.RDFaView
     // -------------
     //
-    // VIE.RDFEntity defines a common [Backbone View](http://documentcloud.github.com/backbone/#View) 
+    // VIE.RDFaView defines a common [Backbone View](http://documentcloud.github.com/backbone/#View) 
     // for all RDFa -annotated elements on a page that have been loaded as
     // `VIE.RDFEntity` objects.
+    //
+    // In normal operation, the RDFaView objects are automatically handled by
+    // `VIE.RDFaEntities`.
     VIE.RDFaView = Backbone.View.extend({
 
         // We ensure view gets updated when properties of the Entity change.
@@ -179,310 +383,46 @@
         }
     });
 
-    // VIE.EntityManager
-    // -------------
+    // VIE.RDFa
+    // --------
     //
-    // VIE.EntityManager keeps track of all RDFa entities loaded via VIE. This
-    // means that entities matched by a common subject can be treated as singletons.
-    //
-    // It is possible to access all loaded entities via the 
-    // `VIE.EntityManager.allEntities` array.
-    VIE.EntityManager = {
-        Entities: {},
-        allEntities: [],
-
-        Types: {},
-
-        // ### VIE.EntityManager.getBySubject
-        //
-        // It is possible to get an entity that has been loaded from the page
-        // via the `getBySubject` method. If the entity cannot be found this method
-        // will return `null`.
-        //
-        // The entities accessed this way are singletons, so multiple calls to same
-        // subject will all return the same `VIE.RDFEntity` instance.
-        //
-        // Example:
-        //
-        //     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
-        getBySubject: function(id) {
-            if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
-                return null;
-            }
-            return VIE.EntityManager.Entities[id];
-        },
-
-        // ### VIE.EntityManager.getByJSONLD
-        //
-        // Another way to get or load entities is by passing EntityManager a valid
-        // JSON-LD object.
-        //
-        // This can be either called with a JavaScript object representing JSON-LD,
-        // or with a JSON-LD string.
-        //
-        // Example:
-        //
-        //     var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
-        //     var objectInstance = VIE.EntityManager.getByJSONLD(json);
-        //
-        // The entities accessed this way are singletons, so multiple calls to same
-        // subject (`@` in JSON-LD) will all return the same `VIE.RDFEntity` instance.
-        getByJSONLD: function(jsonld) {
-            var entityInstance;
-            var properties;
-
-            if (typeof jsonld !== 'object') {
-                try {
-                    jsonld = jQuery.parseJSON(jsonld);
-                } catch (e) {
-                    return null;
-                }
-            }
-
-            properties = VIE.EntityManager._JSONtoProperties(jsonld);
-
-            if (typeof jsonld['@'] !== 'undefined') {
-                entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
-                if (entityInstance) {  
-                    entityInstance.set(properties);
-                    return entityInstance;
-                }
-            }
-
-            entityInstance = new VIE.RDFEntity(properties);
-
-            if (typeof jsonld['#'] !== 'undefined') {
-                entityInstance.namespaces = jsonld['#'];
-            }
-
-            if (typeof jsonld.a !== 'undefined') {
-                entityInstance.type = jsonld.a;
-            }
-
-            if (typeof jsonld['@'] !== 'undefined') {
-                entityInstance.id = jsonld['@'];
-                VIE.EntityManager.Entities[entityInstance.id] = entityInstance;
-            }
-
-            VIE.EntityManager.allEntities.push(entityInstance);
-
-            return entityInstance;
-        },
-
-        // Helper for cleaning up JSON-LD so that it can be used as properties
-        // of a Backbone Model
-        _JSONtoProperties: function(jsonld) {
-            var properties;
-            properties = jQuery.extend({}, jsonld);
-            delete properties['@'];
-            delete properties.a;
-            delete properties['#'];
-            return properties;
-        }
-    };
-
-    // Mapping between RDFa and Backbone models
-    VIE.RDFaEntities = {
-        Views: [],
-    
-        // Create a Backbone model instance for a RDFa-marked element
-        getInstance: function(element) {
-            element = jQuery(element);
-            var entityInstance;
-            var viewInstance;
-            var jsonld;
-
-            jsonld = VIE.RDFa.readEntity(element);
-            if (!jsonld) {
-                return null;
-            }
-
-            entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
-
-            jQuery.each(VIE.RDFaEntities.Views, function() {
-                // Check whether we already have this view instantiated for the element
-                if (this.el.get(0) === element.get(0)) {
-                    viewInstance = this;
-                    return false;
-                }
-            });
-
-            if (!viewInstance) {
-                // Create a view for the RDFa
-                viewInstance = new VIE.RDFaView({
-                    model: entityInstance, 
-                    el: element,
-                    tagName: element.get(0).nodeName
-                });
-                VIE.RDFaEntities.Views.push(viewInstance);
-            }
-
-            return entityInstance;
-        },
-
-        // Get a list of Backbone model instances for all RDFa-marked content in an element
-        getInstances: function(element) {
-            var entities = [];
-            var entity;
-
-            if (typeof element === 'undefined') {
-                // We're working with the full document scope
-                element = jQuery(document);
-            }
-
-            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
-                entity = VIE.RDFaEntities.getInstance(this);
-                if (entity) {
-                    entities.push(entity);
-                }
-            });
-
-            return entities;
-        }
-    };
-
-    // RDFa reading and writing utilities
+    // RDFa reading and writing utilities. VIE.RDFa acts as a mapping tool between
+    // [JSON-LD](http://json-ld.org/) -encoded RDF triples and RDFa -annotated content
+    // on a page.
     VIE.RDFa = {
-        // Resolved prefix->namespace pairs
         Namespaces: {},
 
+        // By default we look for RDF subjects based on elements that have a
+        // `about`, `typeof` or `src` attribute. In addition, the full HTML page
+        // is regarded as a valid subject.
+        //
+        // For more specialized scenarios this can be overridden:
+        //
+        //     VIE.RDFa.subjectSelector = '[about]';
         subjectSelector: '[about],[typeof],[src],html',
+        
+        // By default we look for RDF predicates based on elements that have a
+        // `property` or `rel` attribute.
+        //
+        // For more specialized scenarios this can be overridden:
+        //
+        //     VIE.RDFa.predicateSelector = '[property]';
         predicateSelector: '[property],[rel]',
 
-        // Get a JSON-LD en
-        readEntity: function(element) {
-            var entity;
-            var subject;
-            var namespaces = {};
-            var namespace;
-            var type;
-            var propertyName;
-
-            subject = VIE.RDFa.getSubject(element);
-
-            // Read properties from element
-            entity = VIE.RDFa._getElementProperties(subject, element, false);
-            if (jQuery.isEmptyObject(entity)) {
-                // No properties, skip creating entity
-                return null;
-            }
-
-            // Resolve namespaces
-            for (propertyName in entity) {
-                if (entity.hasOwnProperty(propertyName)) {
-                    var propertyParts = propertyName.split(':');
-                    if (propertyParts.length === 2) {
-                        namespace = VIE.RDFa._resolveNamespace(propertyParts[0], element);
-                        if (namespace) {
-                            namespaces[propertyParts[0]] = namespace;
-                        }
-                    }
-                }
-            }
-            if (!jQuery.isEmptyObject(namespaces)) {
-                entity['#'] = namespaces;
-            }
-
-            // Read typeof from element
-            type = VIE.RDFa._getElementValue(element, 'typeof');
-            if (type) {
-                entity.a = type;
-            }
-
-            if (typeof subject === 'string') {
-                entity['@'] = subject;
-            }
-            return entity;
-        },
-
-        readEntities: function(element) {
-            var entities = [];
-            var entity;
-
-            if (typeof element === 'undefined') {
-                // We're working with the full document scope
-                element = jQuery(document);
-            }
-
-            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
-                entity = VIE.RDFa.readEntity(this);
-                if (entity) {
-                    entities.push(entity);
-                }
-            });
-
-            return entities;
-        },
-
-        writeEntity: function(element, jsonld) {
-            VIE.RDFa.findElementProperties(VIE.RDFa.getSubject(element), element, true).each(function() {
-                var propertyElement = jQuery(this);
-                var propertyName = propertyElement.attr('property');
-
-                if (typeof jsonld[propertyName] === 'undefined') {
-                    // Entity doesn't contain this property
-                    return true;
-                }
-
-                if (jsonld[propertyName] instanceof Array) {
-                    // For now we don't deal with multivalued properties in Views
-                    return true;
-                }
-
-                if (VIE.RDFa._readPropertyValue(propertyElement) !== jsonld[propertyName]) {
-                    VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
-                }
-            });
-            return this;
-        },
-
-        _readPropertyValue: function(element) {
-            // Property has machine-readable content value
-            var content = element.attr('content');
-            if (content) {
-                return content;
-            }
-            var resource = element.attr('resource');
-            if (resource) {
-                return '<' + resource + '>';
-            }
-            var href = element.attr('href');
-            if (href) {
-                return '<' + href + '>';
-            }
-
-            if (element.attr('rel')) {
-                // Relation, we should look for identified child objects
-                var value = [];
-                jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
-                    var subject = VIE.RDFa.getSubject(this);
-                    if (typeof subject === 'string') {
-                        value.push('<' + subject + '>');
-                    }
-                });
-                return value;
-            }
-
-            // Property has inline value
-            return element.html();
-        },
-
-        _writePropertyValue: function(element, value) {
-            // Property has machine-readable content value
-            var content = element.attr('content');
-            if (content) {
-                element.attr('content', value);
-                return;
-            }
-            var resource = element.attr('resource');
-            if (resource) {
-                element.attr('resource', value);
-            }
-
-            // Property has inline value
-            element.html(value);
-        },
-
+        // ### VIE.RDFa.getSubject
+        //
+        // Get the RDF subject for an element. The method accepts 
+        // [jQuery selectors](http://api.jquery.com/category/selectors/) as
+        // arguments. If no argument is given, then the _base URL_ of the
+        // page is used.
+        //
+        // Returns the subject as a string if one can be found, and if the
+        // given element has no valid subjects returns `undefined`.
+        //
+        // Example:
+        //
+        //     var subject = VIE.RDFa.getSubject('p[about]');
+        //     alert(subject); // http://www.example.com/books/wikinomics
         getSubject: function(element) {
             if (typeof document !== 'undefined') {
                 if (element === document) {
@@ -504,7 +444,8 @@
                     return true;
                 }
 
-                // Handle baseURL also outside browser context
+                // We also handle baseURL outside browser context by manually
+                // looking for the `<base>` element inside HTML head.
                 if (jQuery(this).get(0).nodeName === 'HTML') {
                     jQuery(this).find('base').each(function() {
                         subject = jQuery(this).attr('href');
@@ -515,6 +456,238 @@
             return subject;
         },
 
+        // ### VIE.RDFa.readEntity
+        //
+        // Get a JSON-LD object for an RDFa-marked entity in 
+        // an element. The method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // as argument. If the element contains no RDFa entities, the this method
+        // returns `null`.
+        //
+        // Example:
+        //
+        //     var jsonld = VIE.RDFa.readEntity('p[about]');
+        //
+        // Would return a JSON-LD object looking like the following:
+        //
+        //     {
+        //         '@': '<http://www.example.com/books/wikinomics>',
+        //         'dc:title': 'Wikinomics',
+        //         'dc:creator': 'Don Tapscott',
+        //         'dc:date': '2006-10-01' 
+        //     }
+        readEntity: function(element) {
+            var entity;
+            var subject;
+            var namespaces = {};
+            var namespace;
+            var type;
+            var propertyName;
+
+            subject = VIE.RDFa.getSubject(element);
+
+            entity = VIE.RDFa._getElementProperties(subject, element, false);
+            if (jQuery.isEmptyObject(entity)) {
+                return null;
+            }
+
+            // We also try to resolve namespaces used in the RDFa entity. If they
+            // can be found, we will write them to the `#` property of the object.
+            for (propertyName in entity) {
+                if (entity.hasOwnProperty(propertyName)) {
+                    var propertyParts = propertyName.split(':');
+                    if (propertyParts.length === 2) {
+                        namespace = VIE.RDFa._resolveNamespace(propertyParts[0], element);
+                        if (namespace) {
+                            namespaces[propertyParts[0]] = namespace;
+                        }
+                    }
+                }
+            }
+            if (!jQuery.isEmptyObject(namespaces)) {
+                entity['#'] = namespaces;
+            }
+
+            // If the RDF type is defined, that will be set to the [`a` property](http://json-ld.org/spec/latest/#specifying-the-type)
+            // of the JSON-LD object.
+            type = VIE.RDFa._getElementValue(element, 'typeof');
+            if (type) {
+                entity.a = type;
+            }
+
+            if (typeof subject === 'string') {
+                entity['@'] = subject;
+            }
+            return entity;
+        },
+
+        // ### VIE.RDFa.readEntities
+        //
+        // Get a list of JSON-LD objects for RDFa-marked entities in 
+        // an element. The method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // as argument.  If no selector is given, then the whole HTML document will
+        // be searched.
+        //
+        // Example:
+        //
+        //     var jsonldEntities = VIE.RDFa.readEntities();
+        //     JSON.stringify(jsonldEntities[0]);
+        //
+        // Would produce something like:
+        //
+        //     {
+        //         "@": "<http://www.example.com/books/wikinomics>",
+        //         "dc:title": "Wikinomics",
+        //         "dc:creator": "Don Tapscott",
+        //         "dc:date": "2006-10-01"
+        //     }
+        readEntities: function(element) {
+            var entities = [];
+            var entity;
+
+            if (typeof element === 'undefined') {
+                element = jQuery(document);
+            }
+
+            jQuery(VIE.RDFa.subjectSelector, element).add(jQuery(element).filter(VIE.RDFa.subjectSelector)).each(function() {
+                entity = VIE.RDFa.readEntity(this);
+                if (entity) {
+                    entities.push(entity);
+                }
+            });
+
+            return entities;
+        },
+
+        // ### VIE.RDFa.writeEntity
+        //
+        // Write the contents of a JSON-LD object into the given DOM element. This
+        // method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // as arguments.
+        //
+        // Only properties matching RDFa-annotated predicates found found from
+        // the selected DOM element will be written.
+        writeEntity: function(element, jsonld) {
+            VIE.RDFa.findPredicateElements(VIE.RDFa.getSubject(element), element, true).each(function() {
+                var propertyElement = jQuery(this);
+                var propertyName = propertyElement.attr('property');
+
+                if (typeof jsonld[propertyName] === 'undefined') {
+                    return true;
+                }
+
+                // Before writing to DOM we check that the value has actually changed.
+                if (VIE.RDFa._readPropertyValue(propertyElement) !== jsonld[propertyName]) {
+                    VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
+                }
+            });
+            return this;
+        },
+        
+        // ### VIE.RDFa.findPredicateElements
+        //
+        // Find RDFa-annotated predicates for a given subject inside the DOM. This
+        // method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
+        // as arguments.
+        //
+        // The method returns a list of matching DOM elements.
+        //
+        // Only predicates matching the given subject will be returned.
+        // You can also tell whether to allow nested predicates to be returned, 
+        // which is useful for example when instantiating WYSIWYG editors for 
+        // editable properties, as most editors do not like getting nested.
+        findPredicateElements: function(subject, element, allowNestedPredicates) {
+            return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
+                if (VIE.RDFa.getSubject(this) !== subject) {
+                    return false;
+                }
+
+                if (!allowNestedPredicates) {
+                    if (!jQuery(this).parents('[property]').length) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                return true;
+            });
+        },
+
+        // Get value of a DOM element defining a RDFa predicate.
+        _readPropertyValue: function(element) {
+
+            // The `content` attribute can be used for providing machine-readable
+            // values for elements where the HTML presentation differs from the
+            // actual value.
+            var content = element.attr('content');
+            if (content) {
+                return content;
+            }
+            
+            // The `resource` attribute can be used to link a predicate to another
+            // RDF resource.
+            var resource = element.attr('resource');
+            if (resource) {
+                return '<' + resource + '>';
+            }
+            
+            // `href` attribute also links to another RDF resource.
+            var href = element.attr('href');
+            if (href) {
+                return '<' + href + '>';
+            }
+
+            // If the predicate is a relation, we look for identified child objects
+            // and provide their identifiers as the values. To protect from scope
+            // creep, we only support direct descentants of the element where the
+            // `rel` attribute was set.
+            if (element.attr('rel')) {
+                var value = [];
+                jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
+                    var subject = VIE.RDFa.getSubject(this);
+                    if (typeof subject === 'string') {
+                        value.push('<' + subject + '>');
+                    }
+                });
+                return value;
+            }
+
+            // If none of the checks above matched we return the HTML contents of
+            // the element as the literal value.
+            return element.html();
+        },
+
+        // Write a value to a DOM element defining a RDFa predicate.
+        _writePropertyValue: function(element, value) {
+
+            // For now we don't deal with multivalued properties when writing
+            // contents.
+            if (value instanceof Array) {
+                return true;
+            }
+   
+            // The `content` attribute can be used for providing machine-readable
+            // values for elements where the HTML presentation differs from the
+            // actual value.
+            var content = element.attr('content');
+            if (content) {
+                element.attr('content', value);
+                return;
+            }
+            
+            // The `resource` attribute can be used to link a predicate to another
+            // RDF resource.
+            var resource = element.attr('resource');
+            if (resource) {
+                element.attr('resource', value);
+            }
+
+            // Property has inline value. Change the HTML contents of the property
+            // element to match the new value.
+            element.html(value);
+        },
+
+        // Namespace resolution, find namespace declarations from inside
+        // a DOM element.
         _resolveNamespace: function(prefix, element) {
             if (typeof VIE.RDFa.Namespaces[prefix] !== 'undefined') {
                 return VIE.RDFa.Namespaces[prefix];
@@ -527,40 +700,21 @@
             return VIE.RDFa.Namespaces[prefix];
         },
 
-        // Get the value of attribute from the element or from one of its children
+        // Get the value of an attribute from the element or from one of its children
         _getElementValue: function(element, propertyName) {
             element = jQuery(element);
             if (typeof element.attr(propertyName) !== 'undefined')
             {
-                // Direct match with container
                 return element.attr(propertyName);
             }
             return element.children('[' + propertyName + ']').attr(propertyName);
         },
 
-        findElementProperties: function(subject, element, allowPropertiesInProperties) {
-            return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
-                if (VIE.RDFa.getSubject(this) !== subject) {
-                    // The property is under another entity, skip
-                    return false;
-                }
-
-                if (!allowPropertiesInProperties) {
-                    if (!jQuery(this).parents('[property]').length) {
-                        return true;
-                    }
-                    // This property is under another property, skip
-                    return false;
-                }
-
-                return true;
-            });
-        },
-
+        // Get JSON-LD properties from a DOM element.
         _getElementProperties: function(subject, element, emptyValues) {
             var containerProperties = {};
 
-            VIE.RDFa.findElementProperties(subject, element, true).each(function() {
+            VIE.RDFa.findPredicateElements(subject, element, true).each(function() {
                 var propertyName;
                 var propertyValue;
                 var objectProperty = jQuery(this);
@@ -580,7 +734,7 @@
                         containerProperties[propertyName].push(propertyValue);
                         return;
                     }
-                    // Multivalued property, convert to Array
+                    // Multivalued properties, are converted to an Array
                     var previousValue = containerProperties[propertyName];
                     containerProperties[propertyName] = [];
 
@@ -605,6 +759,14 @@
         }
     };
 
+    // VIE.cleanup()
+    // -------------
+    //
+    // By default VIE keeps track of all RDF entities, RDFa views and namespaces
+    // handled. If you want to clear all of these (for example in unit tests),
+    // then call:
+    //
+    //     VIE.cleanup();
     VIE.cleanup = function() {
         VIE.EntityManager.Entities = {};
         VIE.EntityManager.allEntities = [];
