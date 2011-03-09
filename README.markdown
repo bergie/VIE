@@ -52,11 +52,7 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * [Example with Aloha Editor](https://github.com/bergie/VIE/raw/master/example.html)
 * [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
 
-### Running Unit Tests
-
-You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
-
-    $ nodeunit test/rdfa.js
+Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
 
 ## Implementations
 
@@ -68,4 +64,16 @@ You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on
 * Drupal
 * Jekyll
 
-See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
+## Development
+
+VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
+
+Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward!
+
+Development discussions happen on the `#iks` channel on Freenode. See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
+
+### Running Unit Tests
+
+You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
+
+    $ nodeunit test/rdfa.js
