@@ -35,11 +35,11 @@ Having contents of a page described via RDFa makes it very easy to extract the c
 
 With Backbone, the content extracted from the RDFa-annotated HTML page is easily manageable via JavaScript. Consider for example:
 
-    var objectInstance = VIE.ContainerManager.getInstanceForContainer(jQuery('#myarticle'));
-    objectInstance.set({title: 'Hello, world'});
+    var objectInstance = VIE.RDFaEntities.getInstance(jQuery('#myarticle'));
+    objectInstance.set({'dcterms:title': 'Hello, world'});
     objectInstance.save(null, {
         success: function(savedModel, response) {
-            alert("Your article '" + savedModel.get('title') + "' was saved to server");
+            alert("Your article '" + savedModel.get('dcterms:title') + "' was saved to server");
         }
     });
 

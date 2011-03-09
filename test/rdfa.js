@@ -97,3 +97,23 @@ exports['test about and anonymous'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['test example from README'] = function(test) {
+    var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title">News item title</h1><div property="sioc:content">News item contents</div></div>');
+
+    var objectInstance = VIE.RDFaEntities.getInstance(html);
+
+    test.equal(objectInstance.get('dcterms:title'), 'News item title');
+
+    objectInstance.set({'dcterms:title': 'Hello, world'});
+
+    test.equal(objectInstance.get('dcterms:title'), 'Hello, world');
+
+    // And then the interesting bit, check that it changed in the HTML as well
+    jQuery('[property="dcterms:title"]', html).each(function() {
+        test.equal(jQuery(this).html(), 'Hello, world', 'Check that the change actually affected the HTML');
+    });
+
+    VIE.cleanup();
+    test.done();
+};
