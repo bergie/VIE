@@ -70,6 +70,18 @@ VIE is a CommonJS library that works on both browser and the server. On [Node.js
 
     npm install vie
 
+Here is a simple Node.js script that uses VIE for parsing RDFa:
+
+    var jQuery = require('jquery');
+    var VIE = require('vie');
+
+    var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business.</p>');
+
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+
+    console.log(objectInstance.get('dc:title'));
+
 ## Development
 
 VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
