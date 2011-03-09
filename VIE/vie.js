@@ -13,21 +13,21 @@
 
     // Require underscore using CommonJS require if it isn't yet loaded
     var _ = this._;
-    if (!_ && (typeof require !== 'undefined')) _ = require('underscore')._;
+    if (!_ && (typeof require !== 'undefined')) { _ = require('underscore')._; }
     if (!_) {
         throw 'VIE requires underscore.js to be available';
     }
 
     // Require Backbone using CommonJS require if it isn't yet loaded
     var Backbone = this.Backbone;
-    if (!Backbone && (typeof require !== 'undefined')) Backbone = require('backbone');
+    if (!Backbone && (typeof require !== 'undefined')) { Backbone = require('backbone'); }
     if (!Backbone) {
         throw 'VIE requires Backbone.js to be available';
     }
 
     // Require jQuery using CommonJS require if it isn't yet loaded
     var jQuery = this.jQuery;
-    if (!jQuery && (typeof require !== 'undefined')) jQuery = require('jquery');
+    if (!jQuery && (typeof require !== 'undefined')) { jQuery = require('jquery'); }
     if (!jQuery) {
         throw 'VIE requires jQuery to be available';
     }
@@ -40,6 +40,7 @@
         toJSONLD: function() {
             var instance = this;
             var instanceLD = {};
+            var property;
 
             if (typeof instance.id !== 'undefined') {
                 instanceLD['@'] = '<' + instance.id + '>';
@@ -55,9 +56,12 @@
                 instanceLD.a = instance.type;
             }
 
-            for (var property in instance.attributes) if(instance.attributes.hasOwnProperty(property)) { //  && typeof instance.attributes[property] != "function"
-                if (["id"].indexOf(property) == -1)
-                    instanceLD[property] = instance.attributes[property];
+            for (property in instance.attributes) {
+                if (instance.attributes.hasOwnProperty(property)) { //  && typeof instance.attributes[property] != "function"
+                    if (['id'].indexOf(property) === -1) {
+                        instanceLD[property] = instance.attributes[property];
+                    }
+                }
             }
             return instanceLD;
         }
@@ -156,7 +160,7 @@
 
             jQuery.each(VIE.RDFaEntities.Views, function() {
                 // Check whether we already have this view instantiated for the element
-                if (this.el.get(0) == element.get(0)) {
+                if (this.el.get(0) === element.get(0)) {
                     viewInstance = this;
                     return false;
                 }
@@ -194,7 +198,7 @@
 
             return entities;
         }
-    },
+    };
 
     // RDFa reading and writing utilities
     VIE.RDFa = {
@@ -211,6 +215,7 @@
             var namespaces = {};
             var namespace;
             var type;
+            var propertyName;
 
             subject = VIE.RDFa.getSubject(element);
 
@@ -222,15 +227,15 @@
             }
 
             // Resolve namespaces
-            for (var propertyName in entity) {
-                var propertyParts = propertyName.split(':');
-                if (propertyParts.length === 1) {
-                    // No namespace for element
-                    continue;
-                }
-                namespace = VIE.RDFa._resolveNamespace(propertyParts[0], element);
-                if (namespace) {
-                    namespaces[propertyParts[0]] = namespace;
+            for (propertyName in entity) {
+                if (entity.hasOwnProperty(propertyName)) {
+                    var propertyParts = propertyName.split(':');
+                    if (propertyParts.length === 2) {
+                        namespace = VIE.RDFa._resolveNamespace(propertyParts[0], element);
+                        if (namespace) {
+                            namespaces[propertyParts[0]] = namespace;
+                        }
+                    }
                 }
             }
             if (!jQuery.isEmptyObject(namespaces)) {
@@ -243,7 +248,7 @@
                 entity.a = type;
             }
 
-            if (typeof subject == 'string') {
+            if (typeof subject === 'string') {
                 entity['@'] = subject;
             }
             return entity;
@@ -310,7 +315,7 @@
                 var value = [];
                 jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
                     var subject = VIE.RDFa.getSubject(this);
-                    if (typeof subject == 'string') {
+                    if (typeof subject === 'string') {
                         value.push('<' + subject + '>');
                     }
                 });
@@ -359,7 +364,7 @@
                 }
 
                 // Handle baseURL also outside browser context
-                if (jQuery(this).get(0).nodeName == 'HTML') {
+                if (jQuery(this).get(0).nodeName === 'HTML') {
                     jQuery(this).find('base').each(function() {
                         subject = jQuery(this).attr('href');
                     });
