@@ -82,4 +82,4 @@ Development discussions happen on the `#iks` channel on Freenode. See also [VIE 
 
 You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
 
-    $ nodeunit test/rdfa.js
+    $ nodeunit test/*.js
