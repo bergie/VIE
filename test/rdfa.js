@@ -145,8 +145,24 @@ exports['test example from wikipedia'] = function(test) {
 
     VIE.RDFaEntities.getInstances(html);
     var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+
     test.equal(objectInstance.get('dc:title'), 'Wikinomics');
     test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
+
+    VIE.cleanup();
+    test.done();
+};
+
+exports['test jsonld'] = function(test) {
+    var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
+
+    var objectInstance = VIE.EntityManager.getByJSONLD(json);
+
+    test.equal(objectInstance.get('dc:title'), 'Wikinomics');
+    test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
+
+    var invalidInstance = VIE.EntityManager.getByJSONLD('foo');
+    test.equal(invalidInstance, null);
 
     VIE.cleanup();
     test.done();
