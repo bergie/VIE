@@ -64,6 +64,12 @@ Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) f
 * Drupal
 * Jekyll
 
+## Using VIE on Node.js
+
+VIE is a CommonJS library that works on both browser and the server. On [Node.js](http://nodejs.org/) you can install it with:
+
+    npm install vie
+
 ## Development
 
 VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
