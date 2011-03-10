@@ -18,7 +18,17 @@ exports['test inheriting subject'] = function(test) {
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
 
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
+    test.equal(backboneEntities[1].get('dbp:birthPlace').at(0).get('dbp:conventionalLongName'), 'Federal Republic of Germany');
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
+    
+    // Test also resource collections
+    var switzerlandEntity = VIE.EntityManager.getByJSONLD({
+        '@': '<http://dbpedia.org/resource/Switzerland>',
+        'dbp:conventionalLongName': 'Swiss Confederation'
+    });
+    backboneEntities[1].get('dbp:birthPlace').add(VIE.EntityManager.getBySubject('<http://dbpedia.org/resource/Switzerland>'));
+    test.equal(backboneEntities[1].get('dbp:birthPlace').length, 2);
+    test.equal(backboneEntities[1].get('dbp:birthPlace').getByCid(switzerlandEntity.cid).get('dbp:conventionalLongName'), 'Swiss Confederation');
 
     VIE.cleanup();
     test.done();
