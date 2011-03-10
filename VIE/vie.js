@@ -191,7 +191,7 @@
         },
 
         // Helper for cleaning up JSON-LD so that it can be used as properties
-        // of a Backbone Model
+        // of a Backbone Model.
         _JSONtoProperties: function(jsonld) {
             var properties;
             properties = jQuery.extend({}, jsonld);
@@ -199,6 +199,13 @@
             delete properties.a;
             delete properties['#'];
             return properties;
+        },
+        
+        // Helper for removing existing information about loaded entities.
+        cleanup: function() {
+            VIE.EntityManager.Entities = {};
+            VIE.EntityManager.allEntities = [];
+            VIE.EntityManager.Types = {};
         }
     };
 
@@ -355,6 +362,11 @@
             });
 
             return entities;
+        },
+        
+        // Helper for removing existing references to Views loaded for RDFa entities.
+        cleanup: function() {
+            VIE.RDFaEntities.Views = [];
         }
     };
     
@@ -756,6 +768,11 @@
             });
 
             return containerProperties;
+        },
+        
+        // Helper for removing existing namespaces information.
+        cleanup: function() {
+            VIE.RDFa.Namespaces = {};
         }
     };
 
@@ -768,11 +785,9 @@
     //
     //     VIE.cleanup();
     VIE.cleanup = function() {
-        VIE.EntityManager.Entities = {};
-        VIE.EntityManager.allEntities = [];
-        VIE.EntityManager.Types = {};
-        VIE.RDFaEntities.Views = [];
-        VIE.RDFa.Namespaces = {};
+        VIE.EntityManager.cleanup();
+        VIE.RDFaEntities.cleanup();
+        VIE.RDFa.cleanup();
     };
 
 }).call(this);
