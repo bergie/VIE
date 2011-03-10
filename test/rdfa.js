@@ -115,9 +115,14 @@ exports['test about and anonymous'] = function(test) {
     var jsonldEntities = VIE.RDFa.readEntities(html);
 
     test.equal(jsonldEntities.length, 2);
-    test.equal(jsonldEntities[0]['a'], 'cal:Vevent');
+    test.equal(jsonldEntities[0]['a'], '<cal:Vevent>');
+    test.equal(jsonldEntities[0]['@'], '<#bbq>');
     // FIXME: This should really have the datatype
     test.equal(jsonldEntities[0]['cal:dtstart'], '2007-09-16T16:00:00-05:00');
+    
+    var objectInstance = VIE.EntityManager.getByJSONLD(jsonldEntities[0]);
+    test.equal(objectInstance.id, '#bbq');
+    test.equal(objectInstance.type, 'cal:Vevent');
 
     VIE.cleanup();
     test.done();

@@ -174,7 +174,7 @@
             // Types are handled by the `a` property of JSON-LD. We map this
             // to the `type` property of our `VIE.RDFEntity` instance.
             if (typeof jsonld.a !== 'undefined') {
-                entityInstance.type = jsonld.a;
+                entityInstance.type = VIE.RDFa._fromReference(jsonld.a);
             }
 
             // Subjects are handled by the `@` property of JSON-LD. We map this
@@ -260,7 +260,7 @@
             }
 
             if (instance.type) {
-                instanceLD.a = instance.type;
+                instanceLD.a = VIE.RDFa._toReference(instance.type);
             }
 
             for (property in instance.attributes) {
@@ -527,7 +527,7 @@
             // of the JSON-LD object.
             type = VIE.RDFa._getElementValue(element, 'typeof');
             if (type) {
-                entity.a = type;
+                entity.a = VIE.RDFa._toReference(type);
             }
 
             if (typeof subject === 'string') {
