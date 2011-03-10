@@ -28,7 +28,7 @@
 //
 // And then just access the entity by subject:
 //
-//     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+//     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
 //     alert(myBook.get('dc:title')); // "Wikinomics"
 //
 // Properties of the entity may also be modified, and these changes will 
@@ -117,7 +117,7 @@
         //
         // Example:
         //
-        //     var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+        //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
         getBySubject: function(id) {
             if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
                 return null;
@@ -180,8 +180,8 @@
             // Subjects are handled by the `@` property of JSON-LD. We map this
             // to the `id` property of our `VIE.RDFEntity` instance.
             if (typeof jsonld['@'] !== 'undefined') {
-                entityInstance.id = jsonld['@'];
-                VIE.EntityManager.Entities[entityInstance.id] = entityInstance;
+                entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
+                VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
             }
 
             // All new entities must be added to the `allEntities` list.
@@ -250,7 +250,7 @@
             var property;
 
             if (typeof instance.id !== 'undefined') {
-                instanceLD['@'] = '<' + instance.id + '>';
+                instanceLD['@'] = VIE.RDFa._toReference(instance.id);
             } else {
                 instanceLD['@'] = instance.cid.replace('c', '_:bnode');
             }
@@ -434,7 +434,7 @@
         // Example:
         //
         //     var subject = VIE.RDFa.getSubject('p[about]');
-        //     alert(subject); // http://www.example.com/books/wikinomics
+        //     alert(subject); // <http://www.example.com/books/wikinomics>
         getSubject: function(element) {
             if (typeof document !== 'undefined') {
                 if (element === document) {
@@ -464,8 +464,12 @@
                     });
                 }
             });
+            
+            if (!subject) {
+                return undefined;
+            }
 
-            return subject;
+            return VIE.RDFa._toReference(subject);
         },
 
         // ### VIE.RDFa.readEntity
@@ -624,6 +628,18 @@
             });
         },
 
+        // In JSON-LD all references are surrounded by `<` and `>`. Convert a regular
+        // textual value to this format.
+        _toReference: function(value) {
+            return '<' + value + '>';
+        },
+        
+        // In JSON-LD all references are surrounded by `<` and `>`. Convert reference
+        // to a regular textual value.
+        _fromReference: function(reference) {
+            return reference.substring(1, reference.length - 1);
+        },
+
         // Get value of a DOM element defining a RDFa predicate.
         _readPropertyValue: function(element) {
 
@@ -639,13 +655,13 @@
             // RDF resource.
             var resource = element.attr('resource');
             if (resource) {
-                return '<' + resource + '>';
+                return VIE.RDFa._toReference(resource);
             }
             
             // `href` attribute also links to another RDF resource.
             var href = element.attr('href');
             if (href) {
-                return '<' + href + '>';
+                return VIE.RDFa._toReference(href);
             }
 
             // If the predicate is a relation, we look for identified child objects
@@ -657,7 +673,7 @@
                 jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
                     var subject = VIE.RDFa.getSubject(this);
                     if (typeof subject === 'string') {
-                        value.push('<' + subject + '>');
+                        value.push(VIE.RDFa._toReference(subject));
                     }
                 });
                 return value;
