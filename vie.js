@@ -149,19 +149,20 @@
                 }
             }
 
-            properties = VIE.EntityManager._JSONtoProperties(jsonld);
-
             // The entities accessed this way are singletons, so multiple calls 
             // to same subject (`@` in JSON-LD) will all return the same   
             // `VIE.RDFEntity` instance.
             if (typeof jsonld['@'] !== 'undefined') {
                 entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
-                if (entityInstance) {  
-                    entityInstance.set(properties);
-                    return entityInstance;
-                }
+            }
+            
+            if (entityInstance) {
+                properties = VIE.EntityManager._JSONtoProperties(jsonld, entityInstance.attributes);
+                entityInstance.set(properties);
+                return entityInstance;
             }
 
+            properties = VIE.EntityManager._JSONtoProperties(jsonld, {});
             entityInstance = new VIE.RDFEntity(properties);
 
             // Namespace prefixes are handled by the `#` property of JSON-LD.
@@ -190,14 +191,66 @@
             return entityInstance;
         },
 
+        // Figure out if a given value is a reference
+        _isReference: function(value) {
+            var matcher = new RegExp('^\<(.*)\>$');
+            if (matcher.exec(value)) {
+                return true;
+            }
+            return false;
+        },
+        
+        // Create a list of Models for referenced properties
+        _referencesToModels: function(value) {
+            if (!_.isArray(value)) {
+                value = [value];
+            }
+            
+            var models = [];
+            jQuery.each(value, function() {
+                models.push(VIE.EntityManager.getByJSONLD({
+                    '@': this
+                }));
+            });
+            return models;
+        },
+
         // Helper for cleaning up JSON-LD so that it can be used as properties
         // of a Backbone Model.
-        _JSONtoProperties: function(jsonld) {
+        _JSONtoProperties: function(jsonld, instanceProperties) {
             var properties;
+            var references;
+            var property;
+
             properties = jQuery.extend({}, jsonld);
+            
             delete properties['@'];
             delete properties.a;
             delete properties['#'];
+            
+            for (property in properties) {
+                if (properties.hasOwnProperty(property)) {
+                    if (VIE.EntityManager._isReference(properties[property])) {
+                        references = VIE.EntityManager._referencesToModels(properties[property]);
+                        
+                        if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
+                            // Object already has this reference collection, keep it
+                            // and add new references
+                            jQuery.each(references, function() {
+                                try {
+                                    instanceProperties[property].add(this);
+                                } catch (e) {}
+                            });
+
+                            properties[property] = instanceProperties[property];
+                        }
+                        else {
+                            properties[property] = new VIE.RDFEntityCollection(references);
+                        }
+                    }
+                }
+            }
+
             return properties;
         },
         
@@ -214,6 +267,9 @@
     //
     // VIE.RDFEntity defines a common [Backbone Model](http://documentcloud.github.com/backbone/#Model) 
     // for RDF entities handled in VIE.
+    //
+    // Attributes that are references to other entities are exposed as
+    // `VIE.RDFEntityCollection` objects containing those entities.
     VIE.RDFEntity = Backbone.Model.extend({
         namespaces: {},
         type: '',
@@ -265,13 +321,26 @@
 
             for (property in instance.attributes) {
                 if (instance.attributes.hasOwnProperty(property)) {
-                    if (['id'].indexOf(property) === -1) {
+                    if (instance.attributes[property] instanceof VIE.RDFEntityCollection) {
+                        instanceLD[property] = instance.attributes[property].map(function(referenceInstance) {
+                            return VIE.RDFa._toReference(referenceInstance.id);
+                        });
+                    } else {
                         instanceLD[property] = instance.attributes[property];
                     }
                 }
             }
             return instanceLD;
         }
+    });
+
+    // VIE.RDFEntityCollection
+    // -----------------------
+    //
+    // VIE.RDFEntityCollection defines a common [Backbone Collection](http://documentcloud.github.com/backbone/#Collection) 
+    // for references to RDF entities handled in VIE.
+    VIE.RDFEntityCollection = Backbone.Collection.extend({
+        model: VIE.RDFEntity
     });
     
     // VIE.RDFaEntities
@@ -419,7 +488,7 @@
         // For more specialized scenarios this can be overridden:
         //
         //     VIE.RDFa.predicateSelector = '[property]';
-        predicateSelector: '[property],[rel]',
+        predicateSelector: '[property],[rel],[rev]',
 
         // ### VIE.RDFa.getSubject
         //
@@ -673,7 +742,7 @@
                 jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
                     var subject = VIE.RDFa.getSubject(this);
                     if (typeof subject === 'string') {
-                        value.push(VIE.RDFa._toReference(subject));
+                        value.push(subject);
                     }
                 });
                 return value;
@@ -753,6 +822,10 @@
                 }
 
                 propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
+                if (propertyValue === null &&
+                    !emptyValues) {
+                    return;
+                }
 
                 if (typeof containerProperties[propertyName] !== 'undefined') {
                     if (containerProperties[propertyName] instanceof Array) {
