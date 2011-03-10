@@ -12,7 +12,7 @@ exports['test inheriting subject'] = function(test) {
 
     test.equal(jsonldEntities[1]['foaf:name'], 'Albert Einstein');
     test.equal(jsonldEntities[0]['dbp:conventionalLongName'], 'Federal Republic of Germany');
-    test.equals(jsonldEntities[1]['dbp:birthPlace'], '<' + jsonldEntities[0]['@'] + '>', "Check that the relation between the person and the birthplace was read correctly");
+    test.equals(jsonldEntities[1]['dbp:birthPlace'], jsonldEntities[0]['@'], "Check that the relation between the person and the birthplace was read correctly");
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
@@ -31,11 +31,14 @@ exports['test subject singletons'] = function(test) {
 
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
 
-    var individualInstance = VIE.EntityManager.getBySubject('http://dbpedia.org/resource/Albert_Einstein');
+    var individualInstance = VIE.EntityManager.getBySubject('<http://dbpedia.org/resource/Albert_Einstein>');
     test.equal(individualInstance.get('foaf:name'), 'Albert Einstein');
 
     individualInstance.set({'foaf:name': 'Al Einstein'});
     test.equal(backboneEntities[1].get('foaf:name'), 'Al Einstein');
+    
+    var countryInstance = VIE.EntityManager.getBySubject('<http://dbpedia.org/resource/Germany>');
+    test.equal(countryInstance.id, 'http://dbpedia.org/resource/Germany');
 
     // And then the interesting bit, check that it changed in the HTML as well
     jQuery('[property="foaf:name"]', html).each(function() {
@@ -100,7 +103,7 @@ exports['test global entity with base URL'] = function(test) {
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
     test.equal(jsonldEntities.length, 1);
     test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
-    test.equal(jsonldEntities[0]['@'], 'http://www.example.org/jo/blog');
+    test.equal(jsonldEntities[0]['@'], '<http://www.example.org/jo/blog>');
 
     VIE.cleanup();
     test.done();
@@ -144,7 +147,7 @@ exports['test example from wikipedia'] = function(test) {
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.</p>');
 
     VIE.RDFaEntities.getInstances(html);
-    var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    var objectInstance = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
 
     test.equal(objectInstance.get('dc:title'), 'Wikinomics');
     test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
@@ -160,6 +163,11 @@ exports['test jsonld'] = function(test) {
 
     test.equal(objectInstance.get('dc:title'), 'Wikinomics');
     test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
+    
+    test.equal(objectInstance.id, 'http://www.example.com/books/wikinomics');
+    
+    var jsonld = objectInstance.toJSONLD();
+    test.equal(jsonld['@'], '<http://www.example.com/books/wikinomics>');
 
     var invalidInstance = VIE.EntityManager.getByJSONLD('foo');
     test.equal(invalidInstance, null);
