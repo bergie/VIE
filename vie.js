@@ -115,14 +115,20 @@
         // The entities accessed this way are singletons, so multiple calls to same
         // subject will all return the same `VIE.RDFEntity` instance.
         //
+        // Subjects may be either wrapped in `<` and `>` or not.
+        //
         // Example:
         //
         //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
-        getBySubject: function(id) {
-            if (typeof VIE.EntityManager.Entities[id] === 'undefined') {
+        getBySubject: function(subject) {
+            if (!VIE.EntityManager._isReference(subject)) {
+                subject = VIE.RDFa._toReference(subject);
+            }
+            if (typeof VIE.EntityManager.Entities[subject] === 'undefined') {
                 return null;
             }
-            return VIE.EntityManager.Entities[id];
+            
+            return VIE.EntityManager.Entities[subject];
         },
 
         // ### VIE.EntityManager.getByJSONLD
@@ -181,6 +187,9 @@
             // Subjects are handled by the `@` property of JSON-LD. We map this
             // to the `id` property of our `VIE.RDFEntity` instance.
             if (typeof jsonld['@'] !== 'undefined') {
+                if (!VIE.EntityManager._isReference(jsonld['@'])) {
+                    jsonld['@'] = VIE.RDFa._toReference(jsonld['@']);
+                }
                 entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
                 VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
             }
@@ -207,9 +216,9 @@
             }
             
             var models = [];
-            jQuery.each(value, function() {
+            _.forEach(value, function(subject) {
                 models.push(VIE.EntityManager.getByJSONLD({
-                    '@': this
+                    '@': subject
                 }));
             });
             return models;
@@ -380,7 +389,6 @@
             if (!jsonld) {
                 return null;
             }
-
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
 
             // Check whether we already have a View instantiated for the DOM element
