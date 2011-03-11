@@ -190,3 +190,20 @@ exports['test jsonld'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['test iri wrapping'] = function(test) {
+    var jsonld = {
+        '@': 'foo:bar',
+        'dc:title': 'Foo bar'
+    };
+    
+    var objectInstance1 = VIE.EntityManager.getByJSONLD(jsonld);
+    var objectInstance2 = VIE.EntityManager.getBySubject('foo:bar');
+    var objectInstance3 = VIE.EntityManager.getBySubject('<foo:bar>');
+    
+    test.equal(objectInstance2.get('dc:title'), objectInstance1.get('dc:title'));
+    test.equal(objectInstance3.get('dc:title'), objectInstance1.get('dc:title')); 
+    
+    VIE.cleanup();
+    test.done();
+};
