@@ -202,7 +202,7 @@
 
         // Figure out if a given value is a reference
         _isReference: function(value) {
-            var matcher = new RegExp('^\<(.*)\>$');
+            var matcher = new RegExp("^\\<(.*)\\>$");
             if (matcher.exec(value)) {
                 return true;
             }
@@ -237,28 +237,26 @@
             delete properties.a;
             delete properties['#'];
             
-            for (property in properties) {
-                if (properties.hasOwnProperty(property)) {
-                    if (VIE.EntityManager._isReference(properties[property])) {
-                        references = VIE.EntityManager._referencesToModels(properties[property]);
-                        
-                        if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
-                            // Object already has this reference collection, keep it
-                            // and add new references
-                            jQuery.each(references, function() {
-                                try {
-                                    instanceProperties[property].add(this);
-                                } catch (e) {}
-                            });
+            _.each(properties, function(propertyValue, property) {
+                if (VIE.EntityManager._isReference(propertyValue)) {
+                    references = VIE.EntityManager._referencesToModels(propertyValue);
+                    
+                    if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
+                        // Object already has this reference collection, keep it
+                        // and add new references
+                        jQuery.each(references, function() {
+                            try {
+                                instanceProperties[property].add(this);
+                            } catch (e) {}
+                        });
 
-                            properties[property] = instanceProperties[property];
-                        }
-                        else {
-                            properties[property] = new VIE.RDFEntityCollection(references);
-                        }
+                        properties[property] = instanceProperties[property];
+                    }
+                    else {
+                        properties[property] = new VIE.RDFEntityCollection(references);
                     }
                 }
-            }
+            });
 
             return properties;
         },
@@ -328,17 +326,15 @@
                 instanceLD.a = VIE.RDFa._toReference(instance.type);
             }
 
-            for (property in instance.attributes) {
-                if (instance.attributes.hasOwnProperty(property)) {
-                    if (instance.attributes[property] instanceof VIE.RDFEntityCollection) {
-                        instanceLD[property] = instance.attributes[property].map(function(referenceInstance) {
-                            return VIE.RDFa._toReference(referenceInstance.id);
-                        });
-                    } else {
-                        instanceLD[property] = instance.attributes[property];
-                    }
+            _.each(instance.attributes, function(attributeValue, property) {
+                if (instance.attributes[property] instanceof VIE.RDFEntityCollection) {
+                    instanceLD[property] = attributeValue.map(function(referenceInstance) {
+                        return VIE.RDFa._toReference(referenceInstance.id);
+                    });
+                } else {
+                    instanceLD[property] = attributeValue;
                 }
-            }
+            });
             return instanceLD;
         }
     });
