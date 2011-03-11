@@ -121,7 +121,7 @@
         //
         //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
         getBySubject: function(subject) {
-            if (!VIE.EntityManager._isReference(subject)) {
+            if (!VIE.RDFa._isReference(subject)) {
                 subject = VIE.RDFa._toReference(subject);
             }
             if (typeof VIE.EntityManager.Entities[subject] === 'undefined') {
@@ -187,7 +187,7 @@
             // Subjects are handled by the `@` property of JSON-LD. We map this
             // to the `id` property of our `VIE.RDFEntity` instance.
             if (typeof jsonld['@'] !== 'undefined') {
-                if (!VIE.EntityManager._isReference(jsonld['@'])) {
+                if (!VIE.RDFa._isReference(jsonld['@'])) {
                     jsonld['@'] = VIE.RDFa._toReference(jsonld['@']);
                 }
                 entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
@@ -198,15 +198,6 @@
             VIE.EntityManager.allEntities.push(entityInstance);
 
             return entityInstance;
-        },
-
-        // Figure out if a given value is a reference
-        _isReference: function(value) {
-            var matcher = new RegExp("^\\<(.*)\\>$");
-            if (matcher.exec(value)) {
-                return true;
-            }
-            return false;
         },
         
         // Create a list of Models for referenced properties
@@ -238,7 +229,7 @@
             delete properties['#'];
             
             _.each(properties, function(propertyValue, property) {
-                if (VIE.EntityManager._isReference(propertyValue)) {
+                if (VIE.RDFa._isReference(propertyValue)) {
                     references = VIE.EntityManager._referencesToModels(propertyValue);
                     
                     if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
@@ -699,6 +690,15 @@
 
                 return true;
             });
+        },
+
+        // Figure out if a given value is a wrapped reference
+        _isReference: function(value) {
+            var matcher = new RegExp("^\\<(.*)\\>$");
+            if (matcher.exec(value)) {
+                return true;
+            }
+            return false;
         },
 
         // In JSON-LD all references are surrounded by `<` and `>`. Convert a regular
