@@ -13,6 +13,7 @@
             if (typeof containerInstance.editables === 'undefined') {
                 containerInstance.editables = {};
             }
+
             VIE.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
                 var containerProperty = jQuery(this);
 
@@ -23,6 +24,9 @@
                 }
 
                 var propertyName = containerProperty.attr('property');
+                if (propertyName === undefined) {
+                    return true;
+                }
 
                 if (containerInstance.get(propertyName) instanceof Array) {
                     // For now we don't deal with multivalued properties in Aloha
@@ -65,7 +69,6 @@ VIE.AlohaEditable = {
             // No modified editables for this object, skip
             return false;
         }
-
         // Set the modified properties to the model instance
         objectInstance.set(modifiedProperties);
         return true;
