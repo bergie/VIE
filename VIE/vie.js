@@ -676,6 +676,9 @@
         // which is useful for example when instantiating WYSIWYG editors for 
         // editable properties, as most editors do not like getting nested.
         findPredicateElements: function(subject, element, allowNestedPredicates) {
+            if (!VIE.RDFa._isReference(subject)) {
+                subject = VIE.RDFa._toReference(subject);
+            }
             return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
                 if (VIE.RDFa.getSubject(this) !== subject) {
                     return false;
