@@ -196,7 +196,6 @@
 
             // All new entities must be added to the `allEntities` list.
             VIE.EntityManager.allEntities.push(entityInstance);
-
             return entityInstance;
         },
         
@@ -231,7 +230,6 @@
             _.each(properties, function(propertyValue, property) {
                 if (VIE.RDFa._isReference(propertyValue)) {
                     references = VIE.EntityManager._referencesToModels(propertyValue);
-                    
                     if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
                         // Object already has this reference collection, keep it
                         // and add new references
@@ -302,7 +300,7 @@
             var instance = this;
             var instanceLD = {};
             var property;
-
+            
             if (typeof instance.id !== 'undefined') {
                 instanceLD['@'] = VIE.RDFa._toReference(instance.id);
             } else {
@@ -318,7 +316,7 @@
             }
 
             _.each(instance.attributes, function(attributeValue, property) {
-                if (instance.attributes[property] instanceof VIE.RDFEntityCollection) {
+                if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
                         return VIE.RDFa._toReference(referenceInstance.id);
                     });
@@ -353,6 +351,7 @@
         // RDFaEntities manages a list of Views so that every view instance will be
         // a singleton.
         Views: [],
+        CollectionViews: [],
 
         // ### VIE.RDFaEntities.getInstance
         //
@@ -369,7 +368,6 @@
         getInstance: function(element) {
             element = jQuery(element);
             var entityInstance;
-            var viewInstance;
             var jsonld;
 
             jsonld = VIE.RDFa.readEntity(element);
@@ -378,25 +376,84 @@
             }
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
 
-            // Check whether we already have a View instantiated for the DOM element
-            jQuery.each(VIE.RDFaEntities.Views, function() {
+            VIE.RDFaEntities._registerView(entityInstance, element);
+
+            return entityInstance;
+        },
+        
+        _getViewInstance: function(element, collection) {
+            var viewInstance;
+            var viewArray = VIE.RDFaEntities.Views;
+            element = jQuery(element);
+            
+            if (collection) {
+                viewArray = VIE.RDFaEntities.CollectionViews;
+            }
+            
+            jQuery.each(viewArray, function() {
                 if (this.el.get(0) === element.get(0)) {
                     viewInstance = this;
                     return false;
                 }
             });
-
-            // If no matching View was found, create a view for the RDFa
-            if (!viewInstance) {
-                viewInstance = new VIE.RDFaView({
-                    model: entityInstance, 
-                    el: element,
-                    tagName: element.get(0).nodeName
-                });
-                VIE.RDFaEntities.Views.push(viewInstance);
+            
+            return viewInstance;
+        },
+        
+        // Helper for registering views for a collection
+        _registerCollectionView: function(collectionInstance, element) {
+            var viewInstance;
+            var template;
+            element = jQuery(element);
+            
+            // Check whether we already have a View instantiated for the DOM element
+            viewInstance = VIE.RDFaEntities._getViewInstance(element, true);
+            if (viewInstance) {
+                return viewInstance;
             }
 
-            return entityInstance;
+            template = element.children(':first-child');
+
+            viewInstance = new VIE.RDFaCollectionView({
+                collection: collectionInstance,
+                model: collectionInstance.model, 
+                el: element,
+                elementTemplate: template,
+                tagName: element.get(0).nodeName
+            });
+            VIE.RDFaEntities.CollectionViews.push(viewInstance);
+
+            return viewInstance;
+        },
+        
+        // Helper for registering views for an entity
+        _registerView: function(entityInstance, element) {
+            var viewInstance;
+            element = jQuery(element);
+            
+            // Check whether we already have a View instantiated for the DOM element
+            viewInstance = VIE.RDFaEntities._getViewInstance(element);
+            if (viewInstance) {
+                return viewInstance;
+            }
+            
+            viewInstance = new VIE.RDFaView({
+                model: entityInstance, 
+                el: element,
+                tagName: element.get(0).nodeName
+            });
+            VIE.RDFaEntities.Views.push(viewInstance);
+
+            // Find collection elements, and create collection views for them
+            _.each(entityInstance.attributes, function(attributeValue, property) {
+                if (attributeValue instanceof VIE.RDFEntityCollection) {
+                    jQuery.each(VIE.RDFa._getElementByPredicate(property, element), function() {
+                        VIE.RDFaEntities._registerCollectionView(attributeValue, this);
+                    });
+                }
+            });
+            
+            return viewInstance;
         },
 
         // ### VIE.RDFaEntities.getInstances
@@ -456,6 +513,51 @@
         render: function() {
             VIE.RDFa.writeEntity(this.el, this.model.toJSONLD());
             return this;
+        }
+    });
+    
+    // VIE.RDFaCollectionView
+    // ----------------------
+    //
+    // VIE.RDFaCollectionView defines a common Backbone View for Collection properties
+    VIE.RDFaCollectionView = Backbone.View.extend({
+    
+        elementTemplate: null,
+
+        // Ensure the collection view gets updated when items get added or removed
+        initialize: function() {
+            this.elementTemplate = this.options.elementTemplate;
+            _.bindAll(this, 'addItem', 'removeItem');
+            this.collection.bind('add', this.addItem);
+        },
+
+        // When adding new items we create a new element of the child type
+        // and append it to the list.
+        addItem: function(itemInstance) {
+            if (!this.elementTemplate ||
+                this.elementTemplate.length === 0) {
+                return;
+            }
+            var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate));
+            var itemViewElement = itemView.render().el;
+            this.el.append(itemViewElement);
+            itemViewElement.show();
+            
+            // Ensure we catch all inferred predicates
+            jQuery(itemViewElement).parent('[rev]').each(function() {
+                var properties = {};
+                var predicate = jQuery(this).attr('rev');
+                properties[predicate] = VIE.RDFa.getSubject(this);
+                itemInstance.set(properties);
+            });
+        },
+
+        // When removing items from Collection we remove their views from the DOM.
+        removeItem: function(itemInstance) {
+            if (typeof itemInstance.view === 'undefined') {
+                return;
+            }
+            itemInstance.view.el.remove();
         }
     });
 
@@ -534,6 +636,19 @@
             }
 
             return VIE.RDFa._toReference(subject);
+        },
+        
+        // Get predicate for an element
+        getPredicate: function(element) {
+            var propertyName;
+
+            element = jQuery(element);
+            
+            propertyName = element.attr('property');
+            if (!propertyName) {
+                propertyName = element.attr('rel');
+            }
+            return propertyName;
         },
 
         // ### VIE.RDFa.readEntity
@@ -813,6 +928,22 @@
             }
             return element.children('[' + propertyName + ']').attr(propertyName);
         },
+        
+        // Get elements matching a given subject and predicate
+        _getElementByPredicate: function(predicate, element) {
+            var subject = VIE.RDFa.getSubject(element);
+            return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
+                if (VIE.RDFa.getPredicate(this) !== predicate) {
+                    return false;
+                }
+
+                if (VIE.RDFa.getSubject(this) !== subject) {
+                    return false;
+                }
+ 
+                return true;
+            });
+        },
 
         // Get JSON-LD properties from a DOM element.
         _getElementProperties: function(subject, element, emptyValues) {
@@ -823,10 +954,7 @@
                 var propertyValue;
                 var objectProperty = jQuery(this);
 
-                propertyName = objectProperty.attr('property');
-                if (!propertyName) {
-                    propertyName = objectProperty.attr('rel');
-                }
+                propertyName = VIE.RDFa.getPredicate(this); 
 
                 propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
                 if (propertyValue === null &&
@@ -862,8 +990,30 @@
 
                 containerProperties[propertyName] = propertyValue;
             });
+            
+            jQuery(element).parent('[rev]').each(function() {
+                containerProperties[jQuery(this).attr('rev')] = VIE.RDFa.getSubject(this); 
+            });
 
             return containerProperties;
+        },
+        
+        // Create an anonymized clone of an element
+        _cloneElement: function(element) {
+            element = jQuery(element).clone(false);
+            
+            var subject = VIE.RDFa.getSubject(element);
+
+            if (typeof element.attr('about') !== 'undefined')
+            {
+                // Direct match with container
+                element.attr('about', '');
+            }
+            element.find('[about]').attr('about', '');
+            
+            VIE.RDFa.findPredicateElements(subject, element, false).html('');
+
+            return element;
         },
         
         // Helper for removing existing namespaces information.
