@@ -588,12 +588,21 @@
             });
             itemViewElement.show();
             
-            // Ensure we catch all inferred predicates
+            // If the new instance doesn't yet have an identifier, bind it to
+            // the HTML representation of itself. This safeguards from duplicates.
+            if (!itemInstance.id) {
+                itemInstance.id = VIE.RDFa.getSubject(itemViewElement);
+            }
+            
+            // Ensure we catch all inferred predicates. We add these via JSONLD
+            // so the references get properly Collectionized.
             jQuery(itemViewElement).parent('[rev]').each(function() {
-                var properties = {};
+                var properties = {
+                    '@': itemInstance.id
+                };
                 var predicate = jQuery(this).attr('rev');
                 properties[predicate] = VIE.RDFa.getSubject(this);
-                itemInstance.set(properties);
+                VIE.EntityManager.getByJSONLD(properties);
             });
         },
 
