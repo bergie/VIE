@@ -36,7 +36,7 @@
 //
 //     myBook.set({'dc:title':'Wikinomics, Second Edition'});
 //
-// You can also access the entities via the `VIE.EntityManager.allEntities` array.
+// You can also access the entities via the `VIE.EntityManager.entities` Backbone Collection.
 (function() {
     // Initial setup
     // -------------
@@ -99,12 +99,15 @@
     // means that entities matched by a common subject can be treated as singletons.
     //
     // It is possible to access all loaded entities via the 
-    // `VIE.EntityManager.allEntities` array.
+    // `VIE.EntityManager.entities` Backbone Collection.
     VIE.EntityManager = {
-        Entities: {},
-        allEntities: [],
-
-        Types: {},
+        entities: null,
+        
+        initializeCollection: function() {
+            if (VIE.EntityManager.entities === null) {
+                VIE.EntityManager.entities = new VIE.RDFEntityCollection();
+            }
+        },
 
         // ### VIE.EntityManager.getBySubject
         //
@@ -121,26 +124,35 @@
         //
         //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
         getBySubject: function(subject) {
+            VIE.EntityManager.initializeCollection();
             if (typeof subject === 'string' &&
-                !VIE.RDFa._isReference(subject)) {
-                subject = VIE.RDFa._toReference(subject);
-            }
-            if (typeof VIE.EntityManager.Entities[subject] === 'undefined') {
-                return null;
+                VIE.RDFa._isReference(subject)) {
+                subject = VIE.RDFa._fromReference(subject);
             }
             
-            return VIE.EntityManager.Entities[subject];
+            if (typeof subject === 'object')
+            {
+                return VIE.EntityManager.entities.detect(function(item) { 
+                    if (item.id === subject) {
+                        return true;
+                    }
+                    return false;
+                });
+            }
+
+            return VIE.EntityManager.entities.get(subject);
         },
 
         // ### VIE.EntityManager.getByType
         // 
         // Get list of RDF Entities matching the given type.
         getByType: function(type) {
+            VIE.EntityManager.initializeCollection();
             if (VIE.RDFa._isReference(type)) {
                 type = VIE.RDFa._fromReference(type);
             }
         
-            return _.select(VIE.EntityManager.allEntities, function(entity) {
+            return VIE.EntityManager.entities.select(function(entity) {
                 if (entity.type === type) {
                     return true;
                 }
@@ -161,6 +173,7 @@
         //     var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
         //     var objectInstance = VIE.EntityManager.getByJSONLD(json);
         getByJSONLD: function(jsonld) {
+            VIE.EntityManager.initializeCollection();
             var entityInstance;
             var properties;
 
@@ -175,9 +188,7 @@
             // The entities accessed this way are singletons, so multiple calls 
             // to same subject (`@` in JSON-LD) will all return the same   
             // `VIE.RDFEntity` instance.
-            if (typeof jsonld['@'] !== 'undefined' ||
-                (typeof jsonld['@'] === 'string' &&
-                 jsonld['@'].substr(0, 7) === '_:bnode')) {
+            if (typeof jsonld['@'] !== 'undefined') {
                 entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
             }
             
@@ -216,18 +227,20 @@
                     jsonld['@'] = VIE.RDFa._toReference(jsonld['@']);
                 }
                 entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
-                VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
+                VIE.EntityManager.entities.add(entityInstance);
             }
             
             // When handling anonymous entities coming from RDFa, we keep their
             // containing element as the ID so they can be matched
             if (typeof jsonld['@'] === 'object') {
                 entityInstance.id = jsonld['@'];
-                VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
+                VIE.EntityManager.entities.add(entityInstance);
             }
 
-            // All new entities must be added to the `allEntities` list.
-            VIE.EntityManager.allEntities.push(entityInstance);
+            // All new entities must be added to the `entities` collection.
+            if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
+                VIE.EntityManager.entities.add(entityInstance);
+            }
             return entityInstance;
         },
         
@@ -285,9 +298,7 @@
         
         // Helper for removing existing information about loaded entities.
         cleanup: function() {
-            VIE.EntityManager.Entities = {};
-            VIE.EntityManager.allEntities = [];
-            VIE.EntityManager.Types = {};
+            VIE.EntityManager.entities = new VIE.RDFEntityCollection();
         }
     };
 
@@ -370,7 +381,18 @@
     // VIE.RDFEntityCollection defines a common [Backbone Collection](http://documentcloud.github.com/backbone/#Collection) 
     // for references to RDF entities handled in VIE.
     VIE.RDFEntityCollection = Backbone.Collection.extend({
-        model: VIE.RDFEntity
+        model: VIE.RDFEntity,
+        initialize: function() {
+            this.bind('add', this.registerItem);
+        },
+        registerItem: function(entityInstance, collection) {
+            if (collection == VIE.EntityManager.entities) {
+                return;
+            }
+            if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
+                VIE.EntityManager.entities.add(entityInstance, {silent: true});
+            }
+        }
     });
     
     // VIE.RDFaEntities

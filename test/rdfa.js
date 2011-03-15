@@ -63,6 +63,8 @@ exports['test updating views'] = function(test) {
     var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
+    
+    test.equal(VIE.EntityManager.entities.length, 2);
 
     // Ensure we got the value
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
@@ -72,6 +74,9 @@ exports['test updating views'] = function(test) {
 
     // Ensure that it was changed in the model
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Switzerland');
+    
+    var entityViaJSONLD = VIE.EntityManager.getByJSONLD(backboneEntities[0].toJSONLD());
+    test.equal(VIE.EntityManager.entities.length, 2);
 
     // And then the interesting bit, check that it changed in the HTML as well
     jQuery('[property="dbp:conventionalLongName"]', html).each(function() {
