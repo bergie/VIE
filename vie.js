@@ -121,7 +121,8 @@
         //
         //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
         getBySubject: function(subject) {
-            if (!VIE.RDFa._isReference(subject)) {
+            if (typeof subject === 'string' &&
+                !VIE.RDFa._isReference(subject)) {
                 subject = VIE.RDFa._toReference(subject);
             }
             if (typeof VIE.EntityManager.Entities[subject] === 'undefined') {
@@ -188,11 +189,18 @@
 
             // Subjects are handled by the `@` property of JSON-LD. We map this
             // to the `id` property of our `VIE.RDFEntity` instance.
-            if (typeof jsonld['@'] !== 'undefined') {
+            if (typeof jsonld['@'] === 'string') {
                 if (!VIE.RDFa._isReference(jsonld['@'])) {
                     jsonld['@'] = VIE.RDFa._toReference(jsonld['@']);
                 }
                 entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
+                VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
+            }
+            
+            // When handling anonymous entities coming from RDFa, we keep their
+            // containing element as the ID so they can be matched
+            if (typeof jsonld['@'] === 'object') {
+                entityInstance.id = jsonld['@'];
                 VIE.EntityManager.Entities[jsonld['@']] = entityInstance;
             }
 
@@ -230,15 +238,16 @@
             delete properties['#'];
             
             _.each(properties, function(propertyValue, property) {
-                if (VIE.RDFa._isReference(propertyValue)) {
+                if (VIE.RDFa._isReference(propertyValue) ||
+                    typeof propertyValue === 'object') {
                     references = VIE.EntityManager._referencesToModels(propertyValue);
                     if (instanceProperties[property] instanceof VIE.RDFEntityCollection) {
                         // Object already has this reference collection, keep it
                         // and add new references
                         jQuery.each(references, function() {
-                            try {
+                            if (instanceProperties[property].indexOf(this) === -1) {
                                 instanceProperties[property].add(this);
-                            } catch (e) {}
+                            }
                         });
 
                         properties[property] = instanceProperties[property];
@@ -303,7 +312,7 @@
             var instanceLD = {};
             var property;
             
-            if (typeof instance.id !== 'undefined') {
+            if (typeof instance.id === 'string') {
                 instanceLD['@'] = VIE.RDFa._toReference(instance.id);
             } else {
                 instanceLD['@'] = instance.cid.replace('c', '_:bnode');
@@ -320,6 +329,9 @@
             _.each(instance.attributes, function(attributeValue, property) {
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
+                        if (typeof referenceInstance === 'object') {
+                            return referenceInstance.cid.replace('c', '_:bnode');
+                        }
                         return VIE.RDFa._toReference(referenceInstance.id);
                     });
                 } else {
@@ -376,6 +388,7 @@
             if (!jsonld) {
                 return null;
             }
+
             entityInstance = VIE.EntityManager.getByJSONLD(jsonld);
 
             VIE.RDFaEntities._registerView(entityInstance, element);
@@ -644,6 +657,10 @@
             if (!subject) {
                 return undefined;
             }
+            
+            if (typeof subject === 'object') {
+                return subject;
+            }
 
             return VIE.RDFa._toReference(subject);
         },
@@ -719,9 +736,8 @@
                 entity.a = VIE.RDFa._toReference(type);
             }
 
-            if (typeof subject === 'string') {
-                entity['@'] = subject;
-            }
+            entity['@'] = subject;
+
             return entity;
         },
 
@@ -801,7 +817,8 @@
         // which is useful for example when instantiating WYSIWYG editors for 
         // editable properties, as most editors do not like getting nested.
         findPredicateElements: function(subject, element, allowNestedPredicates) {
-            if (!VIE.RDFa._isReference(subject)) {
+            if (typeof subject === 'string' &&
+                !VIE.RDFa._isReference(subject)) {
                 subject = VIE.RDFa._toReference(subject);
             }
             return jQuery(element).find(VIE.RDFa.predicateSelector).add(jQuery(element).filter(VIE.RDFa.predicateSelector)).filter(function() {
