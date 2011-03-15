@@ -825,7 +825,6 @@
                 if (VIE.RDFa.getSubject(this) !== subject) {
                     return false;
                 }
-
                 if (!allowNestedPredicates) {
                     if (!jQuery(this).parents('[property]').length) {
                         return true;
@@ -889,10 +888,7 @@
             if (element.attr('rel')) {
                 var value = [];
                 jQuery(element).children(VIE.RDFa.subjectSelector).each(function() {
-                    var subject = VIE.RDFa.getSubject(this);
-                    if (typeof subject === 'string') {
-                        value.push(subject);
-                    }
+                    value.push(VIE.RDFa.getSubject(this));
                 });
                 return value;
             }
@@ -980,9 +976,8 @@
                 var propertyName;
                 var propertyValue;
                 var objectProperty = jQuery(this);
-
                 propertyName = VIE.RDFa.getPredicate(this); 
-
+                
                 propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
                 if (propertyValue === null &&
                     !emptyValues) {
