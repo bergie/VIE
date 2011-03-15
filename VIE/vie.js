@@ -132,6 +132,22 @@
             return VIE.EntityManager.Entities[subject];
         },
 
+        // ### VIE.EntityManager.getByType
+        // 
+        // Get list of RDF Entities matching the given type.
+        getByType: function(type) {
+            if (VIE.RDFa._isReference(type)) {
+                type = VIE.RDFa._fromReference(type);
+            }
+        
+            return _.select(VIE.EntityManager.allEntities, function(entity) {
+                if (entity.type === type) {
+                    return true;
+                }
+                return false;
+            });
+        },
+
         // ### VIE.EntityManager.getByJSONLD
         //
         // Another way to get or load entities is by passing EntityManager a valid
@@ -168,6 +184,12 @@
             if (entityInstance) {
                 properties = VIE.EntityManager._JSONtoProperties(jsonld, entityInstance.attributes);
                 entityInstance.set(properties);
+                
+                if (!entityInstance.type &&
+                    typeof jsonld.a !== 'undefined') {
+                    entityInstance.type = VIE.RDFa._fromReference(jsonld.a);
+                }
+                
                 return entityInstance;
             }
 
@@ -1012,10 +1034,12 @@
 
                 containerProperties[propertyName] = propertyValue;
             });
-            
-            jQuery(element).parent('[rev]').each(function() {
-                containerProperties[jQuery(this).attr('rev')] = VIE.RDFa.getSubject(this); 
-            });
+
+            if (jQuery(element).get(0).tagName !== 'HTML') {
+                jQuery(element).parent('[rev]').each(function() {
+                    containerProperties[jQuery(this).attr('rev')] = VIE.RDFa.getSubject(this); 
+                });
+            }
 
             return containerProperties;
         },
