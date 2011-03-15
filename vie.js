@@ -158,7 +158,9 @@
             // The entities accessed this way are singletons, so multiple calls 
             // to same subject (`@` in JSON-LD) will all return the same   
             // `VIE.RDFEntity` instance.
-            if (typeof jsonld['@'] !== 'undefined') {
+            if (typeof jsonld['@'] !== 'undefined' ||
+                (typeof jsonld['@'] === 'string' &&
+                 jsonld['@'].substr(0, 7) === '_:bnode')) {
                 entityInstance = VIE.EntityManager.getBySubject(jsonld['@']);
             }
             
@@ -540,7 +542,15 @@
             }
             var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate));
             var itemViewElement = itemView.render().el;
-            this.el.append(itemViewElement);
+            
+            // Figure out where to place the element based on its order
+            var itemOrder = this.collection.indexOf(itemInstance) - 1;
+            jQuery(this.el).children().each(function(index, element) {
+                if (index === itemOrder) {
+                    jQuery(element).before(itemViewElement);
+                    return false;
+                }
+            });
             itemViewElement.show();
             
             // Ensure we catch all inferred predicates
