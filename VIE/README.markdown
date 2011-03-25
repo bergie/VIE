@@ -1,6 +1,8 @@
 Vienna IKS Editables
 ====================
 
+![VIE](https://github.com/bergie/VIE/raw/master/vie_logo_100.png)
+
 VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://wiki.iks-project.eu/index.php/VIE) the EU-funded [IKS project](http://www.iks-project.eu/).
 
 ![Decoupled CMS communications](https://github.com/bergie/VIE/raw/master/cms-decoupled-communications.png)
