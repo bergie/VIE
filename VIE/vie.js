@@ -891,7 +891,7 @@
 
         // Figure out if a given value is a wrapped reference
         _isReference: function(value) {
-            var matcher = new RegExp("^\\<(.*)\\>$");
+            var matcher = new RegExp("^\\<([^\\>]*)\\>$");
             if (matcher.exec(value)) {
                 return true;
             }

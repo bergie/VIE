@@ -163,6 +163,18 @@ exports['test example from README'] = function(test) {
     test.done();
 };
 
+exports['Simple example with nested tags'] = function(test) {
+    var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1></div>');
+
+    var objectInstance = VIE.RDFaEntities.getInstance(html);
+
+    test.equal(objectInstance.get('dcterms:title'), '<span>News item title</span>');
+
+    VIE.cleanup();
+    test.done();
+};
+
+
 exports['test example from wikipedia'] = function(test) {
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.</p>');
 
