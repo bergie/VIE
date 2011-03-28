@@ -362,10 +362,11 @@
             _.each(instance.attributes, function(attributeValue, property) {
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
-                        if (typeof referenceInstance === 'object') {
+                        if (referenceInstance.id) {
+                            return VIE.RDFa._toReference(referenceInstance.id);
+                        } else {
                             return referenceInstance.cid.replace('c', '_:bnode');
                         }
-                        return VIE.RDFa._toReference(referenceInstance.id);
                     });
                 } else {
                     instanceLD[property] = attributeValue;
@@ -586,8 +587,19 @@
         // Ensure the collection view gets updated when items get added or removed
         initialize: function() {
             this.elementTemplate = this.options.elementTemplate;
-            _.bindAll(this, 'addItem', 'removeItem');
+            _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
             this.collection.bind('add', this.addItem);
+            this.collection.bind('refresh', this.refreshItems);
+        },
+        
+        // When a collection is refreshed, we empty the collection list and
+        // add each child separately
+        refreshItems: function(collectionInstance) {
+            var collectionView = this;
+            jQuery(this.el).empty();
+            collectionInstance.forEach(function(itemInstance) {
+                collectionView.addItem(itemInstance);
+            });
         },
 
         // When adding new items we create a new element of the child type
@@ -599,15 +611,24 @@
             }
             var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate));
             var itemViewElement = itemView.render().el;
-            
+            if (itemInstance.id) {
+                VIE.RDFa.setSubject(itemViewElement, itemInstance.id);
+            }
+                    
             // Figure out where to place the element based on its order
             var itemOrder = this.collection.indexOf(itemInstance) - 1;
-            jQuery(this.el).children().each(function(index, element) {
-                if (index === itemOrder) {
-                    jQuery(element).before(itemViewElement);
-                    return false;
-                }
-            });
+            var childElements = jQuery(this.el).children();
+            if (childElements.length === 0)
+            {
+                jQuery(this.el).append(itemViewElement);
+            } else {
+                jQuery(this.el).children().each(function(index, element) {
+                    if (index === itemOrder) {
+                        jQuery(element).before(itemViewElement);
+                        return false;
+                    }
+                });
+            }
             itemViewElement.show();
             
             // If the new instance doesn't yet have an identifier, bind it to
@@ -716,6 +737,11 @@
             }
 
             return VIE.RDFa._toReference(subject);
+        },
+        
+        // Set subject for an element
+        setSubject: function(element, subject) {
+            jQuery(element).attr('about', subject);
         },
         
         // Get predicate for an element
