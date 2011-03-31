@@ -933,6 +933,11 @@
         // In JSON-LD all references are surrounded by `<` and `>`. Convert reference
         // to a regular textual value.
         _fromReference: function(reference) {
+            if (_.isArray(reference)) {
+                return _.map(reference, function(ref) {
+                    return VIE.RDFa._fromReference(ref);
+                });
+            }
             return reference.substring(1, reference.length - 1);
         },
 
