@@ -172,7 +172,7 @@
         //
         //     var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
         //     var objectInstance = VIE.EntityManager.getByJSONLD(json);
-        getByJSONLD: function(jsonld) {
+        getByJSONLD: function(jsonld, options) {
             VIE.EntityManager.initializeCollection();
             var entityInstance;
             var properties;
@@ -194,7 +194,7 @@
             
             if (entityInstance) {
                 properties = VIE.EntityManager._JSONtoProperties(jsonld, entityInstance.attributes);
-                entityInstance.set(properties);
+                entityInstance.set(properties, options);
                 
                 if (!entityInstance.type &&
                     typeof jsonld.a !== 'undefined') {
@@ -355,16 +355,6 @@
             var instance = this;
             var instanceLD = {};
             var property;
-            
-            instanceLD['@'] = instance.getSubject();
-
-            if (instance.namespaces.length > 0) {
-                instanceLD['#'] = instance.namespaces;
-            }
-
-            if (instance.type) {
-                instanceLD.a = VIE.RDFa._toReference(instance.type);
-            }
 
             _.each(instance.attributes, function(attributeValue, property) {
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
@@ -379,6 +369,17 @@
                     instanceLD[property] = attributeValue;
                 }
             });
+            
+            instanceLD['@'] = instance.getSubject();
+
+            if (instance.namespaces.length > 0) {
+                instanceLD['#'] = instance.namespaces;
+            }
+
+            if (instance.type) {
+                instanceLD.a = VIE.RDFa._toReference(instance.type);
+            }
+            
             return instanceLD;
         }
     });
@@ -689,7 +690,7 @@
         // For more specialized scenarios this can be overridden:
         //
         //     VIE.RDFa.predicateSelector = '[property]';
-        predicateSelector: '[property],[rel],[rev]',
+        predicateSelector: '[property],[rel]',
 
         // ### VIE.RDFa.getSubject
         //
@@ -883,7 +884,7 @@
                 }
 
                 // Before writing to DOM we check that the value has actually changed.
-                if (VIE.RDFa._readPropertyValue(propertyElement) !== jsonld[propertyName]) {
+                if (VIE.RDFa._readPropertyValue(propertyName, propertyElement) !== jsonld[propertyName]) {
                     VIE.RDFa._writePropertyValue(propertyElement, jsonld[propertyName]);
                 }
             });
@@ -949,7 +950,7 @@
         },
 
         // Get value of a DOM element defining a RDFa predicate.
-        _readPropertyValue: function(element) {
+        _readPropertyValue: function(propertyName, element) {
 
             // The `content` attribute can be used for providing machine-readable
             // values for elements where the HTML presentation differs from the
@@ -968,7 +969,8 @@
             
             // `href` attribute also links to another RDF resource.
             var href = element.attr('href');
-            if (href) {
+            if (href &&
+                element.attr('rel') === propertyName) {
                 return VIE.RDFa._toReference(href);
             }
 
@@ -1069,7 +1071,7 @@
                 var objectProperty = jQuery(this);
                 propertyName = VIE.RDFa.getPredicate(this); 
                 
-                propertyValue = VIE.RDFa._readPropertyValue(objectProperty);
+                propertyValue = VIE.RDFa._readPropertyValue(propertyName, objectProperty);
                 if (propertyValue === null &&
                     !emptyValues) {
                     return;
