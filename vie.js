@@ -313,6 +313,17 @@
     VIE.RDFEntity = Backbone.Model.extend({
         namespaces: {},
         type: '',
+        
+        // Get the subject of a RDF entity. For persistent entities the subject
+        // will be returned wrapped in `<` and `>`. For non-persistent entities
+        // an anonymous `_:bnodeX` will be returned, with `X` matching the local
+        // `cid` number of the entity instance.
+        getSubject: function() {
+            if (typeof this.id === 'string') {
+                return VIE.RDFa._toReference(this.id);
+            }
+            return this.cid.replace('c', '_:bnode');
+        },
 
         // VIE's entities have a method for generating [JSON-LD](http://json-ld.org/)
         // representations of themselves. JSON-LD is a lightweight format for handling
@@ -345,11 +356,7 @@
             var instanceLD = {};
             var property;
             
-            if (typeof instance.id === 'string') {
-                instanceLD['@'] = VIE.RDFa._toReference(instance.id);
-            } else {
-                instanceLD['@'] = instance.cid.replace('c', '_:bnode');
-            }
+            instanceLD['@'] = instance.getSubject();
 
             if (instance.namespaces.length > 0) {
                 instanceLD['#'] = instance.namespaces;
