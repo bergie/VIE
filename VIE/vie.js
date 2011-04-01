@@ -159,6 +159,19 @@
                 return false;
             });
         },
+        
+        // ### VIE.EntityManager.getPredicate
+        //
+        // Get requested predicate from all loaded entities.
+        getPredicate: function(predicate) {
+            var predicates = [];
+            _.forEach(VIE.EntityManager.entities.pluck('dcterms:hasPart'), function(property) {
+                if (property) {
+                    predicates.push(property);
+                }
+            });
+            return predicates;
+        },
 
         // ### VIE.EntityManager.getByJSONLD
         //
@@ -591,6 +604,7 @@
     VIE.RDFaCollectionView = Backbone.View.extend({
     
         elementTemplate: null,
+        itemViews: {},
 
         // Ensure the collection view gets updated when items get added or removed
         initialize: function() {
@@ -637,6 +651,8 @@
                     }
                 });
             }
+
+            this.trigger('add', itemView);
             itemViewElement.show();
             
             // If the new instance doesn't yet have an identifier, bind it to
@@ -655,14 +671,17 @@
                 properties[predicate] = VIE.RDFa.getSubject(this);
                 VIE.EntityManager.getByJSONLD(properties);
             });
+            
+            this.itemViews[itemInstance] = itemView;
         },
 
         // When removing items from Collection we remove their views from the DOM.
         removeItem: function(itemInstance) {
-            if (typeof itemInstance.view === 'undefined') {
+            if (typeof this.itemViews[itemInstance] === 'undefined') {
                 return;
             }
-            itemInstance.view.el.remove();
+            this.trigger('add', this.itemViews[itemInstance]);
+            this.itemViews[itemInstance].remove();
         }
     });
 
@@ -880,7 +899,7 @@
                 var propertyName = propertyElement.attr('property');
 
                 if (typeof jsonld[propertyName] === 'undefined') {
-                    return true;
+                    jsonld[propertyName] = propertyName;
                 }
 
                 // Before writing to DOM we check that the value has actually changed.
@@ -1118,8 +1137,6 @@
         // Create an anonymized clone of an element
         _cloneElement: function(element) {
             element = jQuery(element).clone(false);
-            
-            var subject = VIE.RDFa.getSubject(element);
 
             if (typeof element.attr('about') !== 'undefined')
             {
@@ -1127,8 +1144,10 @@
                 element.attr('about', '');
             }
             element.find('[about]').attr('about', '');
-            
-            VIE.RDFa.findPredicateElements(subject, element, false).html('');
+            var subject = VIE.RDFa.getSubject(element);
+            VIE.RDFa.findPredicateElements(subject, element, false).each(function() {
+                jQuery(this).html('');
+            });
 
             return element;
         },
