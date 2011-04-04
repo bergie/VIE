@@ -206,7 +206,7 @@
             }
             
             if (entityInstance) {
-                properties = VIE.EntityManager._JSONtoProperties(jsonld, entityInstance.attributes);
+                properties = VIE.EntityManager._JSONtoProperties(jsonld, entityInstance.attributes, entityInstance.id);
                 entityInstance.set(properties, options);
                 
                 if (!entityInstance.type &&
@@ -274,7 +274,7 @@
 
         // Helper for cleaning up JSON-LD so that it can be used as properties
         // of a Backbone Model.
-        _JSONtoProperties: function(jsonld, instanceProperties) {
+        _JSONtoProperties: function(jsonld, instanceProperties, instanceId) {
             var properties;
             var references;
             var property;
@@ -302,6 +302,10 @@
                     }
                     else {
                         properties[property] = new VIE.RDFEntityCollection(references);
+                        if (instanceId) {
+                            properties[property].subject = instanceId;
+                            properties[property].predicate = property;
+                        }
                     }
                 }
             });
@@ -412,7 +416,7 @@
                 return;
             }
             if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
-                VIE.EntityManager.entities.add(entityInstance, {silent: true});
+                VIE.EntityManager.entities.add(entityInstance);
             }
         }
     });
@@ -626,15 +630,21 @@
 
         // When adding new items we create a new element of the child type
         // and append it to the list.
-        addItem: function(itemInstance) {
+        addItem: function(itemInstance, collection) {
+            if (collection !== this.collection) {
+                return;
+            }
             if (!this.elementTemplate ||
                 this.elementTemplate.length === 0) {
                 return;
             }
             var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate));
             var itemViewElement = itemView.render().el;
-            if (itemInstance.id) {
+            if (itemInstance.id &&
+                typeof itemInstance.id === 'string') {
                 VIE.RDFa.setSubject(itemViewElement, itemInstance.id);
+            } else {
+                itemInstance.id = itemViewElement.get(0);
             }
                     
             // Figure out where to place the element based on its order
