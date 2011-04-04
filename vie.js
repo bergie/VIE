@@ -293,6 +293,7 @@
                         // Object already has this reference collection, keep it
                         // and add new references
                         jQuery.each(references, function() {
+                            console.log("Existing collection", property);
                             if (instanceProperties[property].indexOf(this) === -1) {
                                 instanceProperties[property].add(this);
                             }
@@ -302,6 +303,7 @@
                     }
                     else {
                         properties[property] = new VIE.RDFEntityCollection(references);
+                        console.log("New collection", instanceId, property);
                         if (instanceId) {
                             properties[property].subject = instanceId;
                             properties[property].predicate = property;
