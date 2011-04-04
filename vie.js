@@ -217,7 +217,7 @@
                 return entityInstance;
             }
 
-            properties = VIE.EntityManager._JSONtoProperties(jsonld, {});
+            properties = VIE.EntityManager._JSONtoProperties(jsonld, {}, VIE.EntityManager._normalizeSubject(jsonld['@']));
             entityInstance = new VIE.RDFEntity(properties);
 
             // Namespace prefixes are handled by the `#` property of JSON-LD.
@@ -232,29 +232,35 @@
             if (typeof jsonld.a !== 'undefined') {
                 entityInstance.type = VIE.RDFa._fromReference(jsonld.a);
             }
-
-            // Subjects are handled by the `@` property of JSON-LD. We map this
-            // to the `id` property of our `VIE.RDFEntity` instance.
-            if (typeof jsonld['@'] === 'string') {
-                if (!VIE.RDFa._isReference(jsonld['@'])) {
-                    jsonld['@'] = VIE.RDFa._toReference(jsonld['@']);
-                }
-                entityInstance.id = VIE.RDFa._fromReference(jsonld['@']);
-                VIE.EntityManager.entities.add(entityInstance);
-            }
             
-            // When handling anonymous entities coming from RDFa, we keep their
-            // containing element as the ID so they can be matched
-            if (typeof jsonld['@'] === 'object') {
-                entityInstance.id = jsonld['@'];
-                VIE.EntityManager.entities.add(entityInstance);
-            }
-
+            // Normalize the subject, handling both proper JSON-LD and JSON-LD
+            // anonymous entities extracted from RDFa
+            entityInstance.id = VIE.EntityManager._normalizeSubject(jsonld['@']);
+            
             // All new entities must be added to the `entities` collection.
             if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
                 VIE.EntityManager.entities.add(entityInstance);
             }
             return entityInstance;
+        },
+        
+        _normalizeSubject: function(subject) {
+            // Subjects are handled by the `@` property of JSON-LD. We map this
+            // to the `id` property of our `VIE.RDFEntity` instance.
+            if (typeof subject === 'string') {
+                if (VIE.RDFa._isReference(subject)) {
+                    subject = VIE.RDFa._fromReference(subject);
+                }
+                return subject;
+            }
+            
+            // When handling anonymous entities coming from RDFa, we keep their
+            // containing element as the ID so they can be matched
+            if (typeof subject === 'object') {
+                return subject;
+            }
+            
+            return undefined;
         },
         
         // Create a list of Models for referenced properties
@@ -293,7 +299,6 @@
                         // Object already has this reference collection, keep it
                         // and add new references
                         jQuery.each(references, function() {
-                            console.log("Existing collection", property);
                             if (instanceProperties[property].indexOf(this) === -1) {
                                 instanceProperties[property].add(this);
                             }
@@ -303,9 +308,8 @@
                     }
                     else {
                         properties[property] = new VIE.RDFEntityCollection(references);
-                        console.log("New collection", instanceId, property);
                         if (instanceId) {
-                            properties[property].subject = instanceId;
+                            properties[property].subject = VIE.EntityManager._normalizeSubject(instanceId);
                             properties[property].predicate = property;
                         }
                     }
