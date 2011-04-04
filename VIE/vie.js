@@ -621,6 +621,7 @@
             this.elementTemplate = this.options.elementTemplate;
             _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
             this.collection.bind('add', this.addItem);
+            this.collection.bind('remove', this.removeItem);
             this.collection.bind('refresh', this.refreshItems);
         },
         
@@ -696,7 +697,7 @@
             if (typeof this.itemViews[itemInstance] === 'undefined') {
                 return;
             }
-            this.trigger('add', this.itemViews[itemInstance]);
+            this.trigger('remove', this.itemViews[itemInstance]);
             this.itemViews[itemInstance].remove();
         }
     });
