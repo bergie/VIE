@@ -432,6 +432,26 @@
             if (collection === VIE.EntityManager.entities) {
                 return;
             }
+
+            _.each(entityInstance.attributes, function(propertyValue, property) {
+                if (VIE.RDFa._isReference(propertyValue) ||
+                    typeof propertyValue === 'object') {
+                    references = VIE.EntityManager._referencesToModels(propertyValue);
+                    if (entityInstance.attributes[property] instanceof VIE.RDFEntityCollection) {
+                        // Object already has this reference collection, keep it
+                        // and add new references
+                        jQuery.each(references, function() {
+                            if (entityInstance.attributes[property].indexOf(this) === -1) {
+                                entityInstance.attributes[property].add(this);
+                            }
+                        });
+                    }
+                    else {
+                        entityInstance.attributes[property] = new VIE.RDFEntityCollection(references);
+                    }
+                }
+            });
+
             VIE.EntityManager.registerModel(entityInstance);
         }
     });
@@ -527,7 +547,7 @@
         },
         
         // Helper for registering views for an entity
-        _registerView: function(entityInstance, element) {
+        _registerView: function(entityInstance, element, refreshCollections) {
             var viewInstance;
             element = jQuery(element);
             
@@ -550,6 +570,9 @@
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     jQuery.each(VIE.RDFa._getElementByPredicate(property, element), function() {
                         VIE.RDFaEntities._registerCollectionView(attributeValue, this);
+                        if (refreshCollections) {
+                            attributeValue.trigger('refresh', attributeValue);
+                        }
                     });
                 }
             });
@@ -624,7 +647,6 @@
     VIE.RDFaCollectionView = Backbone.View.extend({
     
         elementTemplate: null,
-        itemViews: {},
 
         // Ensure the collection view gets updated when items get added or removed
         initialize: function() {
@@ -655,7 +677,7 @@
                 this.elementTemplate.length === 0) {
                 return;
             }
-            var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate));
+            var itemView = VIE.RDFaEntities._registerView(itemInstance, VIE.RDFa._cloneElement(this.elementTemplate), true);
             var itemViewElement = itemView.render().el;
             if (itemInstance.id &&
                 typeof itemInstance.id === 'string') {
@@ -700,25 +722,19 @@
                 properties[predicate] = VIE.RDFa.getSubject(this);
                 VIE.EntityManager.getByJSONLD(properties);
             });
-            
-            this.itemViews[itemInstance] = itemView;
         },
 
         // When removing items from Collection we remove their views from the DOM.
         removeItem: function(itemInstance) {
-            if (typeof this.itemViews[itemInstance] === 'undefined') {
-                // Try to find it from DOM
-                jQuery(VIE.RDFa.subjectSelector, this.el).filter(function() {
-                    if (VIE.RDFa.getSubject(this) === itemInstance.getSubject()) {
-                        return true;
-                    }
-                }).each(function() {
-                    jQuery(this).remove();
-                });
-                return;
-            }
-            this.trigger('remove', this.itemViews[itemInstance]);
-            this.itemViews[itemInstance].remove();
+            // Try to find it from DOM
+            jQuery(VIE.RDFa.subjectSelector, this.el).filter(function() {
+                if (VIE.RDFa.getSubject(this) === itemInstance.getSubject()) {
+                    return true;
+                }
+            }).each(function() {
+                jQuery(this).remove();
+            });
+            return;
         }
     });
 
@@ -1055,7 +1071,8 @@
 
             // For now we don't deal with multivalued properties when writing
             // contents.
-            if (value instanceof Array) {
+            if (value instanceof Array ||
+                element.attr('rel')) {
                 return true;
             }
    
@@ -1186,7 +1203,7 @@
             element.find('[about]').attr('about', '');
             var subject = VIE.RDFa.getSubject(element);
             VIE.RDFa.findPredicateElements(subject, element, false).each(function() {
-                jQuery(this).html('');
+                VIE.RDFa._writePropertyValue(jQuery(this), '');
             });
 
             return element;

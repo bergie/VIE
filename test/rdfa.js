@@ -263,3 +263,22 @@ exports['test image entitization'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['test list inside a list'] = function(test) {
+    var html = jQuery('<div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div>');
+    
+    var objectInstance = VIE.RDFaEntities.getInstance(html);
+    var parts = objectInstance.get('dc:hasPart');
+    test.equal(parts.length, 1);
+    
+    parts.remove(parts.at(0));
+    test.equal(parts.length, 0);
+    
+    parts.add({id: 'http://example.net/page#second', 'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
+    
+    test.equal(jQuery('li img', html).length, 1);
+    test.equal(jQuery('li img', html).attr('src'), 'http://example.net/otherimage.jpg');
+    
+    VIE.cleanup();
+    test.done();
+}
