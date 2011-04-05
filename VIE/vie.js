@@ -423,7 +423,7 @@
             this.bind('add', this.registerItem);
         },
         registerItem: function(entityInstance, collection) {
-            if (collection == VIE.EntityManager.entities) {
+            if (collection === VIE.EntityManager.entities) {
                 return;
             }
             VIE.EntityManager.registerModel(entityInstance);
