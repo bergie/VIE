@@ -224,3 +224,16 @@ exports['test iri wrapping'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['test unknown subject'] = function(test) {
+    var json = '{"@": "<http://www.example.com/books/wikinomics>","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
+
+    var objectInstance = VIE.EntityManager.getByJSONLD(json);
+
+    var secondInstance = VIE.EntityManager.getBySubject('<http://foo/bar>');
+    
+    test.equal(secondInstance, undefined);
+    
+    VIE.cleanup();
+    test.done();
+};

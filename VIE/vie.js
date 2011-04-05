@@ -342,10 +342,12 @@
         namespaces: {},
         type: '',
         
-        // Get the subject of a RDF entity. For persistent entities the subject
-        // will be returned wrapped in `<` and `>`. For non-persistent entities
-        // an anonymous `_:bnodeX` will be returned, with `X` matching the local
-        // `cid` number of the entity instance.
+        // Get the subject of a RDF entity. For persistent entities full URL 
+        // subjects will be returned wrapped in `<` and `>`. 
+        // For non-persistent entities an anonymous `_:bnodeX` will be returned,
+        // with `X` matching the local `cid` number of the entity instance.
+        //
+        // CURIEs will be returned as-is.
         getSubject: function() {
             if (typeof this.id === 'string' &&
                 this.id.substr(0, 7) === 'http://') {
