@@ -665,15 +665,17 @@
             }
                     
             // Figure out where to place the element based on its order
-            var itemOrder = this.collection.indexOf(itemInstance) - 1;
+            var itemOrder = this.collection.indexOf(itemInstance);
             var childElements = jQuery(this.el).children();
-            if (childElements.length === 0)
+            if (childElements.length === 0 ||
+                itemOrder > childElements.length - 1)
             {
                 jQuery(this.el).append(itemViewElement);
             } else {
                 jQuery(this.el).children().each(function(index, element) {
                     if (index >= itemOrder) {
                         jQuery(element).before(itemViewElement);
+                        placed = true;
                         return false;
                     }
                 });
