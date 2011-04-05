@@ -637,7 +637,7 @@
             var collectionView = this;
             jQuery(this.el).empty();
             collectionInstance.forEach(function(itemInstance) {
-                collectionView.addItem(itemInstance);
+                collectionView.addItem(itemInstance, collectionInstance);
             });
         },
 
