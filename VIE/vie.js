@@ -347,7 +347,8 @@
         // an anonymous `_:bnodeX` will be returned, with `X` matching the local
         // `cid` number of the entity instance.
         getSubject: function() {
-            if (typeof this.id === 'string') {
+            if (typeof this.id === 'string' &&
+                this.id.substr(0, 7) === 'http://') {
                 return VIE.RDFa._toReference(this.id);
             }
             return this.cid.replace('c', '_:bnode');
