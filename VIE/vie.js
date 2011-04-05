@@ -349,9 +349,11 @@
         //
         // CURIEs will be returned as-is.
         getSubject: function() {
-            if (typeof this.id === 'string' &&
-                this.id.substr(0, 7) === 'http://') {
-                return VIE.RDFa._toReference(this.id);
+            if (typeof this.id === 'string') {
+                if (this.id.substr(0, 7) === 'http://') {
+                    return VIE.RDFa._toReference(this.id);
+                }
+                return this.id;
             }
             return this.cid.replace('c', '_:bnode');
         },
