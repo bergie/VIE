@@ -232,7 +232,10 @@ exports['test unknown subject'] = function(test) {
 
     var secondInstance = VIE.EntityManager.getBySubject('<http://foo/bar>');
     
+    var thirdInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    
     test.equal(secondInstance, undefined);
+    test.equal(thirdInstance, objectInstance);
     
     VIE.cleanup();
     test.done();
