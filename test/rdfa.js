@@ -248,7 +248,17 @@ exports['test image entitization'] = function(test) {
     
     var icons = objectInstance.get('mgd:icon');
 
+    // Ensure we have the image correctly read
     test.equal(icons.at(0).getSubject(), '<http://example.net/image.jpg>');
+    
+    // Remove it and replace with another image
+    icons.remove(icons.at(0));
+    test.equal(jQuery('img', html).length, 0); 
+
+    icons.add({id: 'http://example.net/otherimage.jpg'});
+
+    test.equal(jQuery('img', html).length, 1);    
+    test.equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
 
     VIE.cleanup();
     test.done();
