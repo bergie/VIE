@@ -390,6 +390,7 @@
             var property;
 
             _.each(instance.attributes, function(attributeValue, property) {
+                attributeValue = instance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
                         if (referenceInstance.id) {
@@ -545,6 +546,7 @@
 
             // Find collection elements, and create collection views for them
             _.each(entityInstance.attributes, function(attributeValue, property) {
+                attributeValue = entityInstance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     jQuery.each(VIE.RDFa._getElementByPredicate(property, element), function() {
                         VIE.RDFaEntities._registerCollectionView(attributeValue, this);
