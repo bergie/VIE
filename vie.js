@@ -237,11 +237,16 @@
             // anonymous entities extracted from RDFa
             entityInstance.id = VIE.EntityManager._normalizeSubject(jsonld['@']);
             
-            // All new entities must be added to the `entities` collection.
-            if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
-                VIE.EntityManager.entities.add(entityInstance);
-            }
+            VIE.EntityManager.registerModel(entityInstance);
             return entityInstance;
+        },
+
+        // All new entities must be added to the `entities` collection.
+        registerModel: function(model) {
+            model.id = VIE.EntityManager._normalizeSubject(model.id);
+            if (VIE.EntityManager.entities.indexOf(model) === -1) {
+                VIE.EntityManager.entities.add(model);
+            }
         },
         
         _normalizeSubject: function(subject) {
@@ -421,9 +426,7 @@
             if (collection == VIE.EntityManager.entities) {
                 return;
             }
-            if (VIE.EntityManager.entities.indexOf(entityInstance) === -1) {
-                VIE.EntityManager.entities.add(entityInstance);
-            }
+            VIE.EntityManager.registerModel(entityInstance);
         }
     });
     
