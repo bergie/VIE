@@ -163,7 +163,7 @@ exports['test example from README'] = function(test) {
     test.done();
 };
 
-exports['Simple example with nested tags'] = function(test) {
+exports['test simple example with nested tags'] = function(test) {
     var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1></div>');
 
     var objectInstance = VIE.RDFaEntities.getInstance(html);
@@ -237,6 +237,19 @@ exports['test unknown subject'] = function(test) {
     test.equal(secondInstance, undefined);
     test.equal(thirdInstance, objectInstance);
     
+    VIE.cleanup();
+    test.done();
+};
+
+exports['test image entitization'] = function(test) {
+    var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1><span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span></div>');
+
+    var objectInstance = VIE.RDFaEntities.getInstance(html);
+    
+    var icons = objectInstance.get('mgd:icon');
+
+    test.equal(icons.at(0).getSubject(), '<http://example.net/image.jpg>');
+
     VIE.cleanup();
     test.done();
 };
