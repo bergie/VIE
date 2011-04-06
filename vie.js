@@ -728,7 +728,7 @@
         removeItem: function(itemInstance) {
             // Try to find it from DOM
             jQuery(VIE.RDFa.subjectSelector, this.el).filter(function() {
-                if (VIE.RDFa.getSubject(this) === itemInstance.getSubject()) {
+                if (VIE.RDFa.getSubject(this) === VIE.RDFa._toReference(itemInstance.id)) {
                     return true;
                 }
             }).each(function() {
