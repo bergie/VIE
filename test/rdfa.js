@@ -282,3 +282,36 @@ exports['test list inside a list'] = function(test) {
     VIE.cleanup();
     test.done();
 }
+
+exports['test list inside a list with two lists'] = function(test) {
+    var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#"><span property="dc:title">First part of second</span></li></ol></div></div>');
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://example.net/page');
+    var parts = objectInstance.get('dc:hasPart');
+    test.equal(parts.length, 1);
+    
+    var item = parts.at(0);
+    var image = item.get('foaf:depiction');
+    test.equal(image.length, 1);
+    
+    var secondInstance = VIE.EntityManager.getBySubject('http://example.net/secondpage');
+    var secondParts = secondInstance.get('dc:hasPart');
+    
+    secondParts.remove(secondParts.at(0));
+    test.equal(secondParts.length, 0);
+    
+    secondParts.add(item);
+    
+    // Test the internal state
+    test.equal(parts.length, 1, "Ensure first part has only the original item");
+    test.equal(secondParts.length, 1, "Ensure second part has only the added item");
+    test.equal(image.length, 1, "Ensure the item only has the original image");
+    
+    // Test the DOM
+    test.equal(jQuery('[about="http://example.net/page"] li', html).length, parts.length, "Ensure list in DOM of first part is same as the number of items in the part");
+    test.equal(jQuery('[about="http://example.net/secondpage"] li', html).length, secondParts.length, "Ensure list in DOM of second part is same as the number of items in the part");
+    test.equal(jQuery('li img', html).length, 1, "Ensure we only have the single image");
+    
+    VIE.cleanup();
+    test.done();
+}
