@@ -435,7 +435,7 @@
 
             _.each(entityInstance.attributes, function(propertyValue, property) {
                 if (VIE.RDFa._isReference(propertyValue)) {
-                    references = VIE.EntityManager._referencesToModels(propertyValue);
+                    var references = VIE.EntityManager._referencesToModels(propertyValue);
                     entityInstance.attributes[property] = new VIE.RDFEntityCollection(references);
                 }
             });
@@ -685,7 +685,6 @@
                 jQuery(this.el).children().each(function(index, element) {
                     if (index >= itemOrder) {
                         jQuery(element).before(itemViewElement);
-                        placed = true;
                         return false;
                     }
                 });
