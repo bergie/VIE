@@ -3,41 +3,42 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://wiki.iks-project.eu/index.php/VIE
-//
-//  [VIE](http://wiki.iks-project.eu/index.php/VIE) enables you to make
-//  [RDFa](http://en.wikipedia.org/wiki/RDFa) -annotated content on your
-//  web pages editable.
-//
-//  For example, if your page contains the following mark-up:
-//
-//     <p xmlns:dc="http://purl.org/dc/elements/1.1/"
-//        about="http://www.example.com/books/wikinomics">
-//       In his latest book
-//       <cite property="dc:title">Wikinomics</cite>,
-//       <span property="dc:creator">Don Tapscott</span>
-//       explains deep changes in technology,
-//       demographics and business.
-//       The book is due to be published in
-//       <span property="dc:date" content="2006-10-01">October 2006</span>.
-//     </p>
-//
-// Then with VIE you can get a proper Backbone Model object for that. First
-// scan your page for RDFa entities:
-//
-//     VIE.RDFaEntities.getInstances();
-//
-// And then just access the entity by subject:
-//
-//     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
-//     alert(myBook.get('dc:title')); // "Wikinomics"
-//
-// Properties of the entity may also be modified, and these changes will 
-// also happen on the page itself:
-//
-//     myBook.set({'dc:title':'Wikinomics, Second Edition'});
-//
-// You can also access the entities via the `VIE.EntityManager.entities` Backbone Collection.
+
 (function() {
+    //  [VIE](http://wiki.iks-project.eu/index.php/VIE) enables you to make
+    //  [RDFa](http://en.wikipedia.org/wiki/RDFa) -annotated content on your
+    //  web pages editable.
+    //
+    //  For example, if your page contains the following mark-up:
+    //
+    //     <p xmlns:dc="http://purl.org/dc/elements/1.1/"
+    //        about="http://www.example.com/books/wikinomics">
+    //       In his latest book
+    //       <cite property="dc:title">Wikinomics</cite>,
+    //       <span property="dc:creator">Don Tapscott</span>
+    //       explains deep changes in technology,
+    //       demographics and business.
+    //       The book is due to be published in
+    //       <span property="dc:date" content="2006-10-01">October 2006</span>.
+    //     </p>
+    //
+    // Then with VIE you can get a proper Backbone Model object for 
+    // that. First scan your page for RDFa entities:
+    //
+    //     VIE.RDFaEntities.getInstances();
+    //
+    // And then just access the entity by subject:
+    //
+    //     var myBook = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
+    //     alert(myBook.get('dc:title')); // "Wikinomics"
+    //
+    // Properties of the entity may also be modified, and these changes
+    // will also happen on the page itself:
+    //
+    //     myBook.set({'dc:title':'Wikinomics, Second Edition'});
+    //
+    // You can also access the entities via the `VIE.EntityManager.entities` Backbone Collection.
+    //
     // Initial setup
     // -------------
     //
