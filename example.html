@@ -8,7 +8,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script>
             GENTICS_Aloha_base = 'http://aloha-editor.org/aloha-0.9.3/aloha/';
-
             jQuery(document).ready(function() {
 
                 // Implement our own Backbone.sync method
@@ -16,13 +15,14 @@
                     console.log(method, model.toJSONLD());
                 };
 
-                // Load collections from page so they can be managed
-                VIE.CollectionManager.loadCollections();
-
                 // Functionality for adding items
                 jQuery('#addbutton').bind('click', function() {
-                    VIE.CollectionManager.collections[0].add([{}]);
+                    var containerProperty = VIE.EntityManager.getByType('http://purl.org/dc/dcmitype/Collection')[0].get('dcterms:hasPart');
+                    containerProperty.add([{}]);
                 });
+
+                // Load all RDFa entities into VIE
+                VIE.RDFaEntities.getInstances();
 
                 // Make all RDFa entities editable
                 jQuery('[typeof][about]').each(function() {
@@ -53,7 +53,7 @@
                 });
 
                 jQuery('#tweakbutton').bind('click', function() {
-                    VIE.EntityManager.allEntities[0].set({'dcterms:title': 'Hello, world!'});
+                    VIE.EntityManager.getByType('sioc:Post')[0].set({'dcterms:title': 'Hello, world!'});
                 });
             });
         </script>
