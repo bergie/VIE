@@ -174,6 +174,19 @@ exports['test simple example with nested tags'] = function(test) {
     test.done();
 };
 
+exports['test property content'] = function(test) {
+  var html = jQuery('<div about="http://twitter.com/bergie"><span property="foaf:name">Henri Bergius</span><span property="iks:online" content="0"></span></div>');
+  var person = VIE.RDFaEntities.getInstance(html);
+  test.equal(person.get('iks:online'), 0);
+
+  person.set({'iks:online': 1});
+
+  test.equal(jQuery('[property="iks:online"]', html).attr('content'), 1);
+  test.equal(jQuery('[property="iks:online"]', html).text(), '');
+
+  VIE.cleanup();
+  test.done();
+};
 
 exports['test example from wikipedia'] = function(test) {
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.</p>');
