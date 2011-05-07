@@ -489,6 +489,7 @@
             }
 
             _.each(entityInstance.attributes, function(propertyValue, property) {
+                if(property == 'id') return true;
                 if (VIE.RDFa._isReference(propertyValue)) {
                     var references = VIE.EntityManager._referencesToModels(propertyValue);
                     entityInstance.attributes[property] = new VIE.RDFEntityCollection(references);
