@@ -31,7 +31,7 @@
 
                 jQuery('#savebutton').bind('click', function() {
                     // Go through all Backbone model instances loaded for the page
-                    jQuery.each(VIE.EntityManager.allEntities, function(index, objectInstance) {
+                    VIE.EntityManager.entities.each(function(objectInstance) {
                         if (!VIE.AlohaEditable.refreshFromEditables(objectInstance)) {
                             // No changes to this object, skip
                             return true;
