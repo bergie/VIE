@@ -17,8 +17,8 @@
 
                 // Functionality for adding items
                 jQuery('#addbutton').bind('click', function() {
-                    var containerProperty = VIE.EntityManager.getByType('http://purl.org/dc/dcmitype/Collection')[0].get('dcterms:hasPart');
-                    containerProperty.add([{}]);
+                    var container = VIE.EntityManager.getBySubject('<http://example.net/blog/>').get('dcterms:hasPart').add([{}]);
+                    jQuery('[typeof="sioc:Post"][about=""]').vieSemanticAloha();
                 });
 
                 // Load all RDFa entities into VIE
@@ -70,7 +70,7 @@
     <body>
         <p>Click on the content below to edit it, then <button id="savebutton">Save</button>, <button id="addbutton">Add items</button> or <button id="tweakbutton">Change via JS</button>.</p>
 
-        <div typeof="http://purl.org/dc/dcmitype/Collection" rel="dcterms:hasPart">
+        <div about="http://example.net/blog/" rel="dcterms:hasPart" rev="dcterms:partOf">
             <article typeof="sioc:Post" about="http://example.net/blog/news_item">
                 <h1 property="dcterms:title">News item title</h1>
                 <div property="sioc:content">
