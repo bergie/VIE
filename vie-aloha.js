@@ -33,6 +33,7 @@
                     return true;
                 }
 
+                if (typeof Aloha === "undefined") { Aloha = GENTICS.Aloha; }
                 containerInstance.editables[propertyName] = new Aloha.Editable(containerProperty);
                 containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
