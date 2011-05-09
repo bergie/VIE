@@ -47,7 +47,10 @@ if (typeof VIE === 'undefined') {
 
 VIE.AlohaEditable = {
     refreshFromEditables: function(objectInstance) {
-       var modifiedProperties = {};
+        var modifiedProperties = {};
+        if (!objectInstance.editables) {
+            return false;
+        }
 
         // Go through editables of the model instance
         jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
