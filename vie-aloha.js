@@ -7,7 +7,6 @@
         };
         $.extend(opt, options);
 
-
         this.each(function() {
             var containerInstance = VIE.RDFaEntities.getInstance(jQuery(this));
             if (typeof containerInstance.editables === 'undefined') {
