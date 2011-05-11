@@ -328,3 +328,21 @@ exports['test list inside a list with two lists'] = function(test) {
     VIE.cleanup();
     test.done();
 }
+
+exports['test relation example'] = function(test) {
+    var html = jQuery('<div about="http://www.blogger.com/profile/1109404" rel="foaf:img"><img src="photo1.jpg" rel="license" resource="http://creativecommons.org/licenses/by/2.0/" property="dc:creator" content="Mark Birbeck" /></div>');
+    VIE.RDFaEntities.getInstances(html);
+
+    var profile = VIE.EntityManager.getBySubject('http://www.blogger.com/profile/1109404');
+    var images = profile.get('foaf:img');
+    test.equal(images.length, 1);
+
+    test.equal(images.at(0).get('dc:creator'), 'Mark Birbeck');
+
+    test.equal(images.at(0).id, 'photo1.jpg');
+    var licenses = images.at(0).get('license');
+    test.equal(licenses.length, 1);
+
+    VIE.cleanup();
+    test.done();
+}
