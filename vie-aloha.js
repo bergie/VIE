@@ -9,6 +9,9 @@
 
         this.each(function() {
             var containerInstance = VIE.RDFaEntities.getInstance(jQuery(this));
+            if (!containerInstance) {
+                return;
+            }
             if (typeof containerInstance.editables === 'undefined') {
                 containerInstance.editables = {};
             }

@@ -22,7 +22,7 @@ VIE.ContainerManager = {
             element.attr('about', '');
         }
         element.find('[about]').attr('about', '');
-        VIE.RDFa.findPredicateElementsForSubject(element, false).html('');
+        VIE.RDFa.findPredicateElements('', element, false).html('');
 
         return element;
     },
