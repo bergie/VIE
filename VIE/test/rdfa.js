@@ -305,6 +305,9 @@ exports['test adding anonymous elements to list'] = function(test) {
     
     parts.add({'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
 
+    test.equal(parts.at(1).toJSONLD()['@'].indexOf('_:bnode'), 0);
+    test.equal(objectInstance.toJSONLD()['dc:hasPart'][1], parts.at(1).toJSONLD()['@']);
+
     test.equal(jQuery('li img', html).length, 2);
     
     VIE.cleanup();
