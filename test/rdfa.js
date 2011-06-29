@@ -296,6 +296,21 @@ exports['test list inside a list'] = function(test) {
     test.done();
 }
 
+exports['test adding anonymous elements to list'] = function(test) {
+    var html = jQuery('<div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div>');
+    
+    var objectInstance = VIE.RDFaEntities.getInstance(html);
+    var parts = objectInstance.get('dc:hasPart');
+    test.equal(parts.length, 1);
+    
+    parts.add({'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
+
+    test.equal(jQuery('li img', html).length, 2);
+    
+    VIE.cleanup();
+    test.done();
+}
+
 exports['test list inside a list with two lists'] = function(test) {
     var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#"><span property="dc:title">First part of second</span></li></ol></div></div>');
     VIE.RDFaEntities.getInstances(html);

@@ -448,11 +448,7 @@
                 attributeValue = instance.get(property);
                 if (attributeValue instanceof VIE.RDFEntityCollection) {
                     instanceLD[property] = attributeValue.map(function(referenceInstance) {
-                        if (referenceInstance.id) {	
-                            return VIE.RDFa._toReference(referenceInstance.id);
-                        } else {
-                            return referenceInstance.cid.replace('c', '_:bnode');
-                        }
+                        return referenceInstance.getSubject();
                     });
                 } else {
                     instanceLD[property] = attributeValue;
