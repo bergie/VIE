@@ -19,3 +19,13 @@ exports['read simple microdata'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+
+exports['circular references'] = function(test) {
+    var html = jQuery('<div itemscope itemid="#henri" itemtype="http://schema.org/Person"><a itemprop="http://xmlns.com/0.1/foaf/knows" href="#manu">Manu</a> knows</div><div itemscope itemid="#manu" itemtype="http://schema.org/Person"> <a itemprop="http://xmlns.com/0.1/foaf/knows" href="#henri">Henri</a></div>');
+
+    var objectInstances = VIE.RDFaEntities.getInstances(html);
+
+    test.equal(objectInstances.length, 2);
+    VIE.cleanup();
+    test.done();
+}
