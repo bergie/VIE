@@ -1119,7 +1119,7 @@
             // values for elements where the HTML presentation differs from the
             // actual value.
             var content = element.attr('content');
-            if (content) {
+            if (content !== undefined) {
                 element.attr('content', value);
                 return;
             }
