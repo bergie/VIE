@@ -986,7 +986,7 @@
         // method accepts [jQuery selectors](http://api.jquery.com/category/selectors/)
         // as arguments.
         //
-        // Only properties matching RDFa-annotated predicates found found from
+        // Only properties matching RDFa-annotated predicates found from
         // the selected DOM element will be written.
         writeEntity: function(element, jsonld) {
             VIE.RDFa.findPredicateElements(VIE.RDFa.getSubject(element), element, true).each(function() {
