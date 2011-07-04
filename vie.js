@@ -405,7 +405,7 @@
         // CURIEs will be returned as-is.
         getSubject: function() {
             if (typeof this.id === 'string') {
-                if (this.id.substr(0, 7) === 'http://') {
+                if (this.id.substr(0, 7) === 'http://' || this.id.substr(0, 4) === 'urn:') {
                     return VIE.RDFa._toReference(this.id);
                 }
                 return this.id;
