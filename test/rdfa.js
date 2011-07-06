@@ -364,3 +364,30 @@ exports['test relation example'] = function(test) {
     VIE.cleanup();
     test.done();
 }
+
+exports['test table rows'] = function(test) {
+    VIE.cleanup();
+
+    var html = jQuery('<table border="1" width="100%" vocab="http://iks.demo.eu/" typeof="Table" about="Table42" rel="member"><tr about="SebastianG" typeof="Person"><td><span property="name">Sebastian</span></td><td><a href="http://www.dfki.de" property="affiliation">DFKI</a></td><td><span property="gender">m</span></td></tr></table>');
+
+    VIE.RDFaEntities.getInstances(html);
+
+    test.equal(VIE.EntityManager.entities.length, 2);
+    test.equal(jQuery('tr', html).length, 1);
+
+    var table = VIE.EntityManager.getBySubject('Table42');
+    table.get('member').add({
+        gender: 'm',
+        name: 'Henri Bergius',
+        id: 'bergie'
+    });
+
+    test.equal(jQuery('tr', html).length, 2);
+
+    table.get('member').remove(table.get('member').at(1));
+
+    test.equal(jQuery('tr', html).length, 1);
+
+    VIE.cleanup();
+    test.done();
+}
