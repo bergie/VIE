@@ -8,6 +8,14 @@ VIE is a utility library for implementing [decoupled Content Management systems]
 * In French, _vie_ means life, showcasing how VIE makes your website come alive
 * In English, _vie_ means striving for victory or superiority
 
+## VIE integration in nutshell
+
+Adding VIE to your system is as easy as:
+
+1. Mark up your pages with RDFa annotations
+2. Include `vie.js` into the pages
+3. Implement [Backbone.sync](http://documentcloud.github.com/backbone/#Sync)
+
 ## Common representation of content on HTML level
 
 A web editing tool has to understand the contents of the page. It has to understand what parts of the page should be editable, and how they connect together. If there is a list of news for instance, the tool needs to understand it enough to enable users to add new news items. The easy way of accomplishing this is to add some semantic annotations to the HTML pages. These annotations could be handled via Microformats, HTML5 microdata, but the most power lies with RDFa.
