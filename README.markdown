@@ -72,6 +72,7 @@ Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) f
 * Drupal
 * Jekyll
 * Plone ([GSoC 2011 proposal](http://www.google-melange.com/gsoc/proposal/review/google/gsoc2011/dalsh/1))
+* [Symfony2](https://github.com/liip/LiipVieBundle)
 
 ## Using VIE on Node.js
 
