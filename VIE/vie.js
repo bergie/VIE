@@ -1070,7 +1070,7 @@
             // values for elements where the HTML presentation differs from the
             // actual value.
             var content = element.attr('content');
-            if (content !== undefined) {
+            if (content) {
                 return content;
             }
             
@@ -1119,7 +1119,7 @@
             // values for elements where the HTML presentation differs from the
             // actual value.
             var content = element.attr('content');
-            if (content !== undefined) {
+            if (content) {
                 element.attr('content', value);
                 return;
             }
