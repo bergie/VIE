@@ -18,8 +18,8 @@ test("zart.js API", 16, function () {
 	equal(typeof z.load, 'function');
     ok(z.save);
 	equal(typeof z.save, 'function');
-    ok(z["delete"]);
-	equal(typeof z["delete"], 'function');
+    ok(z.remove);
+	equal(typeof z.remove, 'function');
     ok(z.annotate);
 	equal(typeof z.annotate, 'function');
     
