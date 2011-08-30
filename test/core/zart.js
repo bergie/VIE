@@ -46,7 +46,7 @@ test("zart.js Loadable API", 2, function () {
     var z = new Zart();
     var x = z.load({});
     ok(x);
- 	ok(x instanceof Zart.Loadable);
+ 	ok(x instanceof z.Loadable);
 });
 
 test("zart.js Savable API", 2, function () {
