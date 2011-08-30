@@ -1,7 +1,7 @@
 function Zart(config) {
   this.config = config;
   this.services = {};
-  this.entities = new Backbone.Collection();
+  this.entities = new Zart.Collection();
 }
 Zart.prototype.use = function(service, name) {
   if (!name) {
@@ -18,8 +18,8 @@ Zart.prototype.load = function(options) {
 Zart.prototype.save = function(options) {
   return new Zart.Savable(options);
 };
-Zart.prototype["delete"] = function(options) {
-  return new Zart.Deletable(options);
+Zart.prototype.remove = function(options) {
+  return new Zart.Removable(options);
 };
 Zart.prototype.annotate = function(options) {
   return new Zart.Annotatable(options);
