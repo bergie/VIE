@@ -50,6 +50,7 @@ test("zart.js Service API", 6, function () {
     raises(function() {
         z.service('rdfa').load({});
     }, "calling load() with non-Loadable value should throw an error");
+    z.service('rdfa').load(z.load({}));
 
     z.use(new z.RdfaService, "foo");
     ok(z.service('foo'));

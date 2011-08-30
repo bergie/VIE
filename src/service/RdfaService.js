@@ -4,7 +4,8 @@ Zart.prototype.RdfaService = function() {
 };
 
 Zart.prototype.RdfaService.prototype.load = function(loadable) {
-    if (!loadable instanceof this.zart.Loadable) {
+    var correct = loadable instanceof this.zart.Loadable;
+    if (!correct) {
         throw "Invalid Loadable passed";
     }
 };
