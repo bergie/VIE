@@ -28,7 +28,6 @@ test("zart.js API", 16, function () {
 test("zart.js Entities API", 6, function () {
     var z = new Zart();
     ok(z.entities instanceof z.Collection);
-    console.log(z.entities);
     equal(z.entities.length, 0);
 
     z.entities.add({
@@ -45,7 +44,7 @@ test("zart.js Entities API", 6, function () {
 test("zart.js Loadable API", 2, function () {
 	
     var z = new Zart();
-    var x = z.load();
+    var x = z.load({});
     ok(x);
  	ok(x instanceof Zart.Loadable);
 });
