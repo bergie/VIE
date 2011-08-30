@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<project name="zart.js" basedir="." default="all">
+    
+	<property name="VERSION" value="0.0.1"/>
+	    
+    <property name="DOCS_DIR" value="./docs" description="API documentation"/>
+    <property name="DIST_DIR" value="./dist"/>
+    <property name="DEMOS_DIR" value="./demos"/>
+    <property name="LIB_DIR" value="./lib"/>
+    <property name="SRC_DIR" value="./src"/>
+    <property name="TOOLS_DIR" value="./utils"/>
+    <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
+	
+	<target name="doc" description="Generates documentation for zart.js with Docco ">
+        <echo message="Generating Documentation"/>
+		<echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
+		<echo message="get it from: http://jashkenas.github.com/docco/"/>
+		<exec executable="docco" dir=".">
+  			<arg value="${DIST_DIR}/vie2-latest.debug.js" />
+  			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
+		</exec>
+    </target>
+	
+	<target name="clean" description="Tidy up project.">
+        <echo message="Deleting distribution and API documentation"/>
+        <delete dir="${DIST_DIR}"/>
+        <delete dir="${DOCS_DIR}"/>
+    </target>
+	
+	<target name="init" depends="clean">
+        <mkdir dir="${DIST_DIR}" />
+        <mkdir dir="${DOCS_DIR}" />
+	</target>
+	
+    <target name="all" depends="dist"/>
+	
+    <target name="dist" depends="init, combine, minimise" />
+    
+    <target name="zip" depends="dist">
+        <zip destfile="${DIST_DIR}/vie2-${VERSION}.zip">
+            <zipfileset dir="docs/" prefix="docs"/>
+            <zipfileset dir="service" prefix="service"/>
+            <zipfileset dir="dist/" includes="*.js"/>
+        </zip>  
+    </target>
+        
+    <target name="combine" description="combines core/*.js files into one file">
+        <echo message="Building zart.js Distribution" />
+        <concat destfile="${DIST_DIR}/zart-${VERSION}.debug.js">
+        	<fileset dir="${SRC_DIR}" includes="core/Zart.js"/>
+       	</concat>
+        <copy file="${DIST_DIR}/zart-{VERSION}.debug.js" tofile="${DIST_DIR}/zart-latest.debug.js" overwrite="true" />
+    </target>
+
+    <target name="minimise">
+        <echo message="Minimising zart.js" />
+
+        <antcall target="minimiseJSFile">
+            <param name="inputFile" value="${DIST_DIR}/zart-${VERSION}.debug.js" />
+            <param name="outputFile" value="${DIST_DIR}/zart-${VERSION}.js" />
+        </antcall>
+        <copy file="${DIST_DIR}/zart-${VERSION}.js" tofile="${DIST_DIR}/zart-latest.js" overwrite="true" />
+    </target>
+
+    <target name="minimiseJSFile">
+        <java jar="${YUI}" fork="true" failonerror="true">
+            <arg line="--type js" />
+            <arg line="-o ${outputFile}" />
+            <arg value="${inputFile}" />
+        </java>
+    </target>
+    
+</project>
