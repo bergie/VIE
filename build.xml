@@ -48,6 +48,8 @@
         <echo message="Building zart.js Distribution" />
         <concat destfile="${DIST_DIR}/zart-${VERSION}.debug.js">
         	<fileset dir="${SRC_DIR}" includes="Zart.js"/>
+            <fileset dir="${SRC_DIR}" includes="Entity.js"/>
+            <fileset dir="${SRC_DIR}" includes="Collection.js"/>
        	</concat>
         <copy file="${DIST_DIR}/zart-${VERSION}.debug.js" tofile="${DIST_DIR}/zart-latest.debug.js" overwrite="true" />
     </target>
