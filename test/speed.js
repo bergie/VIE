@@ -1,7 +1,7 @@
 (function(){
     
   var entity = undefined;
-  
+  /*
   JSLitmus.test('Type: register + unregister new type', function() {
     var newPersonType = new VIE2.Type('PersonWithAge', 'Person', [
         {id       : 'age',
@@ -28,5 +28,5 @@
       description : ['This is a test', 'This is another test']
    });
   });
-  
+  */
 })();
