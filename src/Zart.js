@@ -8,6 +8,7 @@ Zart.prototype.use = function(service, name) {
   if (!name) {
     name = service.name;
   }
+  service.zart = this;
   return this.services[name] = service;
 };
 Zart.prototype.service = function(name) {
