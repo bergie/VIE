@@ -14,18 +14,22 @@ Zart.prototype.service = function(name) {
   return this.services[name];
 };
 Zart.prototype.load = function(options) {
+  if (!options) { options = {}; }
   options.zart = this;
   return new Zart.Loadable(options);
 };
 Zart.prototype.save = function(options) {
+  if (!options) { options = {}; }
   options.zart = this;
   return new Zart.Savable(options);
 };
 Zart.prototype.remove = function(options) {
+  if (!options) { options = {}; }
   options.zart = this;
   return new Zart.Removable(options);
 };
 Zart.prototype.annotate = function(options) {
+  if (!options) { options = {}; }
   options.zart = this;
   return new Zart.Annotatable(options);
 };
