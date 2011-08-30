@@ -16,20 +16,20 @@ Zart.prototype.service = function(name) {
 Zart.prototype.load = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
-  return new Zart.Loadable(options);
+  return new this.Loadable(options);
 };
 Zart.prototype.save = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
-  return new Zart.Savable(options);
+  return new this.Savable(options);
 };
 Zart.prototype.remove = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
-  return new Zart.Removable(options);
+  return new this.Removable(options);
 };
 Zart.prototype.annotate = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
-  return new Zart.Annotatable(options);
+  return new this.Annotatable(options);
 };
