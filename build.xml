@@ -53,6 +53,7 @@
             <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
             <fileset dir="${SRC_DIR}" includes="Type.js"/>
             <fileset dir="${SRC_DIR}" includes="Loadable.js"/>
+            <fileset dir="${SRC_DIR}/service" includes="*.js"/>
        	</concat>
         <copy file="${DIST_DIR}/zart-${VERSION}.debug.js" tofile="${DIST_DIR}/zart-latest.debug.js" overwrite="true" />
     </target>
