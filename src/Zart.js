@@ -11,6 +11,9 @@ Zart.prototype.use = function(service, name) {
   return this.services[name] = service;
 };
 Zart.prototype.service = function(name) {
+  if (!this.services[name]) {
+    throw "Undefined service " + name;
+  }
   return this.services[name];
 };
 Zart.prototype.load = function(options) {

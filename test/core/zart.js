@@ -41,6 +41,25 @@ test("zart.js Entities API", 6, function () {
     equal(z.entities.at(0).get('dc:title'), 'Bar');
 });
 
+test("zart.js Service API", 6, function () {
+    var z = new Zart();
+    z.use(new z.RdfaService);
+    ok(z.service('rdfa'));
+    equal(typeof z.service('rdfa').load, 'function');
+
+    raises(function() {
+        z.service('rdfa').load({});
+    }, "calling load() with non-Loadable value should throw an error");
+
+    z.use(new z.RdfaService, "foo");
+    ok(z.service('foo'));
+    equal(typeof z.service('foo').load, 'function');
+
+    raises(function() {
+        z.service('bar');
+    }, "Calling undefined service should throw an error");
+});
+
 test("zart.js Loadable API", 2, function () {
 	
     var z = new Zart();
