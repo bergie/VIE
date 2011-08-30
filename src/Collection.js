@@ -1,2 +1,2 @@
-Zart.prototype.Collection = Backbone.Collection.Extend({
+Zart.prototype.Collection = Backbone.Collection.extend({
 });

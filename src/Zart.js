@@ -1,7 +1,7 @@
-function Zart(config) {
+Zart = function(config) {
   this.config = config;
   this.services = {};
-  this.entities = new Zart.Collection();
+  this.entities = new this.Collection();
 }
 Zart.prototype.use = function(service, name) {
   if (!name) {

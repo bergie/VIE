@@ -13,7 +13,7 @@ Zart.prototype.Entity = Backbone.Model.extend({
         if (encoding === "JSON") {
             return this.toJSON();
         }
-        if (encoding === "JSONLD) {
+        if (encoding === "JSONLD") {
             return this.toJSONLD();
         }
         throw "Unknown encoding " + encoding;
