@@ -93,7 +93,6 @@ test("zart.js Loadable API", function () {
     });
     l.execute();
     stop();
-    
 });
 
 test("zart.js Savable API", 2, function () {
@@ -102,6 +101,32 @@ test("zart.js Savable API", 2, function () {
     var x = z.save();
     ok(x);
     ok(x instanceof z.Savable);
+
+    Zart.prototype.MockService = function () {
+        this.zart = null;
+        this.name = 'mock';
+    }
+    Zart.prototype.MockService.prototype.save = function(loadable) {
+        var correct = loadable instanceof this.zart.Savable;
+        if (!correct) {
+            throw "Invalid Savable passed";
+        }
+        var result = savable.options.mockresult;
+        if (result === "success")
+            savable.resolve(result);
+        else {
+            savable.reject(result);
+        }
+    };
+    z.use(new z.MockService());
+    var l = z.save({mockresult: "success"});
+    l.using("mock");
+    l.success(function(result){
+        equal(result, "success");
+        start();
+    });
+    l.execute();
+    stop();
 });
 
 test("zart.js Removable API", 2, function () {
