@@ -24,20 +24,24 @@ Zart.prototype.RdfaService.prototype.load = function(loadable) {
             entities.push(entity);
         }
     });
-
+    console.log(entities);
     loadable.resolve(entities);
 };
 
 Zart.prototype.RdfaService.prototype.readEntity = function(element) {
-    var entity = {};
-    var subject = this.getSubject(element);
+    var subject = this.getElementSubject(element);
+
+    var entity = this.readEntityPredicates(subject, element, false);
+    if (jQuery.isEmptyObject(entity)) {
+        return null;
+    }
 
     entity['@subject'] = subject;
 
     return new this.zart.Entity(entity);
 };
 
-Zart.prototype.RdfaService.prototype.getSubject = function(element) {
+Zart.prototype.RdfaService.prototype.getElementSubject = function(element) {
     if (typeof document !== 'undefined') {
         if (element === document) {
             return document.baseURI;
@@ -76,4 +80,95 @@ Zart.prototype.RdfaService.prototype.getSubject = function(element) {
     }
 
     return "<" + subject + ">"
+};
+
+Zart.prototype.RdfaService.prototype.getElementPredicate = function(element) {
+    var predicate;
+    predicate = element.attr('property');
+    if (!predicate) {
+        predicate = element.attr('rel');
+    }
+    return predicate;
+};
+
+Zart.prototype.RdfaService.prototype.readEntityPredicates = function(subject, element, emptyValues) {
+    var service = this;
+    var entityPredicates = {};
+
+    this.findPredicateElements(subject, element, true).each(function() {
+        var predicateElement = jQuery(this);
+        var predicate = service.getElementPredicate(predicateElement);
+        var value = service.readElementValue(predicate, predicateElement);
+
+        if (value === null && !emptyValues) {
+            return;
+        }
+
+        entityPredicates[predicate] = value;
+    });
+
+    if (jQuery(element).get(0).tagName !== 'HTML') {
+        jQuery(element).parent('[rev]').each(function() {
+            entityPredicates[jQuery(this).attr('rev')] = service.getElementSubject(this); 
+        });
+    }
+
+    return entityPredicates;
+};
+
+Zart.prototype.RdfaService.prototype.findPredicateElements = function(subject, element, allowNestedPredicates) {
+    var service = this;
+    return jQuery(element).find(this.predicateSelector).add(jQuery(element).filter(this.predicateSelector)).filter(function() {
+        if (service.getElementSubject(this) !== subject) {
+            return false;
+        }
+        if (!allowNestedPredicates) {
+            if (!jQuery(this).parents('[property]').length) {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+    });
+};
+
+Zart.prototype.RdfaService.prototype.readElementValue = function(predicate, element) {
+    // The `content` attribute can be used for providing machine-readable
+    // values for elements where the HTML presentation differs from the
+    // actual value.
+    var content = element.attr('content');
+    if (content) {
+        return content;
+    }
+            
+    // The `resource` attribute can be used to link a predicate to another
+    // RDF resource.
+    var resource = element.attr('resource');
+    if (resource) {
+        return "<" + resource + ">";
+    }
+            
+    // `href` attribute also links to another RDF resource.
+    var href = element.attr('href');
+    if (href && element.attr('rel') === predicate) {
+        return "<" + href + ">";
+    }
+
+    // If the predicate is a relation, we look for identified child objects
+    // and provide their identifiers as the values. To protect from scope
+    // creep, we only support direct descentants of the element where the
+    // `rel` attribute was set.
+    if (element.attr('rel')) {
+        var value = [];
+        var service = this;
+        jQuery(element).children(this.subjectSelector).each(function() {
+            value.push(service.getElementSubject(this));
+        });
+        return value;
+    }
+
+    // If none of the checks above matched we return the HTML contents of
+    // the element as the literal value.
+    return element.html();
 };
