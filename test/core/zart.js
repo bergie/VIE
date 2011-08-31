@@ -73,23 +73,6 @@ Zart.prototype.MockService.prototype.save = function(savable) {
 };
 
 test("zart.js Service API", 6, function () {
-    Zart.prototype.MockService = function () {
-        this.zart = null;
-        this.name = 'mock';
-    }
-    Zart.prototype.MockService.prototype.load = function(loadable) {
-        var correct = loadable instanceof this.zart.Loadable;
-        if (!correct) {
-            throw "Invalid Loadable passed";
-        }
-        var result = loadable.options.mockresult;
-        if (result === "success")
-            loadable.resolve(result);
-        else {
-            loadable.reject(result);
-        }
-    };
-
     var z = new Zart();
     z.use(new z.MockService);
     ok(z.service('mock'));
