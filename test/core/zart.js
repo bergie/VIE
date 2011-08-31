@@ -1,6 +1,7 @@
 module("Core");
 
 
+
 test("zart.js API", 16, function () {
 
     ok(Zart);
@@ -41,6 +42,35 @@ test("zart.js Entities API", 7, function () {
     equal(z.entities.at(0).get('dc:title'), 'Bar');
     equal(z.entities.at(0).get('@type'), 'Thing');
 });
+
+Zart.prototype.MockService = function () {
+    this.zart = null;
+    this.name = 'mock';
+}
+Zart.prototype.MockService.prototype.load = function(loadable) {
+    var correct = loadable instanceof this.zart.Loadable;
+    if (!correct) {
+        throw "Invalid Loadable passed";
+    }
+    var result = loadable.options.mockresult;
+    if (result === "success") {
+        loadable.resolve(result);
+    } else {
+        loadable.reject(result);
+    }
+};
+Zart.prototype.MockService.prototype.save = function(savable) {
+    var correct = savable instanceof this.zart.Savable;
+    if (!correct) {
+        throw "Invalid Savable passed";
+    }
+    var result = savable.options.mockresult;
+    if (result === "success")
+        savable.resolve(result);
+    else {
+        savable.reject(result);
+    }
+};
 
 test("zart.js Service API", 6, function () {
     Zart.prototype.MockService = function () {
@@ -85,22 +115,6 @@ test("zart.js Loadable API", function () {
     ok(x);
     ok(x instanceof z.Loadable);
 
-    Zart.prototype.MockService = function () {
-        this.zart = null;
-        this.name = 'mock';
-    }
-    Zart.prototype.MockService.prototype.load = function(loadable) {
-        var correct = loadable instanceof this.zart.Loadable;
-        if (!correct) {
-            throw "Invalid Loadable passed";
-        }
-        var result = loadable.options.mockresult;
-        if (result === "success") {
-            loadable.resolve(result);
-        } else {
-            loadable.reject(result);
-        }
-    };
     z.use(new z.MockService());
     var l = z.load({mockresult: "success"});
     l.using("mock");
@@ -118,22 +132,6 @@ test("zart.js Savable API", function () {
     ok(x);
     ok(x instanceof z.Savable);
 
-    Zart.prototype.MockService = function () {
-        this.zart = null;
-        this.name = 'mock';
-    }
-    Zart.prototype.MockService.prototype.save = function(savable) {
-        var correct = savable instanceof this.zart.Savable;
-        if (!correct) {
-            throw "Invalid Savable passed";
-        }
-        var result = savable.options.mockresult;
-        if (result === "success")
-            savable.resolve(result);
-        else {
-            savable.reject(result);
-        }
-    };
     z.use(new z.MockService());
     var l = z.save({mockresult: "success"});
     l.using("mock");
@@ -146,7 +144,6 @@ test("zart.js Savable API", function () {
 });
 
 test("zart.js Removable API", 2, function () {
-    
     var z = new Zart();
     var x = z.remove();
     ok(x);
