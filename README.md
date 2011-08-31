@@ -3,6 +3,18 @@ Zart.js
 
 Zart is a new JavaScript library for managing information on a web page. It is based on existing VIE and VIE^2 libraries.
 
+## Parsing RDFa
+
+One of the key functionalities is making RDFa-annotated content on web pages editable. The way this works is that you use the RDFa service in Zart to parse annotations on a page and turn them into Backbone.js models. These models may the be manipulated to change contents on the page, or sent back to the server via [Backbone.sync](http://documentcloud.github.com/backbone/#Sync).
+
+RDFa parsing is easy:
+
+    z = new Zart();
+    z.use(new z.RdfaService());
+    z.load({element: jQuery('div')}).from('rdfa').execute().success(function(entities) {
+        console.log("We got " + entities.length + " editable objects from the page");
+    });
+
 ## I/O operations
 
 All Input/Output operations of Zart are based on the [jQuery Deferred](http://api.jquery.com/category/deferred-object/) object, which means that you can attach callbacks to them either before they run, or also after they've been run.
