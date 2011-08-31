@@ -43,17 +43,34 @@ test("zart.js Entities API", 7, function () {
 });
 
 test("zart.js Service API", 6, function () {
+    Zart.prototype.MockService = function () {
+        this.zart = null;
+        this.name = 'mock';
+    }
+    Zart.prototype.MockService.prototype.load = function(loadable) {
+        var correct = loadable instanceof this.zart.Loadable;
+        if (!correct) {
+            throw "Invalid Loadable passed";
+        }
+        var result = loadable.options.mockresult;
+        if (result === "success")
+            loadable.resolve(result);
+        else {
+            loadable.reject(result);
+        }
+    };
+
     var z = new Zart();
-    z.use(new z.RdfaService);
-    ok(z.service('rdfa'));
-    equal(typeof z.service('rdfa').load, 'function');
+    z.use(new z.MockService);
+    ok(z.service('mock'));
+    equal(typeof z.service('mock').load, 'function');
 
     raises(function() {
-        z.service('rdfa').load({});
+        z.service('mock').load({});
     }, "calling load() with non-Loadable value should throw an error");
-    z.service('rdfa').load(z.load({}));
+    z.service('mock').load(z.load({}));
 
-    z.use(new z.RdfaService, "foo");
+    z.use(new z.MockService, "foo");
     ok(z.service('foo'));
     equal(typeof z.service('foo').load, 'function');
 
@@ -78,9 +95,9 @@ test("zart.js Loadable API", function () {
             throw "Invalid Loadable passed";
         }
         var result = loadable.options.mockresult;
-        if (result === "success")
+        if (result === "success") {
             loadable.resolve(result);
-        else {
+        } else {
             loadable.reject(result);
         }
     };
