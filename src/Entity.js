@@ -1,4 +1,10 @@
 Zart.prototype.Entity = Backbone.Model.extend({
+    idAttribute: '@subject',
+
+    defaults: {
+        '@type': 'Thing'
+    },
+
     getSubject: function() {
         if (typeof this.id === 'string') {
             if (this.id.substr(0, 7) === 'http://' || this.id.substr(0, 4) === 'urn:') {
