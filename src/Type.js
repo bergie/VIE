@@ -21,12 +21,45 @@ Zart.prototype.Type = function (id, parent, attrs, options) {
     this.id = '<' + this.zart.defaultNamespace + id + '>';
     this.sid = id;
     
-    this._parent = parent;
-    this._children = [];
-    this._attrs = attrs;
+    this._parent = (jQuery.isArray(parent) || parent === undefined)? parent : [ parent ];
+    for (var p in this._parent) {
+        var parentObj = this.zart.types.get(this._parent[p]);
+        if (parentObj) {
+            parentObj._children.push(this);
+        } else {
+            throw "Parent type with id '" + this._parent[p] + "' not found!";
+        }
+    }
     
-    this.subsumes = function () {
-        //TODO
+    this._children = [];
+    this._attrs = (jQuery.isArray(attrs))? attrs : [ attrs ];
+    
+    this.isof = function (type) {
+        type = this.zart.types.get(type);
+        if (type) {
+            return type.subsumes(this.id);
+        } else {
+            throw "No valid type given";
+        }
+    };
+    
+    this.subsumes = function (type) {
+        type = this.zart.types.get(type);
+        if (type) {
+            for (var c in this._children) {
+                var childObj = this.zart.types.get(this._children[c]);
+                if (childObj) {
+                     if (childObj.id === type.id) {
+                         return true;
+                     } else {
+                         childObj.subsumes(type);
+                     }
+                }
+            }
+            return false;
+        } else {
+            throw "No valid type given";
+        }
     };
     
     this.extend = function () {
@@ -38,11 +71,16 @@ Zart.prototype.Type = function (id, parent, attrs, options) {
     };
     
     this.hierarchy = function () {
-        
+        var obj = {id : this.id, children: []};
+        for (var c in this._children) {
+            var childObj = this.zart.types.get(this._children[c]);
+            obj.children.push(childObj.hierarchy());
+        }
+        return obj;
     };
     
     this.parent = function () {
-        
+        //TODO
     };
 };
 
@@ -71,13 +109,23 @@ Zart.prototype.Types = function (zart) {
         } else if (id instanceof this.zart.Type) {
             return this._types[id.id];
         } else {
-            return null;
+            return undefined;
         }
     };
     
     this.remove = function () {
         var t = this.get(id);
         delete this._types[id];
+        for (var c in t._children) {
+            var childObj = this.zart.types.get(t._children[c]);
+            if (childObj && 
+                childObj.parent().length === 1 &&
+                childObj.parent()[0].id === t.id) {
+                    //recursively remove all children 
+                    //that inherit only from this type
+                childObj.remove();
+            }
+        }
         return t;
     };
     
