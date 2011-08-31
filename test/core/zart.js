@@ -3,25 +3,25 @@ module("Core");
 
 test("zart.js API", 16, function () {
 
-	ok(Zart);
-	equal(typeof Zart, 'function');
+    ok(Zart);
+    equal(typeof Zart, 'function');
 
     var z = new Zart();
     ok(z);
     ok(z instanceof Zart);
 
     ok(z.use);
-	equal(typeof z.use, 'function');
+    equal(typeof z.use, 'function');
     ok(z.service);
-	equal(typeof z.service, 'function');
+    equal(typeof z.service, 'function');
     ok(z.load);
-	equal(typeof z.load, 'function');
+    equal(typeof z.load, 'function');
     ok(z.save);
-	equal(typeof z.save, 'function');
+    equal(typeof z.save, 'function');
     ok(z.remove);
-	equal(typeof z.remove, 'function');
+    equal(typeof z.remove, 'function');
     ok(z.annotate);
-	equal(typeof z.annotate, 'function');
+    equal(typeof z.annotate, 'function');
 
 });
 
@@ -62,34 +62,60 @@ test("zart.js Service API", 6, function () {
     }, "Calling undefined service should throw an error");
 });
 
-test("zart.js Loadable API", 2, function () {
-	
+test("zart.js Loadable API", function () {
     var z = new Zart();
     var x = z.load({});
     ok(x);
- 	ok(x instanceof z.Loadable);
+    ok(x instanceof z.Loadable);
+
+    Zart.prototype.MockService = function () {
+        this.zart = null;
+        this.name = 'mock';
+    }
+    Zart.prototype.MockService.prototype.load = function(loadable) {
+        var correct = loadable instanceof this.zart.Loadable;
+        if (!correct) {
+            throw "Invalid Loadable passed";
+        }
+        var result = loadable.options.mockresult;
+        if (result === "success")
+            loadable.resolve(result);
+        else {
+            loadable.reject(result);
+        }
+    };
+    z.use(new z.MockService());
+    var l = z.load({mockresult: "success"});
+    l.using("mock");
+    l.success(function(result){
+        equal(result, "success");
+        start();
+    });
+    l.execute();
+    stop();
+    
 });
 
 test("zart.js Savable API", 2, function () {
-	
+    
     var z = new Zart();
     var x = z.save();
     ok(x);
- 	ok(x instanceof z.Savable);
+    ok(x instanceof z.Savable);
 });
 
 test("zart.js Removable API", 2, function () {
-	
+    
     var z = new Zart();
     var x = z.remove();
     ok(x);
- 	ok(x instanceof z.Removable);
+     ok(x instanceof z.Removable);
 });
 
 test("zart.js Annotatable API", 2, function () {
-	
+    
     var z = new Zart();
     var x = z.annotate();
     ok(x);
- 	ok(x instanceof z.Annotatable);
+     ok(x instanceof z.Annotatable);
 });
