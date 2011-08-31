@@ -14,8 +14,8 @@ Zart.prototype.Loadable = function (options) {
     // Synonyms
     this.success = this.done = deferred.done;
     this.fail = deferred.fail;
-    this.failWith = deferred.failWith;
-    this.then = deferred.then;
+    this.then = deferred.then; // Takes 2 arguments, successCallbacks, failCallbacks
+    this.always = deferred.always;
 
     this.from = this.using = function(service) {
         var serviceObj = typeof service === "string" ? this.zart.service(service) : service;

@@ -92,34 +92,35 @@ test("zart.js Service API", 6, function () {
     }, "Calling undefined service should throw an error");
 });
 
-test("zart.js Loadable API", 3, function () {
+test("zart.js Loadable API", 5, function () {
     var z = new Zart();
     var x = z.load({});
     ok(x);
     ok(x instanceof z.Loadable);
 
     z.use(new z.MockService());
-    z.load({mockresult: "success"}).using("mock").execute().success(function(result){
+    var l1 = z.load({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
     stop();
-/*
-    z.load({mockresult: "fail"}).using("mock").success(function(result){
+
+    z.load({mockresult: "fail"}).using("mock")
+    .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
         start();
     }).fail(function(result){
         equal(result, "fail");
         start();
-    });
+    }).execute();
     stop();
 
-    z.load({mockresult: "fail"}).using("mock").then(function(result){
+    z.load({mockresult: "fail"}).using("mock")
+    .always(function(result){
         ok(true);
         start();
-    })
+    }).execute();
     stop();
-*/
 });
 
 test("zart.js Savable API", function () {
@@ -129,14 +130,29 @@ test("zart.js Savable API", function () {
     ok(x instanceof z.Savable);
 
     z.use(new z.MockService());
-    var l = z.save({mockresult: "success"});
-    l.using("mock");
-    l.success(function(result){
+    var l1 = z.load({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    l.execute();
     stop();
+
+    z.save({mockresult: "fail"}).using("mock")
+    .success(function(result){
+        ok(false, "Should fail here, success shouldn't be called.");
+        start();
+    }).fail(function(result){
+        equal(result, "fail");
+        start();
+    }).execute();
+    stop();
+
+    z.save({mockresult: "fail"}).using("mock")
+    .always(function(result){
+        ok(true);
+        start();
+    }).execute();
+    stop();
+
 });
 
 test("zart.js Removable API", 2, function () {
@@ -144,7 +160,6 @@ test("zart.js Removable API", 2, function () {
     var x = z.remove();
     ok(x);
     ok(x instanceof z.Removable);
-/*
     z.use(new z.MockService());
     var l = z.remove({mockresult: "success"});
     l.using("mock");
@@ -154,7 +169,6 @@ test("zart.js Removable API", 2, function () {
     });
     l.execute();
     stop();
-*/
 });
 
 test("zart.js Annotatable API", 2, function () {
