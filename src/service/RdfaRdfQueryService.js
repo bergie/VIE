@@ -31,7 +31,8 @@ Zart.prototype.RdfaRdfQueryService.prototype.load = function(loadable) {
         var subject = this.subject.toString();
         if (!entities[subject]) {
             entities[subject] = {
-                '@subject': subject
+                '@subject': subject,
+                '@context': namespaces
             };
         }
         var propertyUri = this.property.toString();
