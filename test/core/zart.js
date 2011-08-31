@@ -2,14 +2,14 @@ module("Core");
 
 
 test("zart.js API", 16, function () {
-	
+
 	ok(Zart);
 	equal(typeof Zart, 'function');
-	
+
     var z = new Zart();
     ok(z);
     ok(z instanceof Zart);
-    
+
     ok(z.use);
 	equal(typeof z.use, 'function');
     ok(z.service);
@@ -22,7 +22,7 @@ test("zart.js API", 16, function () {
 	equal(typeof z.remove, 'function');
     ok(z.annotate);
 	equal(typeof z.annotate, 'function');
-    
+
 });
 
 test("zart.js Entities API", 7, function () {
@@ -75,7 +75,7 @@ test("zart.js Savable API", 2, function () {
     var z = new Zart();
     var x = z.save();
     ok(x);
- 	ok(x instanceof Zart.Savable);
+ 	ok(x instanceof z.Savable);
 });
 
 test("zart.js Removable API", 2, function () {
@@ -83,7 +83,7 @@ test("zart.js Removable API", 2, function () {
     var z = new Zart();
     var x = z.remove();
     ok(x);
- 	ok(x instanceof Zart.Removable);
+ 	ok(x instanceof z.Removable);
 });
 
 test("zart.js Annotatable API", 2, function () {
@@ -91,5 +91,5 @@ test("zart.js Annotatable API", 2, function () {
     var z = new Zart();
     var x = z.annotate();
     ok(x);
- 	ok(x instanceof Zart.Annotatable);
+ 	ok(x instanceof z.Annotatable);
 });
