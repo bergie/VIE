@@ -10,6 +10,7 @@ test("zart.js - Type API", function() {
     ok(typeof z.types === 'object');
     
     ok(z.types.zart);
+    ok(z.types.zart instanceof Zart);
     
     ok(z.types.add);
     ok(typeof z.types.add === 'function');
@@ -29,6 +30,9 @@ test("zart.js - Type API", function() {
     ok (thingy);
     ok(thingy instanceof z.Type);
   
+    ok(thingy.zart);
+    ok(thingy.zart instanceof Zart);
+    
     ok(thingy.subsumes);
     ok(typeof thingy.subsumes === 'function');
     
@@ -39,7 +43,7 @@ test("zart.js - Type API", function() {
     ok(typeof thingy.extend === 'function');
     
     ok(thingy.attributes);
-    ok(typeof thingy.attributes === 'function');
+    ok(thingy.attributes instanceof z.Attributes);
         
     ok(thingy.hierarchy);
     ok(typeof thingy.hierarchy === 'function');
@@ -48,7 +52,7 @@ test("zart.js - Type API", function() {
     ok(typeof thingy.supertypes === 'function');
     
     ok(thingy.subtypes);
-    ok(typeof thingy.subtypes === 'function');
+    ok(jQuery.isArray(thingy.subtypes));
     
     ok(thingy.remove);
     ok(typeof thingy.remove === 'function');
@@ -73,10 +77,10 @@ test("zart.js - Creation/Extension/Removal of types", function() {
     equal (typeof thingy.hierarchy(), 'object');
     var refHierarchy = {
         id : '<' + z.defaultNamespace + "TestThingy" + '>',
-        children: [
+        subtypes: [
             {
                 id : '<' + z.defaultNamespace + "TestPersony" + '>',
-                children: []
+                subtypes: []
             }
         ]
     };
@@ -94,8 +98,8 @@ test("zart.js - Creation/Extension/Removal of types", function() {
     aninamly.extend(specialCreaturey);
     
     equal(z.types.list().length, 4);
-    equal(persony.subtypes().length, 1);
-    equal(aninamly.subtypes().length, 1);
+    equal(persony.subtypes.length, 1);
+    equal(aninamly.subtypes.length, 1);
     equal(specialCreaturey.supertypes().length, 2);
     
     var veryspecialCreaturey = specialCreaturey.extend("VerySpecialCreatuery", []);

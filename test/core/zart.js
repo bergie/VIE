@@ -1,10 +1,9 @@
 module("Core");
 
 
+test("zart.js API", function () {
 
-test("zart.js API", 16, function () {
-
-    ok(Zart);
+    notEqual(typeof Zart, 'undefined', "No Zart object found! Please ensure that you build the project first by running 'ant'.");
     equal(typeof Zart, 'function');
 
     var z = new Zart();
