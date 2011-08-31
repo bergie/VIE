@@ -40,14 +40,12 @@ Zart.prototype.Type = function (id, attrs, options) {
             for (var c in this.subtypes) {
                 var childObj = this.zart.types.get(this.subtypes[c]);
                 if (childObj) {
-                     if (childObj.id === type.id) {
-                         subsumedByChildren = true;
-                     } else {
-                         subsumedByChildren = childObj.subsumes(type);
+                     if (childObj.id === type.id || childObj.subsumes(type)) {
+                         return true;
                      }
                 }
             }
-            return subsumedByChildren;
+            return false;
         } else {
             throw "No valid type given";
         }
@@ -62,9 +60,12 @@ Zart.prototype.Type = function (id, attrs, options) {
             this.zart.types.get(id);
         if (childObj) {
             var supertypes = childObj.supertypes();
-            this.attributes.extend(supertypes.map(function (t) {
-                return t.attributes;
-            }));
+            this.attributes.extend(
+                supertypes.map(
+                    function (t) {
+                        return t.attributes;
+                    })
+            );
             childObj._supertypes[this.id] = this;
             this.subtypes.push(childObj);
             return childObj;

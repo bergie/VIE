@@ -23,10 +23,31 @@ Zart.prototype.Attribute = function (id, range, domain, options) {
     this.id = '<' + this.zart.defaultNamespace + id + '>';
     this.sid = id;
     
-    this.extend = function (attr) {
+    this.extend = function (range) {
         //TODO: returns a new attribute
+        throw "Not yet implemented!";
     };
         
+    this.applies = function (range) {
+        if (this.zart.types.get(range)) {
+            range = this.zart.types.get(range);
+        }
+        for (var r in this.range) {
+            var x = this.zart.types.get(range[r]);
+            if (x === undefined && typeof range === "string") {
+                if (range === range[r]) {
+                    return true;
+                }
+            }
+            else {
+                if (range.isof(range[r])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    
     this.remove = function () {
         return this.domain.attributes.remove(this);
     };
@@ -58,6 +79,31 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
         if (!jQuery.isArray(attributes)) {
             return this.extend([attributes]);
         }
+        var ids = {};
+        for (var a in attributes) {
+            for (var x in attributes[a].list()) {
+                var id = attributes[a].list()[x].id;
+                if (!this.get(id)) {
+                    var count = 0;
+                    if (ids[id]) {
+                        count = ids[id];
+                    }
+                    ids[id] = (count + 1);
+                }
+            }
+        }
+        for (var id in ids) {
+            if (ids[id] === 1) {
+                //TODO: search for that attribute and just add it!
+            } else {
+                //TODO: 
+                // (1) if level of inheritance of domains equals
+                // -> extend range
+                // (2) if level of inheritance of domains differs
+                // -> only add most-specific ones
+            }
+        }
+        
         for (var a in attributes) {
             var attr = attributes[a];
             if (attr instanceof this.zart.Attributes) {
@@ -83,6 +129,9 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
                 var supertypes = this._domain.supertypes();
                 for (var s in supertypes) {
                     a = supertypes[s].attributes.get(id);
+                    if (a) {
+                        break;
+                    }
                 }
                 return a;
             }
@@ -99,37 +148,15 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
         return a;
     };
     
-    // recursively include (and merge) the inherited attributes
+    //TODO: filter for range!
     this.list = function (range) {
-        var ret = {};
-        var supertypes = this._domain.supertypes();
-        for (var s in supertypes) {
-            var sTypeObj = supertypes[s];
-            var sTypeObjAttrs = sTypeObj.attributes.list();
-            for (var a in sTypeObjAttrs) {
-                if (!ret[sTypeObjAttrs[a].id]) {
-                    ret[sTypeObjAttrs[a].id] = sTypeObjAttrs[a];
-                } else {
-                    var oldRange = ret[sTypeObjAttrs[a].id].range;
-                    var newRange = sTypeObjAttrs[a].range;
-                    //TODO: merge!!!
-                    
-                    ret[sTypeObjAttrs[a].id] = sTypeObjAttrs[a];
-                }
-            }
-        }
+        var ret = [];
         for (var a in this._attributes) {
-            if (!ret[this._attributes[a].id]) {
-                ret[this._attributes[a].id] = this._attributes[a];
-            } else {
-                ret[this._attributes[a].id] = this._attributes[a];
+            if (!range || this._attributes[a].applies(range)) {
+                ret.push(this._attributes[a]);
             }
         }
-        var x = [];
-        for (var r in ret) {
-            x.push(ret[r]);
-        }
-        return x;
+        return ret;
     };
     
     for (var a in attrs) {

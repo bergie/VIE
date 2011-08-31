@@ -50,6 +50,9 @@ test("zart.js - Attribute API", function() {
     ok(name.extend);
     equal(typeof name.extend, 'function');
     
+    ok(name.applies);
+    equal(typeof name.applies, 'function');
+    
     ok(name.range);
     ok(jQuery.isArray(name.range));
     
@@ -62,63 +65,105 @@ test("zart.js - Creation/Alteration/Removal of Attributes", function() {
     
     var z = new Zart();
     
-    var thingy = z.types.add("TestThingy", [
+    var tt1 = z.types.add("TestType1", [
         {
-            id: "name",
+            id: "attr0",
             range: "xsd:string"
         }
     ]);
-    
-    var persony = thingy.extend("TestPersony", [
+    var tt2 = z.types.add("TestType2", [
         {
-            id: "knows",
-            range: "TestPersony"
+            id: "attr0",
+            range: "xsd:string"
+        },
+        {
+            id: "attr1",
+            range: "xsd:string"
+        },
+        {
+            id: "attr2",
+            range: "xsd:string"
         }
     ]);
-    
-    var animaly = thingy.extend("TestAnimaly", [
+    var tt3 = z.types.add("TestType3", [
         {
-            id: "knows",
-            range: "TestAnimaly"
-        }
-    ]);
-    
-    var animaly2 = thingy.extend("TestAnimaly2", [
-        {
-            id: "knows",
-            range: "TestAnimaly"
-        }
-    ]);
-    
-    var creaturey = persony.extend("TestCreaturey", [
-        {
-            id: "name",
+            id: "attr0",
             range: "xsd:integer"
         },
         {
-            id: "label",
+            id: "attr1",
             range: "xsd:string"
+        }
+
+    ]);
+    var tt4 = z.types.add("TestType4", [
+        {
+            id: "attr0",
+            range: "xsd:double"
         }
     ]);
     
-    animaly.extend(creaturey);
-    animaly2.extend(creaturey);
+    var tt5 = tt2.extend("TestType5", []);
+    tt3.extend(tt5);
     
-    ok(creaturey.attributes);
-    ok(creaturey.attributes instanceof z.Attributes);
-    ok(jQuery.isArray(creaturey.attributes.list()));
-    equal(creaturey.attributes.list().length, 3);
-
-    equal(creaturey.attributes.get('name').range.length, 1);
-    equal(creaturey.attributes.get('name').range[0], "xsd:integer");
-    equal(creaturey.attributes.get('label').range.length, 1);
-    equal(creaturey.attributes.get('label').range[0], "xsd:string");
+    var tt6 = tt3.extend("TestType6", [
+        {
+            id: "attr3",
+            range: "xsd:string"
+        }
+    ]);
+    tt4.extend(tt6);
     
-    ok(creaturey.attributes.get('knows'));
-    equal(creaturey.attributes.get('knows').range.length, 2);
-    equal(creaturey.attributes.get('knows').range[0], "TestAnimaly");
-    equal(creaturey.attributes.get('knows').range[1], "TestPersony");
+    //setting up ends here
+    //now start testing
     
-    equal(creaturey.attributes.get('unknownAttribute'), undefined);
+    ok(tt1);
+    ok(tt2);
+    ok(tt3);
+    ok(tt4);
+    ok(tt5);
+    ok(tt6);
+    
+    ok (tt1.attributes);
+    ok(tt1.attributes instanceof z.Attributes);
+    ok(jQuery.isArray(tt1.attributes.list()));
+    
+    equal(tt1.attributes.list().length, 1);
+    equal(tt2.attributes.list().length, 3);
+    equal(tt3.attributes.list().length, 2);
+    equal(tt4.attributes.list().length, 1);
+    equal(tt5.attributes.list().length, 3);
+    equal(tt6.attributes.list().length, 4);
+    equal(tt6.attributes.list("xsd:string").length, 2);
+    
+    equal(tt1.attributes.get('attr0').range.length, 1);
+    equal(tt1.attributes.get('attr0').range[0], "xsd:string");
+    equal(tt2.attributes.get('attr0').range.length, 1);
+    equal(tt2.attributes.get('attr0').range[0], "xsd:string");
+    equal(tt2.attributes.get('attr1').range.length, 1);
+    equal(tt2.attributes.get('attr1').range[0], "xsd:string");
+    equal(tt2.attributes.get('attr2').range.length, 1);
+    equal(tt2.attributes.get('attr2').range[0], "xsd:string");
+    equal(tt3.attributes.get('attr0').range.length, 1);
+    equal(tt3.attributes.get('attr0').range[0], "xsd:integer");
+    equal(tt3.attributes.get('attr1').range.length, 1);
+    equal(tt3.attributes.get('attr1').range[0], "xsd:string");
+    equal(tt4.attributes.get('attr0').range.length, 1);
+    equal(tt4.attributes.get('attr0').range[0], "xsd:double");
+    equal(tt5.attributes.get('attr0').range.length, 1);
+    equal(tt5.attributes.get('attr0').range[0], "xsd:integer");
+    equal(tt5.attributes.get('attr1').range.length, 1);
+    equal(tt5.attributes.get('attr1').range[0], "xsd:string");
+    equal(tt5.attributes.get('attr2').range.length, 1);
+    equal(tt5.attributes.get('attr2').range[0], "xsd:string");
+    equal(tt6.attributes.get('attr0').range.length, 2);
+    equal(tt6.attributes.get('attr0').range[0], "xsd:integer");
+    equal(tt6.attributes.get('attr0').range[1], "xsd:double");
+    equal(tt6.attributes.get('attr1').range.length, 1);
+    equal(tt6.attributes.get('attr1').range[0], "xsd:string");
+    equal(tt6.attributes.get('attr3').range.length, 1);
+    equal(tt6.attributes.get('attr3').range[0], "xsd:string");
+    
+    equal(tt1.attributes.get('unknownAttribute'), undefined);
     
 });

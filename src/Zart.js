@@ -3,6 +3,7 @@ Zart = function(config) {
   this.config = config;
   this.services = {};
   this.entities = new this.Collection();
+  this.defaultNamespace = "http://schema.org/";
   this.types = new this.Types({zart: this});
 }
 Zart.prototype.use = function(service, name) {
