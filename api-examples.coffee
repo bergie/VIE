@@ -90,8 +90,8 @@ zart.load({element: "div"}).from(new zart.RdfaService());
 
 zart.load(queryParams)
     .from("stanbol")
-    .execute
-        success: (entities) ->
+    .execute()
+    .success (entities) ->
             console.log entities
 
 # Store
