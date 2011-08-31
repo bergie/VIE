@@ -11,6 +11,7 @@ test("Test RDFa parsing", function() {
         equal(entities.length, 2);
 
         equal(entities[1].id, '<http://dbpedia.org/resource/Albert_Einstein>');
+        equal(entities[1].get('foaf:name'), 'Albert Einstein');
 
         start();
     });

@@ -24,7 +24,6 @@ Zart.prototype.RdfaService.prototype.load = function(loadable) {
             entities.push(entity);
         }
     });
-    console.log(entities);
     loadable.resolve(entities);
 };
 
