@@ -3,7 +3,7 @@ Zart = function(config) {
   this.config = config;
   this.services = {};
   this.entities = new this.Collection();
-  this.types = new this.Types(this);
+  this.types = new this.Types({zart: this});
 }
 Zart.prototype.use = function(service, name) {
   if (!name) {

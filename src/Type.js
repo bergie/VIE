@@ -2,7 +2,7 @@
 // Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
 //
 
-Zart.prototype.Type = function (id, parent, attrs, options) {
+Zart.prototype.Type = function (id, attrs, options) {
     if (id === undefined || typeof id !== 'string') {
         throw "The type constructor needs an 'id' of type string! E.g., 'Person'";
     }
@@ -21,17 +21,9 @@ Zart.prototype.Type = function (id, parent, attrs, options) {
     this.id = '<' + this.zart.defaultNamespace + id + '>';
     this.sid = id;
     
-    this._parent = (jQuery.isArray(parent) || parent === undefined)? parent : [ parent ];
-    for (var p in this._parent) {
-        var parentObj = this.zart.types.get(this._parent[p]);
-        if (parentObj) {
-            parentObj._children.push(this);
-        } else {
-            throw "Parent type with id '" + this._parent[p] + "' not found!";
-        }
-    }
-    
+    this._parents = {};
     this._children = [];
+    
     this._attrs = (jQuery.isArray(attrs))? attrs : [ attrs ];
     
     this.isof = function (type) {
@@ -46,24 +38,36 @@ Zart.prototype.Type = function (id, parent, attrs, options) {
     this.subsumes = function (type) {
         type = this.zart.types.get(type);
         if (type) {
+            var subsumedByChildren = false;
             for (var c in this._children) {
                 var childObj = this.zart.types.get(this._children[c]);
                 if (childObj) {
                      if (childObj.id === type.id) {
-                         return true;
+                         subsumedByChildren = true;
                      } else {
-                         childObj.subsumes(type);
+                         subsumedByChildren = childObj.subsumes(type);
                      }
                 }
             }
-            return false;
+            return subsumedByChildren;
         } else {
             throw "No valid type given";
         }
     };
     
-    this.extend = function () {
-        //TODO
+    this.extend = function (id, attrs, options) {
+        if (!options) { options = {} };
+        options.zart = this.zart;
+        
+        var childObj = (typeof id === "string")?        
+            this.zart.types.add(id, attrs, options) :
+            this.zart.types.get(id);
+        if (childObj) {
+            childObj._parents[this.id] = this;
+            this._children.push(childObj);
+            return childObj;
+        }
+        return undefined;
     };
     
     this.attributes = function () {
@@ -79,25 +83,37 @@ Zart.prototype.Type = function (id, parent, attrs, options) {
         return obj;
     };
     
-    this.parent = function () {
-        //TODO
+    this.supertypes = function () {
+        var ret = [];
+        for (var p in this._parents) {
+            ret.push(this._parents[p]);
+        }
+        return ret;
     };
+    
+    this.subtypes = function () {
+        return this._children;
+    };
+    
+    this.remove = function () {
+        return this.zart.types.remove(this);
+    }
 };
 
-Zart.prototype.Types = function (zart) {
+Zart.prototype.Types = function (options) {
     
-    this.zart = zart;
+    this.zart = options.zart;
     
     this._types = {},
     
-    this.add = function (id, parent, attrs) {
+    this.add = function (id, attrs) {
         if (this.get(id)) {
             return this.get(id);
         } else {
             var options = {
                 zart : this.zart
             };
-            var t = new this.zart.Type(id, parent, attrs, options);
+            var t = new this.zart.Type(id, attrs, options);
             this._types[t.id] = t;
             return t;
         }
@@ -113,17 +129,20 @@ Zart.prototype.Types = function (zart) {
         }
     };
     
-    this.remove = function () {
+    this.remove = function (id) {
         var t = this.get(id);
-        delete this._types[id];
+        delete this._types[t.id];
         for (var c in t._children) {
-            var childObj = this.zart.types.get(t._children[c]);
-            if (childObj && 
-                childObj.parent().length === 1 &&
-                childObj.parent()[0].id === t.id) {
+            var childObj = this.get(t._children[c]);
+            if (childObj) {
+                if (childObj.supertypes().length === 1 &&
+                    childObj.supertypes()[0].id === t.id) {
                     //recursively remove all children 
                     //that inherit only from this type
-                childObj.remove();
+                    this.zart.types.remove(childObj);
+                } else {
+                    delete childObj._parents[t.id];
+                }
             }
         }
         return t;
