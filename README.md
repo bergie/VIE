@@ -3,6 +3,12 @@ Zart.js
 
 Zart is a new JavaScript library for managing information on a web page. It is based on existing VIE and VIE^2 libraries.
 
+## I/O operations
+
+All Input/Output operations of Zart are based on the [jQuery Deferred](http://api.jquery.com/category/deferred-object/) object, which means that you can attach callbacks to them either before they run, or also after they've been run.
+
+The operations may either succeed, in which case the `then` callbacks will fire, or be rejected, in which case the `fail` callbacks will fire. Any `then` callbacks will fire in either case.
+
 ## Dependencies
 
 Zart uses the following JavaScript libraries:
