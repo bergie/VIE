@@ -1,6 +1,6 @@
 module("zart.js - RDFa Service");
 
-asyncTest("Test RDFa parsing", function() {
+test("Test RDFa parsing", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
@@ -8,7 +8,12 @@ asyncTest("Test RDFa parsing", function() {
 
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
+        equal(entities.length, 2);
+
+        equal(entities[0].id, 'http://dbpedia.org/resource/Albert_Einstein');
+
         start();
     });
+    stop();
 });
 
