@@ -3,6 +3,18 @@ Zart.js
 
 Zart is a new JavaScript library for managing information on a web page. It is based on existing VIE and VIE^2 libraries.
 
+## Dependencies
+
+Zart uses the following JavaScript libraries:
+
+* [jQuery](http://jquery.com/) for DOM manipulation and [Deferreds](http://api.jquery.com/category/deferred-object/)
+* [Backbone.js](http://documentcloud.github.com/backbone/) for entities (models) and collections
+* [Underscore.js](http://documentcloud.github.com/underscore/) for various JavaScript utilities
+
+Some functionality in Zart additionally uses:
+
+* [RdfQuery](http://code.google.com/p/rdfquery/) as a triplestore and for reasoning over rules
+
 ## Development
 
 Zart development is coordinated in IKS's [GitHub account](https://github.com/IKS/zart.js). To contribute, just fork the repository and send pull requests. Contributions that include their own unit tests appreciated!
