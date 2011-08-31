@@ -1,4 +1,4 @@
-module("zart.js - RDFa Service");
+module("zart.js - RDFa RdfQuery Service");
 
 test("Test RdfQuery RDFa parsing example", function() {
     var z = new Zart();
