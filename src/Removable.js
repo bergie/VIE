@@ -1,12 +1,21 @@
 
-Zart.prototype.Removable = function (options) {
-    jQuery.Deferred.apply(this);
+Zart.prototype.Removable = function(options){
+    var deferred = jQuery.Deferred();
     this.options = options;
     this.services = options.from || options.using || [];
     this.zart = options.zart;
 
+    // Public deferred-methods
+    this.resolve = deferred.resolve;
+    this.resolveWith = deferred.resolveWith;
+    this.reject = deferred.reject;
+    this.rejectWith = deferred.rejectWith;
+
     // Synonyms
-    this.success = this.done;
+    this.success = this.done = deferred.done;
+    this.fail = deferred.fail;
+    this.then = deferred.then; // Takes 2 arguments, successCallbacks, failCallbacks
+    this.always = deferred.always;
 
     this.from = this.using = function(service) {
         var serviceObj = typeof service === "string" ? this.zart.service(service) : service;
@@ -24,4 +33,3 @@ Zart.prototype.Removable = function (options) {
         return this;
     }
 }
-Zart.prototype.Removable.prototype = new jQuery.Deferred();
