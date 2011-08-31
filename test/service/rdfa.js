@@ -1,6 +1,6 @@
 module("zart.js - RDFa Service");
 
-test("Test RDFa parsing", function() {
+test("Test simple RDFa parsing", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
@@ -12,9 +12,29 @@ test("Test RDFa parsing", function() {
 
         equal(entities[1].id, '<http://dbpedia.org/resource/Albert_Einstein>');
         equal(entities[1].get('foaf:name'), 'Albert Einstein');
+        equal(entities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
 
         start();
     });
     stop();
 });
 
+/**
+ * This test doesn't work with QUnit
+test("Test global entity with a base URL", function() {
+    var z = new Zart();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('<html><head><base href="http://www.example.org/jo/blog" /><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
+
+    z.load({element: html}).from('rdfa').execute().done(function(entities) {
+        ok(entities);
+        equal(entities.length, 1);
+        equal(entities[0].get('dc:creator'), 'Jo');
+        equal(entities[0].id, '<http://www.example.org/jo/blog>');
+
+        start();
+    });
+    stop();
+});
+*/
