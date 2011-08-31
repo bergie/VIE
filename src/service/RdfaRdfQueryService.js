@@ -31,13 +31,19 @@ Zart.prototype.RdfaRdfQueryService.prototype.load = function(loadable) {
         var subject = this.subject.toString();
         if (!entities[subject]) {
             entities[subject] = {
-                '@subject': subject
+                '@subject': subject,
+                '@context': namespaces
             };
         }
         var propertyUri = this.property.toString();
 
         var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: namespaces});
-        entities[subject][propertyCurie] = this.object.toString();
+
+        if (typeof this.object.value === "string") {
+            entities[subject][propertyCurie] = this.object.value;
+        } else {
+            entities[subject][propertyCurie] = this.object.toString();
+        }
     });
 
     zartEntities = [];
