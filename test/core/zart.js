@@ -71,6 +71,30 @@ Zart.prototype.MockService.prototype.save = function(savable) {
         savable.reject(result);
     }
 };
+Zart.prototype.MockService.prototype.remove = function(removable) {
+    var correct = removable instanceof this.zart.Removable;
+    if (!correct) {
+        throw "Invalid Removable passed";
+    }
+    var result = removable.options.mockresult;
+    if (result === "success")
+        removable.resolve(result);
+    else {
+        removable.reject(result);
+    }
+};
+Zart.prototype.MockService.prototype.annotate = function(annotatable) {
+    var correct = annotatable instanceof this.zart.Annotatable;
+    if (!correct) {
+        throw "Invalid Annotatable passed";
+    }
+    var result = annotatable.options.mockresult;
+    if (result === "success")
+        annotatable.resolve(result);
+    else {
+        annotatable.reject(result);
+    }
+};
 
 test("zart.js Service API", 6, function () {
     var z = new Zart();
@@ -92,7 +116,7 @@ test("zart.js Service API", 6, function () {
     }, "Calling undefined service should throw an error");
 });
 
-test("zart.js Loadable API", 3, function () {
+test("zart.js Loadable API", 5, function () {
     var z = new Zart();
     var x = z.load({});
     ok(x);
@@ -104,62 +128,115 @@ test("zart.js Loadable API", 3, function () {
         start();
     });
     stop();
-/*
-    z.load({mockresult: "fail"}).using("mock").success(function(result){
+
+    z.load({mockresult: "fail"}).using("mock")
+    .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
         start();
     }).fail(function(result){
         equal(result, "fail");
         start();
-    });
+    }).execute();
     stop();
 
-    z.load({mockresult: "fail"}).using("mock").then(function(result){
+    z.load({mockresult: "fail"}).using("mock")
+    .always(function(result){
         ok(true);
         start();
-    })
+    }).execute();
     stop();
-*/
 });
 
-test("zart.js Savable API", function () {
+test("zart.js Savable API", 5, function () {
     var z = new Zart();
     var x = z.save();
     ok(x);
     ok(x instanceof z.Savable);
 
     z.use(new z.MockService());
-    var l = z.save({mockresult: "success"});
-    l.using("mock");
-    l.success(function(result){
+    z.save({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    l.execute();
     stop();
+
+    z.save({mockresult: "fail"}).using("mock")
+    .success(function(result){
+        ok(false, "Should fail here, success shouldn't be called.");
+        start();
+    }).fail(function(result){
+        equal(result, "fail");
+        start();
+    }).execute();
+    stop();
+
+    z.save({mockresult: "fail"}).using("mock")
+    .always(function(result){
+        ok(true);
+        start();
+    }).execute();
+    stop();
+
 });
 
-test("zart.js Removable API", 2, function () {
+test("zart.js Removable API", 5, function () {
     var z = new Zart();
     var x = z.remove();
     ok(x);
     ok(x instanceof z.Removable);
-/*
+
     z.use(new z.MockService());
-    var l = z.remove({mockresult: "success"});
-    l.using("mock");
-    l.success(function(result){
+    z.remove({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    l.execute();
     stop();
-*/
+
+    z.remove({mockresult: "fail"}).using("mock")
+    .success(function(result){
+        ok(false, "Should fail here, success shouldn't be called.");
+        start();
+    }).fail(function(result){
+        equal(result, "fail");
+        start();
+    }).execute();
+    stop();
+
+    z.remove({mockresult: "fail"}).using("mock")
+    .always(function(result){
+        ok(true);
+        start();
+    }).execute();
+    stop();
 });
 
-test("zart.js Annotatable API", 2, function () {
+test("zart.js Annotatable API", 5, function () {
     var z = new Zart();
     var x = z.annotate();
     ok(x);
-     ok(x instanceof z.Annotatable);
+    ok(x instanceof z.Annotatable);
+
+    z.use(new z.MockService());
+    z.annotate({mockresult: "success"}).using("mock").execute().success(function(result){
+        equal(result, "success");
+        start();
+    });
+    stop();
+
+    z.annotate({mockresult: "fail"}).using("mock")
+    .success(function(result){
+        ok(false, "Should fail here, success shouldn't be called.");
+        start();
+    }).fail(function(result){
+        equal(result, "fail");
+        start();
+    }).execute();
+    stop();
+
+    z.annotate({mockresult: "fail"}).using("mock")
+    .always(function(result){
+        ok(true);
+        start();
+    }).execute();
+    stop();
 });
