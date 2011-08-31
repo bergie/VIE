@@ -34,7 +34,7 @@ Zart.prototype.RdfaService.prototype.readEntity = function(element) {
 
     entity['@subject'] = subject;
 
-    return entity;
+    return new this.zart.Entity(entity);
 };
 
 Zart.prototype.RdfaService.prototype.getSubject = function(element) {
