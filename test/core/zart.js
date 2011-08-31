@@ -112,8 +112,7 @@ test("zart.js Loadable API", function () {
     stop();
 });
 
-test("zart.js Savable API", 2, function () {
-    
+test("zart.js Savable API", function () {
     var z = new Zart();
     var x = z.save();
     ok(x);
@@ -123,8 +122,8 @@ test("zart.js Savable API", 2, function () {
         this.zart = null;
         this.name = 'mock';
     }
-    Zart.prototype.MockService.prototype.save = function(loadable) {
-        var correct = loadable instanceof this.zart.Savable;
+    Zart.prototype.MockService.prototype.save = function(savable) {
+        var correct = savable instanceof this.zart.Savable;
         if (!correct) {
             throw "Invalid Savable passed";
         }
