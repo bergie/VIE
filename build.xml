@@ -57,6 +57,7 @@
             <fileset dir="${SRC_DIR}" includes="Removable.js"/>
             <fileset dir="${SRC_DIR}" includes="Annotatable.js"/>
         	<fileset dir="${SRC_DIR}/service" includes="*.js"/>
+            <fileset dir="${SRC_DIR}/view" includes="*.js"/>
         </concat>
         <copy file="${DIST_DIR}/zart-${VERSION}.debug.js" tofile="${DIST_DIR}/zart-latest.debug.js" overwrite="true" />
     </target>

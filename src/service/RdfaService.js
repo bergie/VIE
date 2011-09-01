@@ -6,6 +6,7 @@ Zart.prototype.RdfaService = function(options) {
     this.name = 'rdfa';
     this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
+    this.views = [];
 };
 
 Zart.prototype.RdfaService.prototype.load = function(loadable) {
@@ -19,12 +20,20 @@ Zart.prototype.RdfaService.prototype.load = function(loadable) {
 
     var entities = [];
     jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
-        var entity = service.readEntity(this);
+        var entity = service.readEntity(jQuery(this));
         if (entity) {
             entities.push(entity);
         }
     });
     loadable.resolve(entities);
+};
+
+Zart.prototype.RdfaService.prototype.save = function(savable) {
+    var service = this;
+    var correct = savable instanceof this.zart.Savable;
+    if (!correct) {
+        throw "Invalid Savable passed";
+    }
 };
 
 Zart.prototype.RdfaService.prototype.readEntity = function(element) {
@@ -37,7 +46,32 @@ Zart.prototype.RdfaService.prototype.readEntity = function(element) {
 
     entity['@subject'] = subject;
 
-    return new this.zart.Entity(entity);
+    var entityInstance = new this.zart.Entity(entity);
+    this.registerEntityView(entityInstance, element);
+    return entityInstance;
+};
+
+Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, element) {
+    var viewInstance;
+    jQuery.each(this.views, function() {
+        if (this.el.get(0) === element.get(0)) {
+            viewInstance = this;
+            return false;
+        }
+    });
+
+    if (viewInstance) {
+        return viewInstance;
+    }
+
+    viewInstance = new this.zart.view.Entity({
+        model: entity,
+        el: element,
+        tagName: element.get(0).nodeName,
+        zart: this.zart,
+        service: this.name
+    });
+    this.views.push(viewInstance);
 };
 
 Zart.prototype.RdfaService.prototype.getElementSubject = function(element) {
