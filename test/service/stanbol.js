@@ -24,7 +24,8 @@ test("Zart.js StanbolService - Annotate", function () {
     
     stop(5000); // 5 second timeout
     z.annotate({element: elem}).using('stanbol').execute().done(function(entities) {
-        //debugger;
+        console.log(entities);
+
         ok(entities);
         //ok(entities.length > 0);
         //TODO: add more tests
