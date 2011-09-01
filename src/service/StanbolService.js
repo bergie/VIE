@@ -2,13 +2,15 @@
 // Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
 // Author: <a href="">Szaby Gruenwald</a>
 //
-
+(function(){
 Zart.prototype.StanbolService = function(options) {
     if (!options) {
         options = {
             url: 'http://dev.iks-project.eu:8080/'
         };
     }
+    this.options = options;
+
     this.zart = null;
     this.name = 'stanbol';
     this.namespaces = {
@@ -59,10 +61,8 @@ Zart.prototype.StanbolService = function(options) {
                  };
              }(this.namespaces)
          }
-    ]
-
-    this.baseUrl = options.url.replace(/\/$/, '');
-    this.enhancerUrlPrefix = "/engines/";
+    ];
+    this.connector = new StanbolConnector(this.options);
 };
 
 Zart.prototype.StanbolService.prototype = {
@@ -87,19 +87,10 @@ Zart.prototype.StanbolService.prototype = {
                 };
             }(service, element, annotatable);
 
-            var enhancerUrl = service.baseUrl + service.enhancerUrlPrefix;
+            this.connector.engines(text, callback, {defaultProxyUrl: this.options.defaultProxyUrl || this.zart.defaultProxyUrl});
 
-            jQuery.ajax({
-                complete: callback,
-                type: "POST",
-                url: (this.zart.defaultProxyUrl) ? this.zart.defaultProxyUrl : enhancerUrl,
-                data: (this.zart.defaultProxyUrl) ? {
-                        proxy_url: enhancerUrl, 
-                        content: text,
-                        verb: "POST",
-                        format: "application/rdf+json"
-                    } : text
-            });
+
+
         } else {
             throw "No text found in element.";
         }
@@ -174,6 +165,26 @@ Zart.prototype.StanbolService.prototype = {
     }
 };
 
-Zart.prototype.StanbolService.prototype.getSites = function (loadable) {
-
+var StanbolConnector = function(options){
+    this.options = options;
+    this.baseUrl = options.url.replace(/\/$/, '');
+    this.enhancerUrlPrefix = "/engines/";
+};
+StanbolConnector.prototype = {
+    engines: function(text, callback, options) {
+        var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
+        var proxyUrl = options.defaultProxyUrl || this.options.defaultProxyUrl;
+        jQuery.ajax({
+            complete: callback,
+            type: "POST",
+            url: proxyUrl || enhancerUrl,
+            data: (proxyUrl) ? {
+                    proxy_url: enhancerUrl, 
+                    content: text,
+                    verb: "POST",
+                    format: options.format || "application/rdf+json"
+                } : text
+        });
+    }
 }
+})();
