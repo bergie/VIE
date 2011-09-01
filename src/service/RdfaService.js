@@ -59,6 +59,7 @@ Zart.prototype.RdfaService.prototype.readEntity = function(element) {
 
     var entityInstance = new this.zart.Entity(entity);
     this.registerEntityView(entityInstance, element);
+    this.zart.entities.addOrUpdate(entityInstance);
     return entityInstance;
 };
 
