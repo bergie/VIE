@@ -52,7 +52,7 @@ Zart.prototype.Type = function (id, attrs, options) {
     };
     
     this.extend = function (id, attrs, options) {
-        if (!options) { options = {} };
+        if (!options) { options = {}; }
         options.zart = this.zart;
         
         var childObj = (typeof id === "string")?        

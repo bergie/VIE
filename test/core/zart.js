@@ -122,12 +122,13 @@ test("zart.js Loadable API", 5, function () {
     ok(x instanceof z.Loadable);
 
     z.use(new z.MockService());
+    stop(1000); // 1 second timeout
     z.load({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    stop();
-
+    
+    stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock")
     .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
@@ -136,14 +137,13 @@ test("zart.js Loadable API", 5, function () {
         equal(result, "fail");
         start();
     }).execute();
-    stop();
 
+    stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
     }).execute();
-    stop();
 });
 
 test("zart.js Savable API", 5, function () {
@@ -153,12 +153,13 @@ test("zart.js Savable API", 5, function () {
     ok(x instanceof z.Savable);
 
     z.use(new z.MockService());
+    stop(1000); // 1 second timeout
     z.save({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    stop();
 
+    stop(1000); // 1 second timeout
     z.save({mockresult: "fail"}).using("mock")
     .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
@@ -167,15 +168,13 @@ test("zart.js Savable API", 5, function () {
         equal(result, "fail");
         start();
     }).execute();
-    stop();
 
+    stop(1000); // 1 second timeout
     z.save({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
     }).execute();
-    stop();
-
 });
 
 test("zart.js Removable API", 5, function () {
@@ -185,12 +184,13 @@ test("zart.js Removable API", 5, function () {
     ok(x instanceof z.Removable);
 
     z.use(new z.MockService());
+    stop(1000); // 1 second timeout
     z.remove({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    stop();
 
+    stop(1000); // 1 second timeout
     z.remove({mockresult: "fail"}).using("mock")
     .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
@@ -199,14 +199,13 @@ test("zart.js Removable API", 5, function () {
         equal(result, "fail");
         start();
     }).execute();
-    stop();
 
+    stop(1000); // 1 second timeout
     z.remove({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
     }).execute();
-    stop();
 });
 
 test("zart.js Annotatable API", 5, function () {
@@ -216,12 +215,13 @@ test("zart.js Annotatable API", 5, function () {
     ok(x instanceof z.Annotatable);
 
     z.use(new z.MockService());
+    stop(1000); // 1 second timeout
     z.annotate({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
-    stop();
 
+    stop(1000); // 1 second timeout
     z.annotate({mockresult: "fail"}).using("mock")
     .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
@@ -230,12 +230,11 @@ test("zart.js Annotatable API", 5, function () {
         equal(result, "fail");
         start();
     }).execute();
-    stop();
 
+    stop(1000); // 1 second timeout
     z.annotate({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
     }).execute();
-    stop();
 });
