@@ -9,7 +9,8 @@ test("Test stanbol connection", function() {
 
 });
 
-test("Zart.js StanbolService - Annotate", function () {
+test("Zart.js StanbolService - Annotate", 4, function () {
+    ok(true);
     var elem = $('<p>This is a small test, where Steve Jobs sings a song.</p>');
     var z = new Zart();
     ok (z.StanbolService);
@@ -19,10 +20,9 @@ test("Zart.js StanbolService - Annotate", function () {
     stop(5000); // 5 second timeout
     z.annotate({element: elem}).using('stanbol').execute().done(function(entities) {
 
-        // console.log(entities);
+        console.log(entities);
 
         ok(entities);
-        //ok(entities.length > 0);
         //TODO: add more tests
         start();
     });
