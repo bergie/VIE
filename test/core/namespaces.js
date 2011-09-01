@@ -76,3 +76,21 @@ test ("Manually removing namespaces", function () {
     deepEqual(z.namespaces.toObj(), reference, "Manually removing namespaces.");
     strictEqual(z.namespaces['test'], undefined, "Manually removing namespaces.");
 });
+
+test ("CURIE <-> URI", function () {
+    var z = new Zart();
+    z.namespaces.add("test", "http://this.is.a/test#");
+    
+    var uri = "<http://this.is.a/test#foo>";
+    var curie = "test:foo";
+    var scurie = "[test:foo]";
+    
+    // URI -> CURIE
+    equal(z.namespaces.curie(uri), curie);
+    equal(z.namespaces.curie(uri, false), z.namespaces.curie(uri));
+    equal(z.namespaces.curie(uri, true), scurie);
+    
+    // CURIE -> URI
+    equal(z.namespaces.uri(curie), uri);
+    equal(z.namespaces.uri(scurie), uri);
+});
