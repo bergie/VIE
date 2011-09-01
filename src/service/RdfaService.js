@@ -29,11 +29,22 @@ Zart.prototype.RdfaService.prototype.load = function(loadable) {
 };
 
 Zart.prototype.RdfaService.prototype.save = function(savable) {
-    var service = this;
     var correct = savable instanceof this.zart.Savable;
     if (!correct) {
         throw "Invalid Savable passed";
     }
+
+    if (!savable.options.element) {
+        // FIXME: we could find element based on subject
+        throw "Unable to write entity to RDFa, no element given";
+    }
+
+    if (!savable.options.entity) {
+        throw "Unable to write to RDFa, no entity given";
+    }
+
+    this.writeEntity(savable.options.entity, savable.options.element);
+    savable.resolve();
 };
 
 Zart.prototype.RdfaService.prototype.readEntity = function(element) {
@@ -49,6 +60,25 @@ Zart.prototype.RdfaService.prototype.readEntity = function(element) {
     var entityInstance = new this.zart.Entity(entity);
     this.registerEntityView(entityInstance, element);
     return entityInstance;
+};
+
+Zart.prototype.RdfaService.prototype.writeEntity = function(entity, element) {
+    var service = this;
+    this.findPredicateElements(this.getElementSubject(element), element, true).each(function() {
+        var predicateElement = jQuery(this);
+        var predicate = service.getElementPredicate(predicateElement);
+        if (!entity.has(predicate)) {
+            return true;
+        }
+
+        var value = entity.get(predicate);
+        if (value === service.readElementValue(predicate, predicateElement)) {
+            return true;
+        }
+
+        service.writeElementValue(predicate, predicateElement, value);
+    });
+    return true;
 };
 
 Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, element) {
@@ -113,6 +143,13 @@ Zart.prototype.RdfaService.prototype.getElementSubject = function(element) {
     }
 
     return "<" + subject + ">"
+};
+
+Zart.prototype.RdfaService.prototype.setElementSubject = function(subject, element) {
+    if (jQuery(element).attr('src')) {
+        return jQuery(element).attr('src', subject);
+    }
+    return jQuery(element).attr('about', subject);
 };
 
 Zart.prototype.RdfaService.prototype.getElementPredicate = function(element) {
@@ -204,4 +241,26 @@ Zart.prototype.RdfaService.prototype.readElementValue = function(predicate, elem
     // If none of the checks above matched we return the HTML contents of
     // the element as the literal value.
     return element.html();
+};
+
+Zart.prototype.RdfaService.prototype.writeElementValue = function(predicate, element, value) {
+    // The `content` attribute can be used for providing machine-readable
+    // values for elements where the HTML presentation differs from the
+    // actual value.
+    var content = element.attr('content');
+    if (content) {
+        element.attr('content', value);
+        return;
+    }
+            
+    // The `resource` attribute can be used to link a predicate to another
+    // RDF resource.
+    var resource = element.attr('resource');
+    if (resource) {
+        element.attr('resource', value);
+    }
+
+    // Property has inline value. Change the HTML contents of the property
+    // element to match the new value.
+    element.html(value);
 };
