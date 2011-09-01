@@ -13,7 +13,7 @@ Zart.prototype.Collection = Backbone.Collection.extend({
 
         var isModel = model instanceof this.model;
         if (!isModel) {
-            var model = new this.model(model);
+            model = new this.model(model);
         }
 
         if (!model.id) {
