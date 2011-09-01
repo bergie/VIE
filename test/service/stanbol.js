@@ -22,7 +22,7 @@ test("Zart.js StanbolService - Annotate", function () {
     
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
     
-    stop();
+    stop(5000); // 5 second timeout
     z.annotate({element: elem}).using('stanbol').execute().done(function(entities) {
         //debugger;
         ok(entities);
