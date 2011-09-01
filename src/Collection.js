@@ -11,7 +11,8 @@ Zart.prototype.Collection = Backbone.Collection.extend({
 
         var subject = model['@subject'] ? model['@subject'] : model.id;
         if (!subject) {
-            return this.add(model);
+            this.add(model);
+            return model;
         }
 
         if (this.get(subject)) {
@@ -21,6 +22,7 @@ Zart.prototype.Collection = Backbone.Collection.extend({
             }
             return existing.set(model);
         }
-        return this.add(model);
+        this.add(model);
+        return model;
     }
 });
