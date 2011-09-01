@@ -19,7 +19,7 @@ Zart.prototype.StanbolService = function(options) {
         fise : "http://fise.iks-project.eu/ontology/",
         rick: "http://www.iks-project.eu/ontology/rick/model/"
     }
-    this.enhancerUrl = (options.url)? options.url : "/engines/";
+    this.enhancerUrl = options.url + "/engines/";
 };
 
 Zart.prototype.StanbolService.prototype.annotate = function(annotatable) {

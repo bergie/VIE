@@ -20,7 +20,7 @@ test("Zart.js StanbolService - Annotate", function () {
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     
-    z.use(new z.StanbolService({enhancerUrl : "http://dev.iks-project.eu:8081/engines/"}));
+    z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
     
     stop();
     z.annotate({element: elem}).using('stanbol').execute().done(function(entities) {
