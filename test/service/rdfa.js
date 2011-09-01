@@ -108,6 +108,13 @@ test("Test RDFa image entitization", function() {
         ok(icons instanceof z.Collection, "Icons should be a Collection");
         equal(icons.at(0).id, '<http://example.net/image.jpg>');
 
+        icons.remove(icons.at(0));
+        equal(jQuery('img', html).length, 0);
+
+        icons.add({'@subject': '<http://example.net/otherimage.jpg>'});
+        equal(jQuery('img', html).length, 1);
+        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
+
         start();
     });
 });
