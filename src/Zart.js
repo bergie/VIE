@@ -41,18 +41,24 @@ if (!jQuery) {
 }
 
 var Zart;
-Zart = function(config) {
-  this.config = config;
-  this.services = {};
-  this.entities = new this.Collection();
-
-  this.Entity.prototype.entities = this.entities;
-  this.Entity.prototype.entityCollection = this.Collection;
-
-  this.defaultNamespace = "http://schema.org/";
-  this.defaultProxyUrl = "../utils/proxy/proxy.php";
-  this.types = new this.Types({zart: this});
+Zart = function(config){
+    this.config = (config) ? config : {};
+    this.services = {};
+    this.entities = new this.Collection();
+    
+    this.Entity.prototype.entities = this.entities;
+    this.Entity.prototype.entityCollection = this.Collection;
+    
+    this.defaultNamespace = (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://schema.org/";
+    this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
+    this.types = new this.Types({
+        zart: this
+    });
+    this.namespaces = new this.Namespaces({
+        "default": this.defaultNamespace
+    });
 };
+
 Zart.prototype.use = function(service, name) {
   if (!name) {
     name = service.name;
