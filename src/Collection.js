@@ -4,9 +4,11 @@ Zart.prototype.Collection = Backbone.Collection.extend({
     addOrUpdate: function(model) {
         var collection = this;
         if (_.isArray(model)) {
-            return _.each(model, function(item) {
-                collection.addOrUpdate(item); 
+            var entities = [];
+            _.each(model, function(item) {
+                entities.push(collection.addOrUpdate(item));
             });
+            return entities;
         }
 
         var subject = model['@subject'] ? model['@subject'] : model.id;
