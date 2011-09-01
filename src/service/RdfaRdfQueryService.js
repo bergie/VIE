@@ -46,7 +46,7 @@ Zart.prototype.RdfaRdfQueryService.prototype.load = function(loadable) {
         }
     });
 
-    zartEntities = [];
+    var zartEntities = [];
     jQuery.each(entities, function() {
         zartEntities.push(new service.zart.Entity(this));
     });
