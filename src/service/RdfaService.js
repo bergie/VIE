@@ -82,7 +82,7 @@ Zart.prototype.RdfaService.prototype.writeEntity = function(entity, element) {
     return true;
 };
 
-Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, element) {
+Zart.prototype.RdfaService.prototype.getViewForElement = function(element) {
     var viewInstance;
     jQuery.each(this.views, function() {
         if (this.el.get(0) === element.get(0)) {
@@ -90,7 +90,12 @@ Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, eleme
             return false;
         }
     });
+    return viewInstance;
+};
 
+Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, element) {
+    var service = this;
+    var viewInstance = this.getViewForElement(element);
     if (viewInstance) {
         return viewInstance;
     }
@@ -103,6 +108,37 @@ Zart.prototype.RdfaService.prototype.registerEntityView = function(entity, eleme
         service: this.name
     });
     this.views.push(viewInstance);
+
+    // Find collection elements and create collection views for them
+    _.each(entity.attributes, function(value, predicate) {
+        var attributeValue = entity.get(predicate);
+        if (attributeValue instanceof service.zart.Collection) {
+            jQuery.each(service.getElementByPredicate(predicate, element), function() {
+                service.registerCollectionView(attributeValue, jQuery(this));
+            });
+        }
+    });
+    return viewInstance;
+};
+
+Zart.prototype.RdfaService.prototype.registerCollectionView = function(collection, element) {
+    var viewInstance = this.getViewForElement(element);
+    if (viewInstance) {
+        return viewInstance;
+    }
+
+    var entityTemplate = element.children(':first-child');
+
+    viewInstance = new this.zart.view.Collection({
+        collection: collection,
+        model: collection.model,
+        el: element,
+        template: entityTemplate,
+        service: this,
+        tagName: element.get(0).nodeName
+    });
+    this.views.push(viewInstance);
+    return viewInstance;
 };
 
 Zart.prototype.RdfaService.prototype.getElementSubject = function(element) {
@@ -160,6 +196,33 @@ Zart.prototype.RdfaService.prototype.getElementPredicate = function(element) {
         predicate = element.attr('rel');
     }
     return predicate;
+};
+
+Zart.prototype.RdfaService.prototype.getElementBySubject = function(subject, element) {
+    var service = this;
+    return jQuery(element).find(this.subjectSelector).add(jQuery(element).filter(this.subjectSelector)).filter(function() {
+        if (service.getElementSubject(jQuery(this)) !== subject) {
+            return false;
+        }
+ 
+        return true;
+    });
+};
+
+Zart.prototype.RdfaService.prototype.getElementByPredicate = function(predicate, element) {
+    var service = this;
+    var subject = this.getElementSubject(element);
+    return jQuery(element).find(this.predicateSelector).add(jQuery(element).filter(this.predicateSelector)).filter(function() {
+        if (service.getElementPredicate(jQuery(this)) !== predicate) {
+            return false;
+        }
+
+        if (service.getElementSubject(jQuery(this)) !== subject) {
+            return false;
+        }
+ 
+        return true;
+    });
 };
 
 Zart.prototype.RdfaService.prototype.readEntityPredicates = function(subject, element, emptyValues) {

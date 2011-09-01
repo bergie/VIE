@@ -4,20 +4,20 @@ Zart = function(config) {
   this.services = {};
   this.entities = new this.Collection();
 
-  this.Entity.prototype['entities'] = this.entities;
-  this.Entity.prototype['entityCollection'] = this.Collection;
+  this.Entity.prototype.entities = this.entities;
+  this.Entity.prototype.entityCollection = this.Collection;
 
   this.defaultNamespace = "http://schema.org/";
   this.defaultProxyUrl = "../utils/proxy/proxy.php";
   this.types = new this.Types({zart: this});
-}
+};
 Zart.prototype.use = function(service, name) {
   if (!name) {
     name = service.name;
   }
   service.zart = this;
   service.name = name;
-  return this.services[name] = service;
+  this.services[name] = service;
 };
 Zart.prototype.service = function(name) {
   if (!this.services[name]) {
