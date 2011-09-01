@@ -13,7 +13,6 @@ test("Initialization", function() {
     //just pick some and test them:
     ok (z.types.get("Person"));
     ok (z.types.get("Corporation"));
-    //debugger;
     ok (z.types.get("Corporation").isof("Thing"));
     ok (z.types.get("Organization").subsumes("Corporation"));
     
