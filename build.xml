@@ -16,7 +16,7 @@
 		<echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
 		<echo message="get it from: http://jashkenas.github.com/docco/"/>
 		<exec executable="docco" dir=".">
-  			<arg value="${DIST_DIR}/vie2-latest.debug.js" />
+  			<arg value="${DIST_DIR}/zart-latest.debug.js" />
   			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
 		</exec>
     </target>
@@ -37,7 +37,7 @@
     <target name="dist" depends="init, combine, minimise" />
 
     <target name="zip" depends="dist">
-        <zip destfile="${DIST_DIR}/vie2-${VERSION}.zip">
+        <zip destfile="${DIST_DIR}/zart-${VERSION}.zip">
             <zipfileset dir="docs/" prefix="docs"/>
             <zipfileset dir="service" prefix="service"/>
             <zipfileset dir="dist/" includes="*.js"/>
@@ -50,8 +50,8 @@
         	<fileset dir="${SRC_DIR}" includes="Zart.js"/>
             <fileset dir="${SRC_DIR}" includes="Entity.js"/>
             <fileset dir="${SRC_DIR}" includes="Collection.js"/>
-            <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
             <fileset dir="${SRC_DIR}" includes="Type.js"/>
+            <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
             <fileset dir="${SRC_DIR}" includes="Loadable.js"/>
             <fileset dir="${SRC_DIR}" includes="Savable.js"/>
             <fileset dir="${SRC_DIR}" includes="Removable.js"/>
