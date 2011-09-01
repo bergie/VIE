@@ -24,7 +24,7 @@ test("Zart.js StanbolService - Annotate", function () {
     
     stop();
     z.annotate({element: elem}).using('stanbol').execute().done(function(entities) {
-        debugger;
+        //debugger;
         ok(entities);
         //ok(entities.length > 0);
         //TODO: add more tests
