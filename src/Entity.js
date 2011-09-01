@@ -5,6 +5,23 @@ Zart.prototype.Entity = Backbone.Model.extend({
         '@type': 'Thing'
     },
 
+    initialize: function(attributes, options) {
+        var instance = this;
+        _.each(attributes, function(value, predicate) {
+            if (!_.isArray(value)) {
+                return;
+            }
+            var models = [];
+            _.each(value, function(subject) {
+                models.push(instance.entities.addOrUpdate({'@subject': subject}));
+            });
+
+            var updateValues = {};
+            updateValues[predicate] = new instance.entityCollection(models);
+            instance.set(updateValues, {silent: true});
+        });
+    },
+
     getSubject: function() {
         if (typeof this.id === 'string') {
             if (this.id.substr(0, 7) === 'http://' || this.id.substr(0, 4) === 'urn:') {

@@ -94,6 +94,24 @@ test("Test RDFa example from Wikipedia", function() {
     });
 });
 
+test("Test RDFa image entitization", function() {
+    var z = new Zart();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1><span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span></div>');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function(entities) {
+        var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
+
+        // Ensure we have the image correctly read
+        ok(icons instanceof z.Collection, "Icons should be a Collection");
+        equal(icons.at(0).id, '<http://example.net/image.jpg>');
+
+        start();
+    });
+});
+
 /**
  * This test doesn't work with QUnit
 test("Test global entity with a base URL", function() {
