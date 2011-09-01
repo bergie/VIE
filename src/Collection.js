@@ -11,14 +11,18 @@ Zart.prototype.Collection = Backbone.Collection.extend({
             return entities;
         }
 
-        var subject = model['@subject'] ? model['@subject'] : model.id;
-        if (!subject) {
+        var isModel = model instanceof this.model;
+        if (!isModel) {
+            var model = new this.model(model);
+        }
+
+        if (!model.id) {
             this.add(model);
             return model;
         }
 
-        if (this.get(subject)) {
-            var existing = this.get(subject);
+        if (this.get(model.id)) {
+            var existing = this.get(model.id);
             if (model.attributes) {
                 return existing.set(model.attributes);
             }

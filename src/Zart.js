@@ -3,6 +3,10 @@ Zart = function(config) {
   this.config = config;
   this.services = {};
   this.entities = new this.Collection();
+
+  this.Entity.prototype['entities'] = this.entities;
+  this.Entity.prototype['entityCollection'] = this.Collection;
+
   this.defaultNamespace = "http://schema.org/";
   this.defaultProxyUrl = "../utils/proxy/proxy.php";
   this.types = new this.Types({zart: this});
