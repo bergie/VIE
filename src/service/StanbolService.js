@@ -22,8 +22,9 @@ Zart.prototype.StanbolService = function(options) {
         purl: "http://purl.org/dc/terms/",
         rdfs: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         dc  : 'http://purl.org/dc/terms/',
-        foaf: 'http://xmlns.com/foaf/0.1/'
-    }
+        foaf: 'http://xmlns.com/foaf/0.1/',
+        schema: 'http://schema.org/'
+    };
     this.rules = [
             //rule to add backwards-relations to the triples
             //this makes querying for entities a lot easier!
@@ -58,7 +59,7 @@ Zart.prototype.StanbolService = function(options) {
                  };
              }(this.namespaces)
              }
-        ]
+        ];
     
     this.baseUrl = options.url.replace(/\/$/, '');
     this.enhancerUrlPrefix = "/engines/";
