@@ -94,9 +94,9 @@ Zart.prototype.MockService.prototype.analyze = function(analyzable) {
     }
 };
 
-test("zart.js Service API", 6, function () {
+test("zart.js Service API", 8, function () {
     var z = new Zart();
-    z.use(new z.MockService);
+    z.use(new z.MockService());
     ok(z.service('mock'));
     equal(typeof z.service('mock').load, 'function');
 
@@ -104,6 +104,9 @@ test("zart.js Service API", 6, function () {
         z.service('mock').load({});
     }, "calling load() with non-Loadable value should throw an error");
     z.service('mock').load(z.load({}));
+
+    equal(typeof z.getServicesArray, 'function');
+    ok(z.getServicesArray() instanceof Array);
 
     z.use(new z.MockService, "foo");
     ok(z.service('foo'));

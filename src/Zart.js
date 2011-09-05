@@ -45,10 +45,10 @@ Zart = function(config){
     this.config = (config) ? config : {};
     this.services = {};
     this.entities = new this.Collection();
-    
+
     this.Entity.prototype.entities = this.entities;
     this.Entity.prototype.entityCollection = this.Collection;
-    
+
     this.defaultNamespace = (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://schema.org/";
     this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
     this.types = new this.Types({
@@ -72,6 +72,11 @@ Zart.prototype.service = function(name) {
     throw "Undefined service " + name;
   }
   return this.services[name];
+};
+Zart.prototype.getServicesArray = function() {
+  var res = [];
+  _(this.services).each(function(service, i){res.push(service);});
+  return res;
 };
 Zart.prototype.load = function(options) {
   if (!options) { options = {}; }
