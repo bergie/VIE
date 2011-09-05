@@ -88,8 +88,8 @@ Zart.prototype.remove = function(options) {
   options.zart = this;
   return new this.Removable(options);
 };
-Zart.prototype.annotate = function(options) {
+Zart.prototype.analyze = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
-  return new this.Annotatable(options);
+  return new this.Analyzable(options);
 };

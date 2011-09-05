@@ -48,7 +48,7 @@ Zart.prototype.StanbolService = function(options) {
              '?entity fise:hasEntityAnnotation ?subject'
          ]
          },
-         //rule to transform a Stanbol person into a VIE^2 person
+         //rule to transform a Stanbol person into a Zart person
          {
             'left' : [
                 '?subject a <http://dbpedia.org/ontology/Person>',
@@ -68,14 +68,14 @@ Zart.prototype.StanbolService = function(options) {
 };
 
 Zart.prototype.StanbolService.prototype = {
-    annotate: function(annotatable) {
+    analyze: function(analyzable) {
         var service = this;
-        var correct = annotatable instanceof this.zart.Annotatable;
+        var correct = analyzable instanceof this.zart.Analyzable;
         if (!correct) {
-            throw "Invalid Annotatable passed";
+            throw "Invalid Analyzable passed";
         }
 
-        var element = annotatable.options.element ? annotatable.options.element : jQuery('body');
+        var element = analyzable.options.element ? analyzable.options.element : jQuery('body');
 
         var text = service._extractText(element);
 
@@ -87,7 +87,7 @@ Zart.prototype.StanbolService.prototype = {
 
                     a.resolve(entities);
                 };
-            }(service, element, annotatable);
+            }(service, element, analyzable);
 
             this.connector.engines(text, callback, {defaultProxyUrl: this.options.defaultProxyUrl || this.zart.defaultProxyUrl});
 

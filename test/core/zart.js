@@ -20,8 +20,8 @@ test("zart.js API", function () {
     equal(typeof z.save, 'function');
     ok(z.remove);
     equal(typeof z.remove, 'function');
-    ok(z.annotate);
-    equal(typeof z.annotate, 'function');
+    ok(z.analyze);
+    equal(typeof z.analyze, 'function');
 
 });
 
@@ -82,16 +82,16 @@ Zart.prototype.MockService.prototype.remove = function(removable) {
         removable.reject(result);
     }
 };
-Zart.prototype.MockService.prototype.annotate = function(annotatable) {
-    var correct = annotatable instanceof this.zart.Annotatable;
+Zart.prototype.MockService.prototype.analyze = function(analyzable) {
+    var correct = analyzable instanceof this.zart.Analyzable;
     if (!correct) {
-        throw "Invalid Annotatable passed";
+        throw "Invalid Analyzable passed";
     }
-    var result = annotatable.options.mockresult;
+    var result = analyzable.options.mockresult;
     if (result === "success")
-        annotatable.resolve(result);
+        analyzable.resolve(result);
     else {
-        annotatable.reject(result);
+        analyzable.reject(result);
     }
 };
 
@@ -208,21 +208,21 @@ test("zart.js Removable API", 5, function () {
     }).execute();
 });
 
-test("zart.js Annotatable API", 5, function () {
+test("zart.js Analyzable API", 5, function () {
     var z = new Zart();
-    var x = z.annotate();
+    var x = z.analyze();
     ok(x);
-    ok(x instanceof z.Annotatable);
+    ok(x instanceof z.Analyzable);
 
     z.use(new z.MockService());
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "success"}).using("mock").execute().success(function(result){
+    z.analyze({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
 
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "fail"}).using("mock")
+    z.analyze({mockresult: "fail"}).using("mock")
     .success(function(result){
         ok(false, "Should fail here, success shouldn't be called.");
         start();
@@ -232,7 +232,7 @@ test("zart.js Annotatable API", 5, function () {
     }).execute();
 
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "fail"}).using("mock")
+    z.analyze({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
