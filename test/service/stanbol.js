@@ -7,7 +7,7 @@ test("Test stanbol connection", function() {
     ok(z.service('stanbol'));
 });
 
-test("Zart.js StanbolService - Annotate", function () {
+test("Zart.js StanbolService - Annotate", 4, function () {
     ok(true);
     var elem = $('<p>This is a small test, where Steve Jobs sings a song.</p>');
     var z = new Zart();
