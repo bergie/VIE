@@ -1,5 +1,5 @@
 
-Zart.prototype.Annotatable = function (options) {
+Zart.prototype.Analyzable = function (options) {
     var deferred = jQuery.Deferred();
     this.options = options;
     this.services = options.from || options.using || [];
@@ -26,9 +26,9 @@ Zart.prototype.Annotatable = function (options) {
     // Running the actual method
     this.execute = function () {
         // call service.load
-        var annotatable = this;
+        var analyzable = this;
         _(this.services).each(function(service){
-            service.annotate(annotatable);
+            service.analyze(analyzable);
         });
         return this;
     }

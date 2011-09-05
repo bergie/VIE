@@ -19,8 +19,8 @@ test("zart.js API", function () {
     equal(typeof z.save, 'function');
     ok(z.remove);
     equal(typeof z.remove, 'function');
-    ok(z.annotate);
-    equal(typeof z.annotate, 'function');
+    ok(z.analyze);
+    equal(typeof z.analyze, 'function');
 
 });
 
@@ -81,16 +81,16 @@ Zart.prototype.MockService.prototype.remove = function(removable) {
         removable.reject(result);
     }
 };
-Zart.prototype.MockService.prototype.annotate = function(annotatable) {
-    var correct = annotatable instanceof this.zart.Annotatable;
+Zart.prototype.MockService.prototype.analyze = function(analyzable) {
+    var correct = analyzable instanceof this.zart.Analyzable;
     if (!correct) {
-        throw "Invalid Annotatable passed";
+        throw "Invalid Analyzable passed";
     }
-    var result = annotatable.options.mockresult;
+    var result = analyzable.options.mockresult;
     if (result === "success")
-        annotatable.resolve(result);
+        analyzable.resolve(result);
     else {
-        annotatable.reject(result);
+        analyzable.reject(result);
     }
 };
 
@@ -114,12 +114,15 @@ test("zart.js Service API", 6, function () {
     }, "Calling undefined service should throw an error");
 });
 
-test("zart.js Loadable API - success", 3, function () {
+test("zart.js Loadable API", 2, function () {
     var z = new Zart();
     var x = z.load({});
     ok(x);
     ok(x instanceof z.Loadable);
+});
 
+test("zart.js Loadable API - success", 1, function () {
+    var z = new Zart();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -132,7 +135,7 @@ test("zart.js Loadable API - success", 3, function () {
 test("zart.js Loadable API - fail", 1, function () {
     var z = new Zart();
     z.use(new z.MockService());
-    stop(); // 1 second timeout
+    stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock").execute()
     .fail(function(result){
         equal(result, "fail");
@@ -143,7 +146,7 @@ test("zart.js Loadable API - fail", 1, function () {
 test("zart.js Loadable API - always", 1, function () {
     var z = new Zart();
     z.use(new z.MockService());
-    stop(); // 1 second timeout
+    stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock").execute()
     .always(function(result){
         ok(true);
@@ -234,42 +237,42 @@ test("zart.js Removable API - always", 1, function () {
     }).execute();
 });
 
-test("zart.js Annotatable API", 2, function () {
+test("zart.js Analyzable API", 2, function () {
     var z = new Zart();
-    var x = z.annotate();
+    var x = z.analyze();
     ok(x);
-    ok(x instanceof z.Annotatable);
+    ok(x instanceof z.Analyzable);
 });
 
-test("zart.js Annotatable API - success", 1, function () {
+test("zart.js Analyzable API - success", 1, function () {
     var z = new Zart();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "success"}).using("mock").execute().success(function(result){
+    z.analyze({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
     });
 });
 
-test("zart.js Annotatable API - fail", 1, function () {
+test("zart.js Analyzable API - fail", 1, function () {
     var z = new Zart();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "fail"}).using("mock")
+    z.analyze({mockresult: "fail"}).using("mock")
     .fail(function(result){
         equal(result, "fail");
         start();
     }).execute();
 });
 
-test("zart.js Annotatable API - always", 1, function () {
+test("zart.js Analyzable API - always", 1, function () {
     var z = new Zart();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
-    z.annotate({mockresult: "fail"}).using("mock")
+    z.analyze({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
         start();
