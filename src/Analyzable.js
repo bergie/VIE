@@ -17,11 +17,15 @@ Zart.prototype.Analyzable = function (options) {
     this.then = deferred.then; // Takes 2 arguments, successCallbacks, failCallbacks
     this.always = deferred.always;
     var service = this;
+    // takes a list of services or just one
     this.using = function(services) {
         if ( services instanceof Array ) {
             _(services).each(function(s){
                 service._using(s);
             });
+        } else {
+            var s = services;
+            service._using(s);
         }
         return this;
     };
@@ -35,7 +39,7 @@ Zart.prototype.Analyzable = function (options) {
     this.execute = function () {
         // call service.load
         var analyzable = this;
-        _(this.services).each(function(service){
+        _(this.services || zart.services).each(function(service){
             service.analyze(analyzable);
         });
         return this;

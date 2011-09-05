@@ -4,12 +4,11 @@
 //
 (function(){
 Zart.prototype.StanbolService = function(options) {
-    if (!options) {
-        options = {
-            url: 'http://dev.iks-project.eu:8080/'
-        };
-    }
-    this.options = options;
+    var defaults = {
+        url: 'http://dev.iks-project.eu:8080/',
+        defaultProxyUrl : "../utils/proxy/proxy.php"
+    };
+    this.options = jQuery.extend(defaults, options);
 
     this.zart = null;
     this.name = 'stanbol';
@@ -91,7 +90,7 @@ Zart.prototype.StanbolService.prototype = {
                 };
             }(service, element, analyzable);
 
-            this.connector.engines(text, callback, {defaultProxyUrl: this.options.defaultProxyUrl || this.zart.defaultProxyUrl});
+            this.connector.engines(text, callback, {proxyUrl: this.options.proxyUrl});
 
 
 
@@ -122,7 +121,7 @@ Zart.prototype.StanbolService.prototype = {
         if (typeof jQuery.rdf !== 'function') {
             throw "RdfQuery is not loaded";
         }
-        var obj = jQuery.parseJSON(data.responseText);
+        var obj = jQuery.parseJSON(responseText);
         var rdf = jQuery.rdf().load(obj, {});
 
         //execute rules here!
@@ -169,12 +168,13 @@ Zart.prototype.StanbolService.prototype = {
 var StanbolConnector = function(options){
     this.options = options;
     this.baseUrl = options.url.replace(/\/$/, '');
-    this.enhancerUrlPrefix = "/engines/";
+    this.enhancerUrlPrefix = "/engines";
+    this.entityhubUrlPrefix = "/entityhub";
 };
 StanbolConnector.prototype = {
     engines: function(text, callback, options) {
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
-        var proxyUrl = options.defaultProxyUrl || this.options.defaultProxyUrl;
+        var proxyUrl = this._proxyUrl();
         jQuery.ajax({
             complete: callback,
             type: "POST",
@@ -184,8 +184,20 @@ StanbolConnector.prototype = {
                     content: text,
                     verb: "POST",
                     format: options.format || "application/rdf+json"
-                } : text
+                } : text,
+            dataType: "application/rdf+json",
+            contentType: proxyUrl ? undefined : "text/plain",
+            accepts: {"application/rdf+json": "application/rdf+json"}
+
         });
+    },
+    _proxyUrl: function(){
+        this.proxyUrl = "";
+        if(this.baseUrl.indexOf(":") !== -1){
+            return this.options.proxyUrl || this.options.defaultProxyUrl;
+        } else {
+            return '';
+        }
     }
 }
 })();
