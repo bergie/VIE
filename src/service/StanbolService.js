@@ -63,7 +63,6 @@ Zart.prototype.StanbolService = function(options) {
              }(this.namespaces)
          }
     ];
-    
     this.connector = new StanbolConnector(this.options);
 };
 
@@ -82,10 +81,13 @@ Zart.prototype.StanbolService.prototype = {
         if (text.length > 0) {
             //query enhancer with extracted text
             var callback = function (service, element, a) {
-                return function (data) {
-                    var entities = service._enhancer2Entities(service, element, data);
-
-                    a.resolve(entities);
+                return function (xhr) {
+                    if (xhr && xhr.status === 200) {
+                        var entities = service._enhancer2Entities(service, element, xhr.responseText);
+                        a.resolve(entities);
+                    } else {
+                        a.reject(xhr);
+                    }
                 };
             }(service, element, analyzable);
 
@@ -114,56 +116,53 @@ Zart.prototype.StanbolService.prototype = {
         }
     },
 
-    _enhancer2Entities: function (service, element, data) {
+    _enhancer2Entities: function (service, element, responseText) {
         //transform data from Stanbol into Zart.Entities
 
-        if (data && data.status === 200) {
-
-            if (typeof jQuery.rdf !== 'function') {
-                throw "RdfQuery is not loaded";
-            }
-            var obj = jQuery.parseJSON(data.responseText);
-            var rdf = jQuery.rdf().load(obj, {});
-
-            //execute rules here!
-            if (service.rules) {
-                var rules = jQuery.rdf.ruleset();
-                for (var prefix in service.namespaces) {
-                    rules.prefix(prefix, service.namespaces[prefix]);
-                }
-                for (var i = 0; i < service.rules.length; i++) {
-                    rules.add(service.rules[i]['left'], service.rules[i]['right']);
-                }
-                rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
-            }
-            var entities = {}
-            rdf.where('?subject ?property ?object').each(function() {
-                var subject = this.subject.toString();
-                if (!entities[subject]) {
-                    entities[subject] = {
-                        '@subject': subject,
-                        '@context': service.namespaces
-                    };
-                }
-                var propertyUri = this.property.toString();
-
-                var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces});
-
-                if (typeof this.object.value === "string") {
-                    entities[subject][propertyCurie] = this.object.value;
-                } else {
-                    entities[subject][propertyCurie] = this.object.toString();
-                }
-            });
-
-            var zartEntities = [];
-            jQuery.each(entities, function() {
-                var entityInstance = new service.zart.Entity(this);
-                entityInstance = service.zart.entities.addOrUpdate(entityInstance);
-                zartEntities.push(entityInstance);
-            });
-            return zartEntities; 
+        if (typeof jQuery.rdf !== 'function') {
+            throw "RdfQuery is not loaded";
         }
+        var obj = jQuery.parseJSON(data.responseText);
+        var rdf = jQuery.rdf().load(obj, {});
+
+        //execute rules here!
+        if (service.rules) {
+            var rules = jQuery.rdf.ruleset();
+            for (var prefix in service.namespaces) {
+                rules.prefix(prefix, service.namespaces[prefix]);
+            }
+            for (var i = 0; i < service.rules.length; i++) {
+                rules.add(service.rules[i]['left'], service.rules[i]['right']);
+            }
+            rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
+        }
+        var entities = {}
+        rdf.where('?subject ?property ?object').each(function() {
+            var subject = this.subject.toString();
+            if (!entities[subject]) {
+                entities[subject] = {
+                    '@subject': subject,
+                    '@context': service.namespaces
+                };
+            }
+            var propertyUri = this.property.toString();
+
+            var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces});
+
+            if (typeof this.object.value === "string") {
+                entities[subject][propertyCurie] = this.object.value;
+            } else {
+                entities[subject][propertyCurie] = this.object.toString();
+            }
+        });
+
+        var zartEntities = [];
+        jQuery.each(entities, function() {
+            var entityInstance = new service.zart.Entity(this);
+            entityInstance = service.zart.entities.addOrUpdate(entityInstance);
+            zartEntities.push(entityInstance);
+        });
+        return zartEntities; 
     }
 };
 
@@ -190,3 +189,4 @@ StanbolConnector.prototype = {
     }
 }
 })();
+

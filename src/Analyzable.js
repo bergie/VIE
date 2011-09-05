@@ -16,8 +16,16 @@ Zart.prototype.Analyzable = function (options) {
     this.fail = deferred.fail;
     this.then = deferred.then; // Takes 2 arguments, successCallbacks, failCallbacks
     this.always = deferred.always;
-
-    this.using = function(service) {
+    var service = this;
+    this.using = function(services) {
+        if ( services instanceof Array ) {
+            _(services).each(function(s){
+                service._using(s);
+            });
+        }
+        return this;
+    };
+    this._using = function(service) {
         var serviceObj = typeof service === "string" ? this.zart.service(service) : service;
         this.services.push(serviceObj);
         return this;
