@@ -80,5 +80,39 @@ Zart.prototype.Entity = Backbone.Model.extend({
         instanceLD['@subject'] = instance.getSubject();
 
         return instanceLD;
+    },
+    setOrAdd: function(arg1, arg2){
+        var entity = this;
+        if(typeof arg1 === "string" && arg2){
+            // calling entity.setOrAdd("rdfs:type", "example:Musician")
+            entity._setOrAddOne(arg1, arg2);
+        } else if(typeof arg1 === "object") {
+            // calling entity.setOrAdd({"rdfs:type": "example:Musician", ...})
+            _(arg1).each(function(val,key){
+                entity._setOrAddOne(key, val);
+            });
+        }
+        return this;
+    },
+    _setOrAddOne: function(prop, value){
+        var val = this.get(prop);
+        // No value yet, use the set method
+        if(! val){
+            var obj = {};
+            obj[prop] = value;
+            this.set(obj);
+        } else {
+            // Make sure not tot set the same value twice
+            if(val !== value && (!(val instanceof Array) && val.indexOf(value) === -1)){
+                // Value already set, make sure it's an Array and extend it
+                if(! (val instanceof Array)){
+                    val = [val];
+                }
+                val.push(value);
+                var obj = {};
+                obj[prop] = val;
+                this.set(obj);
+            }
+        }
     }
 });
