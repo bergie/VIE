@@ -11,6 +11,9 @@ Zart.prototype.Entity = Backbone.Model.extend({
             if (!_.isArray(value)) {
                 return;
             }
+            if (predicate === "@type") {
+                return;
+            }
             var models = [];
             _.each(value, function(subject) {
                 models.push(instance.entities.addOrUpdate({'@subject': subject}));
