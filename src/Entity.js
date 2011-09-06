@@ -26,6 +26,9 @@ Zart.prototype.Entity = Backbone.Model.extend({
     },
 
     getSubject: function() {
+        if(typeof this.id === "undefined"){
+            this.id = this.get(this.idAttribute);
+        }
         if (typeof this.id === 'string') {
             if (this.id.substr(0, 7) === 'http://' || this.id.substr(0, 4) === 'urn:') {
                 return this.toReference(this.id);
