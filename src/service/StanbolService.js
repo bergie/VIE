@@ -82,7 +82,12 @@ Zart.prototype.StanbolService.prototype = {
             var callback = function (service, element, a) {
                 return function (xhr) {
                     if (xhr && xhr.status === 200) {
-                        var entities = service._enhancer2Entities(service, element, xhr.responseText);
+                        try {
+                            var entities = service._enhancer2Entities(service, element, xhr.responseText);
+                        } catch(e) {
+                            a.reject(e)
+                            return;
+                        }
                         a.resolve(entities);
                     } else {
                         a.reject(xhr);

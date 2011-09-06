@@ -20,6 +20,10 @@ test("Zart.js StanbolService - Analyze", function () {
         ok (entities.length > 0);
         //TODO: add more tests
         start();
+    })
+    .fail(function(f){
+        ok(false, f);
+        start();
     });
 });
 
