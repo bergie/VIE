@@ -208,6 +208,9 @@ StanbolConnector.prototype = {
 
         });
     },
+    queryEntityHub: function(uri, entityCallback){
+        console.info('stanbolService.connector.queryEntityHub: called, but not yet implemented; uri:', uri);
+    },
     _proxyUrl: function(){
         this.proxyUrl = "";
         if(this.baseUrl.indexOf(":") !== -1){
