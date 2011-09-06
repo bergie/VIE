@@ -14,7 +14,7 @@ test("Zart.js StanbolService - Analyze", function () {
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
-    stop(5000); // 5 second timeout
+    stop(10000); // 10 second timeout
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
         ok(entities);
         ok (entities.length > 0);

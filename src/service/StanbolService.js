@@ -92,8 +92,6 @@ Zart.prototype.StanbolService.prototype = {
 
             this.connector.engines(text, callback, {proxyUrl: this.options.proxyUrl});
 
-
-
         } else {
             throw "No text found in element.";
         }
