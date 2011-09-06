@@ -138,25 +138,36 @@ Zart.prototype.StanbolService.prototype = {
             }
             rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
         }
-        var entities = {}
+        var entities = {};
         rdf.where('?subject ?property ?object').each(function() {
             var subject = this.subject.toString();
             if (!entities[subject]) {
                 entities[subject] = {
                     '@subject': subject,
-                    '@context': service.namespaces
+                    '@context': service.namespaces,
+                    '@type': []
                 };
             }
             var propertyUri = this.property.toString();
 
             var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces});
-
+            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
             if (typeof this.object.value === "string") {
-                entities[subject][propertyCurie] = this.object.value;
+                entities[subject][propertyCurie].push(this.object.value);
             } else {
-                entities[subject][propertyCurie] = this.object.toString();
+                entities[subject][propertyCurie].push(this.object.toString());
             }
         });
+
+        _(entities).each(function(ent){
+            ent["@type"] = ent["@type"].concat(ent["rdfs:type"]);
+            delete ent["rdfs:type"];
+            _(ent).each(function(value, property){
+                if(value.length === 1){
+                    ent[property] = value[0];
+                }
+            })
+        })
 
         var zartEntities = [];
         jQuery.each(entities, function() {
