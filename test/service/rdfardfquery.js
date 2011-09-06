@@ -33,7 +33,6 @@ test("Test simple RDFa parsing", function() {
             equal(entities[0].get('foaf:name'), 'Albert Einstein');
             equal(entities[0].get('dbp:dateOfBirth'), '1879-03-14');
             equal(entities[1].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
-            console.info(entities[0].get('dbp:dateOfBirth'));
             start();
         });
     } catch(f){
