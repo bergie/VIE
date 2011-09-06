@@ -41,7 +41,39 @@ test("zart.js Entities API", 7, function () {
     equal(z.entities.at(0).get('@type'), 'Thing');
 });
 
-test("zart.js Entities API - setOrAdd", function () {
+test("zart.js Entities API - addOrUpdate", function () {
+    var z = new Zart();
+    ok(z.entities instanceof z.Collection);
+    equal(z.entities.length, 0);
+
+    z.entities.add({
+        '@subject': 'http://example.net/foo',
+        'dc:title': 'Bar'
+    });
+
+    z.entities.addOrUpdate({
+        '@subject': 'http://example.net/foo',
+        'dc:propertyB': "Some String"
+    });
+    equal(z.entities.get("http://example.net/foo").get('dc:title'), 'Bar');
+    equal(z.entities.get("http://example.net/foo").get('dc:propertyB'), 'Some String');
+});
+
+test("zart.js Entities API - addOrUpdate", function () {
+    var z = new Zart();
+    ok(z.entities instanceof z.Collection);
+    equal(z.entities.length, 0);
+
+    z.entities.add({
+        '@subject': 'http://example.net/Madonna',
+        '@type': ['example:Musician', 'foaf:Person', 'dbpedia:Singer', ]
+    });
+    // TODO implement namespace resolution for @type and other references
+    equal(typeof z.entities.get('http://example.net/Madonna').hasType, 'function');
+    ok(z.entities.get('http://example.net/Madonna').hasType('foaf:Person'));
+});
+
+test("zart.js Entity API - setOrAdd", function () {
     var z = new Zart();
     z.entities.add({
         '@subject': 'http://example.org/EricClapton'
@@ -307,4 +339,5 @@ test("zart.js Analyzable API - always", 1, function () {
         start();
     }).execute();
 });
+
 

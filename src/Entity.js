@@ -117,5 +117,13 @@ Zart.prototype.Entity = Backbone.Model.extend({
                 this.set(obj);
             }
         }
+    },
+    hasType: function(type){
+        var t = this.get("@type");
+        if(t instanceof Array) {
+            return t.indexOf(type) !== -1;
+        } else {
+            return t === type;
+        }
     }
 });
