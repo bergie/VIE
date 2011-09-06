@@ -13,14 +13,11 @@ Zart.prototype.StanbolService = function(options) {
     this.zart = null;
     this.name = 'stanbol';
     this.namespaces = {
-        semdesko : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
         semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
         owl : "http://www.w3.org/2002/07/owl#",
-        gml : "http://www.opengis.net/gml/_",
         geonames : "http://www.geonames.org/ontology#",
-        fise : "http://fise.iks-project.eu/ontology/",
-        rick: "http://www.iks-project.eu/ontology/rick/model/",
-        purl: "http://purl.org/dc/terms/",
+        enhancer : "http://fise.iks-project.eu/ontology/",
+        entityhub: "http://www.iks-project.eu/ontology/rick/model/",
         rdfs: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         dc  : 'http://purl.org/dc/terms/',
         foaf: 'http://xmlns.com/foaf/0.1/',
@@ -31,20 +28,20 @@ Zart.prototype.StanbolService = function(options) {
         //this makes querying for entities a lot easier!
         {'left' : [
             '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
-            '?subject fise:entity-type ?type',
-            '?subject fise:confidence ?confidence',
-            '?subject fise:entity-reference ?entity',
+            '?subject enhancer:entity-type ?type',
+            '?subject enhancer:confidence ?confidence',
+            '?subject enhancer:entity-reference ?entity',
             '?subject dc:relation ?relation',
             '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
-            '?relation fise:selected-text ?selected-text',
-            '?relation fise:selection-context ?selection-context',
-            '?relation fise:start ?start',
-            '?relation fise:end ?end'
+            '?relation enhancer:selected-text ?selected-text',
+            '?relation enhancer:selection-context ?selection-context',
+            '?relation enhancer:start ?start',
+            '?relation enhancer:end ?end'
         ],
          'right' : [
              '?entity a ?type',
-             '?entity fise:hasTextAnnotation ?relation',
-             '?entity fise:hasEntityAnnotation ?subject'
+             '?entity enhancer:hasTextAnnotation ?relation',
+             '?entity enhancer:hasEntityAnnotation ?subject'
          ]
          },
          //rule to transform a Stanbol person into a Zart person
