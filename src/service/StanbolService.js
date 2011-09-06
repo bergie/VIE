@@ -149,11 +149,17 @@ Zart.prototype.StanbolService.prototype = {
 
             var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces});
             entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
-            if (typeof this.object.value === "string") {
-                entities[subject][propertyCurie].push(this.object.value);
-            } else {
-                entities[subject][propertyCurie].push(this.object.toString());
+
+            function getValue(rdfQueryLiteral){
+                if(typeof rdfQueryLiteral.value === "string"){
+                    return rdfQueryLiteral.value;
+                } else if (rdfQueryLiteral.value._string){
+                    return rdfQueryLiteral.toString();
+                } else {
+                    return rdfQueryLiteral.value
+                }
             }
+            entities[subject][propertyCurie].push(getValue(this.object));
         });
 
         _(entities).each(function(ent){
