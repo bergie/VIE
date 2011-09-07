@@ -37,6 +37,8 @@ Zart.prototype.Able.prototype = {
         this.fail = this.deferred.fail;
         this.then = this.deferred.then; // Takes 2 arguments, successCallbacks, failCallbacks
         this.always = this.deferred.always;
+        this.from = this.using;
+        this.to = this.using;
     },
     // Running the actual method
     execute: function () {
