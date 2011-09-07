@@ -52,6 +52,7 @@
             <fileset dir="${SRC_DIR}" includes="Collection.js"/>
             <fileset dir="${SRC_DIR}" includes="Type.js"/>
             <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
+            <fileset dir="${SRC_DIR}" includes="Able.js"/>
             <fileset dir="${SRC_DIR}" includes="Loadable.js"/>
             <fileset dir="${SRC_DIR}" includes="Savable.js"/>
             <fileset dir="${SRC_DIR}" includes="Removable.js"/>

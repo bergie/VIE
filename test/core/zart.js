@@ -325,7 +325,12 @@ test("zart.js Analyzable API - fail", 1, function () {
     .fail(function(result){
         equal(result, "fail");
         start();
-    }).execute();
+    })
+    .success(function(f){
+        ok(false, "succeed, should have failed!");
+        start();
+    })
+    .execute();
 });
 
 test("zart.js Analyzable API - always", 1, function () {
