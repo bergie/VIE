@@ -82,38 +82,30 @@ Zart.prototype.StanbolService.prototype = {
         var text = service._extractText(element);
 
         if (text.length > 0) {
+            var service = this;
             //query enhancer with extracted text
-            var callback = function (service, element, a) {
-                return function (xhr) {
-                    if (xhr && xhr.status === 200) {
-                        try {
-                            var entities = service._enhancer2Entities(service, element, xhr.responseText);
-                        } catch(e) {
-                            a.reject(e)
-                            return;
-                        }
-                        a.resolve(entities);
-                    } else {
-                        a.reject(xhr);
-                    }
-                };
-            }(service, element, analyzable);
+            var success = function (results) {
+                var entities = service._enhancer2Entities(service, results);
+                analyzable.resolve(entities);
+            };
+            var error = function (e) {
+                analyzable.reject(e);
+            };
 
-            this.connector.engines(text, callback, {proxyUrl: this.options.proxyUrl});
+            this.connector.engines(text, {proxyUrl: this.options.proxyUrl}, success, error);
 
         } else {
-            throw "No text found in element.";
+            console.warn("No text found in element.");
+            analyzable.resolve([]);
         }
 
     },
     // Zart API load implementation
     // Runs a Stanbol entityhub query
     load: function(loadable){
-        var correct = analyzable instanceof this.zart.Analyzable;
-        if (!correct) {throw "Invalid Analyzable passed";}
-        
+        var correct = analyzable instanceof this.zart.Loadable;
+        if (!correct) {throw "Invalid Loadable passed";}
         var service = this;
-        
     },
     _extractText: function (element) {
         if (element.get(0) && 
@@ -130,14 +122,13 @@ Zart.prototype.StanbolService.prototype = {
         }
     },
 
-    _enhancer2Entities: function (service, element, responseText) {
+    _enhancer2Entities: function (service, results) {
         //transform data from Stanbol into Zart.Entities
 
         if (typeof jQuery.rdf !== 'function') {
             throw "RdfQuery is not loaded";
         }
-        var obj = jQuery.parseJSON(responseText);
-        var rdf = jQuery.rdf().load(obj, {});
+        var rdf = jQuery.rdf().load(results, {});
 
         //execute rules here!
         if (service.rules) {
@@ -204,11 +195,12 @@ var StanbolConnector = function(options){
     this.entityhubUrlPrefix = "/entityhub";
 };
 StanbolConnector.prototype = {
-    engines: function(text, callback, options) {
+    engines: function(text, options, success, error) {
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
         var proxyUrl = this._proxyUrl();
         jQuery.ajax({
-            complete: callback,
+            success: success,
+            error: error,
             type: "POST",
             url: proxyUrl || enhancerUrl,
             data: (proxyUrl) ? {
@@ -223,15 +215,15 @@ StanbolConnector.prototype = {
 
         });
     },
-    queryEntityHub: function (uri, callback) {
+    queryEntityHub: function (uri, success, error) {
         var proxy = this._proxyUrl();
         var entityhub_url = this.baseUrl + this.entityhubUrlPrefix;
         if (proxy) {
             jQuery.ajax({
                 async: true,
                 type: "POST",
-                success: callback,
-                error: callback,
+                success: success,
+                error: error,
                 url: proxy,
                 dataType: "application/rdf+json",
                 data: {
@@ -244,8 +236,8 @@ StanbolConnector.prototype = {
         } else {
             jQuery.ajax({
                 async: true,
-                success: callback,
-                error: callback,
+                success: success,
+                error: error,
                 type: "GET",
                 url: entityhub_url + "/sites/entity?id=" + escape(uri),
                 data: '',
@@ -255,7 +247,7 @@ StanbolConnector.prototype = {
             });
         }
     },
-    findEntity: function (term, callback, limit, offset) {
+    findEntity: function (term, success, limit, offset, error) {
         // curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find
         var proxy = this._proxyUrl();
         if (offset == null) {
@@ -265,17 +257,13 @@ StanbolConnector.prototype = {
             limit = 10;
         }
         var entityhub_url = this.baseUrl + this.entityhubUrlPrefix;
-        function findResultTransform(findResponse){
-            console.info(findResponse);
-            return findResponse.results;
-        }
         if (proxy) {
             // TODO test with proxy
             jQuery.ajax({
                 async: true,
                 type: "POST",
                 success: callback,
-                error: callback,
+                error: error,
                 url: proxy,
                 dataType: "application/rdf+json",
                 data: {
@@ -289,9 +277,9 @@ StanbolConnector.prototype = {
             jQuery.ajax({
                 async: true,
                 success: function(response){
-                    callback(findResultTransform(response))
+                    callback(response)
                 },
-                error: callback,
+                error: error,
                 type: "POST",
                 url: entityhub_url + "/sites/find",
                 data: "name=" + term + "&limit=" + offset + "&limit=" + offset,
