@@ -101,11 +101,26 @@ Zart.prototype.StanbolService.prototype = {
 
     },
     // Zart API load implementation
-    // Runs a Stanbol entityhub query
-    load: function(loadable){
-        var correct = analyzable instanceof this.zart.Loadable;
-        if (!correct) {throw "Invalid Loadable passed";}
+    // Runs a Stanbol entityhub find
+    find: function(findable){
+        var correct = findable instanceof this.zart.Findable;
+        if (!correct) {throw "Invalid Findable passed";}
         var service = this;
+        // The term to find, * as wildcard allowed
+        var term = findable.options.term;
+        if(!term){
+            console.warn("StanbolConnector: No term to look for!");
+            findable.resolve([]);
+        };
+        var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
+        var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
+        var success = function (results) {
+            findable.resolve(results.results);
+        };
+        var error = function (e) {
+            findable.reject(e);
+        };
+        this.connector.find(term, success, limit, offset, error)
     },
     _extractText: function (element) {
         if (element.get(0) && 
@@ -199,7 +214,9 @@ StanbolConnector.prototype = {
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
         var proxyUrl = this._proxyUrl();
         jQuery.ajax({
-            success: success,
+            success: function(response){
+                success(response)
+            },
             error: error,
             type: "POST",
             url: proxyUrl || enhancerUrl,
@@ -215,14 +232,16 @@ StanbolConnector.prototype = {
 
         });
     },
-    queryEntityHub: function (uri, success, error) {
+    queryEntityHub: function (uri, success, error, options) {
         var proxy = this._proxyUrl();
         var entityhub_url = this.baseUrl + this.entityhubUrlPrefix;
         if (proxy) {
             jQuery.ajax({
                 async: true,
                 type: "POST",
-                success: success,
+                success: function(response){
+                    success(response)
+                },
                 error: error,
                 url: proxy,
                 dataType: "application/rdf+json",
@@ -236,7 +255,9 @@ StanbolConnector.prototype = {
         } else {
             jQuery.ajax({
                 async: true,
-                success: success,
+                success: function(response){
+                    success(response)
+                },
                 error: error,
                 type: "GET",
                 url: entityhub_url + "/sites/entity?id=" + escape(uri),
@@ -247,7 +268,7 @@ StanbolConnector.prototype = {
             });
         }
     },
-    findEntity: function (term, success, limit, offset, error) {
+    find: function (term, success, limit, offset, error) {
         // curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find
         var proxy = this._proxyUrl();
         if (offset == null) {
@@ -262,7 +283,9 @@ StanbolConnector.prototype = {
             jQuery.ajax({
                 async: true,
                 type: "POST",
-                success: callback,
+                success: function(response){
+                    success(response)
+                },
                 error: error,
                 url: proxy,
                 dataType: "application/rdf+json",
@@ -277,13 +300,12 @@ StanbolConnector.prototype = {
             jQuery.ajax({
                 async: true,
                 success: function(response){
-                    callback(response)
+                    success(response)
                 },
                 error: error,
                 type: "POST",
                 url: entityhub_url + "/sites/find",
                 data: "name=" + term + "&limit=" + offset + "&limit=" + offset,
-                dataType: "application/rdf+json",
                 contentType: "text/plain",
                 accepts: {"application/rdf+json": "application/rdf+json"}
             });
