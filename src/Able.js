@@ -1,8 +1,8 @@
 
-Zart.prototype.Able = function(){
+Able = function(){
 }
     // takes a list of services or just one
-Zart.prototype.Able.prototype = {
+Able.prototype = {
     using: function(services) {
         var service = this;
         if ( services instanceof Array ) {
@@ -20,7 +20,8 @@ Zart.prototype.Able.prototype = {
         this.services.push(serviceObj);
         return this;
     },
-    init: function(options) {
+    init: function(options, methodName) {
+        this.methodName = methodName;
         this.options = options;
         this.services = options.from || options.using || options.to || [];
         this.zart = options.zart;
@@ -41,9 +42,12 @@ Zart.prototype.Able.prototype = {
         this.to = this.using;
     },
     // Running the actual method
-    execute: function () {
+    execute: function() {
         // call service.load
-        throw "This is an abstract method and should never be called";
+        var able = this;
+        _(this.services).each(function(service){
+            service[able.methodName](able);
+        });
+        return this;
     }
-
 }

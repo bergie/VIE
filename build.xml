@@ -47,16 +47,12 @@
     <target name="combine" description="combines core/*.js files into one file">
         <echo message="Building zart.js Distribution" />
         <concat destfile="${DIST_DIR}/zart-${VERSION}.debug.js">
+            <fileset dir="${SRC_DIR}" includes="Able.js"/>
         	<fileset dir="${SRC_DIR}" includes="Zart.js"/>
             <fileset dir="${SRC_DIR}" includes="Entity.js"/>
             <fileset dir="${SRC_DIR}" includes="Collection.js"/>
             <fileset dir="${SRC_DIR}" includes="Type.js"/>
             <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
-            <fileset dir="${SRC_DIR}" includes="Able.js"/>
-            <fileset dir="${SRC_DIR}" includes="Loadable.js"/>
-            <fileset dir="${SRC_DIR}" includes="Savable.js"/>
-            <fileset dir="${SRC_DIR}" includes="Removable.js"/>
-            <fileset dir="${SRC_DIR}" includes="Analyzable.js"/>
             <fileset dir="${SRC_DIR}" includes="Namespaces.js"/>
         	<fileset dir="${SRC_DIR}/service" includes="*.js"/>
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>

@@ -106,6 +106,15 @@ Zart.prototype.StanbolService.prototype = {
         }
 
     },
+    // Zart API load implementation
+    // Runs a Stanbol entityhub query
+    load: function(loadable){
+        var correct = analyzable instanceof this.zart.Analyzable;
+        if (!correct) {throw "Invalid Analyzable passed";}
+        
+        var service = this;
+        
+    },
     _extractText: function (element) {
         if (element.get(0) && 
             element.get(0).tagName && 
