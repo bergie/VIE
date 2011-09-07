@@ -81,6 +81,7 @@ Zart.prototype.getServicesArray = function() {
 Zart.prototype.Able = Able;
 
 // Declaring the ..able classes
+// Loadable
 Zart.prototype.load = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
@@ -91,6 +92,7 @@ Zart.prototype.Loadable = function (options) {
 }
 Zart.prototype.Loadable.prototype = new Zart.prototype.Able();
 
+// Savable
 Zart.prototype.save = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
@@ -101,6 +103,7 @@ Zart.prototype.Savable = function(options){
 };
 Zart.prototype.Savable.prototype = new Zart.prototype.Able();
 
+// Removable
 Zart.prototype.remove = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
@@ -111,6 +114,7 @@ Zart.prototype.Removable = function(options){
 }
 Zart.prototype.Removable.prototype = new Zart.prototype.Able();
 
+// Analyzable
 Zart.prototype.analyze = function(options) {
   if (!options) { options = {}; }
   options.zart = this;
@@ -120,4 +124,15 @@ Zart.prototype.Analyzable = function (options) {
     this.init(options, "analyze");
 }
 Zart.prototype.Analyzable.prototype = new Zart.prototype.Able();
+
+// Findable
+Zart.prototype.find = function(options) {
+  if (!options) { options = {}; }
+  options.zart = this;
+  return new this.Findable(options);
+};
+Zart.prototype.Findable = function (options) {
+    this.init(options, "find");
+}
+Zart.prototype.Findable.prototype = new Zart.prototype.Able();
 
