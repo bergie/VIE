@@ -23,9 +23,11 @@ test("zart.js - Type API", function() {
   
     ok(z.types.list);
     ok(typeof z.types.list === 'function');
+    ok(z.types.toArray);
+    ok(typeof z.types.toArray === 'function');
     
     // Type
-    var thingy = z.types.add("TestTypeWithSillyName", []);
+    var thingy = z.types.add("TestTypeWithSillyName");
     
     ok (thingy);
     ok(thingy instanceof z.Type);
@@ -33,14 +35,18 @@ test("zart.js - Type API", function() {
     ok(thingy.zart);
     ok(thingy.zart instanceof Zart);
     
+    ok(thingy.id);
+    ok(typeof thingy.id === 'string');
+    ok(z.namespaces.isUri(thingy.id));
+    
     ok(thingy.subsumes);
     ok(typeof thingy.subsumes === 'function');
     
     ok(thingy.isof);
     ok(typeof thingy.isof === 'function');
     
-    ok(thingy.extend);
-    ok(typeof thingy.extend === 'function');
+    ok(thingy.inherit);
+    ok(typeof thingy.inherit === 'function');
     
     ok(thingy.attributes);
     ok(thingy.attributes instanceof z.Attributes);
@@ -49,10 +55,10 @@ test("zart.js - Type API", function() {
     ok(typeof thingy.hierarchy === 'function');
   
     ok(thingy.supertypes);
-    ok(typeof thingy.supertypes === 'function');
+    ok(thingy.supertypes instanceof z.Types);
     
     ok(thingy.subtypes);
-    ok(jQuery.isArray(thingy.subtypes));
+    ok(thingy.subtypes instanceof z.Types);
     
     ok(thingy.remove);
     ok(typeof thingy.remove === 'function');
@@ -60,14 +66,14 @@ test("zart.js - Type API", function() {
 
 
 test("zart.js - Creation/Extension/Removal of types", function() {
-    
+
     var z = new Zart();
     
     equal(z.types.get("TestThingy"), undefined);
     
-    var thingy = z.types.add("TestThingy", []);
-    
-    var persony = thingy.extend("TestPersony", []);
+    var thingy = z.types.add("TestThingy");
+
+    var persony = z.types.add("TestPersony").inherit("TestThingy");
     
     ok(persony);
     ok(persony.isof(thingy));
@@ -76,10 +82,10 @@ test("zart.js - Creation/Extension/Removal of types", function() {
     ok (thingy.hierarchy());
     equal (typeof thingy.hierarchy(), 'object');
     var refHierarchy = {
-        id : '<' + z.defaultNamespace + "TestThingy" + '>',
+        id : '<' + z.namespaces.get("default") + "TestThingy" + '>',
         subtypes: [
             {
-                id : '<' + z.defaultNamespace + "TestPersony" + '>',
+                id : '<' + z.namespaces.get("default") + "TestPersony" + '>',
                 subtypes: []
             }
         ]
@@ -92,23 +98,28 @@ test("zart.js - Creation/Extension/Removal of types", function() {
     equal(z.types.list()[0].id, thingy.id);
     equal(z.types.list()[1].id, persony.id);
     
-    var aninamly = thingy.extend("TestAnimaly", []);
+    var animaly = z.types.add("TestAnimaly").inherit(thingy);
     
-    var specialCreaturey = persony.extend("SpecialCreaturey", []);
-    aninamly.extend(specialCreaturey);
+    var specialCreaturey = z.types.add("SpecialCreatuery").inherit(persony).inherit(animaly);
     
     equal(z.types.list().length, 4);
-    equal(persony.subtypes.length, 1);
-    equal(aninamly.subtypes.length, 1);
-    equal(specialCreaturey.supertypes().length, 2);
+    equal(persony.subtypes.list().length, 1);
+    equal(animaly.subtypes.list().length, 1);
+    equal(specialCreaturey.supertypes.list().length, 2);
     
-    var veryspecialCreaturey = specialCreaturey.extend("VerySpecialCreatuery", []);
-    
+    var specialCreaturey2 = z.types.add("SpecialCreatuery2").inherit([persony, animaly]);
     equal(z.types.list().length, 5);
+    equal(persony.subtypes.list().length, 2);
+    equal(animaly.subtypes.list().length, 2);
+    equal(specialCreaturey2.supertypes.list().length, 2);
+    
+    var veryspecialCreaturey = z.types.add("VerySpecialCreatuery").inherit("SpecialCreatuery");
+    
+    equal(z.types.list().length, 6);
     
     //removes only that type
     z.types.remove(veryspecialCreaturey);
-    equal(z.types.list().length, 4);
+    equal(z.types.list().length, 5);
     
     //recursively removes all types
     z.types.remove(thingy);

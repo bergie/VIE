@@ -4,7 +4,6 @@ test("Zart namespace", function () {
     var z = new Zart();
     
    ok(z);
-   ok(z.defaultNamespace);
    ok(z.namespaces);
    
    ok(z.namespaces.add);
@@ -25,6 +24,10 @@ test("Zart namespace", function () {
    equal(typeof z.namespaces.curie, "function");
    ok(z.namespaces.uri);
    equal(typeof z.namespaces.uri, "function");
+   ok(z.namespaces.isCurie);
+   equal(typeof z.namespaces.isCurie, "function");
+   ok(z.namespaces.isUri);
+   equal(typeof z.namespaces.isUri, "function");
    
    
 });
@@ -78,6 +81,7 @@ test ("Manually removing namespaces", function () {
 });
 
 test ("CURIE <-> URI", function () {
+
     var z = new Zart();
     z.namespaces.add("test", "http://this.is.a/test#");
     
@@ -93,4 +97,13 @@ test ("CURIE <-> URI", function () {
     // CURIE -> URI
     equal(z.namespaces.uri(curie), uri);
     equal(z.namespaces.uri(scurie), uri);
+    
+    ok(z.namespaces.isUri(uri));
+    ok(!z.namespaces.isUri(curie));
+    ok(!z.namespaces.isUri(scurie));
+
+    ok(!z.namespaces.isCurie(uri));
+    ok(z.namespaces.isCurie(curie));
+    ok(z.namespaces.isCurie(scurie));
+    
 });

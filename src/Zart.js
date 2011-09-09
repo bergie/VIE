@@ -49,13 +49,12 @@ Zart = function(config){
     this.Entity.prototype.entities = this.entities;
     this.Entity.prototype.entityCollection = this.Collection;
 
-    this.defaultNamespace = (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://schema.org/";
     this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
     this.types = new this.Types({
         zart: this
     });
     this.namespaces = new this.Namespaces({
-        "default": this.defaultNamespace
+        "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://schema.org/"
     });
 };
 

@@ -55,27 +55,15 @@ Zart.prototype.Namespaces = function (namespaces) {
         return this._namespaces;
     };
     
-    this.curie = function (uri, safe) {
-        var delim = ":";
-        for (var k in this._namespaces) {
-            if (uri.indexOf(this._namespaces[k]) === 1) {
-                var pattern = new RegExp("^" + "<" + this._namespaces[k]);
-                return ((safe)? "[" : "") + 
-                        uri.replace(pattern, k + delim).replace(/>$/, '') +
-                        ((safe)? "]" : "");
-            }
-        }
-        throw "No prefix found for uri '" + uri + "'!";
+    this.curie = function(uri, safe){
+        return jQuery.toCurie(uri, safe, this);
     };
     
+    this.isCurie = jQuery.isCurie;
+    
     this.uri = function (curie) {
-        var delim = ":";
-        for (var k in this._namespaces) {
-            if (curie.indexOf(k) === 0 || curie.indexOf(k) === 1) {
-                var pattern = new RegExp("^" + "\\[{0,1}" + k + delim);
-                return "<" + curie.replace(pattern, this._namespaces[k]).replace(/\]{0,1}$/, '') + ">";
-            }
-        }
-        throw "No prefix found for uri '" + curie + "'!";
+        return jQuery.toUri (curie, this);
     };
+    
+    this.isUri = jQuery.isUri;
 };

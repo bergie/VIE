@@ -6,9 +6,12 @@
 //ontology into Zart.
 
 Zart.prototype.loadSchemaOrg = function () {
+    
     if (!SchemaOrg) {
         throw "Please load the schema.json file."
     }
+    
+    this.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
     
     var datatypeMapping = {
         'DataType': 'xsd:anyType',
@@ -18,22 +21,18 @@ Zart.prototype.loadSchemaOrg = function () {
         'Integer' : 'xsd:integer',
         'Number'  : 'xsd:anySimpleType',
         'Text'    : 'xsd:string',
-        'URL'     : 'anyURI'
+        'URL'     : 'xsd:anyURI'
     };
     
     var dataTypeHelper = function (ancestors, id) {
+        var type = this.types.add(id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
         
-        if (ancestors.length === 0) {
-            return this.types.add(id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
-        } else {
-            var type = undefined;
-            for (var i = 0; i < ancestors.length; i++) {
-                var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
-                    dataTypeHelper.call(this, SchemaOrg["datatypes"][ancestors[i]].supertypes, ancestors[i]);
-                type = supertype.extend((type)? type : id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
-            }
-            return type;
+        for (var i = 0; i < ancestors.length; i++) {
+            var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
+                dataTypeHelper.call(this, SchemaOrg["datatypes"][ancestors[i]].supertypes, ancestors[i]);
+            type.inherit(supertype);
         }
+        return type;
     };
     
     for (var dt in SchemaOrg["datatypes"]) {
@@ -58,25 +57,20 @@ Zart.prototype.loadSchemaOrg = function () {
     };
     
     var typeHelper = function (ancestors, id, props) {
-        
-        if (ancestors.length === 0) {
-            return this.types.add(id, props);
-        } else {
-            var type = undefined;
-            for (var i = 0; i < ancestors.length; i++) {
-                var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
-                    typeHelper.call(this, SchemaOrg["types"][ancestors[i]].supertypes, ancestors[i], typeProps(ancestors[i]));
-                type = supertype.extend((type)? type : id, typeProps(id));
-            }
-            return type;
+        var type = this.types.add(id, props);
+       
+        for (var i = 0; i < ancestors.length; i++) {
+            var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
+                typeHelper.call(this, SchemaOrg["types"][ancestors[i]].supertypes, ancestors[i], typeProps(ancestors[i]));
+            type.inherit(supertype);
         }
+        return type;
     };
     
     for (var t in SchemaOrg["types"]) {
         if (!this.types.get(t)) {
             var ancestors = SchemaOrg["types"][t].supertypes;
-            var props = typeProps(t);
-            typeHelper.call(this, ancestors, t, props);
+            typeHelper.call(this, ancestors, t, typeProps(t));
         }
     }
 

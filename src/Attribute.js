@@ -19,28 +19,23 @@ Zart.prototype.Attribute = function (id, range, domain, options) {
     
     this._domain = domain;
     this.range = (jQuery.isArray(range))? range : [ range ];
+    this.count = {}; //TODO!
    
-    this.id = '<' + this.zart.defaultNamespace + id + '>';
-    this.sid = id;
-    
-    this.extend = function (range) {
-        //TODO: returns a new attribute
-        throw "Not yet implemented!";
-    };
-        
+    this.id = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+            
     this.applies = function (range) {
         if (this.zart.types.get(range)) {
             range = this.zart.types.get(range);
         }
         for (var r in this.range) {
-            var x = this.zart.types.get(range[r]);
+            var x = this.zart.types.get(this.range[r]);
             if (x === undefined && typeof range === "string") {
-                if (range === range[r]) {
+                if (range === this.range[r]) {
                     return true;
                 }
             }
             else {
-                if (range.isof(range[r])) {
+                if (range.isof(this.range[r])) {
                     return true;
                 }
             }
@@ -51,90 +46,54 @@ Zart.prototype.Attribute = function (id, range, domain, options) {
     this.remove = function () {
         return this.domain.attributes.remove(this);
     };
-    
+        
 };
 
 Zart.prototype.Attributes = function (domain, attrs, options) {
     
     this.zart = options.zart;
     
-    this._domain = domain;
+    this.domain = domain;
     
+    this._local = {};
     this._attributes = {};
     
     this.add = function (id, range) {
         if (this.get(id)) {
-            return this.get(id);
-        } else {
-            var options = {
-                zart : this.zart
-            };
-            var a = new this.zart.Attribute(id, range, this._domain, options);
-            this._attributes[a.id] = a;
+            throw "Attribute '" + id + "' already registered for domain " + this.domain.id + "!";
+        } 
+        else {
+            if (typeof id === "string") {
+                var options = {
+                    zart: this.zart
+                };
+                var a = new this.zart.Attribute(id, range, this.domain, options);
+                this._local[a.id] = a;
+                return a;
+            } else if (id instanceof this.zart.Type) {
+                id.domain = this.domain;
+                id.zart = this.zart;
+            	this._local[id.id] = id;
+                return id;
+            } else {
+                throw "Wrong argument to Zart.Types.add()!";
+            }
+        }
+    };
+    
+    this.remove = function (id) {
+        var a = this.get(id);
+        if (a.id in this._local) {
+            delete this._local[a.id];
             return a;
         }
+        throw "The attribute " + id + " is inherited and cannot be removed from the domain " + this.domain.id + "!";
     };
-    
-    this.extend = function (attributes) {
-        if (!jQuery.isArray(attributes)) {
-            return this.extend([attributes]);
-        }
-        var ids = {};
-        for (var a in attributes) {
-            for (var x in attributes[a].list()) {
-                var id = attributes[a].list()[x].id;
-                if (!this.get(id)) {
-                    var count = 0;
-                    if (ids[id]) {
-                        count = ids[id];
-                    }
-                    ids[id] = (count + 1);
-                }
-            }
-        }
-        for (var id in ids) {
-            if (ids[id] === 1) {
-                //TODO: search for that attribute and just add it!
-            } else {
-                //TODO: 
-                // (1) if level of inheritance of domains equals
-                // -> extend range
-                // (2) if level of inheritance of domains differs
-                // -> only add most-specific ones
-            }
-        }
         
-        for (var a in attributes) {
-            var attr = attributes[a];
-            if (attr instanceof this.zart.Attributes) {
-                //TODO
-                //throw "Not yet implemented!";
-                return this;
-            } else {
-                throw "Wrong argument given to Zart.Attributes.extend()!";
-            }
-        }
-        
-    };
-    
     this.get = function (id) {
         if (typeof id === 'string') {
-            var a = (this._attributes[id])? 
-                this._attributes[id] : 
-                this._attributes['<' + this.zart.defaultNamespace + id + '>'];
-            if (a) {
-                return a;
-            } else {
-                var a = undefined;
-                var supertypes = this._domain.supertypes();
-                for (var s in supertypes) {
-                    a = supertypes[s].attributes.get(id);
-                    if (a) {
-                        break;
-                    }
-                }
-                return a;
-            }
+            var lid = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+            return this._inherit()._attributes[lid];
         } else if (id instanceof this.zart.Attribute) {
             return this.get(id.id);
         } else {
@@ -142,23 +101,90 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
         }
     };
     
-    this.remove = function (id) {
-        var a = this.get(id);
-        delete this._attributes[a.id];
-        return a;
+    this._inherit = function () {
+        var attributes = jQuery.extend(true, {}, this._local);
+        
+        var inherited = this.domain.supertypes.list().map(
+            function (x) {
+               return x.attributes; 
+            });
+        
+        var add = {};
+        var merge = {};
+        
+        for (var a in inherited) {
+            var attrs = inherited[a].list();
+            for (var x in attrs) {
+                var id = attrs[x].id;
+                if (!(id in attributes)) {
+                    if (!(id in add) && !(id in merge)) {
+                        add[id] = attrs[x];
+                    }
+                    else {
+                        if (!merge[id]) {
+                            merge[id] = [];
+                        }
+                        if (id in add) {
+                            merge[id] = jQuery.merge(merge[id], add[id].range);
+                            delete add[id];
+                        }
+                        merge[id] = jQuery.merge(merge[id], attrs[x].range);
+                        merge[id] = jQuery.unduplicate(merge[id]);
+                    }
+                }
+            }
+        }
+        
+        //add
+        jQuery.extend(attributes, add);
+        
+        // merge
+        for (var id in merge) {
+            var merged = merge[id];
+            var ranges = [];
+            for (var r in merged) {
+                var p = this.zart.types.get(merged[r]);
+                var isAncestorOf = false;
+                if (p) {
+                    for (var x in merged) {
+                        if (x === r) {
+                            continue;
+                        }
+                        var c = this.zart.types.get(merged[x]);
+                        if (c && c.isof(p)) {
+                            isAncestorOf = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isAncestorOf) {
+                    ranges.push(merged[r]);
+                }
+            }
+            var options = {
+                zart: this.zart
+            };
+            attributes[id] = new this.zart.Attribute(id, ranges, this, options);
+        }
+
+        this._attributes = attributes;
+        return this;
     };
-    
-    //TODO: filter for range!
-    this.list = function (range) {
+
+    this.toArray = this.list = function (range) {
         var ret = [];
-        for (var a in this._attributes) {
-            if (!range || this._attributes[a].applies(range)) {
-                ret.push(this._attributes[a]);
+        var attributes = this._inherit()._attributes;
+        for (var a in attributes) {
+            if (!range || attributes[a].applies(range)) {
+                ret.push(attributes[a]);
             }
         }
         return ret;
     };
-    
+        
+    if (!jQuery.isArray(attrs)) {
+        attrs = [ attrs ];
+    }
     for (var a in attrs) {
         this.add(attrs[a].id, attrs[a].range);
     }
