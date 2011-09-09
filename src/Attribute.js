@@ -129,7 +129,7 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
                             delete add[id];
                         }
                         merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = jQuery.unduplicate(merge[id]);
+                        merge[id] = Zart.Util.unduplicate(merge[id]);
                     }
                 }
             }

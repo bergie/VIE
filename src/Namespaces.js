@@ -56,14 +56,14 @@ Zart.prototype.Namespaces = function (namespaces) {
     };
     
     this.curie = function(uri, safe){
-        return jQuery.toCurie(uri, safe, this);
+        return Zart.Util.toCurie(uri, safe, this);
     };
     
-    this.isCurie = jQuery.isCurie;
+    this.isCurie = Zart.Util.isCurie;
     
     this.uri = function (curie) {
-        return jQuery.toUri (curie, this);
+        return Zart.Util.toUri (curie, this);
     };
     
-    this.isUri = jQuery.isUri;
+    this.isUri = Zart.Util.isUri;
 };
