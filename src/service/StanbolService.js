@@ -92,7 +92,7 @@ Zart.prototype.StanbolService.prototype = {
                 analyzable.reject(e);
             };
 
-            this.connector.engines(text, {proxyUrl: this.options.proxyUrl}, success, error);
+            this.connector.analyze(text, success, error);
 
         } else {
             console.warn("No text found in element.");
@@ -100,6 +100,7 @@ Zart.prototype.StanbolService.prototype = {
         }
 
     },
+    
     // Zart API load implementation
     // Runs a Stanbol entityhub find
     find: function(findable){
@@ -120,8 +121,30 @@ Zart.prototype.StanbolService.prototype = {
         var error = function (e) {
             findable.reject(e);
         };
-        this.connector.find(term, success, limit, offset, error)
+        this.connector.find(term, limit, offset, success, error)
     },
+    
+    // Zart API load implementation
+    // Runs a Stanbol entityhub find
+    load: function(loadable){
+        var correct = loadable instanceof this.zart.Loadable;
+        if (!correct) {throw "Invalid Loadable passed";}
+        var service = this;
+        
+        var entity = findable.options.entity;
+        if(!entity){
+            console.warn("StanbolConnector: No entity to look for!");
+            loadable.resolve([]);
+        };
+        var success = function (results) {
+            loadable.resolve(results.results);
+        };
+        var error = function (e) {
+            loadable.reject(e);
+        };
+        this.connector.load(entity, success, error)
+    },
+    
     _extractText: function (element) {
         if (element.get(0) && 
             element.get(0).tagName && 
@@ -208,11 +231,18 @@ var StanbolConnector = function(options){
     this.baseUrl = options.url.replace(/\/$/, '');
     this.enhancerUrlPrefix = "/engines";
     this.entityhubUrlPrefix = "/entityhub";
+    //TODO: this.ontonetUrlPrefix = "/ontonet";
+    //TODO: this.rulesUrlPrefix = "/rules";
+    //TODO: this.factstoreUrlPrefix = "/factstore";
 };
 StanbolConnector.prototype = {
-    engines: function(text, options, success, error) {
+    
+    analyze: function(text, success, error, options) {
+        if (!options) { options = {}; }
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
         var proxyUrl = this._proxyUrl();
+        var format = options.format || "application/rdf+json";
+        
         jQuery.ajax({
             success: function(response){
                 success(response)
@@ -224,93 +254,75 @@ StanbolConnector.prototype = {
                     proxy_url: enhancerUrl, 
                     content: text,
                     verb: "POST",
-                    format: options.format || "application/rdf+json"
+                    format: format,
                 } : text,
-            dataType: "application/rdf+json",
+            dataType: format,
             contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
 
         });
     },
-    queryEntityHub: function (uri, success, error, options) {
-        var proxy = this._proxyUrl();
-        var entityhub_url = this.baseUrl + this.entityhubUrlPrefix;
-        if (proxy) {
-            jQuery.ajax({
-                async: true,
-                type: "POST",
-                success: function(response){
-                    success(response)
-                },
-                error: error,
-                url: proxy,
-                dataType: "application/rdf+json",
-                data: {
-                    proxy_url: entityhub_url + "/sites/entity?id=" + escape(uri), 
-                    content: '',
+    
+    load: function (uri, success, error, options) {
+        if (!options) { options = {}; }
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri)
+        var proxyUrl = this._proxyUrl();
+        var format = options.format || "application/rdf+json";
+        
+        jQuery.ajax({
+            success: function(response){
+                success(response)
+            },
+            error: error,
+            type: (proxyUrl) ? "POST" : "GET",
+            url: proxyUrl || url,
+            data: (proxyUrl) ? {
+                    proxy_url: url, 
+                    content: "",
                     verb: "GET",
-                    format: "application/rdf+json"
-                }
-            });
-        } else {
-            jQuery.ajax({
-                async: true,
-                success: function(response){
-                    success(response)
-                },
-                error: error,
-                type: "GET",
-                url: entityhub_url + "/sites/entity?id=" + escape(uri),
-                data: '',
-                dataType: "application/rdf+json",
-                contentType: "text/plain",
-                accepts: {"application/rdf+json": "application/rdf+json"}
-            });
-        }
+                    format: format
+                } : text,
+            dataType: format,
+            contentType: proxyUrl ? undefined : "text/plain",
+            accepts: {"application/rdf+json": "application/rdf+json"}
+        });
     },
-    find: function (term, success, limit, offset, error) {
+    
+    find: function (term, limit, offset, success, error, options) {
         // curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find
-        var proxy = this._proxyUrl();
+        if (!options) { options = {}; }
         if (offset == null) {
             offset = 0;
         }
         if (limit == null) {
             limit = 10;
         }
-        var entityhub_url = this.baseUrl + this.entityhubUrlPrefix;
-        if (proxy) {
-            // TODO test with proxy
-            jQuery.ajax({
-                async: true,
-                type: "POST",
-                success: function(response){
-                    success(response)
-                },
-                error: error,
-                url: proxy,
-                dataType: "application/rdf+json",
-                data: {
-                    proxy_url: entityhub_url + "/sites/find", 
-                    content: "name=" + term + "&limit=" + offset + "&limit=" + offset,
+        
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/find";
+        var proxyUrl = this._proxyUrl();
+        var query = "name=" + term + "&limit=" + limit + "&offset=" + offset;
+        var format = options.format || "application/rdf+json";
+        
+        jQuery.ajax({
+            success: function(response){
+                success(response)
+            },
+            error: error,
+            type: "POST",
+            url: proxyUrl || url,
+            data: (proxyUrl) ? {
+                    proxy_url: url, 
+                    content: query,
                     verb: "POST",
-                    format: "application/rdf+json"
-                }
-            });
-        } else {
-            jQuery.ajax({
-                async: true,
-                success: function(response){
-                    success(response)
-                },
-                error: error,
-                type: "POST",
-                url: entityhub_url + "/sites/find",
-                data: "name=" + term + "&limit=" + offset + "&limit=" + offset,
-                contentType: "text/plain",
-                accepts: {"application/rdf+json": "application/rdf+json"}
-            });
-        }
+                    format: format,
+                    type: "text/plain"
+                } : query,
+            dataType: format,
+            contentType: proxyUrl ? undefined : "text/plain",
+            accepts: {"application/rdf+json": "application/rdf+json"}
+        });
     },
+    
     _proxyUrl: function(){
         this.proxyUrl = "";
         if(this.baseUrl.indexOf(":") !== -1){

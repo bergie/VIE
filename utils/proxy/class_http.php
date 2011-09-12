@@ -198,7 +198,7 @@ class http {
 	      }
             }
             $post_string = substr($post_string,1);
-	    if ($this->postvars["type"]) {
+	    if (array_key_exists("type", $this->postvars)) {
                 $this->headers["Content-Type"] = $this->postvars["type"];
             } else {
                 $this->headers["Content-Type"] = "application/x-www-form-urlencoded";
@@ -236,7 +236,7 @@ class http {
             return false;
         }
         
-        #echo "<br />post_string: ".$post_string;
+        error_log("<br />post_string: ".$post_string );
         if (count($this->postvars) > 0) {
             if (fwrite($sock, $post_string."\r\n") === FALSE) {
                 fclose($sock);
