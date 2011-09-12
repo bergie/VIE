@@ -43,6 +43,21 @@ test ("Manually adding namespaces", function () {
     strictEqual(z.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
 });
 
+test ("Manually adding multiple namespaces", function () {
+    var z = new Zart();
+    
+    var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#', "test2": "http://this.is.another/test#"});
+
+    z.namespaces.add({
+        "test": "http://this.is.a/test#",
+        "test2": "http://this.is.another/test#"
+    });
+    
+    deepEqual(z.namespaces.toObj(), reference, "Manually adding namespaces.");
+    strictEqual(z.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
+    strictEqual(z.namespaces.get("test2"), "http://this.is.another/test#", "Manually adding namespaces.");
+});
+
 test ("Manually adding duplicate", function () {
     var z = new Zart();
     var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});

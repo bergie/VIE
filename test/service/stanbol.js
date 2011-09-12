@@ -52,7 +52,7 @@ test("Zart.js StanbolService - Find", function () {
 
 test("Zart.js StanbolService - Load", function () {
     
-    var entity = "http://dbpedia.org/resource/Barack_Obama";
+    var entity = "<http://dbpedia.org/resource/Barack_Obama>";
     var z = new Zart();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");

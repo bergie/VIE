@@ -64,19 +64,25 @@ Zart.prototype.use = function(service, name) {
   }
   service.zart = this;
   service.name = name;
+  if (service.init) {
+      service.init();
+  }
   this.services[name] = service;
 };
+
 Zart.prototype.service = function(name) {
   if (!this.services[name]) {
     throw "Undefined service " + name;
   }
   return this.services[name];
 };
+
 Zart.prototype.getServicesArray = function() {
   var res = [];
   _(this.services).each(function(service, i){res.push(service);});
   return res;
 };
+
 Zart.prototype.Able = Able;
 
 // Declaring the ..able classes
@@ -86,9 +92,11 @@ Zart.prototype.load = function(options) {
   options.zart = this;
   return new this.Loadable(options);
 };
+
 Zart.prototype.Loadable = function (options) {
     this.init(options,"load");
-}
+};
+
 Zart.prototype.Loadable.prototype = new Zart.prototype.Able();
 
 // Savable
@@ -97,9 +105,11 @@ Zart.prototype.save = function(options) {
   options.zart = this;
   return new this.Savable(options);
 };
+
 Zart.prototype.Savable = function(options){
     this.init(options, "save");
 };
+
 Zart.prototype.Savable.prototype = new Zart.prototype.Able();
 
 // Removable
@@ -108,9 +118,11 @@ Zart.prototype.remove = function(options) {
   options.zart = this;
   return new this.Removable(options);
 };
+
 Zart.prototype.Removable = function(options){
     this.init(options, "remove");
-}
+};
+
 Zart.prototype.Removable.prototype = new Zart.prototype.Able();
 
 // Analyzable
@@ -119,9 +131,11 @@ Zart.prototype.analyze = function(options) {
   options.zart = this;
   return new this.Analyzable(options);
 };
+
 Zart.prototype.Analyzable = function (options) {
     this.init(options, "analyze");
-}
+};
+
 Zart.prototype.Analyzable.prototype = new Zart.prototype.Able();
 
 // Findable
@@ -130,8 +144,10 @@ Zart.prototype.find = function(options) {
   options.zart = this;
   return new this.Findable(options);
 };
+
 Zart.prototype.Findable = function (options) {
     this.init(options, "find");
-}
+};
+
 Zart.prototype.Findable.prototype = new Zart.prototype.Able();
 

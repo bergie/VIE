@@ -5,24 +5,10 @@
 (function(){
 Zart.prototype.StanbolService = function(options) {
     var defaults = {
+        name : 'stanbol',
         url: 'http://dev.iks-project.eu:8080/',
-        defaultProxyUrl : "../utils/proxy/proxy.php"
-    };
-    this.options = jQuery.extend(defaults, options);
-
-    this.zart = null;
-    this.name = 'stanbol';
-    this.connector = new StanbolConnector(this.options);
-    Zart.prototype.StanbolService.prototype.init(this);
-    jQuery.ajaxSetup({
-        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
-    });
-
-};
-
-Zart.prototype.StanbolService.prototype = {
-    init: function(){
-        this.namespaces = {
+        defaultProxyUrl : "../utils/proxy/proxy.php",
+        namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
             owl : "http://www.w3.org/2002/07/owl#",
             geonames : "http://www.geonames.org/ontology#",
@@ -32,7 +18,34 @@ Zart.prototype.StanbolService.prototype = {
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/'
-        };
+        }
+    };
+    this.options = jQuery.extend(defaults, options ? options : {});
+
+    this.zart = null; // will be set via Zart.use();
+    this.name = this.options.name;
+    this.connector = new StanbolConnector(this.options);
+    
+    jQuery.ajaxSetup({
+        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
+    });
+
+};
+
+Zart.prototype.StanbolService.prototype = {
+    init: function(){
+        
+        for (var key in this.options.namespaces) {
+            try {
+                var val = this.options.namespaces[key];
+                this.zart.namespaces.add(key, val);
+            } catch (e) {
+                //this means that the namespace is already in the Zart.namespace
+                //ignore for now!
+            }
+        }
+        this.namespaces = new this.zart.Namespaces(this.options.namespaces);
+        
         this.rules = [
             //rule to add backwards-relations to the triples
             //this makes querying for entities a lot easier!
@@ -66,7 +79,7 @@ Zart.prototype.StanbolService.prototype = {
                              namespaces: ns
                          });
                      };
-                 }(this.namespaces)
+                 }(this.namespaces.toObj())
              }
         ];
     },
@@ -171,8 +184,8 @@ Zart.prototype.StanbolService.prototype = {
         //execute rules here!
         if (service.rules) {
             var rules = jQuery.rdf.ruleset();
-            for (var prefix in service.namespaces) {
-                rules.prefix(prefix, service.namespaces[prefix]);
+            for (var prefix in service.namespaces.toObj()) {
+                rules.prefix(prefix, service.namespaces.get(prefix));
             }
             for (var i = 0; i < service.rules.length; i++) {
                 rules.add(service.rules[i]['left'], service.rules[i]['right']);
@@ -185,13 +198,13 @@ Zart.prototype.StanbolService.prototype = {
             if (!entities[subject]) {
                 entities[subject] = {
                     '@subject': subject,
-                    '@context': service.namespaces,
+                    '@context': service.namespaces.toObj(),
                     '@type': []
                 };
             }
             var propertyUri = this.property.toString();
 
-            var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces});
+            var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces.toObj()});
             entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
 
             function getValue(rdfQueryLiteral){
@@ -265,7 +278,8 @@ StanbolConnector.prototype = {
     
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
-        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri
+        uri = uri.replace(/^</, '').replace(/>$/, '');
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri;
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
         
