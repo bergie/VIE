@@ -37,9 +37,9 @@ test("Zart.js StanbolService - Find", function () {
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
     stop(10000); // 10 second timeout
-    z.find({term: escape(term), limit: limit, offset: offset})
+    z.find({term: term, limit: limit, offset: offset})
     .using('stanbol').execute().done(function(x) {
-        debugger;
+        ok(true);
         //TODO: add more tests
         start();
     })
@@ -52,7 +52,7 @@ test("Zart.js StanbolService - Find", function () {
 
 test("Zart.js StanbolService - Load", function () {
     
-    var entity = "http://dbpedia.org/resoure/Barack_Obama";
+    var entity = "http://dbpedia.org/resource/Barack_Obama";
     var z = new Zart();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
@@ -60,7 +60,7 @@ test("Zart.js StanbolService - Load", function () {
     stop(10000); // 10 second timeout
     z.load({entity: entity})
     .using('stanbol').execute().done(function(x) {
-        debugger;
+        ok(true);
         //TODO: add more tests
         start();
     })

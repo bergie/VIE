@@ -108,7 +108,7 @@ Zart.prototype.StanbolService.prototype = {
         if (!correct) {throw "Invalid Findable passed";}
         var service = this;
         // The term to find, * as wildcard allowed
-        var term = findable.options.term;
+        var term = escape(findable.options.term);
         if(!term){
             console.warn("StanbolConnector: No term to look for!");
             findable.resolve([]);
@@ -265,7 +265,7 @@ StanbolConnector.prototype = {
     
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
-        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri)
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
         
