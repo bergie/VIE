@@ -44,7 +44,7 @@ test("Zart.js StanbolService - Find", function () {
         start();
     })
     .fail(function(f){
-        debugger;
+        ok(false, f);
         start();
     });
 });
@@ -65,7 +65,7 @@ test("Zart.js StanbolService - Load", function () {
         start();
     })
     .fail(function(f){
-        debugger;
+        ok(false, f);
         start();
     });
 });

@@ -131,7 +131,7 @@ Zart.prototype.StanbolService.prototype = {
         if (!correct) {throw "Invalid Loadable passed";}
         var service = this;
         
-        var entity = findable.options.entity;
+        var entity = loadable.options.entity;
         if(!entity){
             console.warn("StanbolConnector: No entity to look for!");
             loadable.resolve([]);
@@ -300,7 +300,6 @@ StanbolConnector.prototype = {
         
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/find";
         var proxyUrl = this._proxyUrl();
-        var query = "name=" + term + "&limit=" + limit + "&offset=" + offset;
         var format = options.format || "application/rdf+json";
         
         jQuery.ajax({
@@ -312,11 +311,15 @@ StanbolConnector.prototype = {
             url: proxyUrl || url,
             data: (proxyUrl) ? {
                     proxy_url: url, 
-                    content: query,
+                    content: {
+                        name : term,
+                        limit : limit,
+                        offset: offset
+                    },
                     verb: "POST",
                     format: format,
                     type: "text/plain"
-                } : query,
+                } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
             contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}

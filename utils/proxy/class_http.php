@@ -1,13 +1,9 @@
 <?php
 /*
 * Filename.......: class_http.php
-* Author.........: Troy Wolf [troy@troywolf.com]
-* Last Modified..: Date: 2006/03/06 10:15:00
-* Description....: Screen-scraping class with caching. Includes image_cache.php
-                   companion script. Includes static methods to extract data
-                   out of HTML tables into arrays or XML. Now supports sending
-                   XML requests and custom verbs with support for making
-                   WebDAV requests to Microsoft Exchange Server.
+* Author.........: Troy Wolf [troy@troywolf.com], Sebastian Germesin [sebastian.germesin@dfki.de]
+* Last Modified..: Date: 2011/09/12 10:52:00
+* Description....: PHP Proxy
 */
 
 class http {
@@ -52,13 +48,6 @@ class http {
         */
         $this->stream_timeout = 60;
         
-        /*
-        Set the 'dir' property to the directory where you want to store the cached
-        content. I suggest a folder that is not web-accessible.
-        End this value with a "/".
-        */
-        $this->dir = realpath("./")."/"; //Default to current dir.
-
         $this->clean();               
 
         return true;
@@ -69,7 +58,7 @@ class http {
     determine whether to get the content from the url or the cache.
     */
     function fetch($url="", $verb, $name="", $user="", $pwd="", $ttl=0) {
-      $this->log .= "--------------------------------<br />fetch() called<br />\n";
+      $this->log .= "--------------------------------<br />\nfetch() called<br />\n";
         $this->log .= "url: ".$url."<br />\n";
         $this->status = "";
         $this->header = "";
@@ -81,41 +70,10 @@ class http {
         $this->url = $url;
         $this->ttl = $ttl;
         $this->name = $name;
-        $need_to_save = false;
+	error_log($this->ttl);
         if ($this->ttl == "0") {
             if (!$fh = $this->getFromUrl($url, $user, $pwd, $verb)) {
                 return false;
-            }
-        } else {
-            if (strlen(trim($this->name)) == 0) { $this->name = MD5($url); }
-            $this->filename = $this->dir."http_".$this->name;
-            $this->log .= "Filename: ".$this->filename."<br />";
-            $this->getFile_ts();
-            if ($this->ttl == "daily") {
-                if (date('Y-m-d',$this->data_ts) != date('Y-m-d',time())) {
-                    $this->log .= "cache has expired<br />";
-                    if (!$fh = $this->getFromUrl($url, $user, $pwd, $verb)) {
-                        return false;
-                    }
-                    $need_to_save = true;
-                    if ($this->getFromUrl()) { return $this->saveToCache(); }
-                    } else {
-                        if (!$fh = $this->getFromCache()) {
-                        return false;
-                    }
-                }
-            } else {
-                if ((time() - $this->data_ts) >= $this->ttl) {
-                    $this->log .= "cache has expired<br />";
-                    if (!$fh = $this->getFromUrl($url, $user, $pwd, $verb)) {
-                        return false;
-                    }
-                    $need_to_save = true;
-                } else {
-                    if (!$fh = $this->getFromCache()) {
-                        return false;
-                    }
-                }
             }
         }
         
@@ -148,14 +106,14 @@ class http {
     PRIVATE getFromUrl() method to scrape content from url.
     */
     function getFromUrl($url, $user="", $pwd="", $verb="GET") {
-        $this->log .= "getFromUrl() called<br />";
+        $this->log .= "getFromUrl() called<br />\n";
         preg_match("~([a-z]*://)?([^:^/]*)(:([0-9]{1,5}))?(/.*)?~i", $url, $parts);
         $protocol = $parts[1];
         $server = $parts[2];
         $port = $parts[4];
         $path = $parts[5];
         $post_string = "";
-		if ($port == "") {
+	if ($port == "") {
             if (strtolower($protocol) == "https://") {
                 $port = "443";
             } else {
@@ -174,7 +132,7 @@ class http {
         stream_set_timeout($sock, $this->stream_timeout);
         
         $this->headers["Host"] = $server.":".$port;
-        
+        $this->log .= "Contacting: " . $protocol . $server.":".$port . "\n";
         if ($user != "" && $pwd != "") {
             $this->log .= "Authentication will be attempted<br />\n";
             $this->headers["Authorization"] = "Basic ".base64_encode($user.":".$pwd);
@@ -186,18 +144,22 @@ class http {
 	    if (array_key_exists("format", $this->postvars)) {
 	      $this->headers["Accept"] = $this->postvars["format"];
 	    }
+	    $ignore = array("format", "type", "verb", "proxy_url");
             $post_string = "";
             foreach ($this->postvars as $key=>$value) {
-	      if (is_array($value)) {
-		foreach ($value as $key2=>$value2) {
-		  $post_string .= "&".urlencode($key2)."=".urlencode($value2);
+	      if (!in_array($key, $ignore)) {
+		if (is_array($value)) {
+		  foreach ($value as $key2=>$value2) {
+		    $post_string .= "&" . urlencode($key2) . "=" . urlencode($value2);
+		  }
 		}
-	      }
-	      else if ($key != "format") {
-                $post_string .= "&".urlencode($key)."=".urlencode($value);
+		else {
+		  $post_string .= "&" . urlencode($key) . "=". urlencode($value);
+		}
 	      }
             }
             $post_string = substr($post_string,1);
+	    $this->log .= "Post String:'" . $post_string . "'!\n";
 	    if (array_key_exists("type", $this->postvars)) {
                 $this->headers["Content-Type"] = $this->postvars["type"];
             } else {
@@ -215,7 +177,6 @@ class http {
 	    }
         }
 
-        #echo "<br />request: ".$request;
         if (fwrite($sock, $request) === FALSE) {
             fclose($sock);
             $this->log .= "Error writing request type to socket<br />\n";
@@ -236,7 +197,6 @@ class http {
             return false;
         }
         
-        error_log("<br />post_string: ".$post_string );
         if (count($this->postvars) > 0) {
             if (fwrite($sock, $post_string."\r\n") === FALSE) {
                 fclose($sock);
@@ -250,6 +210,8 @@ class http {
                 return false;
             }
         }
+
+	error_log($this->log);
         
         return $sock;
     }
@@ -283,156 +245,6 @@ class http {
         } else {
             $this->headers["Referer"] = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         }
-    }
-    
-    /*
-    PRIVATE getFromCache() method to retrieve content from cache file.
-    */
-    function getFromCache() {
-        $this->log .= "getFromCache() called<br />";
-        //create file pointer
-        if (!$fp=@fopen($this->filename,"r")) {
-            $this->log .= "Could not open ".$this->filename."<br />";
-            return false;
-        }
-        return $fp;
-    }
-    
-    /*
-    PRIVATE saveToCache() method to save content to cache file.
-    */
-    function saveToCache() {
-        $this->log .= "saveToCache() called<br />";
-        
-        //create file pointer
-        if (!$fp=@fopen($this->filename,"w")) {
-            $this->log .= "Could not open ".$this->filename."<br />";
-            return false;
-        }
-        //write to file
-        if (!@fwrite($fp,$this->header."\r\n".$this->body)) {
-            $this->log .= "Could not write to ".$this->filename."<br />";
-            fclose($fp);
-            return false;
-        }
-        //close file pointer
-        fclose($fp);
-        return true;
-    }
-    
-    /*
-    PRIVATE getFile_ts() method to get cache file modified date.
-    */
-    function getFile_ts() {
-        $this->log .= "getFile_ts() called<br />";
-        if (!file_exists($this->filename)) {
-            $this->data_ts = 0;
-            $this->log .= $this->filename." does not exist<br />";
-            return false;
-        }
-        $this->data_ts = filemtime($this->filename);
-        return true;
-    }
-    
-    /*
-    Static method table_into_array()
-    Generic function to return data array from HTML table data
-    rawHTML: the page source
-    needle: optional string to start parsing source from
-    needle_within: 0 = needle is BEFORE table, 1 = needle is within table
-    allowed_tags: list of tags to NOT strip from data, e.g. "<a><b>"
-    */
-    function table_into_array($rawHTML,$needle="",$needle_within=0,$allowed_tags="") {
-        $upperHTML = strtoupper($rawHTML);
-        $idx = 0;
-        if (strlen($needle) > 0) {
-            $needle = strtoupper($needle);
-            $idx = strpos($upperHTML,$needle);
-            if ($idx === false) { return false; }
-            if ($needle_within == 1) {
-                $cnt = 0;
-                while(($cnt < 100) && (substr($upperHTML,$idx,6) != "<TABLE")) {
-                    $idx = strrpos(substr($upperHTML,0,$idx-1),"<");
-                    $cnt++;
-                }
-            }
-        }
-        $aryData = array();
-        $rowIdx = 0;
-        /*	If this table has a header row, it may use TD or TH, so 
-        check special for this first row. */
-        $tmp = strpos($upperHTML,"<TR",$idx);
-        if ($tmp === false) { return false; }
-        $tmp2 = strpos($upperHTML,"</TR>",$tmp);
-        if ($tmp2 === false) { return false; }
-        $row = substr($rawHTML,$tmp,$tmp2-$tmp);
-        $pattern = "/<TH>|<TH\ |<TD>|<TD\ /";
-        preg_match($pattern,strtoupper($row),$matches);
-        $hdrTag = $matches[0];
-        
-        while ($tmp = strpos(strtoupper($row),$hdrTag) !== false) {
-            $tmp = strpos(strtoupper($row),">",$tmp);
-            if ($tmp === false) { return false; }
-            $tmp++;
-            $tmp2 = strpos(strtoupper($row),"</T");
-            $aryData[$rowIdx][] = trim(strip_tags(substr($row,$tmp,$tmp2-$tmp),$allowed_tags));
-            $row = substr($row,$tmp2+5);
-            preg_match($pattern,strtoupper($row),$matches);
-            $hdrTag = $matches[0];
-        }
-        $idx = strpos($upperHTML,"</TR>",$idx)+5;
-        $rowIdx++;
-        
-        /* Now parse the rest of the rows. */
-        $tmp = strpos($upperHTML,"<TR",$idx);
-        if ($tmp === false) { return false; }
-        $tmp2 = strpos($upperHTML,"</TABLE>",$idx);
-        if ($tmp2 === false) { return false; }
-        $table = substr($rawHTML,$tmp,$tmp2-$tmp);
-        
-        while ($tmp = strpos(strtoupper($table),"<TR") !== false) {
-            $tmp2 = strpos(strtoupper($table),"</TR");
-            if ($tmp2 === false) { return false; }
-            $row = substr($table,$tmp,$tmp2-$tmp);
-            
-            while ($tmp = strpos(strtoupper($row),"<TD") !== false) {
-            $tmp = strpos(strtoupper($row),">",$tmp);
-            if ($tmp === false) { return false; }
-            $tmp++;
-            $tmp2 = strpos(strtoupper($row),"</TD");
-            $aryData[$rowIdx][] = trim(strip_tags(substr($row,$tmp,$tmp2-$tmp),$allowed_tags));
-            $row = substr($row,$tmp2+5);
-            }
-            $table = substr($table,strpos(strtoupper($table),"</TR>")+5);
-            $rowIdx++;
-        }
-        return $aryData;
-    }
-    
-    /*
-    Static method table_into_xml()
-    Generic function to return xml dataset from HTML table data
-    rawHTML: the page source
-    needle: optional string to start parsing source from
-    allowedTags: list of tags to NOT strip from data, e.g. "<a><b>"
-    */
-    function table_into_xml($rawHTML,$needle="",$needle_within=0,$allowedTags="") {
-        if (!$aryTable = http::table_into_array($rawHTML,$needle,$needle_within,$allowedTags)) { return false; }
-        $xml = "<?xml version=\"1.0\" standalone=\"yes\" \?\>\n";
-        $xml .= "<TABLE>\n";
-        $rowIdx = 0;
-        foreach ($aryTable as $row) {
-            $xml .= "\t<ROW id=\"".$rowIdx."\">\n";
-            $colIdx = 0;
-            foreach ($row as $col) {
-                $xml .= "\t\t<COL id=\"".$colIdx."\">".trim(utf8_encode(htmlspecialchars($col)))."</COL>\n";
-                $colIdx++;
-            }
-            $xml .= "\t</ROW>\n";
-            $rowIdx++;
-        }
-        $xml .= "</TABLE>";
-        return $xml;
     }
 }
 
