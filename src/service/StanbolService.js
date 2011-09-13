@@ -295,7 +295,7 @@ StanbolConnector.prototype = {
                     content: "",
                     verb: "GET",
                     format: format
-                } : text,
+                } : null,
             dataType: format,
             contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
