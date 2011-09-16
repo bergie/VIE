@@ -108,7 +108,7 @@ Zart.prototype.Entity = Backbone.Model.extend({
             obj[prop] = value;
             this.set(obj);
         } else {
-            // Make sure not tot set the same value twice
+            // Make sure not to set the same value twice
             if(val !== value && (!(val instanceof Array) && val.indexOf(value) === -1)){
                 // Value already set, make sure it's an Array and extend it
                 if(! (val instanceof Array)){
@@ -121,9 +121,15 @@ Zart.prototype.Entity = Backbone.Model.extend({
             }
         }
     },
+    
     hasType: function(type){
         return this.hasPropertyValue("@type", type);
     },
+    
+    getType: function () {
+      return this.zart.types.get(this.get("@type"));  
+    },
+    
     hasPropertyValue: function(property, value){
         var t = this.get(property);
         if(t instanceof Array) {

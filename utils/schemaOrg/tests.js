@@ -6,7 +6,7 @@ test("Initialization", function() {
     ok(z.loadSchemaOrg);
     equal(typeof z.loadSchemaOrg, "function");
     
-    z.loadSchemaOrg(z);
+    z.loadSchemaOrg();
     
     equal(z.types.list().length, 296);
     

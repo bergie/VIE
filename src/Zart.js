@@ -47,7 +47,9 @@ Zart = function(config){
     this.entities = new this.Collection();
 
     this.Entity.prototype.entities = this.entities;
+    this.entities.zart = this;
     this.Entity.prototype.entityCollection = this.Collection;
+    this.Entity.prototype.zart = this;
 
     this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
     this.types = new this.Types({

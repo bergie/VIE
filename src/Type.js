@@ -37,6 +37,9 @@ Zart.prototype.Type = function (id, attrs, options) {
     this.subsumes = function (type) {
         type = this.zart.types.get(type);
         if (type) {
+            if (this.id === type.id) {
+                return true;
+            }
             var subsumedByChildren = false;
             var subtypes = this.subtypes.list();
             for (var c in subtypes) {
