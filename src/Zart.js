@@ -56,7 +56,7 @@ Zart = function(config){
         zart: this
     });
     this.namespaces = new this.Namespaces({
-        "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://schema.org/"
+        "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://zart.js/"
     });
 };
 

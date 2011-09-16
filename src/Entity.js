@@ -5,6 +5,16 @@ Zart.prototype.Entity = Backbone.Model.extend({
         '@type': 'Thing'
     },
 
+    //TODO: namespace the attributes!
+    // PROPOSAL: 
+    // if (@type has Namespace)
+    // -> foreach (attribute \ {@subject, @type})
+    //    -> if (!attribute has Namespace)
+    //       -> attribute gets same namespace as @type
+    // else 
+    // -> foreach (attribute \ {@subject, @type})
+    //    -> if (!attribute has Namespace)
+    //       -> attribute gets default namespace
     initialize: function(attributes, options) {
         var instance = this;
         _.each(attributes, function(value, predicate) {
