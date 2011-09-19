@@ -11,6 +11,7 @@ Zart.prototype.Namespaces = function (namespaces) {
             for (var k1 in k) {
                 this.add(k1, k[k1]);
             }
+            return this;
         }
         //check if we overwrite existing mappings
         if (this.containsKey(k) && v !== this._namespaces[k]) {
@@ -27,6 +28,27 @@ Zart.prototype.Namespaces = function (namespaces) {
         this._namespaces[k] = v;
         
         return this;
+    };
+    
+    this.addOrReplace = function (k, v) {
+        if (typeof k === "object") {
+            for (var k1 in k) {
+                this.addOrReplace(k1, k[k1]);
+            }
+            return this;
+        }
+        var self = this;
+        //check if we overwrite existing mappings
+        if (this.containsKey(k) && v !== this._namespaces[k]) {
+            this.remove(k);
+        } else {
+            jQuery.each(this._namespaces, function (k1,v1) {
+                if (v1 === v && k1 !== k) {
+                    self.remove(k1);
+                }
+            });
+        }
+        return this.add(k, v);
     };
     
     this.get = function (k) {
@@ -60,7 +82,7 @@ Zart.prototype.Namespaces = function (namespaces) {
         return this;
     };
     
-    this.remove = function (k, v) {
+    this.remove = function (k) {
         delete this._namespaces[k];
         return this;
     };

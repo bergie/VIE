@@ -26,9 +26,10 @@ test("zart.js API", function () {
 
 test("zart.js Entities API", function () {
     var z = new Zart();
+    z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
-
+    
     z.entities.add({
         '@subject': 'http://example.net/foo',
         'dc:title': 'Bar'
@@ -37,11 +38,12 @@ test("zart.js Entities API", function () {
     equal(z.entities.length, 1);
     equal(z.entities.at(0).id, z.entities.get('http://example.net/foo').id);
     equal(z.entities.at(0).get('dc:title'), 'Bar');
-    equal(z.entities.at(0).get('@type'), 'Thing');
+    equal(z.entities.at(0).get('@type')[0].id, z.types.get('Thing').id);
 });
 
 test("zart.js Entities API - addOrUpdate", function () {
     var z = new Zart();
+    z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
 
@@ -60,16 +62,23 @@ test("zart.js Entities API - addOrUpdate", function () {
 
 test("zart.js Entities API - addOrUpdate", function () {
     var z = new Zart();
+    z.namespaces.add('example', 'http://example.net/foo/');
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
+    
+    var person = z.types.add("foaf:Person").inherit(z.types.get('Thing'));
+                
+    var musician = z.types.add("example:Musician").inherit(z.types.get('Thing'));
 
     z.entities.add({
         '@subject': 'http://example.net/Madonna',
-        '@type': ['example:Musician', 'foaf:Person', 'dbpedia:Singer', ]
+        '@type': ['example:Musician', 'foaf:Person']
     });
-    // TODO implement namespace resolution for @type and other references
-    equal(typeof z.entities.get('http://example.net/Madonna').hasType, 'function');
-    ok(z.entities.get('http://example.net/Madonna').hasType('foaf:Person'));
+
+    //implement namespace resolution for @type and other references
+    ok(z.entities.get('http://example.net/Madonna').isof('foaf:Person'));
+    ok(z.entities.get('http://example.net/Madonna').isof('example:Musician'));
 });
 
 test("zart.js Entity API - setOrAdd", function () {

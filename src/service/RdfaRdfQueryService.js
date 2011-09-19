@@ -1,3 +1,5 @@
+/* TODO: give same functionality as RdfaService or remove
+
 Zart.prototype.RdfaRdfQueryService = function(options) {
     if (!options) {
         options = {};
@@ -10,45 +12,60 @@ Zart.prototype.RdfaRdfQueryService = function(options) {
     }
 };
 
-Zart.prototype.RdfaRdfQueryService.prototype.load = function(loadable) {
-    var service = this;
-    var correct = loadable instanceof this.zart.Loadable;
-    if (!correct) {
-        throw "Invalid Loadable passed";
+Zart.prototype.RdfaRdfQueryService.prototype = {
+
+    load: function(loadable){
+        var service = this;
+        var correct = loadable instanceof this.zart.Loadable;
+        if (!correct) {
+            throw "Invalid Loadable passed";
+        }
+        
+        var element = loadable.options.element ? loadable.options.element : jQuery(document);
+        
+        var rdf = jQuery(element).rdfa();
+        
+        jQuery.each(jQuery(element).xmlns(), function(prefix, ns){
+            service.zart.namespaces.addOrReplace(prefix, ns.toString());
+        });
+        
+        var entities = {}
+        rdf.where('?subject ?property ?object').each(function(){
+            var subject = this.subject.toString();
+            if (!entities[subject]) {
+                entities[subject] = {
+                    '@subject': subject
+                };
+            }
+            var propertyUri = this.property.toString();
+            
+            var val;
+            if (typeof this.object.value === "string") {
+                val = this.object.value;
+            }
+            else {
+                val = this.object.toString();
+            }
+            if (!entities[subject][propertyUri]) {
+                entities[subject][propertyUri] = val;
+            }
+            else 
+                if (!_.isArray(entities[subject][propertyUri])) {
+                    entities[subject][propertyUri] = [entities[subject][propertyUri]];
+                    entities[subject][propertyUri].push(val);
+                }
+                else {
+                    entities[subject][propertyUri].push(val);
+                }
+        });
+        
+        var zartEntities = [];
+        jQuery.each(entities, function(){
+            zartEntities.push(service.zart.entities.addOrUpdate(this));
+        });
+        loadable.resolve(zartEntities);
     }
-
-    var element = loadable.options.element ? loadable.options.element : jQuery(document);
-
-    var rdf = jQuery(element).rdfa();
-
-    var namespaces = {};
-    jQuery.each(jQuery(element).xmlns(), function(prefix, ns) {
-        namespaces[prefix] = ns.toString();
-    });
-
-    var entities = {}
-    rdf.where('?subject ?property ?object').each(function() {
-        var subject = this.subject.toString();
-        if (!entities[subject]) {
-            entities[subject] = {
-                '@subject': subject,
-                '@context': namespaces
-            };
-        }
-        var propertyUri = this.property.toString();
-
-        var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: namespaces});
-
-        if (typeof this.object.value === "string") {
-            entities[subject][propertyCurie] = this.object.value;
-        } else {
-            entities[subject][propertyCurie] = this.object.toString();
-        }
-    });
-
-    var zartEntities = [];
-    jQuery.each(entities, function() {
-        zartEntities.push(new service.zart.Entity(this));
-    });
-    loadable.resolve(zartEntities);
 };
+
+
+*/

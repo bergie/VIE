@@ -4,7 +4,7 @@ test("Test simple RDFa parsing", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
-    var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
+    var html = jQuery('<div xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -25,7 +25,7 @@ test("Test updating RDFa views", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
-    var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
+    var html = jQuery('<div xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
     
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -49,7 +49,7 @@ test("Test simple RDFa nested tags", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
-    var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1></div>');
+    var html = jQuery('<div xmlns:dcterms="http://purl.org/dc/terms/" id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1></div>');
 
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -63,7 +63,7 @@ test("Test RDFa property content", function() {
     var z = new Zart();
     z.use(new z.RdfaService);
 
-    var html = jQuery('<div about="http://twitter.com/bergie"><span property="foaf:name">Henri Bergius</span><span property="iks:online" content="0"></span></div>');
+    var html = jQuery('<div xmlns:iks="http://iks-project.eu/ontology/" xmlns:foaf="http://xmlns.com/foaf/0.1/" about="http://twitter.com/bergie"><span property="foaf:name">Henri Bergius</span><span property="iks:online" content="0"></span></div>');
 
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -96,19 +96,22 @@ test("Test RDFa example from Wikipedia", function() {
 
 test("Test RDFa image entitization", function() {
     var z = new Zart();
+    z.namespaces.add('mgd', 'http://midgard-project.org/ontology/');
+    z.namespaces.add('dcterms', 'http://purl.org/dc/terms/');
     z.use(new z.RdfaService);
 
     var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1><span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span></div>');
 
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
-        var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
 
+        var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
         // Ensure we have the image correctly read
         ok(icons instanceof z.Collection, "Icons should be a Collection");
         equal(icons.at(0).id, '<http://example.net/image.jpg>');
 
         icons.remove(icons.at(0));
+        //TODO: this fails as there is no View registered for this object
         equal(jQuery('img', html).length, 0);
 
         icons.add({'@subject': '<http://example.net/otherimage.jpg>'});
@@ -118,23 +121,3 @@ test("Test RDFa image entitization", function() {
         start();
     });
 });
-
-/**
- * This test doesn't work with QUnit
-test("Test global entity with a base URL", function() {
-    var z = new Zart();
-    z.use(new z.RdfaService);
-
-    var html = jQuery('<html><head><base href="http://www.example.org/jo/blog" /><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
-
-    stop(1000); // 1 second timeout
-    z.load({element: html}).from('rdfa').execute().done(function(entities) {
-        ok(entities);
-        equal(entities.length, 1);
-        equal(entities[0].get('dc:creator'), 'Jo');
-        equal(entities[0].id, '<http://www.example.org/jo/blog>');
-
-        start();
-    });
-});
-*/

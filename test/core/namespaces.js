@@ -8,6 +8,8 @@ test("Zart namespace", function () {
    
    ok(z.namespaces.add);
    equal(typeof z.namespaces.add, "function");
+  ok(z.namespaces.addOrReplace);
+   equal(typeof z.namespaces.addOrReplace, "function");
    ok(z.namespaces.get);
    equal(typeof z.namespaces.get, "function");
    ok(z.namespaces.containsKey);
@@ -81,6 +83,25 @@ test ("Manually adding wrong duplicate (value)", function () {
     raises(function () {
         z.namespaces.add("test", "http://this.is.another/test#");
     });
+});
+
+test ("Manually adding wrong duplicate (key) - addOrReplace", function () {
+    var z = new Zart();
+    z.namespaces.add("test", "http://this.is.a/test#");
+    z.namespaces.addOrReplace("test1", "http://this.is.a/test#");
+    
+    equal(z.namespaces.get("test"), undefined);
+    equal(z.namespaces.get("test1"), "http://this.is.a/test#");
+});
+
+test ("Manually adding wrong duplicate (value) - addOrReplace", function () {
+    var z = new Zart();
+    
+    z.namespaces.add("test", "http://this.is.a/test#");
+    z.namespaces.addOrReplace("test", "http://this.is.a/test2#");
+    
+    equal(z.namespaces.get("test"), "http://this.is.a/test2#");
+    
 });
 
 test ("Manually removing namespaces", function () {

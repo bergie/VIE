@@ -15,6 +15,9 @@ test("zart.js - Type API", function() {
     ok(z.types.add);
     ok(typeof z.types.add === 'function');
     
+    ok(z.types.addOrOverwrite);
+    ok(typeof z.types.addOrOverwrite === 'function');
+    
     ok(z.types.get);
     ok(typeof z.types.get === 'function');
     
@@ -62,6 +65,9 @@ test("zart.js - Type API", function() {
     
     ok(thingy.remove);
     ok(typeof thingy.remove === 'function');
+    
+    ok(thingy.toString);
+    ok(typeof thingy.toString === 'function');
 });
 
 
@@ -94,36 +100,37 @@ test("zart.js - Creation/Extension/Removal of types", function() {
     
     ok(z.types.list());
     ok(jQuery.isArray(z.types.list()));
-    equal(z.types.list().length, 2);
-    equal(z.types.list()[0].id, thingy.id);
-    equal(z.types.list()[1].id, persony.id);
+    equal(z.types.list().length, 3);
+    equal(z.types.list()[0].id, z.types.get('Thing').id);
+    equal(z.types.list()[1].id, thingy.id);
+    equal(z.types.list()[2].id, persony.id);
     
     var animaly = z.types.add("TestAnimaly").inherit(thingy);
     
     var specialCreaturey = z.types.add("SpecialCreatuery").inherit(persony).inherit(animaly);
     
-    equal(z.types.list().length, 4);
+    equal(z.types.list().length, 5);
     equal(persony.subtypes.list().length, 1);
     equal(animaly.subtypes.list().length, 1);
     equal(specialCreaturey.supertypes.list().length, 2);
     
     var specialCreaturey2 = z.types.add("SpecialCreatuery2").inherit([persony, animaly]);
-    equal(z.types.list().length, 5);
+    equal(z.types.list().length, 6);
     equal(persony.subtypes.list().length, 2);
     equal(animaly.subtypes.list().length, 2);
     equal(specialCreaturey2.supertypes.list().length, 2);
     
     var veryspecialCreaturey = z.types.add("VerySpecialCreatuery").inherit("SpecialCreatuery");
     
-    equal(z.types.list().length, 6);
+    equal(z.types.list().length, 7);
     
     //removes only that type
     z.types.remove(veryspecialCreaturey);
-    equal(z.types.list().length, 5);
+    equal(z.types.list().length, 6);
     
     //recursively removes all types
     z.types.remove(thingy);
-    equal(z.types.list().length, 0);
+    equal(z.types.list().length, 1);
     
     
 });

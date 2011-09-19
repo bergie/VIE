@@ -93,6 +93,10 @@ Zart.prototype.Type = function (id, attrs, options) {
     this.remove = function () {
         return this.zart.types.remove(this);
     };
+    
+    this.toString = function () {
+        return this.id;
+    };
 };
 
 Zart.prototype.Types = function (options) {
@@ -120,6 +124,13 @@ Zart.prototype.Types = function (options) {
                 throw "Wrong argument to Zart.Types.add()!";
             }
         }
+    };
+    
+    this.addOrOverwrite = function(id, attrs){
+        if (this.get(id)) {
+            this.remove(id);
+        }
+        return this.add(id);
     };
     
     this.get = function (id) {

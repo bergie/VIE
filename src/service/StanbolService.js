@@ -10,6 +10,11 @@ Zart.prototype.StanbolService = function(options) {
         defaultProxyUrl : "../utils/proxy/proxy.php",
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
+            semdeskf : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
+            skos: "http://www.w3.org/2004/02/skos/core#",
+            foaf: "http://xmlns.com/foaf/0.1/",
+            opengis: "http://www.opengis.net/gml/",
+            dbpedia: "http://dbpedia.org/ontology/",
             owl : "http://www.w3.org/2002/07/owl#",
             geonames : "http://www.geonames.org/ontology#",
             enhancer : "http://fise.iks-project.eu/ontology/",
@@ -67,21 +72,44 @@ Zart.prototype.StanbolService.prototype = {
                  '?entity enhancer:hasEntityAnnotation ?subject'
              ]
              },
-             //rule to transform a Stanbol person into a Zart person
+             //rule(s) to transform a Stanbol person into a Zart person
              {
                 'left' : [
-                    '?subject a <http://dbpedia.org/ontology/Person>',
+                    '?subject a dbpedia:Person>',
                  ],
                  'right': function(ns){
                      return function(){
                          return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <http://schema.org/Person>', {
+                         ' a ' + ns["default"] + 'Person>', {
+                             namespaces: ns
+                         });
+                     };
+                 }(this.namespaces.toObj())
+             },
+             {
+                'left' : [
+                    '?subject a foaf:Person>',
+                 ],
+                 'right': function(ns){
+                     return function(){
+                         return jQuery.rdf.triple(this.subject.toString() +
+                         ' a ' + ns["default"] + 'Person>', {
                              namespaces: ns
                          });
                      };
                  }(this.namespaces.toObj())
              }
         ];
+        
+        this.zart.types.add('enhancer:EntityAnnotation', [
+            //TODO: add attributes
+        ]).inherit("Thing");
+        this.zart.types.add('enhancer:TextAnnotation', [
+            //TODO: add attributes
+        ]).inherit("Thing");
+        this.zart.types.add('enhancer:Enhancement', [
+            //TODO: add attributes
+        ]).inherit("Thing");
     },
     // Zart API analyze implementation
     analyze: function(analyzable) {

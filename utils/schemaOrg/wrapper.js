@@ -11,6 +11,8 @@ Zart.prototype.loadSchemaOrg = function () {
         throw "Please load the schema.json file."
     }
     
+    this.types.remove("Thing");
+    
     this.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
     
     var datatypeMapping = {

@@ -5,9 +5,7 @@
     xml:lang="en">
     <head>
         <script type="text/javascript" src="../lib/jquery/1.6/jquery-1.6.1.min.js"></script>
-        <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
-        <script type="text/javascript" src="qunit.js"></script>
-
+        
         <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
         <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>        
         <script type="text/javascript" src="../lib/backboneJS/backbone.js"></script>
@@ -20,14 +18,13 @@
                 // load the lib
                 var v = new Zart({defaultNamespace: 'http://schema.org/'});
                 
-                
                 //set some namespaces
                 v.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
                 v.namespaces.add("sw", "http://semanticweb.org/wiki/Category");
                 v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
                 
                 //add types (if you do not want to use the provided types/attributes)
-                var thing = v.types.add("Thing");
+                var thing = v.types.addOrOverwrite("Thing");
                     
                 var p1 = v.types.add("Person", [
                     {
@@ -42,55 +39,52 @@
                      range : "xsd:string"
                     }
                 ]).inherit(thing);
-                
                 var p3 = v.types.add("sw:Person", [
                     {
-                     id : "foaf:name",
+                     id : "<http://xmlns.com/foaf/0.1/name>",
                      range : "xsd:string"
                     }
                 ]).inherit(thing);
                 
                 
                 // create a new person
-                debugger;
                 var person = v.entities.addOrUpdate({
                     '@subject' : '<http://example.org/Barack_Obama1>',
-                    '@type'    : 'Person',      //this actually means: '<' + z.namespaces.get("default") + Person + '>'
-                    'name'     : 'Barack Obama' //this actually means: '<' + z.namespaces.get("default") + name + '>'
+                    '@type'    : 'Person',      //this actually means: '<' + v.namespaces.get("default") + Person + '>'
+                    'name'     : 'Barack Obama' //this actually means: '<' + v.namespaces.get("default") + name + '>'
                 });
                 
                 var x = person.as("JSON");
                 var y = person.as("JSONLD");
-                debugger;
                 
-                var personIsAThing = person.getType().isof(thing); // should be true
-                var personIsAPerson1 = person.getType().isof(p1); // should be true
+                var personIsAThing = person.isof(thing); // should be true
+                var personIsAPerson1 = person.isof(p1); // should be true
                 var personName1 = person.get("name");
-                var personName2 = person.get('<' + z.namespaces.get("default") + name + '>');
+                var personName2 = person.get('<' + v.namespaces.get("default") + "name" + '>');
                 
                 var foafPerson = v.entities.addOrUpdate({
                     '@subject' : '<http://example.org/Barack_Obama2>',
-                    '@type'    : 'foaf:Person', //this actually means: '<' + z.namespaces.get("foaf") + Person + '>'
-                    'name'     : 'Barack Obama' //this actually means: '<' + z.namespaces.get("foaf") + Person + '>'
+                    '@type'    : 'foaf:Person', //this actually means: '<' + v.namespaces.get("foaf") + Person + '>'
+                    'name'     : 'Barack Obama' //this actually means: '<' + v.namespaces.get("foaf") + Person + '>'
                 });
                 
-                var foafPersonIsAThing = foafPerson.getType().isof(thing); // should be true
-                var foafPersonIsAPerson1 = foafPerson.getType().isof(p2); // should be true
+                var foafPersonIsAThing = foafPerson.isof(thing); // should be true
+                var foafPersonIsAPerson1 = foafPerson.isof(p2); // should be true
                 var foafPersonName1 = foafPerson.get("name");
                 var foafPersonName2 = foafPerson.get('foaf:name');
-                var foafPersonName2 = foafPerson.get('<' + z.namespaces.get("foaf") + name + '>');
+                var foafPersonName3 = foafPerson.get('<' + v.namespaces.get("foaf") + "name" + '>');
                 
                 var weirdPerson = v.entities.addOrUpdate({
                     '@subject' : '<http://example.org/Barack_Obama3>',
-                    '@type'    : 'sw:Person', //this actually means: '<' + z.namespaces.get("sw") + Person + '>'
-                    'foaf:name': 'Barack Obama' //this actually means: '<' + z.namespaces.get("foaf") + Person + '>'
+                    '@type'    : 'sw:Person', //this actually means: '<' + v.namespaces.get("sw") + Person + '>'
+                    'foaf:name': 'Barack Obama' //this actually means: '<' + v.namespaces.get("foaf") + Person + '>'
                 });
                 
-                var weirdPersonIsAThing = weirdPerson.getType().isof(thing); // should be true
-                var weirdPersonIsAPerson1 = weirdPerson.getType().isof(p3); // should be true
+                var weirdPersonIsAThing = weirdPerson.isof(thing); // should be true
+                var weirdPersonIsAPerson1 = weirdPerson.isof(p3); // should be true
                 var weirdPersonName1 = weirdPerson.get("name"); // TODO ???
                 var weirdPersonName2 = weirdPerson.get('foaf:name');
-                var weirdPersonName2 = weirdPerson.get('<' + z.namespaces.get("foaf") + name + '>');
+                var weirdPersonName3 = weirdPerson.get('<' + v.namespaces.get("foaf") + "name" + '>');
                
                 debugger;
             });

@@ -58,6 +58,7 @@ Zart = function(config){
     this.namespaces = new this.Namespaces({
         "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://zart.js/"
     });
+    this.types.add("Thing");
 };
 
 Zart.prototype.use = function(service, name) {
