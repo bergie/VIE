@@ -11,8 +11,7 @@ Zart.prototype.Collection = Backbone.Collection.extend({
             return entities;
         }
 
-        var isModel = model instanceof this.model;
-        if (!isModel) {
+        if (!model.isEntity) {
             model = new this.model(model);
         }
 

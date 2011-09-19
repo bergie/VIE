@@ -24,7 +24,7 @@ test("zart.js API", function () {
 
 });
 
-test("zart.js Entities API", 7, function () {
+test("zart.js Entities API", function () {
     var z = new Zart();
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
@@ -33,10 +33,9 @@ test("zart.js Entities API", 7, function () {
         '@subject': 'http://example.net/foo',
         'dc:title': 'Bar'
     });
+    
     equal(z.entities.length, 1);
-
-    ok(z.entities.get('http://example.net/foo') instanceof z.Entity);
-    equal(z.entities.at(0), z.entities.get('http://example.net/foo'));
+    equal(z.entities.at(0).id, z.entities.get('http://example.net/foo').id);
     equal(z.entities.at(0).get('dc:title'), 'Bar');
     equal(z.entities.at(0).get('@type'), 'Thing');
 });

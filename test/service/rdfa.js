@@ -15,7 +15,7 @@ test("Test simple RDFa parsing", function() {
         equal(entities[1].get('foaf:name'), 'Albert Einstein');
         equal(entities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
 
-        equal(z.entities.get('<http://dbpedia.org/resource/Germany>'), entities[0]);
+        equal(z.entities.get('<http://dbpedia.org/resource/Germany>').id, entities[0].id);
 
         start();
     });
