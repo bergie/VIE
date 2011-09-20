@@ -282,7 +282,8 @@ exports['test image entitization'] = function(test) {
 exports['test list inside a list'] = function(test) {
     var html = jQuery('<div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div>');
     
-    var objectInstance = VIE.RDFaEntities.getInstance(html);
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://example.net/page');
     var parts = objectInstance.get('dc:hasPart');
     test.equal(parts.length, 1);
     
@@ -301,14 +302,15 @@ exports['test list inside a list'] = function(test) {
 exports['test adding anonymous elements to list'] = function(test) {
     var html = jQuery('<div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div>');
     
-    var objectInstance = VIE.RDFaEntities.getInstance(html);
+    VIE.RDFaEntities.getInstances(html);
+    var objectInstance = VIE.EntityManager.getBySubject('http://example.net/page');
     var parts = objectInstance.get('dc:hasPart');
     test.equal(parts.length, 1);
     
     parts.add({'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
 
     test.equal(parts.at(1).toJSONLD()['@subject'].indexOf('_:bnode'), 0);
-    test.equal(objectInstance.toJSONLD()['dc:hasPart'][1], parts.at(1).toJSONLD()['@subject']);
+    test.equal(objectInstance.toJSONLD()['<http://purl.org/dc/elements/1.1/hasPart>'][1], parts.at(1).toJSONLD()['@subject']);
 
     test.equal(jQuery('li img', html).length, 2);
     
@@ -359,7 +361,7 @@ exports['test relation example'] = function(test) {
 
     test.equal(images.at(0).get('dc:creator'), 'Mark Birbeck');
 
-    test.equal(images.at(0).id, 'photo1.jpg');
+    test.equal(images.at(0).id, '<photo1.jpg>');
     var licenses = images.at(0).get('license');
     test.equal(licenses.length, 1);
 
