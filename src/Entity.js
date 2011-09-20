@@ -77,7 +77,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         initialize: function(attributes, options){
             var instance = this;
             _.each(attributes, function(value, predicate){
-                if (predicate === "@subject") {
+                if (predicate === "@subject" && value) {
                     instance.attributes['@subject'] = instance.id = instance.toReference(value);
                 }
 
@@ -211,6 +211,12 @@ VIE.prototype.Entity = function(attrs, opts) {
 
                 if (name === '@type' && entityValue) {
                     entityValue = entityValue.id;
+                }
+
+                if (value instanceof instance.vie.vie.Collection) {
+                    entityValue = value.map(function(instance) {
+                        return instance.getSubject();
+                    });
                 }
 
                 // TODO: Handle collections separately
