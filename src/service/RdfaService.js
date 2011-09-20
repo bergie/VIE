@@ -338,8 +338,7 @@ VIE.prototype.RdfaService.prototype = {
     
     // mostyl copied from http://code.google.com/p/rdfquery/source/browse/trunk/jquery.xmlns.js
     xmlns : function (elem) {
-        
-        var $elem = (elem)? $(elem) : $(document);
+        var $elem = (elem)? jQuery(elem) : jQuery(document);
         
         var obj = {};
         
