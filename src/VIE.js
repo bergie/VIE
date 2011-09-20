@@ -165,3 +165,6 @@ VIE.prototype.Findable = function (options) {
 
 VIE.prototype.Findable.prototype = new VIE.prototype.Able();
 
+if(typeof(exports) !== 'undefined' && exports !== null) {
+    exports.VIE = VIE;
+}
