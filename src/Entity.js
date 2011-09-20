@@ -1,4 +1,4 @@
-VIE.prototype.Entity = function(attrs, opts){
+VIE.prototype.Entity = function(attrs, opts) {
 
 //namespace the attributes!
 // if (@type)
@@ -77,6 +77,10 @@ VIE.prototype.Entity = function(attrs, opts){
         initialize: function(attributes, options){
             var instance = this;
             _.each(attributes, function(value, predicate){
+                if (predicate === "@subject") {
+                    instance.attributes['@subject'] = instance.id = instance.toReference(value);
+                }
+
                 if (!_.isArray(value)) {
                     return;
                 }
