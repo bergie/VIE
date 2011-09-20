@@ -2,13 +2,8 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
 
     get: function(id) {
-        if (!this.models.length) {
-            return null;
-        }
-        if (!this.models[0].isReference(id)) {
-            id = this.models[0].toReference(id);
-        }
         if (id == null) return null;
+        id = this.toReference(id);
         return this._byId[id.id != null ? id.id : id];
     },
 
@@ -40,5 +35,27 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         }
         this.add(model);
         return model;
+    },
+
+    isReference: function(uri){
+        var matcher = new RegExp("^\\<([^\\>]*)\\>$");
+        if (matcher.exec(uri)) {
+            return true;
+        }
+        return false;
+    },
+        
+    toReference: function(uri){
+        if (this.isReference(uri)) {
+            return uri;
+        }
+        return '<' + uri + '>';
+    },
+        
+    fromReference: function(uri){
+        if (!this.isReference(uri)) {
+            return uri;
+        }
+        return uri.substring(1, uri.length - 1);
     }
 });
