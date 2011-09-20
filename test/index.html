@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html  
+    version="XHTML+RDFa 1.0"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xml:lang="en">
+    <head>
+        <script type="text/javascript" src="../lib/jquery/1.6/jquery-1.6.1.min.js"></script>
+        <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="qunit.js"></script>
+
+        <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
+        <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>        
+        <script type="text/javascript" src="../lib/backboneJS/backbone.js"></script>
+        
+        <!-- zart.js itself -->
+		<script type="text/javascript" src="../dist/zart-latest.debug.js"></script>
+		<!-- This makes the http://schema.org ontology initializable.-->
+    	<script type="text/javascript" src="../utils/schemaOrg/schema.json"></script>
+    	<script type="text/javascript" src="../utils/schemaOrg/wrapper.js"></script>
+    	<script type="text/javascript" src="../utils/mpeg7/wrapper.js"></script>
+
+        <!-- load test scripts -->
+        <!-- CORE -->
+        <script type="text/javascript" src="core/zart.js"></script>
+		<script type="text/javascript" src="core/type.js"></script>
+		<script type="text/javascript" src="core/attribute.js"></script>
+		<script type="text/javascript" src="core/namespaces.js"></script>
+
+        <!-- SERVICES -->
+        <script type="text/javascript" src="service/rdfa.js"></script>
+        <!-- TODO: buggy <script type="text/javascript" src="service/rdfardfquery.js"></script>-->
+        <script type="text/javascript" src="service/stanbol.js"></script>
+        <script type="text/javascript" src="service/dbpedia.js"></script>
+        
+        <!-- MISC -->
+        <script type="text/javascript" src="../utils/schemaOrg/tests.js"></script>
+        <!--<script type="text/javascript" src="../utils/mpeg7/tests.js"></script>-->
+
+        <!-- Performance testing -->
+        <script type="text/javascript" src="../utils/jslitmus/JSLitmus.js"></script>
+        <script type="text/javascript" src="speed.js"></script>
+        
+    </head>
+    <body>
+        <h1 id="qunit-header">Unit tests for zart.js - using QUnit</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture">test markup, will be hidden</div>
+        
+        <h1 id="qunit-header"><a href="#">zart.js Speed Suite</a></h1> 
+        <div id="jslitmus_container" style="margin: 20px 10px;"></div> 
+    </body>
+</html>
