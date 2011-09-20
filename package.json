@@ -1,0 +1,24 @@
+{
+  "name"          : "vie",
+  "description"   : "Editable RDFa with Backbone.js and JSON-LD",
+  "url"           : "http://wiki.iks-project.eu/index.php/VIE",
+  "keywords"      : ["util", "rdfa", "model", "template", "server", "client", "browser"],
+  "author"        : "Henri Bergius",
+  "contributors"  : [
+    "Rene Kapusta",
+    "Christopher Hlubek",
+    "Benjamin Eberlei",
+    "Nicolas Karageuzian",
+    "Szaby Grünwald",
+    "Johannes Schüth",
+    "Sebastian Kurfuerst",
+    "Jonatan Lundin"
+  ],
+  "dependencies"  : {
+    "backbone"  : ">=0.3.3",
+    "jquery"    : ">=1.5.0"
+  },
+  "lib"           : ".",
+  "main"          : "vie.js",
+  "version"       : "1.0.0"
+}
