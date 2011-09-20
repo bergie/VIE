@@ -17,8 +17,16 @@ VIE.prototype.RdfaService.prototype = {
         if (!correct) {
             throw "Invalid Loadable passed";
         }
-    
-        var element = loadable.options.element ? loadable.options.element : jQuery(document);
+
+        var element;
+        if (!loadable.options.element) {
+            if (typeof document === 'undefined') { 
+                return loadable.resolve([]);
+            }
+            element = jQuery(document);
+        } else {
+            element = loadable.options.element;
+        }
     
         var ns = this.xmlns(element);
         for (var prefix in ns) {
@@ -338,7 +346,15 @@ VIE.prototype.RdfaService.prototype = {
     
     // mostyl copied from http://code.google.com/p/rdfquery/source/browse/trunk/jquery.xmlns.js
     xmlns : function (elem) {
-        var $elem = (elem)? jQuery(elem) : jQuery(document);
+        var $elem;
+        if (!elem) {
+            if (typeof document === 'undefined') { 
+                return {};
+            }
+            $elem = jQuery(document);
+        } else {
+            $elem = jQuery(elem);
+        }
         
         var obj = {};
         
