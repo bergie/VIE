@@ -59,6 +59,17 @@ VIE = function(config){
         "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://vie.js/"
     });
     this.types.add("Thing");
+
+    if (this.config.classic !== false) {
+        // Load Classic API as well
+        this.RDFa = new this.ClassicRDFa(this);
+        this.RDFaEntities = new this.ClassicRDFaEntities(this);
+        this.EntityManager = new this.ClassicEntityManager(this);
+
+        this.cleanup = function() {
+            this.entities.reset();
+        }
+    }
 };
 
 VIE.prototype.use = function(service, name) {

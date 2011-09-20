@@ -55,6 +55,8 @@
             <fileset dir="${SRC_DIR}" includes="Type.js"/>
             <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
             <fileset dir="${SRC_DIR}" includes="Namespaces.js"/>
+            <!-- VIE 1.0 API compat -->
+            <fileset dir="${SRC_DIR}" includes="Classic.js"/>
         	<fileset dir="${SRC_DIR}/service" includes="*.js"/>
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>
         </concat>
