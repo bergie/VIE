@@ -116,7 +116,7 @@ test("Test RDFa image entitization", function() {
 
         icons.add({'@subject': '<http://example.net/otherimage.jpg>'});
         equal(jQuery('img', html).length, 1);
-        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
+        equal(jQuery('img', html).attr('src'), 'http://example.net/otherimage.jpg');
 
         start();
     });
