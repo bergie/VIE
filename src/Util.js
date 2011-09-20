@@ -25,7 +25,7 @@ VIE.Util = {
                         ((safe)? "]" : "");
             }
         }
-        throw "No prefix found for uri '" + uri + "'!";
+        throw "No prefix found for URI '" + uri + "'!";
     },
     
     isCurie : function (something) {
@@ -44,7 +44,7 @@ VIE.Util = {
         if (curie.indexOf(delim) === -1 && namespaces.get("default")) {
             return "<" + namespaces.get("default") + curie + ">";
         }
-        throw "No prefix found for uri '" + curie + "'!";
+        throw "No prefix found for CURIE '" + curie + "'!";
     },
     
     isUri : function (something) {
