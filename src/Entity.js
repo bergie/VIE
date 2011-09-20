@@ -16,13 +16,16 @@ VIE.prototype.Entity = function(attrs, opts){
     
     var mapAttributeNS = function (attr) {
         var a = attr;
-        if (vie.vie.namespaces.isUri (attr) || attr.indexOf('@') === 0) {
+        try {
+            if (vie.vie.namespaces.isUri (attr) || attr.indexOf('@') === 0) {
             //ignore
-        } else if (vie.vie.namespaces.isCurie(attr)) {
-            a = vie.vie.namespaces.uri(attr);
-        } else {
-            //TODO: what if @subject has namespace?
-            a = '<' + vie.vie.namespaces.get('default') + attr + '>';
+            } else if (vie.vie.namespaces.isCurie(attr)) {
+                a = vie.vie.namespaces.uri(attr);
+            } else {
+                //TODO: what if @subject has namespace?
+                a = '<' + vie.vie.namespaces.get('default') + attr + '>';
+            }
+        } catch (e) {
         }
         return a;
     };
