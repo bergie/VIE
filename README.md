@@ -117,7 +117,8 @@ VIE is a CommonJS library that works on both browser and the server. On [Node.js
 Here is a simple Node.js script that uses VIE for parsing RDFa:
 
     var jQuery = require('jquery');
-    var VIE = require('vie');
+    var vie = require('vie');
+    var VIE = new vie.VIE();
 
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business.</p>');
 
