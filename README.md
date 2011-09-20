@@ -43,6 +43,22 @@ Having contents of a page described via RDFa makes it very easy to extract the c
 
 With Backbone, the content extracted from the RDFa-annotated HTML page is easily manageable via JavaScript. Consider for example:
 
+    v = new VIE();
+    v.use(new v.RdfaService());
+    v.load({element: jQuery('#myarticle')}).from('rdfa').execute().success(function(entities) {
+        _.forEach(entities, function(entity) {
+            entity.set({'dcterms:title': 'Hello, world'});
+            entity.save(null, {
+                success: function(savedModel, response) {
+                    alert("Your article '" + savedModel.get('dcterms:title') + "' was saved to server");
+                }
+            });
+        })
+        console.log("We got " + entities.length + " editable objects from the page");
+    });
+
+The classic VIE API will also work:
+
     var objectInstance = VIE.RDFaEntities.getInstance(jQuery('#myarticle'));
     objectInstance.set({'dcterms:title': 'Hello, world'});
     objectInstance.save(null, {
@@ -61,6 +77,24 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 * [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
 
 Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
+
+## I/O operations
+
+All Input/Output operations of VIE are based on the [jQuery Deferred](http://api.jquery.com/category/deferred-object/) object, which means that you can attach callbacks to them either before they run, or also after they've been run.
+
+The operations may either succeed, in which case the `then` callbacks will fire, or be rejected, in which case the `fail` callbacks will fire. Any `then` callbacks will fire in either case.
+
+## Dependencies
+
+VIE uses the following JavaScript libraries:
+
+* [jQuery](http://jquery.com/) for DOM manipulation and [Deferreds](http://api.jquery.com/category/deferred-object/)
+* [Backbone.js](http://documentcloud.github.com/backbone/) for entities (models) and collections
+* [Underscore.js](http://documentcloud.github.com/underscore/) for various JavaScript utilities
+
+Some functionality in VIE additionally uses:
+
+* [RdfQuery](http://code.google.com/p/rdfquery/) as a triplestore and for reasoning over rules
 
 ## Implementations
 
@@ -96,12 +130,28 @@ Here is a simple Node.js script that uses VIE for parsing RDFa:
 
 VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
 
-Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward!
+Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward. Contributions that include their own unit tests appreciated! 
 
 Development discussions happen on the `#iks` channel on Freenode. See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
 
+### Code organization
+
+VIE source code is inside the `src` directory. Each separate unit of functionality should be handled in its own file, with the `src/VIE.js` being the entry point to the system.
+
+### Building VIE
+
+The VIE library consists of many individual pieces that we merge together in the build process. You'll need [Apache Ant](http://ant.apache.org/). Then just run:
+
+    $ ant
+
+The built VIE library will appear in the `dist` folder.
+
 ### Running Unit Tests
+
+Direct your browser to the `test/index.html` file to run VIE's [QUnit](http://docs.jquery.com/Qunit) tests.
+
+#### Unit tests on Node.js
 
 You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
 
-    $ nodeunit test/*.js
+    $ nodeunit test-node/*.js
