@@ -204,6 +204,11 @@ VIE.prototype.Entity = function(attrs, opts){
             var instance = this;
             _.each(instance.attributes, function(value, name){
                 var entityValue = instance.get(name);
+
+                if (name === '@type' && entityValue) {
+                    entityValue = entityValue.id;
+                }
+
                 // TODO: Handle collections separately
                 instanceLD[name] = entityValue;
             });
