@@ -1,6 +1,17 @@
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
 
+    get: function(id) {
+        if (!this.models.length) {
+            return null;
+        }
+        if (this.models[0].isReference(id)) {
+            id = this.models[0].fromReference(id);
+        }
+        if (id == null) return null;
+        return this._byId[id.id != null ? id.id : id];
+    },
+
     addOrUpdate: function(model) {
         var collection = this;
         if (_.isArray(model)) {
