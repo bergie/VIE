@@ -5,8 +5,8 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         if (!this.models.length) {
             return null;
         }
-        if (this.models[0].isReference(id)) {
-            id = this.models[0].fromReference(id);
+        if (!this.models[0].isReference(id)) {
+            id = this.models[0].toReference(id);
         }
         if (id == null) return null;
         return this._byId[id.id != null ? id.id : id];
