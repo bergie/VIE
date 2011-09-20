@@ -32,7 +32,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             return;
         }
 
-        var entityView = this.service.registerEntityView(entity, this.cloneElement(this.template));
+        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.template));
         var entityElement = entityView.render().el;
         if (entity.id) {
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);
@@ -52,7 +52,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             return;
         }
 
-        var entityView = this.service.registerEntityView(entity, element);
+        var entityView = this.service._registerEntityView(entity, element);
         this.entityViews[entity.cid] = entityView;
     },
 
@@ -82,7 +82,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
-        service.findPredicateElements(subject, newElement, false).each(function() {
+        service._findPredicateElements(subject, newElement, false).each(function() {
             service.writeElementValue(jQuery(this), '');
         });
 
