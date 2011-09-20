@@ -1,19 +1,19 @@
-Zart.prototype.RdfaService = function(options) {
+VIE.prototype.RdfaService = function(options) {
     if (!options) {
         options = {};
     }
-    this.zart = null;
+    this.vie = null;
     this.name = 'rdfa';
     this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
     this.views = [];
 };
 
-Zart.prototype.RdfaService.prototype = {
+VIE.prototype.RdfaService.prototype = {
     
     load : function(loadable) {
         var service = this;
-        var correct = loadable instanceof this.zart.Loadable;
+        var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {
             throw "Invalid Loadable passed";
         }
@@ -22,7 +22,7 @@ Zart.prototype.RdfaService.prototype = {
     
         var ns = this.xmlns(element);
         for (var prefix in ns) {
-            this.zart.namespaces.addOrReplace(prefix, ns[prefix]);
+            this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
         }
         
         var entities = [];
@@ -36,7 +36,7 @@ Zart.prototype.RdfaService.prototype = {
     },
 
     save : function(savable) {
-        var correct = savable instanceof this.zart.Savable;
+        var correct = savable instanceof this.vie.Savable;
         if (!correct) {
             throw "Invalid Savable passed";
         }
@@ -64,8 +64,8 @@ Zart.prototype.RdfaService.prototype = {
     
         entity['@subject'] = subject;
     
-        var entityInstance = new this.zart.Entity(entity);
-        entityInstance = this.zart.entities.addOrUpdate(entityInstance);
+        var entityInstance = new this.vie.Entity(entity);
+        entityInstance = this.vie.entities.addOrUpdate(entityInstance);
         this._registerEntityView(entityInstance, element);
         return entityInstance;
     },
@@ -107,11 +107,11 @@ Zart.prototype.RdfaService.prototype = {
             return viewInstance;
         }
     
-        viewInstance = new this.zart.view.Entity({
+        viewInstance = new this.vie.view.Entity({
             model: entity,
             el: element,
             tagName: element.get(0).nodeName,
-            zart: this.zart,
+            vie: this.vie,
             service: this.name
         });
         this.views.push(viewInstance);
@@ -119,7 +119,7 @@ Zart.prototype.RdfaService.prototype = {
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.get(predicate);
-            if (attributeValue instanceof service.zart.Collection) {
+            if (attributeValue instanceof service.vie.Collection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this));
                 });
@@ -136,7 +136,7 @@ Zart.prototype.RdfaService.prototype = {
     
         var entityTemplate = element.children(':first-child');
     
-        viewInstance = new this.zart.view.Collection({
+        viewInstance = new this.vie.view.Collection({
             collection: collection,
             model: collection.model,
             el: element,

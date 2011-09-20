@@ -1,11 +1,11 @@
-if (!Zart.prototype.view) {
-    Zart.prototype.view = {};
+if (!VIE.prototype.view) {
+    VIE.prototype.view = {};
 }
 
-Zart.prototype.view.Entity = Backbone.View.extend({
+VIE.prototype.view.Entity = Backbone.View.extend({
     initialize: function(options) {
         this.service = options.service ? options.service : 'rdfa';
-        this.zart = options.zart;
+        this.vie = options.vie;
 
         // Ensure view gets updated when properties of the Entity change.
         _.bindAll(this, 'render');
@@ -15,7 +15,7 @@ Zart.prototype.view.Entity = Backbone.View.extend({
     // Rendering a view means writing the properties of the Entity back to
     // the element containing our RDFa annotations.
     render: function() {
-        this.zart.save({
+        this.vie.save({
                 element: this.el, 
                 entity: this.model
             }).

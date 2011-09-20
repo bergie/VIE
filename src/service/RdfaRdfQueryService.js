@@ -1,10 +1,10 @@
 /* TODO: give same functionality as RdfaService or remove
 
-Zart.prototype.RdfaRdfQueryService = function(options) {
+VIE.prototype.RdfaRdfQueryService = function(options) {
     if (!options) {
         options = {};
     }
-    this.zart = null;
+    this.vie = null;
     this.name = 'rdfa';
 
     if (typeof jQuery.rdf !== 'function') {
@@ -12,11 +12,11 @@ Zart.prototype.RdfaRdfQueryService = function(options) {
     }
 };
 
-Zart.prototype.RdfaRdfQueryService.prototype = {
+VIE.prototype.RdfaRdfQueryService.prototype = {
 
     load: function(loadable){
         var service = this;
-        var correct = loadable instanceof this.zart.Loadable;
+        var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {
             throw "Invalid Loadable passed";
         }
@@ -26,7 +26,7 @@ Zart.prototype.RdfaRdfQueryService.prototype = {
         var rdf = jQuery(element).rdfa();
         
         jQuery.each(jQuery(element).xmlns(), function(prefix, ns){
-            service.zart.namespaces.addOrReplace(prefix, ns.toString());
+            service.vie.namespaces.addOrReplace(prefix, ns.toString());
         });
         
         var entities = {}
@@ -59,11 +59,11 @@ Zart.prototype.RdfaRdfQueryService.prototype = {
                 }
         });
         
-        var zartEntities = [];
+        var vieEntities = [];
         jQuery.each(entities, function(){
-            zartEntities.push(service.zart.entities.addOrUpdate(this));
+            vieEntities.push(service.vie.entities.addOrUpdate(this));
         });
-        loadable.resolve(zartEntities);
+        loadable.resolve(vieEntities);
     }
 };
 

@@ -1,8 +1,8 @@
-module("zart.js - Attribute");
+module("vie.js - Attribute");
 
-test("zart.js - Attribute API", function() {
+test("vie.js - Attribute API", function() {
     
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
     var thingy = z.types.add("TestTThingy", [
         {
@@ -16,8 +16,8 @@ test("zart.js - Attribute API", function() {
     ok(attributes);
     ok(attributes instanceof z.Attributes);
     
-    ok(attributes.zart);
-    ok(attributes.zart instanceof Zart);
+    ok(attributes.vie);
+    ok(attributes.vie instanceof VIE);
     
     ok(attributes.add);
     ok(typeof attributes.add === 'function');
@@ -38,8 +38,8 @@ test("zart.js - Attribute API", function() {
     ok (name);
     ok (name instanceof z.Attribute);
     
-    ok (name.zart);
-    ok (name.zart instanceof Zart);
+    ok (name.vie);
+    ok (name.vie instanceof VIE);
     
     ok(name.id);
     equal(typeof name.id, 'string');
@@ -55,9 +55,9 @@ test("zart.js - Attribute API", function() {
     
 });
 
-test("zart.js - Creation/Alteration/Removal of Attributes", function() {
+test("vie.js - Creation/Alteration/Removal of Attributes", function() {
     
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
     
     var tt1 = z.types.add("TestType1", [

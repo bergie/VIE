@@ -3,9 +3,9 @@
 //
 
 //This bootstraps the <a href="http://schema.org">http://schema.org</a> 
-//ontology into Zart.
+//ontology into VIE.
 
-Zart.prototype.loadSchemaOrg = function () {
+VIE.prototype.loadSchemaOrg = function () {
     
     if (!SchemaOrg) {
         throw "Please load the schema.json file."

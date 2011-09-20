@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="zart.js" basedir="." default="all">
+<project name="vie.js" basedir="." default="all">
 
 	<property name="VERSION" value="0.0.1"/>
 
@@ -11,12 +11,12 @@
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
 
-	<target name="doc" description="Generates documentation for zart.js with Docco ">
+	<target name="doc" description="Generates documentation for vie.js with Docco ">
         <echo message="Generating Documentation"/>
 		<echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
 		<echo message="get it from: http://jashkenas.github.com/docco/"/>
 		<exec executable="docco" dir=".">
-  			<arg value="${DIST_DIR}/zart-latest.debug.js" />
+  			<arg value="${DIST_DIR}/vie-latest.debug.js" />
   			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
 		</exec>
     </target>
@@ -37,7 +37,7 @@
     <target name="dist" depends="init, combine, minimise" />
 
     <target name="zip" depends="dist">
-        <zip destfile="${DIST_DIR}/zart-${VERSION}.zip">
+        <zip destfile="${DIST_DIR}/vie-${VERSION}.zip">
             <zipfileset dir="docs/" prefix="docs"/>
             <zipfileset dir="service" prefix="service"/>
             <zipfileset dir="dist/" includes="*.js"/>
@@ -45,10 +45,10 @@
     </target>
 
     <target name="combine" description="combines core/*.js files into one file">
-        <echo message="Building zart.js Distribution" />
-        <concat destfile="${DIST_DIR}/zart-${VERSION}.debug.js">
+        <echo message="Building vie.js Distribution" />
+        <concat destfile="${DIST_DIR}/vie-${VERSION}.debug.js">
             <fileset dir="${SRC_DIR}" includes="Able.js"/>
-        	<fileset dir="${SRC_DIR}" includes="Zart.js"/>
+        	<fileset dir="${SRC_DIR}" includes="VIE.js"/>
             <fileset dir="${SRC_DIR}" includes="Util.js"/>
             <fileset dir="${SRC_DIR}" includes="Entity.js"/>
             <fileset dir="${SRC_DIR}" includes="Collection.js"/>
@@ -58,17 +58,17 @@
         	<fileset dir="${SRC_DIR}/service" includes="*.js"/>
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>
         </concat>
-        <copy file="${DIST_DIR}/zart-${VERSION}.debug.js" tofile="${DIST_DIR}/zart-latest.debug.js" overwrite="true" />
+        <copy file="${DIST_DIR}/vie-${VERSION}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 
     <target name="minimise">
-        <echo message="Minimising zart.js" />
+        <echo message="Minimising vie.js" />
 
         <antcall target="minimiseJSFile">
-            <param name="inputFile" value="${DIST_DIR}/zart-${VERSION}.debug.js" />
-            <param name="outputFile" value="${DIST_DIR}/zart-${VERSION}.js" />
+            <param name="inputFile" value="${DIST_DIR}/vie-${VERSION}.debug.js" />
+            <param name="outputFile" value="${DIST_DIR}/vie-${VERSION}.js" />
         </antcall>
-        <copy file="${DIST_DIR}/zart-${VERSION}.js" tofile="${DIST_DIR}/zart-latest.js" overwrite="true" />
+        <copy file="${DIST_DIR}/vie-${VERSION}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
     </target>
 
     <target name="minimiseJSFile">

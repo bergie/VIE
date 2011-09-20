@@ -1,16 +1,16 @@
-module("zart.js - Apache Stanbol Service");
+module("vie.js - Apache Stanbol Service");
 
 test("Test stanbol connection", function() {
-    var z = new Zart();
+    var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
     z.use(new z.StanbolService);
     ok(z.service('stanbol'));
 });
 
-test("Zart.js StanbolService - Analyze", function () {
+test("VIE.js StanbolService - Analyze", function () {
     
     var elem = $('<p>This is a small test, where Steve Jobs sings a song.</p>');
-    var z = new Zart();
+    var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
@@ -27,12 +27,12 @@ test("Zart.js StanbolService - Analyze", function () {
     });
 });
 
-test("Zart.js StanbolService - Find", function () {
+test("VIE.js StanbolService - Find", function () {
     
     var term = "Barack Obama";
     var limit = 10;
     var offset = 0;
-    var z = new Zart();
+    var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));
@@ -50,10 +50,10 @@ test("Zart.js StanbolService - Find", function () {
 });
 
 
-test("Zart.js StanbolService - Load", function () {
+test("VIE.js StanbolService - Load", function () {
     
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
-    var z = new Zart();
+    var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081"}));

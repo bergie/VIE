@@ -2,7 +2,7 @@
 // Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
 //
 
-Zart.prototype.Attribute = function (id, range, domain, options) {
+VIE.prototype.Attribute = function (id, range, domain, options) {
     if (id === undefined || typeof id !== 'string') {
         throw "The attribute constructor needs an 'id' of type string! E.g., 'Person'";
     }
@@ -12,23 +12,23 @@ Zart.prototype.Attribute = function (id, range, domain, options) {
     if (domain === undefined) {
         throw "The attribute constructor needs a 'domain'.";
     }
-    if (!options || !options.zart || !(options.zart instanceof Zart)) {
-        throw "Zart.Attribute needs an instance of Zart given.";
+    if (!options || !options.vie || !(options.vie instanceof VIE)) {
+        throw "VIE.Attribute needs an instance of VIE given.";
     }
-    this.zart = options.zart;
+    this.vie = options.vie;
     
     this._domain = domain;
     this.range = (jQuery.isArray(range))? range : [ range ];
     this.count = {}; //TODO!
    
-    this.id = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+    this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             
     this.applies = function (range) {
-        if (this.zart.types.get(range)) {
-            range = this.zart.types.get(range);
+        if (this.vie.types.get(range)) {
+            range = this.vie.types.get(range);
         }
         for (var r in this.range) {
-            var x = this.zart.types.get(this.range[r]);
+            var x = this.vie.types.get(this.range[r]);
             if (x === undefined && typeof range === "string") {
                 if (range === this.range[r]) {
                     return true;
@@ -49,9 +49,9 @@ Zart.prototype.Attribute = function (id, range, domain, options) {
         
 };
 
-Zart.prototype.Attributes = function (domain, attrs, options) {
+VIE.prototype.Attributes = function (domain, attrs, options) {
     
-    this.zart = options.zart;
+    this.vie = options.vie;
     
     this.domain = domain;
     
@@ -65,18 +65,18 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
         else {
             if (typeof id === "string") {
                 var options = {
-                    zart: this.zart
+                    vie: this.vie
                 };
-                var a = new this.zart.Attribute(id, range, this.domain, options);
+                var a = new this.vie.Attribute(id, range, this.domain, options);
                 this._local[a.id] = a;
                 return a;
-            } else if (id instanceof this.zart.Type) {
+            } else if (id instanceof this.vie.Type) {
                 id.domain = this.domain;
-                id.zart = this.zart;
+                id.vie = this.vie;
             	this._local[id.id] = id;
                 return id;
             } else {
-                throw "Wrong argument to Zart.Types.add()!";
+                throw "Wrong argument to VIE.Types.add()!";
             }
         }
     };
@@ -92,12 +92,12 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
         
     this.get = function (id) {
         if (typeof id === 'string') {
-            var lid = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+            var lid = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             return this._inherit()._attributes[lid];
-        } else if (id instanceof this.zart.Attribute) {
+        } else if (id instanceof this.vie.Attribute) {
             return this.get(id.id);
         } else {
-            throw "Wrong argument in Zart.Attributes.get()";
+            throw "Wrong argument in VIE.Attributes.get()";
         }
     };
     
@@ -129,7 +129,7 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
                             delete add[id];
                         }
                         merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = Zart.Util.unduplicate(merge[id]);
+                        merge[id] = VIE.Util.unduplicate(merge[id]);
                     }
                 }
             }
@@ -143,14 +143,14 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
             var merged = merge[id];
             var ranges = [];
             for (var r in merged) {
-                var p = this.zart.types.get(merged[r]);
+                var p = this.vie.types.get(merged[r]);
                 var isAncestorOf = false;
                 if (p) {
                     for (var x in merged) {
                         if (x === r) {
                             continue;
                         }
-                        var c = this.zart.types.get(merged[x]);
+                        var c = this.vie.types.get(merged[x]);
                         if (c && c.isof(p)) {
                             isAncestorOf = true;
                             break;
@@ -162,9 +162,9 @@ Zart.prototype.Attributes = function (domain, attrs, options) {
                 }
             }
             var options = {
-                zart: this.zart
+                vie: this.vie
             };
-            attributes[id] = new this.zart.Attribute(id, ranges, this, options);
+            attributes[id] = new this.vie.Attribute(id, ranges, this, options);
         }
 
         this._attributes = attributes;

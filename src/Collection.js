@@ -1,5 +1,5 @@
-Zart.prototype.Collection = Backbone.Collection.extend({
-    model: Zart.prototype.Entity,
+VIE.prototype.Collection = Backbone.Collection.extend({
+    model: VIE.prototype.Entity,
 
     addOrUpdate: function(model) {
         var collection = this;

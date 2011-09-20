@@ -3,7 +3,7 @@
 // Author: <a href="mailto:szaby.gruenwald@salzburgresearch.at">Szaby Gruenwald</a>
 //
 (function(){
-Zart.prototype.StanbolService = function(options) {
+VIE.prototype.StanbolService = function(options) {
     var defaults = {
         name : 'stanbol',
         url: 'http://dev.iks-project.eu:8080/',
@@ -27,7 +27,7 @@ Zart.prototype.StanbolService = function(options) {
     };
     this.options = jQuery.extend(defaults, options ? options : {});
 
-    this.zart = null; // will be set via Zart.use();
+    this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
     this.connector = new StanbolConnector(this.options);
     
@@ -37,19 +37,19 @@ Zart.prototype.StanbolService = function(options) {
 
 };
 
-Zart.prototype.StanbolService.prototype = {
+VIE.prototype.StanbolService.prototype = {
     init: function(){
         
         for (var key in this.options.namespaces) {
             try {
                 var val = this.options.namespaces[key];
-                this.zart.namespaces.add(key, val);
+                this.vie.namespaces.add(key, val);
             } catch (e) {
-                //this means that the namespace is already in the Zart.namespace
+                //this means that the namespace is already in the VIE.namespace
                 //ignore for now!
             }
         }
-        this.namespaces = new this.zart.Namespaces(this.options.namespaces);
+        this.namespaces = new this.vie.Namespaces(this.options.namespaces);
         
         this.rules = [
             //rule to add backwards-relations to the triples
@@ -72,7 +72,7 @@ Zart.prototype.StanbolService.prototype = {
                  '?entity enhancer:hasEntityAnnotation ?subject'
              ]
              },
-             //rule(s) to transform a Stanbol person into a Zart person
+             //rule(s) to transform a Stanbol person into a VIE person
              {
                 'left' : [
                     '?subject a dbpedia:Person>',
@@ -101,21 +101,21 @@ Zart.prototype.StanbolService.prototype = {
              }
         ];
         
-        this.zart.types.add('enhancer:EntityAnnotation', [
+        this.vie.types.add('enhancer:EntityAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.zart.types.add('enhancer:TextAnnotation', [
+        this.vie.types.add('enhancer:TextAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.zart.types.add('enhancer:Enhancement', [
+        this.vie.types.add('enhancer:Enhancement', [
             //TODO: add attributes
         ]).inherit("Thing");
     },
-    // Zart API analyze implementation
+    // VIE API analyze implementation
     analyze: function(analyzable) {
         var service = this;
 
-        var correct = analyzable instanceof this.zart.Analyzable;
+        var correct = analyzable instanceof this.vie.Analyzable;
         if (!correct) {throw "Invalid Analyzable passed";}
 
         var element = analyzable.options.element ? analyzable.options.element : jQuery('body');
@@ -142,10 +142,10 @@ Zart.prototype.StanbolService.prototype = {
 
     },
     
-    // Zart API load implementation
+    // VIE API load implementation
     // Runs a Stanbol entityhub find
     find: function(findable){
-        var correct = findable instanceof this.zart.Findable;
+        var correct = findable instanceof this.vie.Findable;
         if (!correct) {throw "Invalid Findable passed";}
         var service = this;
         // The term to find, * as wildcard allowed
@@ -165,10 +165,10 @@ Zart.prototype.StanbolService.prototype = {
         this.connector.find(term, limit, offset, success, error)
     },
     
-    // Zart API load implementation
+    // VIE API load implementation
     // Runs a Stanbol entityhub find
     load: function(loadable){
-        var correct = loadable instanceof this.zart.Loadable;
+        var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
         var service = this;
         
@@ -202,7 +202,7 @@ Zart.prototype.StanbolService.prototype = {
     },
 
     _enhancer2Entities: function (service, results) {
-        //transform data from Stanbol into Zart.Entities
+        //transform data from Stanbol into VIE.Entities
 
         if (typeof jQuery.rdf !== 'function') {
             throw "RdfQuery is not loaded";
@@ -257,13 +257,13 @@ Zart.prototype.StanbolService.prototype = {
             })
         })
 
-        var zartEntities = [];
+        var vieEntities = [];
         jQuery.each(entities, function() {
-            var entityInstance = new service.zart.Entity(this);
-            entityInstance = service.zart.entities.addOrUpdate(entityInstance);
-            zartEntities.push(entityInstance);
+            var entityInstance = new service.vie.Entity(this);
+            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+            vieEntities.push(entityInstance);
         });
-        return zartEntities; 
+        return vieEntities; 
     }
 };
 

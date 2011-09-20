@@ -1,7 +1,7 @@
-module("zart.js - RDFa Service");
+module("vie.js - RDFa Service");
 
 test("Test simple RDFa parsing", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.use(new z.RdfaService);
 
     var html = jQuery('<div xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
@@ -22,7 +22,7 @@ test("Test simple RDFa parsing", function() {
 });
 
 test("Test updating RDFa views", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.use(new z.RdfaService);
 
     var html = jQuery('<div xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
@@ -46,7 +46,7 @@ test("Test updating RDFa views", function() {
 });
 
 test("Test simple RDFa nested tags", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.use(new z.RdfaService);
 
     var html = jQuery('<div xmlns:dcterms="http://purl.org/dc/terms/" id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1></div>');
@@ -60,7 +60,7 @@ test("Test simple RDFa nested tags", function() {
 });
 
 test("Test RDFa property content", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.use(new z.RdfaService);
 
     var html = jQuery('<div xmlns:iks="http://iks-project.eu/ontology/" xmlns:foaf="http://xmlns.com/foaf/0.1/" about="http://twitter.com/bergie"><span property="foaf:name">Henri Bergius</span><span property="iks:online" content="0"></span></div>');
@@ -80,7 +80,7 @@ test("Test RDFa property content", function() {
 });
 
 test("Test RDFa example from Wikipedia", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.use(new z.RdfaService);
 
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.</p>');
@@ -95,7 +95,7 @@ test("Test RDFa example from Wikipedia", function() {
 });
 
 test("Test RDFa image entitization", function() {
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add('mgd', 'http://midgard-project.org/ontology/');
     z.namespaces.add('dcterms', 'http://purl.org/dc/terms/');
     z.use(new z.RdfaService);

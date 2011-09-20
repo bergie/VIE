@@ -1,13 +1,13 @@
 module("Core");
 
-test("zart.js API", function () {
+test("vie.js API", function () {
 
-    notEqual(typeof Zart, 'undefined', "No Zart object found! Please ensure that you build the project first by running 'ant'.");
-    equal(typeof Zart, 'function');
+    notEqual(typeof VIE, 'undefined', "No VIE object found! Please ensure that you build the project first by running 'ant'.");
+    equal(typeof VIE, 'function');
 
-    var z = new Zart();
+    var z = new VIE();
     ok(z);
-    ok(z instanceof Zart);
+    ok(z instanceof VIE);
 
     ok(z.use);
     equal(typeof z.use, 'function');
@@ -24,8 +24,8 @@ test("zart.js API", function () {
 
 });
 
-test("zart.js Entities API", function () {
-    var z = new Zart();
+test("vie.js Entities API", function () {
+    var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
@@ -41,8 +41,8 @@ test("zart.js Entities API", function () {
     equal(z.entities.at(0).get('@type')[0].id, z.types.get('Thing').id);
 });
 
-test("zart.js Entities API - addOrUpdate", function () {
-    var z = new Zart();
+test("vie.js Entities API - addOrUpdate", function () {
+    var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
@@ -60,8 +60,8 @@ test("zart.js Entities API - addOrUpdate", function () {
     equal(z.entities.get("http://example.net/foo").get('dc:propertyB'), 'Some String');
 });
 
-test("zart.js Entities API - addOrUpdate", function () {
-    var z = new Zart();
+test("vie.js Entities API - addOrUpdate", function () {
+    var z = new VIE();
     z.namespaces.add('example', 'http://example.net/foo/');
     z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
     ok(z.entities instanceof z.Collection);
@@ -81,8 +81,8 @@ test("zart.js Entities API - addOrUpdate", function () {
     ok(z.entities.get('http://example.net/Madonna').isof('example:Musician'));
 });
 
-test("zart.js Entity API - setOrAdd", function () {
-    var z = new Zart();
+test("vie.js Entity API - setOrAdd", function () {
+    var z = new VIE();
     z.entities.add({
         '@subject': 'http://example.org/EricClapton'
     });
@@ -107,12 +107,12 @@ test("zart.js Entity API - setOrAdd", function () {
     equals(clapton.get('plays').length, 2, "Same value twice is the same value and mustn't be added twice.");
 });
 
-Zart.prototype.MockService = function () {
-    this.zart = null;
+VIE.prototype.MockService = function () {
+    this.vie = null;
     this.name = 'mock';
 }
-Zart.prototype.MockService.prototype.load = function(loadable) {
-    var correct = loadable instanceof this.zart.Loadable;
+VIE.prototype.MockService.prototype.load = function(loadable) {
+    var correct = loadable instanceof this.vie.Loadable;
     if (!correct) {
         throw "Invalid Loadable passed";
     }
@@ -123,8 +123,8 @@ Zart.prototype.MockService.prototype.load = function(loadable) {
         loadable.reject(result);
     }
 };
-Zart.prototype.MockService.prototype.save = function(savable) {
-    var correct = savable instanceof this.zart.Savable;
+VIE.prototype.MockService.prototype.save = function(savable) {
+    var correct = savable instanceof this.vie.Savable;
     if (!correct) {
         throw "Invalid Savable passed";
     }
@@ -135,8 +135,8 @@ Zart.prototype.MockService.prototype.save = function(savable) {
         savable.reject(result);
     }
 };
-Zart.prototype.MockService.prototype.remove = function(removable) {
-    var correct = removable instanceof this.zart.Removable;
+VIE.prototype.MockService.prototype.remove = function(removable) {
+    var correct = removable instanceof this.vie.Removable;
     if (!correct) {
         throw "Invalid Removable passed";
     }
@@ -147,8 +147,8 @@ Zart.prototype.MockService.prototype.remove = function(removable) {
         removable.reject(result);
     }
 };
-Zart.prototype.MockService.prototype.analyze = function(analyzable) {
-    var correct = analyzable instanceof this.zart.Analyzable;
+VIE.prototype.MockService.prototype.analyze = function(analyzable) {
+    var correct = analyzable instanceof this.vie.Analyzable;
     if (!correct) {
         throw "Invalid Analyzable passed";
     }
@@ -160,8 +160,8 @@ Zart.prototype.MockService.prototype.analyze = function(analyzable) {
     }
 };
 
-test("zart.js Service API", 8, function () {
-    var z = new Zart();
+test("vie.js Service API", 8, function () {
+    var z = new VIE();
     z.use(new z.MockService());
     ok(z.service('mock'));
     equal(typeof z.service('mock').load, 'function');
@@ -183,15 +183,15 @@ test("zart.js Service API", 8, function () {
     }, "Calling undefined service should throw an error");
 });
 
-test("zart.js Loadable API", 2, function () {
-    var z = new Zart();
+test("vie.js Loadable API", 2, function () {
+    var z = new VIE();
     var x = z.load({});
     ok(x);
     ok(x instanceof z.Loadable);
 });
 
-test("zart.js Loadable API - success", 1, function () {
-    var z = new Zart();
+test("vie.js Loadable API - success", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -201,8 +201,8 @@ test("zart.js Loadable API - success", 1, function () {
     });
 });
 
-test("zart.js Loadable API - fail", 1, function () {
-    var z = new Zart();
+test("vie.js Loadable API - fail", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
     stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock").execute()
@@ -212,8 +212,8 @@ test("zart.js Loadable API - fail", 1, function () {
     });
 });
 
-test("zart.js Loadable API - always", 1, function () {
-    var z = new Zart();
+test("vie.js Loadable API - always", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
     stop(1000); // 1 second timeout
     z.load({mockresult: "fail"}).using("mock").execute()
@@ -223,15 +223,15 @@ test("zart.js Loadable API - always", 1, function () {
     });
 });
 
-test("zart.js Savable API", 2, function () {
-    var z = new Zart();
+test("vie.js Savable API", 2, function () {
+    var z = new VIE();
     var x = z.save();
     ok(x);
     ok(x instanceof z.Savable);
 });
 
-test("zart.js Savable API - success", 1, function () {
-    var z = new Zart();
+test("vie.js Savable API - success", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -241,8 +241,8 @@ test("zart.js Savable API - success", 1, function () {
     });
 });
 
-test("zart.js Savable API - fail", 1, function () {
-    var z = new Zart();
+test("vie.js Savable API - fail", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -252,8 +252,8 @@ test("zart.js Savable API - fail", 1, function () {
     }).execute();
 });
 
-test("zart.js Savable API - always", 1, function () {
-    var z = new Zart();
+test("vie.js Savable API - always", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -264,15 +264,15 @@ test("zart.js Savable API - always", 1, function () {
     }).execute();
 });
 
-test("zart.js Removable API", 2, function () {
-    var z = new Zart();
+test("vie.js Removable API", 2, function () {
+    var z = new VIE();
     var x = z.remove();
     ok(x);
     ok(x instanceof z.Removable);
 });
 
-test("zart.js Removable API - success", 1, function () {
-    var z = new Zart();
+test("vie.js Removable API - success", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -282,8 +282,8 @@ test("zart.js Removable API - success", 1, function () {
     });
 });
 
-test("zart.js Removable API - fail", 1, function () {
-    var z = new Zart();
+test("vie.js Removable API - fail", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -294,8 +294,8 @@ test("zart.js Removable API - fail", 1, function () {
     }).execute();
 });
 
-test("zart.js Removable API - always", 1, function () {
-    var z = new Zart();
+test("vie.js Removable API - always", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -306,15 +306,15 @@ test("zart.js Removable API - always", 1, function () {
     }).execute();
 });
 
-test("zart.js Analyzable API", 2, function () {
-    var z = new Zart();
+test("vie.js Analyzable API", 2, function () {
+    var z = new VIE();
     var x = z.analyze();
     ok(x);
     ok(x instanceof z.Analyzable);
 });
 
-test("zart.js Analyzable API - success", 1, function () {
-    var z = new Zart();
+test("vie.js Analyzable API - success", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -324,8 +324,8 @@ test("zart.js Analyzable API - success", 1, function () {
     });
 });
 
-test("zart.js Analyzable API - fail", 1, function () {
-    var z = new Zart();
+test("vie.js Analyzable API - fail", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout
@@ -341,8 +341,8 @@ test("zart.js Analyzable API - fail", 1, function () {
     .execute();
 });
 
-test("zart.js Analyzable API - always", 1, function () {
-    var z = new Zart();
+test("vie.js Analyzable API - always", 1, function () {
+    var z = new VIE();
     z.use(new z.MockService());
 
     stop(1000); // 1 second timeout

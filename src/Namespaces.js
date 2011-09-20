@@ -2,7 +2,7 @@
 // Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
 //
 
-Zart.prototype.Namespaces = function (namespaces) {
+VIE.prototype.Namespaces = function (namespaces) {
     
     this._namespaces = (namespaces)? namespaces : {};
     
@@ -92,14 +92,14 @@ Zart.prototype.Namespaces = function (namespaces) {
     };
     
     this.curie = function(uri, safe){
-        return Zart.Util.toCurie(uri, safe, this);
+        return VIE.Util.toCurie(uri, safe, this);
     };
     
-    this.isCurie = Zart.Util.isCurie;
+    this.isCurie = VIE.Util.isCurie;
     
     this.uri = function (curie) {
-        return Zart.Util.toUri (curie, this);
+        return VIE.Util.toUri (curie, this);
     };
     
-    this.isUri = Zart.Util.isUri;
+    this.isUri = VIE.Util.isUri;
 };

@@ -1,16 +1,16 @@
-module("zart.js - Type");
+module("vie.js - Type");
 
-test("zart.js - Type API", function() {
+test("vie.js - Type API", function() {
     
-    var z = new Zart();
+    var z = new VIE();
   
       // types
   
     ok(z.types);
     ok(typeof z.types === 'object');
     
-    ok(z.types.zart);
-    ok(z.types.zart instanceof Zart);
+    ok(z.types.vie);
+    ok(z.types.vie instanceof VIE);
     
     ok(z.types.add);
     ok(typeof z.types.add === 'function');
@@ -35,8 +35,8 @@ test("zart.js - Type API", function() {
     ok (thingy);
     ok(thingy instanceof z.Type);
   
-    ok(thingy.zart);
-    ok(thingy.zart instanceof Zart);
+    ok(thingy.vie);
+    ok(thingy.vie instanceof VIE);
     
     ok(thingy.id);
     ok(typeof thingy.id === 'string');
@@ -71,9 +71,9 @@ test("zart.js - Type API", function() {
 });
 
 
-test("zart.js - Creation/Extension/Removal of types", function() {
+test("vie.js - Creation/Extension/Removal of types", function() {
 
-    var z = new Zart();
+    var z = new VIE();
     
     equal(z.types.get("TestThingy"), undefined);
     

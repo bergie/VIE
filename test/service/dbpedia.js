@@ -1,16 +1,16 @@
-module("zart.js - DBPedia Service");
+module("vie.js - DBPedia Service");
 
 test("Test DBPedia connection", function() {
-    var z = new Zart();
+    var z = new VIE();
     ok(z.DBPediaService, "Checking if the DBPedia Service exists.'");
     z.use(new z.DBPediaService);
     ok(z.service('dbpedia'));
 });
 
-test("Zart.js DBPediaService - Load", function () {
+test("VIE.js DBPediaService - Load", function () {
     
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
-    var z = new Zart();
+    var z = new VIE();
     ok (z.DBPediaService);
     equal(typeof z.DBPediaService, "function");
     z.use(new z.DBPediaService({url : "http://dev.iks-project.eu:8081"}));

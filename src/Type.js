@@ -2,31 +2,31 @@
 // Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
 //
 
-Zart.prototype.Type = function (id, attrs, options) {
+VIE.prototype.Type = function (id, attrs, options) {
     if (id === undefined || typeof id !== 'string') {
         throw "The type constructor needs an 'id' of type string! E.g., 'Person'";
     }
-    if (!options || !options.zart || !(options.zart instanceof Zart)) {
-        throw "Zart.Type needs an instance of Zart given.";
+    if (!options || !options.vie || !(options.vie instanceof VIE)) {
+        throw "VIE.Type needs an instance of VIE given.";
     }
-    this.zart = options.zart;
+    this.vie = options.vie;
     
-    if (this.zart.types.get(id)) {
-        return this.zart.types.get(id);
+    if (this.vie.types.get(id)) {
+        return this.vie.types.get(id);
     }
    
-    this.id = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+    this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
         
-    this.supertypes = new this.zart.Types(options);
-    this.subtypes = new this.zart.Types(options);
+    this.supertypes = new this.vie.Types(options);
+    this.subtypes = new this.vie.Types(options);
     
     if (attrs === undefined) {
         attrs = [];
     }
-    this.attributes = new this.zart.Attributes(this, attrs, options);
+    this.attributes = new this.vie.Attributes(this, attrs, options);
     
     this.isof = function (type) {
-        type = this.zart.types.get(type);
+        type = this.vie.types.get(type);
         if (type) {
             return type.subsumes(this.id);
         } else {
@@ -35,7 +35,7 @@ Zart.prototype.Type = function (id, attrs, options) {
     };
     
     this.subsumes = function (type) {
-        type = this.zart.types.get(type);
+        type = this.vie.types.get(type);
         if (type) {
             if (this.id === type.id) {
                 return true;
@@ -58,9 +58,9 @@ Zart.prototype.Type = function (id, attrs, options) {
     
     this.inherit = function (supertype) {
         if (typeof supertype === "string") {
-            this.inherit(this.zart.types.get(supertype));
+            this.inherit(this.vie.types.get(supertype));
         }
-        else if (supertype instanceof this.zart.Type) {
+        else if (supertype instanceof this.vie.Type) {
             supertype.subtypes.add(this);
             this.supertypes.add(supertype);
             try {
@@ -76,7 +76,7 @@ Zart.prototype.Type = function (id, attrs, options) {
                 this.inherit(supertype[i]);
             }
         } else {
-            throw "Wrong argument in Zart.Type.inherit()";
+            throw "Wrong argument in VIE.Type.inherit()";
         }
         return this;
     };
@@ -84,14 +84,14 @@ Zart.prototype.Type = function (id, attrs, options) {
     this.hierarchy = function () {
         var obj = {id : this.id, subtypes: []};
         for (var c in this.subtypes.list()) {
-            var childObj = this.zart.types.get(this.subtypes.list()[c]);
+            var childObj = this.vie.types.get(this.subtypes.list()[c]);
             obj.subtypes.push(childObj.hierarchy());
         }
         return obj;
     };
         
     this.remove = function () {
-        return this.zart.types.remove(this);
+        return this.vie.types.remove(this);
     };
     
     this.toString = function () {
@@ -99,9 +99,9 @@ Zart.prototype.Type = function (id, attrs, options) {
     };
 };
 
-Zart.prototype.Types = function (options) {
+VIE.prototype.Types = function (options) {
     
-    this.zart = options.zart;
+    this.vie = options.vie;
     
     this._types = {};
     
@@ -112,16 +112,16 @@ Zart.prototype.Types = function (options) {
         else {
             if (typeof id === "string") {
                 var options = {
-                    zart: this.zart
+                    vie: this.vie
                 };
-                var t = new this.zart.Type(id, attrs, options);
+                var t = new this.vie.Type(id, attrs, options);
                 this._types[t.id] = t;
                 return t;
-            } else if (id instanceof this.zart.Type) {
+            } else if (id instanceof this.vie.Type) {
             	this._types[id.id] = id;
                 return id;
             } else {
-                throw "Wrong argument to Zart.Types.add()!";
+                throw "Wrong argument to VIE.Types.add()!";
             }
         }
     };
@@ -135,12 +135,12 @@ Zart.prototype.Types = function (options) {
     
     this.get = function (id) {
         if (typeof id === 'string') {
-            var lid = this.zart.namespaces.isUri(id) ? id : this.zart.namespaces.uri(id);
+            var lid = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             return this._types[lid];
-        } else if (id instanceof this.zart.Type) {
+        } else if (id instanceof this.vie.Type) {
             return this.get(id.id);
         }
-        throw "Wrong argument in Zart.Types.get()";
+        throw "Wrong argument in VIE.Types.get()";
     };
     
     this.remove = function (id) {

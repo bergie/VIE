@@ -16,7 +16,7 @@ Able.prototype = {
         return this;
     },
     _using: function(service) {
-        var serviceObj = typeof service === "string" ? this.zart.service(service) : service;
+        var serviceObj = typeof service === "string" ? this.vie.service(service) : service;
         this.services.push(serviceObj);
         return this;
     },
@@ -24,7 +24,7 @@ Able.prototype = {
         this.methodName = methodName;
         this.options = options;
         this.services = options.from || options.using || options.to || [];
-        this.zart = options.zart;
+        this.vie = options.vie;
         this.deferred = jQuery.Deferred();
 
         // Public deferred-methods

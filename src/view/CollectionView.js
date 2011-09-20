@@ -1,8 +1,8 @@
-if (!Zart.prototype.view) {
-    Zart.prototype.view = {};
+if (!VIE.prototype.view) {
+    VIE.prototype.view = {};
 }
 
-Zart.prototype.view.Collection = Backbone.View.extend({
+VIE.prototype.view.Collection = Backbone.View.extend({
     // Ensure the collection view gets updated when items get added or removed
     initialize: function() {
         this.template = this.options.template;

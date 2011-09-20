@@ -1,4 +1,4 @@
-// Utilities for the day-to-day Zart.js usage
+// Utilities for the day-to-day VIE.js usage
 
 // extension to jQuery to compare two arrays on equality
 // found: http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays
@@ -14,7 +14,7 @@ jQuery.fn.compare = function(t) {
     return true;
 };
 
-Zart.Util = {
+VIE.Util = {
     toCurie : function (uri, safe, namespaces) {
         var delim = ":";
         for (var k in namespaces.toObj()) {
@@ -29,7 +29,7 @@ Zart.Util = {
     },
     
     isCurie : function (something) {
-        return !Zart.Util.isUri(something) && something.indexOf(":") !== -1;
+        return !VIE.Util.isUri(something) && something.indexOf(":") !== -1;
     },
     
     toUri : function (curie, namespaces) {

@@ -1,7 +1,7 @@
-module("zart.js - Schema.org Ontology");
+module("vie.js - Schema.org Ontology");
 
 test("Initialization", function() {
-    var z = new Zart();
+    var z = new VIE();
     
     ok(z.loadSchemaOrg);
     equal(typeof z.loadSchemaOrg, "function");

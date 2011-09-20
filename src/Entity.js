@@ -1,8 +1,8 @@
-Zart.prototype.Entity = function(attrs, opts){
+VIE.prototype.Entity = function(attrs, opts){
 
 //namespace the attributes!
 // if (@type)
-// -> search corresponding type (zart.types.get(...))
+// -> search corresponding type (vie.types.get(...))
 // -> foreach (attribute \ {@subject, @type})
 //    -> if (!attribute has Namespace)
 //       -> attribute gets same namespace as @type
@@ -12,17 +12,17 @@ Zart.prototype.Entity = function(attrs, opts){
 //       -> attribute gets default namespace
 
 
-    var zart = this;
+    var vie = this;
     
     var mapAttributeNS = function (attr) {
         var a = attr;
-        if (zart.zart.namespaces.isUri (attr) || attr.indexOf('@') === 0) {
+        if (vie.vie.namespaces.isUri (attr) || attr.indexOf('@') === 0) {
             //ignore
-        } else if (zart.zart.namespaces.isCurie(attr)) {
-            a = zart.zart.namespaces.uri(attr);
+        } else if (vie.vie.namespaces.isCurie(attr)) {
+            a = vie.vie.namespaces.uri(attr);
         } else {
             //TODO: what if @subject has namespace?
-            a = '<' + zart.zart.namespaces.get('default') + attr + '>';
+            a = '<' + vie.vie.namespaces.get('default') + attr + '>';
         }
         return a;
     };
@@ -31,24 +31,24 @@ Zart.prototype.Entity = function(attrs, opts){
     //makes live of web developers easier
     try {
         if (!('@type' in attrs)) {
-            if (!zart.zart.types.get("Thing")) {
-                throw "Please register a type 'Thing' in Zart.";
+            if (!vie.vie.types.get("Thing")) {
+                throw "Please register a type 'Thing' in VIE.";
             }
-            attrs['@type'] = [zart.zart.types.get("Thing").id];
+            attrs['@type'] = [vie.vie.types.get("Thing").id];
         }
         else {
             if (_.isArray(attrs['@type'])) {
                 attrs['@type'] = _.map(attrs['@type'], function(val){
-                    return zart.zart.types.get(val).id;
+                    return vie.vie.types.get(val).id;
                 });
             }
             else {
-                attrs['@type'] = [zart.zart.types.get(attrs['@type']).id];
+                attrs['@type'] = [vie.vie.types.get(attrs['@type']).id];
             }
         }
     } catch (e) {
         console.log(e, "Could not register the @type attribute correctly, this is most likely because there is no type registered for one of the following values: ", attrs['@type']);
-        attrs['@type'] = [zart.zart.types.get("Thing").id];
+        attrs['@type'] = [vie.vie.types.get("Thing").id];
     }
     
     //the following provides full seamless namespace support
@@ -82,13 +82,13 @@ Zart.prototype.Entity = function(attrs, opts){
                 }
                 var models = [];
                 _.each(value, function(subject){
-                    models.push(instance.zart.entities.addOrUpdate({
+                    models.push(instance.vie.entities.addOrUpdate({
                         '@subject': subject
                     }));
                 });
                 
                 var updateValues = {};
-                updateValues[predicate] = new instance.zart.entityCollection(models);
+                updateValues[predicate] = new instance.vie.entityCollection(models);
                 instance.set(updateValues, {
                     silent: true
                 });
@@ -101,7 +101,7 @@ Zart.prototype.Entity = function(attrs, opts){
             if (attr === '@type') {
                 var self = this;
                 return _.map(Backbone.Model.prototype.get.call(self, attr), function (val) {
-                    return self.zart.zart.types.get(val);
+                    return self.vie.vie.types.get(val);
                 }, this);
             }
             
@@ -124,10 +124,10 @@ Zart.prototype.Entity = function(attrs, opts){
                     delete attrs[key];
                     if (_.isArray(value)) {
                         attrs[newKey] = _.map(value, function (val) {
-                            return self.zart.zart.types.get(val).id;
+                            return self.vie.vie.types.get(val).id;
                         }, self);
                     } else {
-                        attrs[newKey] = self.zart.zart.types.get(value).id;
+                        attrs[newKey] = self.vie.vie.types.get(value).id;
                     }
                 }
             }, this); 
@@ -139,7 +139,7 @@ Zart.prototype.Entity = function(attrs, opts){
             
             if (attr === '@type') {
                 this.set({
-                    attr: this.zart.zart.types.get("Thing").id
+                    attr: this.vie.vie.types.get("Thing").id
                 });
                 return this;
             }
@@ -250,7 +250,7 @@ Zart.prototype.Entity = function(attrs, opts){
         },
         
         hasType: function(type){
-            type = this.zart.zart.types.get(type).id;
+            type = this.vie.vie.types.get(type).id;
             return this.hasPropertyValue("@type", type);
         },
         
@@ -258,7 +258,7 @@ Zart.prototype.Entity = function(attrs, opts){
             var types = this.get('@type');
             
             for (var t in types) {
-                if (this.zart.zart.types.get(types[t]).isof(type)) {
+                if (this.vie.vie.types.get(types[t]).isof(type)) {
                     return true;
                 }
             }
@@ -277,7 +277,7 @@ Zart.prototype.Entity = function(attrs, opts){
         
         isEntity: true,
         
-        zart: zart
+        vie: vie
     });
     
     return new Model(attrs, opts);    

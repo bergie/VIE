@@ -1,7 +1,7 @@
 module("Core - Namespaces");
 
-test("Zart namespace", function () {
-    var z = new Zart();
+test("VIE namespace", function () {
+    var z = new VIE();
     
    ok(z);
    ok(z.namespaces);
@@ -35,7 +35,7 @@ test("Zart namespace", function () {
 });
 
 test ("Manually adding namespaces", function () {
-    var z = new Zart();
+    var z = new VIE();
     
     var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
 
@@ -46,7 +46,7 @@ test ("Manually adding namespaces", function () {
 });
 
 test ("Manually adding multiple namespaces", function () {
-    var z = new Zart();
+    var z = new VIE();
     
     var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#', "test2": "http://this.is.another/test#"});
 
@@ -61,7 +61,7 @@ test ("Manually adding multiple namespaces", function () {
 });
 
 test ("Manually adding duplicate", function () {
-    var z = new Zart();
+    var z = new VIE();
     var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
     z.namespaces.add("test", "http://this.is.a/test#");
     z.namespaces.add("test", "http://this.is.a/test#");
@@ -70,7 +70,7 @@ test ("Manually adding duplicate", function () {
 });
 
 test ("Manually adding wrong duplicate (key)", function () {
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("test", "http://this.is.a/test#");
     raises(function () {
         z.namespaces.add("test1", "http://this.is.a/test#");
@@ -78,7 +78,7 @@ test ("Manually adding wrong duplicate (key)", function () {
 });
 
 test ("Manually adding wrong duplicate (value)", function () {
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("test", "http://this.is.a/test#");
     raises(function () {
         z.namespaces.add("test", "http://this.is.another/test#");
@@ -86,7 +86,7 @@ test ("Manually adding wrong duplicate (value)", function () {
 });
 
 test ("Manually adding wrong duplicate (key) - addOrReplace", function () {
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("test", "http://this.is.a/test#");
     z.namespaces.addOrReplace("test1", "http://this.is.a/test#");
     
@@ -95,7 +95,7 @@ test ("Manually adding wrong duplicate (key) - addOrReplace", function () {
 });
 
 test ("Manually adding wrong duplicate (value) - addOrReplace", function () {
-    var z = new Zart();
+    var z = new VIE();
     
     z.namespaces.add("test", "http://this.is.a/test#");
     z.namespaces.addOrReplace("test", "http://this.is.a/test2#");
@@ -105,7 +105,7 @@ test ("Manually adding wrong duplicate (value) - addOrReplace", function () {
 });
 
 test ("Manually removing namespaces", function () {
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("test", "http://this.is.a/test#");
     var reference = z.namespaces.toObj();
     delete reference["test"];
@@ -118,7 +118,7 @@ test ("Manually removing namespaces", function () {
 
 test ("CURIE <-> URI", function () {
 
-    var z = new Zart();
+    var z = new VIE();
     z.namespaces.add("test", "http://this.is.a/test#");
     
     var uri = "<http://this.is.a/test#foo>";

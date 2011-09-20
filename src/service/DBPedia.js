@@ -4,7 +4,7 @@
 
 (function(){
     
-Zart.prototype.DBPediaService = function(options) {
+VIE.prototype.DBPediaService = function(options) {
     var defaults = {
         name : 'dbpedia',
         defaultProxyUrl : "../utils/proxy/proxy.php",
@@ -16,7 +16,7 @@ Zart.prototype.DBPediaService = function(options) {
     };
     this.options = jQuery.extend(defaults, options ? options : {});
 
-    this.zart = null; // will be set via Zart.use();
+    this.vie = null; // will be set via VIE.use();
     this.name = this.options.name
     this.connector = new DBPediaConnector(this.options);
 
@@ -26,22 +26,22 @@ Zart.prototype.DBPediaService = function(options) {
 
 };
 
-Zart.prototype.DBPediaService.prototype = {
+VIE.prototype.DBPediaService.prototype = {
     init: function() {
         
        for (var key in this.options.namespaces) {
             try {
                 var val = this.options.namespaces[key];
-                this.zart.namespaces.add(key, val);
+                this.vie.namespaces.add(key, val);
             } catch (e) {
-                //this means that the namespace is already in the Zart.namespace
+                //this means that the namespace is already in the VIE.namespace
                 //ignore for now!
             }
         }
-        this.namespaces = new this.zart.Namespaces(this.options.namespaces);
+        this.namespaces = new this.vie.Namespaces(this.options.namespaces);
         
         this.rules = [
-             //rule to transform a DBPedia person into a Zart person
+             //rule to transform a DBPedia person into a VIE person
              {
                 'left' : [
                     '?subject a <http://dbpedia.org/ontology/Person>',
@@ -58,9 +58,9 @@ Zart.prototype.DBPediaService.prototype = {
         ];
     },
     
-    // Zart API load implementation
+    // VIE API load implementation
     load: function(loadable){
-        var correct = loadable instanceof this.zart.Loadable;
+        var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
         var service = this;
         
