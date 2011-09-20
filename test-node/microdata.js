@@ -1,5 +1,5 @@
 var jQuery = require('jquery');
-var VIE = require('../vie.js');
+var VIE = require('../dist/vie-latest.debug.js');
 
 exports['read simple microdata'] = function(test) {
     var html = jQuery('<div itemscope itemtype="http://schema.org/Movie"><h1 itemprop="name">Avatar</h1><span>Director: <span itemprop="director">James Cameron</span> (born August 16, 1954)</span><span itemprop="genre">Science fiction</span><a href="../movies/avatar-theatrical-trailer.html" itemprop="trailer">Trailer</a></div>');
