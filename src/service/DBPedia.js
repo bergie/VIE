@@ -70,7 +70,7 @@ VIE.prototype.DBPediaService.prototype = {
             loadable.resolve([]);
         };
         var success = function (results) {
-            loadable.resolve(results.results);
+            loadable.resolve(results);
         };
         var error = function (e) {
             loadable.reject(e);
