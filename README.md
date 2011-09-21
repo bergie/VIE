@@ -8,6 +8,8 @@ VIE is a utility library for implementing [decoupled Content Management systems]
 * In French, _vie_ means life, showcasing how VIE makes your website come alive
 * In English, _vie_ means striving for victory or superiority
 
+VIE development is now targeting a 2.0 release. [Read this blog post](http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/) to find out the changes from VIE 1.0.
+
 ## VIE integration in nutshell
 
 Adding VIE to your system is as easy as:
