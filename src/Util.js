@@ -55,11 +55,6 @@ VIE.Util = {
         var sorted_arr = arr.sort();
         var results = [];
         for (var i = 0; i < sorted_arr.length; i++) {
-            var a = i === sorted_arr.length-1;
-            var b = sorted_arr[i];
-            var c = sorted_arr[i+1];
-            var d = b !== c;
-            var e = b != c;
             if (i === sorted_arr.length-1 || sorted_arr[i] != sorted_arr[i+1]) {
                 results.push(sorted_arr[i]);
             }

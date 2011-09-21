@@ -27,7 +27,7 @@ VIE.prototype.ClassicRDFaEntities.prototype = {
         var loaded = false;
         this.vie.load({element: selector}).from('rdfa').execute().done(function(entities) {
             foundEntities = entities;
-            loaded = true
+            loaded = true;
         });
 
         while (!loaded) {

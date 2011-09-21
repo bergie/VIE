@@ -17,7 +17,7 @@ VIE.prototype.DBPediaService = function(options) {
     this.options = jQuery.extend(defaults, options ? options : {});
 
     this.vie = null; // will be set via VIE.use();
-    this.name = this.options.name
+    this.name = this.options.name;
     this.connector = new DBPediaConnector(this.options);
 
     jQuery.ajaxSetup({
@@ -75,7 +75,7 @@ VIE.prototype.DBPediaService.prototype = {
         var error = function (e) {
             loadable.reject(e);
         };
-        this.connector.load(entity, success, error)
+        this.connector.load(entity, success, error);
     }
 };
 var DBPediaConnector = function(options){
@@ -95,7 +95,7 @@ DBPediaConnector.prototype = {
         
         jQuery.ajax({
             success: function(response){
-                success(response)
+                success(response);
             },
             error: error,
             type: (proxyUrl) ? "POST" : "GET",
@@ -115,6 +115,6 @@ DBPediaConnector.prototype = {
     _proxyUrl: function () {
         return this.options.proxyUrl || this.options.defaultProxyUrl;
     }
-}
+};
 })();
 

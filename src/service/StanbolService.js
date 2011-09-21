@@ -162,7 +162,7 @@ VIE.prototype.StanbolService.prototype = {
         var error = function (e) {
             findable.reject(e);
         };
-        this.connector.find(term, limit, offset, success, error)
+        this.connector.find(term, limit, offset, success, error);
     },
     
     // VIE API load implementation
@@ -183,7 +183,7 @@ VIE.prototype.StanbolService.prototype = {
         var error = function (e) {
             loadable.reject(e);
         };
-        this.connector.load(entity, success, error)
+        this.connector.load(entity, success, error);
     },
     
     _extractText: function (element) {
@@ -241,7 +241,7 @@ VIE.prototype.StanbolService.prototype = {
                 } else if (rdfQueryLiteral.value._string){
                     return rdfQueryLiteral.toString();
                 } else {
-                    return rdfQueryLiteral.value
+                    return rdfQueryLiteral.value;
                 }
             }
             entities[subject][propertyCurie].push(getValue(this.object));
@@ -254,8 +254,8 @@ VIE.prototype.StanbolService.prototype = {
                 if(value.length === 1){
                     ent[property] = value[0];
                 }
-            })
-        })
+            });
+        });
 
         var vieEntities = [];
         jQuery.each(entities, function() {
@@ -286,7 +286,7 @@ StanbolConnector.prototype = {
         
         jQuery.ajax({
             success: function(response){
-                success(response)
+                success(response);
             },
             error: error,
             type: "POST",
@@ -313,7 +313,7 @@ StanbolConnector.prototype = {
         
         jQuery.ajax({
             success: function(response){
-                success(response)
+                success(response);
             },
             error: error,
             type: (proxyUrl) ? "POST" : "GET",
@@ -346,7 +346,7 @@ StanbolConnector.prototype = {
         
         jQuery.ajax({
             success: function(response){
-                success(response)
+                success(response);
             },
             error: error,
             type: "POST",
@@ -376,6 +376,6 @@ StanbolConnector.prototype = {
             return '';
         }
     }
-}
+};
 })();
 

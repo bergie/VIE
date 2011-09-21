@@ -1,6 +1,6 @@
 
 Able = function(){
-}
+};
     // takes a list of services or just one
 Able.prototype = {
     using: function(services) {
@@ -50,4 +50,4 @@ Able.prototype = {
         });
         return this;
     }
-}
+};

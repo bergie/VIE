@@ -162,7 +162,7 @@ VIE.prototype.RdfaService.prototype = {
                 return document.baseURI;
             }
         }
-        var subject;
+        var subject = undefined;
         jQuery(element).closest(this.subjectSelector).each(function() {
             if (jQuery(this).attr('about')) {
                 subject = jQuery(this).attr('about');
@@ -194,7 +194,7 @@ VIE.prototype.RdfaService.prototype = {
             return subject;
         }
     
-        return "<" + subject + ">"
+        return "<" + subject + ">";
     },
     
     setElementSubject : function(subject, element) {
