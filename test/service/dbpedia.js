@@ -12,7 +12,7 @@ test("VIE.js DBPediaService - Load", function () {
     var z = new VIE();
     ok (z.DBPediaService);
     equal(typeof z.DBPediaService, "function");
-    z.use(new z.DBPediaService());//{url : "http://dev.iks-project.eu:8081"}));
+    z.use(new z.DBPediaService());
     stop(10000); // 10 second timeout
     z.load({entity: entity})
     .using('dbpedia').execute().done(function(x) {
