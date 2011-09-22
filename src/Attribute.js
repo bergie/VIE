@@ -58,10 +58,10 @@ VIE.prototype.Attribute = function (id, range, domain) {
 // basically a convenience class that represents a list of `VIE.Attribute`s.
 // As attributes are part of a certain `VIE.Type`, it needs to be passed on
 // for inheritance checks:
-// var attrs = new vie.Attributes("Thing", []);
+// var attrs = new vie.Attributes(vie.types.get("Thing"), []);
 VIE.prototype.Attributes = function (domain, attrs) {
     
-    this.domain = this.vie.types.get(domain);
+    this.domain = domain;
     
     this._local = {};
     this._attributes = {};
