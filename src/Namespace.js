@@ -1,4 +1,4 @@
-// File:   Namespace.js
+// File:   Namespace.js <br />
 // Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 

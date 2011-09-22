@@ -1,11 +1,11 @@
-// File:   Util.js
+// File:   Util.js <br />
 // Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 
 // Utilities for the day-to-day VIE.js usage
 
 // extension to jQuery to compare two arrays on equality
-// found: http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays
+// found: <a href="http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays">http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays</a>
 jQuery.fn.compare = function(t) {
     if (this.length != t.length) { return false; }
     var a = this.sort(),
@@ -19,7 +19,7 @@ jQuery.fn.compare = function(t) {
 };
 
 // Extension to the JS native Array implementation to remove values from an array.
-// from: http://sebastian.germes.in/blog/2011/09/javascripts-missing-array-remove-function/
+// from: <a href="http://sebastian.germes.in/blog/2011/09/javascripts-missing-array-remove-function/">http://sebastian.germes.in/blog/2011/09/javascripts-missing-array-remove-function/</a>
 if (!Array.prototype.remove) {
   Array.prototype.remove = function () {
     var args = this.remove.arguments;
@@ -110,4 +110,3 @@ VIE.Util = {
     }
     
 };
-

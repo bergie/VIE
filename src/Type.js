@@ -1,4 +1,4 @@
-// File:   Type.js
+// File:   Type.js <br />
 // Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 
@@ -123,10 +123,15 @@ VIE.prototype.Type = function (id, attrs) {
     
 };
 
+//basically a convenience class that represents a list of `VIE.Type`s.
+//var types = new vie.Types();
 VIE.prototype.Types = function () {
         
     this._types = {};
     
+    //Adds a `VIE.Type` to the types.
+    //This throws an exception if a type with the given id
+    //already exists.
     this.add = function (id, attrs) {
         if (this.get(id)) {
             throw "Type '" + id + "' already registered.";
@@ -145,6 +150,7 @@ VIE.prototype.Types = function () {
         }
     };
     
+    //This is the same as ``this.remove(id); this.add(id, attrs);``
     this.addOrOverwrite = function(id, attrs){
         if (this.get(id)) {
             this.remove(id);
@@ -152,6 +158,9 @@ VIE.prototype.Types = function () {
         return this.add(id, attrs);
     };
     
+    //Retrieve a type by either it's id or by the type itself
+    //(for convenience issues).
+    //Returnes **undefined** if no type has been found.
     this.get = function (id) {
         if (!id) return undefined;
         if (typeof id === 'string') {
@@ -163,6 +172,10 @@ VIE.prototype.Types = function () {
         return undefined;
     };
     
+    //Removes a type of given id from the type. This also
+    // removes all children if their only parent were this
+    //type. Furthermore, this removes the link from the
+    //super- and subtypes.
     this.remove = function (id) {
         var t = this.get(id);
         if (!t) {
@@ -184,6 +197,7 @@ VIE.prototype.Types = function () {
         return t;
     };
     
+    //returns an array of all types.
     this.toArray = this.list = function () {
         var ret = [];
         for (var i in this._types) {

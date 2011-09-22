@@ -49,10 +49,7 @@ test("VIE - Attribute API", function() {
     
     ok(name.range);
     ok(jQuery.isArray(name.range));
-    
-    ok(name.remove);
-    equal(typeof name.remove, 'function');
-    
+        
 });
 
 test("VIE - Creation/Alteration/Removal of Attributes", function() {
