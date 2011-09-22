@@ -1,17 +1,12 @@
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
 
-    /*
-     * WHY? IMHO, this makes only sense if we
-     * add the same wrapper to this.add()!
-     * get: function(id) {
+    get: function(id) {
         if (id == null) return null;
         id = this.toReference(id);
         return this._byId[id.id != null ? id.id : id];
-    },*/
-    
-    
-    
+    },
+
     addOrUpdate: function(model) {
         var collection = this;
         if (_.isArray(model)) {
