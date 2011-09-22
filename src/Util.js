@@ -74,7 +74,7 @@ VIE.Util = {
                         ((safe)? "]" : "");
             }
         }
-        throw "No prefix found for uri '" + uri + "'!";
+        throw new Error("No prefix found for URI '" + uri + "'!");
     },
 
 	// checks, whether the given string is a CURIE.
@@ -101,7 +101,7 @@ VIE.Util = {
         if (curie.indexOf(delim) === -1 && namespaces.base()) {
             return "<" + namespaces.base() + curie + ">";
         }
-        throw "No prefix found for uri '" + curie + "'!";
+        throw new Error("No prefix found for CURIE '" + curie + "'!");
     },
     
     // checks, whether the given string is a URI.
