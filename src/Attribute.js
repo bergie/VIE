@@ -1,8 +1,10 @@
 // File:   Attribute.js
-// Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
+// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 
-VIE.prototype.Attribute = function (id, range, domain, options) {
+
+
+VIE.prototype.Attribute = function (id, range, domain) {
     if (id === undefined || typeof id !== 'string') {
         throw "The attribute constructor needs an 'id' of type string! E.g., 'Person'";
     }
@@ -12,14 +14,10 @@ VIE.prototype.Attribute = function (id, range, domain, options) {
     if (domain === undefined) {
         throw "The attribute constructor needs a 'domain'.";
     }
-    if (!options || !options.vie || !(options.vie instanceof VIE)) {
-        throw "VIE.Attribute needs an instance of VIE given.";
-    }
-    this.vie = options.vie;
     
     this._domain = domain;
     this.range = (jQuery.isArray(range))? range : [ range ];
-    this.count = {}; //TODO!
+    //TODO! this.count = {};
    
     this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             
@@ -27,7 +25,7 @@ VIE.prototype.Attribute = function (id, range, domain, options) {
         if (this.vie.types.get(range)) {
             range = this.vie.types.get(range);
         }
-        for (var r in this.range) {
+        for (var r = 0; r < this.range.length; r++) {
             var x = this.vie.types.get(this.range[r]);
             if (x === undefined && typeof range === "string") {
                 if (range === this.range[r]) {
@@ -51,8 +49,6 @@ VIE.prototype.Attribute = function (id, range, domain, options) {
 
 VIE.prototype.Attributes = function (domain, attrs, options) {
     
-    this.vie = options.vie;
-    
     this.domain = domain;
     
     this._local = {};
@@ -64,10 +60,7 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         } 
         else {
             if (typeof id === "string") {
-                var options = {
-                    vie: this.vie
-                };
-                var a = new this.vie.Attribute(id, range, this.domain, options);
+                var a = new this.vie.Attribute(id, range, this.domain);
                 this._local[a.id] = a;
                 return a;
             } else if (id instanceof this.vie.Type) {
@@ -112,9 +105,9 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         var add = {};
         var merge = {};
         
-        for (var a in inherited) {
+        for (var a = 0; a < inherited.length; a++) {
             var attrs = inherited[a].list();
-            for (var x in attrs) {
+            for (var x = 0; x < attrs.length; x++) {
                 var id = attrs[x].id;
                 if (!(id in attributes)) {
                     if (!(id in add) && !(id in merge)) {
@@ -129,7 +122,7 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
                             delete add[id];
                         }
                         merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = VIE.Util.unduplicate(merge[id]);
+                        merge[id] = merge[id].unduplicate();
                     }
                 }
             }
@@ -142,11 +135,11 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         for (var id in merge) {
             var merged = merge[id];
             var ranges = [];
-            for (var r in merged) {
+            for (var r = 0; r < merged.length; r++) {
                 var p = this.vie.types.get(merged[r]);
                 var isAncestorOf = false;
                 if (p) {
-                    for (var x in merged) {
+                    for (var x = 0; x < merged.length; x++) {
                         if (x === r) {
                             continue;
                         }
@@ -161,10 +154,7 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
                     ranges.push(merged[r]);
                 }
             }
-            var options = {
-                vie: this.vie
-            };
-            attributes[id] = new this.vie.Attribute(id, ranges, this, options);
+            attributes[id] = new this.vie.Attribute(id, ranges, this);
         }
 
         this._attributes = attributes;
@@ -185,7 +175,8 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
     if (!jQuery.isArray(attrs)) {
         attrs = [ attrs ];
     }
-    for (var a in attrs) {
+    
+    for (var a = 0; a < attrs.length; a++) {
         this.add(attrs[a].id, attrs[a].range);
     }
 };

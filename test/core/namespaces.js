@@ -1,145 +1,163 @@
 module("Core - Namespaces");
 
 test("VIE namespace", function () {
-    var z = new VIE();
+    var v = new VIE();
     
-   ok(z);
-   ok(z.namespaces);
+   ok(v);
+   ok(v.namespaces);
    
-   ok(z.namespaces.add);
-   equal(typeof z.namespaces.add, "function");
-  ok(z.namespaces.addOrReplace);
-   equal(typeof z.namespaces.addOrReplace, "function");
-   ok(z.namespaces.get);
-   equal(typeof z.namespaces.get, "function");
-   ok(z.namespaces.containsKey);
-   equal(typeof z.namespaces.containsKey, "function");
-   ok(z.namespaces.containsValue);
-   equal(typeof z.namespaces.containsValue, "function");
-   ok(z.namespaces.update);
-   equal(typeof z.namespaces.update, "function");
-   ok(z.namespaces.remove);
-   equal(typeof z.namespaces.remove, "function");
-   ok(z.namespaces.toObj);
-   equal(typeof z.namespaces.toObj, "function");
-   ok(z.namespaces.curie);
-   equal(typeof z.namespaces.curie, "function");
-   ok(z.namespaces.uri);
-   equal(typeof z.namespaces.uri, "function");
-   ok(z.namespaces.isCurie);
-   equal(typeof z.namespaces.isCurie, "function");
-   ok(z.namespaces.isUri);
-   equal(typeof z.namespaces.isUri, "function");
+   ok(v.namespaces.add);
+   equal(typeof v.namespaces.add, "function");
+   ok(v.namespaces.addOrReplace);
+   equal(typeof v.namespaces.addOrReplace, "function");
+   ok(v.namespaces.get);
+   equal(typeof v.namespaces.get, "function");
+   ok(v.namespaces.getPrefix);
+   equal(typeof v.namespaces.getPrefix, "function");
+   ok(v.namespaces.containsPrefix);
+   equal(typeof v.namespaces.containsPrefix, "function");
+   ok(v.namespaces.containsNamespace);
+   equal(typeof v.namespaces.containsNamespace, "function");
+   ok(v.namespaces.update);
+   equal(typeof v.namespaces.update, "function");
+   ok(v.namespaces.remove);
+   equal(typeof v.namespaces.remove, "function");
+   ok(v.namespaces.toObj);
+   equal(typeof v.namespaces.toObj, "function");
+   ok(v.namespaces.curie);
+   equal(typeof v.namespaces.curie, "function");
+   ok(v.namespaces.uri);
+   equal(typeof v.namespaces.uri, "function");
+   ok(v.namespaces.isCurie);
+   equal(typeof v.namespaces.isCurie, "function");
+   ok(v.namespaces.isUri);
+   equal(typeof v.namespaces.isUri, "function");
    
    
+});
+
+
+test ("Getter/setter for base namespace", function () {
+    var v = new VIE();
+    
+    equal(typeof v.namespaces.base(), "string");
+    
+    v.namespaces.base("http://this.is-a-default.namespace/");
+    equal(v.namespaces.base(), "http://this.is-a-default.namespace/");
+    
+    raises(function () {
+        v.namespaces.base({"test" : "http://this.should.fail/"});
+    });
+    v.namespaces.add("", "http://this.is-another-default.namespace/");
+    equal(v.namespaces.base(), "http://this.is-another-default.namespace/");
 });
 
 test ("Manually adding namespaces", function () {
-    var z = new VIE();
+    var v = new VIE();
     
-    var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
+    var reference = jQuery.extend(v.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
 
-    z.namespaces.add("test","http://this.is.a/test#");
+    v.namespaces.add("test","http://this.is.a/test#");
     
-    deepEqual(z.namespaces.toObj(), reference, "Manually adding namespaces.");
-    strictEqual(z.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
+    deepEqual(v.namespaces.toObj(), reference, "Manually adding namespaces.");
+    strictEqual(v.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
 });
 
 test ("Manually adding multiple namespaces", function () {
-    var z = new VIE();
+    var v = new VIE();
     
-    var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#', "test2": "http://this.is.another/test#"});
+    var reference = jQuery.extend(v.namespaces.toObj(), {'test' : 'http://this.is.a/test#', "test2": "http://this.is.another/test#"});
 
-    z.namespaces.add({
+    v.namespaces.add({
         "test": "http://this.is.a/test#",
         "test2": "http://this.is.another/test#"
     });
     
-    deepEqual(z.namespaces.toObj(), reference, "Manually adding namespaces.");
-    strictEqual(z.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
-    strictEqual(z.namespaces.get("test2"), "http://this.is.another/test#", "Manually adding namespaces.");
+    deepEqual(v.namespaces.toObj(), reference, "Manually adding namespaces.");
+    strictEqual(v.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
+    strictEqual(v.namespaces.get("test2"), "http://this.is.another/test#", "Manually adding namespaces.");
 });
 
 test ("Manually adding duplicate", function () {
-    var z = new VIE();
-    var reference = jQuery.extend(z.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
-    z.namespaces.add("test", "http://this.is.a/test#");
-    z.namespaces.add("test", "http://this.is.a/test#");
-    deepEqual(z.namespaces.toObj(), reference, "Manually adding namespaces.");
-    strictEqual(z.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
+    var v = new VIE();
+    var reference = jQuery.extend(v.namespaces.toObj(), {'test' : 'http://this.is.a/test#'});
+    v.namespaces.add("test", "http://this.is.a/test#");
+    v.namespaces.add("test", "http://this.is.a/test#");
+    deepEqual(v.namespaces.toObj(), reference, "Manually adding namespaces.");
+    strictEqual(v.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
 });
 
 test ("Manually adding wrong duplicate (key)", function () {
-    var z = new VIE();
-    z.namespaces.add("test", "http://this.is.a/test#");
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
     raises(function () {
-        z.namespaces.add("test1", "http://this.is.a/test#");
+        v.namespaces.add("test1", "http://this.is.a/test#");
     });
 });
 
 test ("Manually adding wrong duplicate (value)", function () {
-    var z = new VIE();
-    z.namespaces.add("test", "http://this.is.a/test#");
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
     raises(function () {
-        z.namespaces.add("test", "http://this.is.another/test#");
+        v.namespaces.add("test", "http://this.is.another/test#");
     });
 });
 
 test ("Manually adding wrong duplicate (key) - addOrReplace", function () {
-    var z = new VIE();
-    z.namespaces.add("test", "http://this.is.a/test#");
-    z.namespaces.addOrReplace("test1", "http://this.is.a/test#");
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
+    v.namespaces.addOrReplace("test1", "http://this.is.a/test#");
     
-    equal(z.namespaces.get("test"), undefined);
-    equal(z.namespaces.get("test1"), "http://this.is.a/test#");
+    equal(v.namespaces.get("test"), undefined);
+    equal(v.namespaces.get("test1"), "http://this.is.a/test#");
 });
 
 test ("Manually adding wrong duplicate (value) - addOrReplace", function () {
-    var z = new VIE();
+    var v = new VIE();
     
-    z.namespaces.add("test", "http://this.is.a/test#");
-    z.namespaces.addOrReplace("test", "http://this.is.a/test2#");
+    v.namespaces.add("test", "http://this.is.a/test#");
+    v.namespaces.addOrReplace("test", "http://this.is.a/test2#");
     
-    equal(z.namespaces.get("test"), "http://this.is.a/test2#");
+    equal(v.namespaces.get("test"), "http://this.is.a/test2#");
     
 });
 
 test ("Manually removing namespaces", function () {
-    var z = new VIE();
-    z.namespaces.add("test", "http://this.is.a/test#");
-    var reference = z.namespaces.toObj();
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
+    var reference = v.namespaces.toObj();
     delete reference["test"];
      
-    z.namespaces.remove("test");
+    v.namespaces.remove("test");
    
-    deepEqual(z.namespaces.toObj(), reference, "Manually removing namespaces.");
-    strictEqual(z.namespaces['test'], undefined, "Manually removing namespaces.");
+    deepEqual(v.namespaces.toObj(), reference, "Manually removing namespaces.");
+    strictEqual(v.namespaces['test'], undefined, "Manually removing namespaces.");
 });
 
 test ("CURIE <-> URI", function () {
 
-    var z = new VIE();
-    z.namespaces.add("test", "http://this.is.a/test#");
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
     
     var uri = "<http://this.is.a/test#foo>";
     var curie = "test:foo";
     var scurie = "[test:foo]";
     
     // URI -> CURIE
-    equal(z.namespaces.curie(uri), curie);
-    equal(z.namespaces.curie(uri, false), z.namespaces.curie(uri));
-    equal(z.namespaces.curie(uri, true), scurie);
+    equal(v.namespaces.curie(uri), curie);
+    equal(v.namespaces.curie(uri, false), v.namespaces.curie(uri));
+    equal(v.namespaces.curie(uri, true), scurie);
     
     // CURIE -> URI
-    equal(z.namespaces.uri(curie), uri);
-    equal(z.namespaces.uri(scurie), uri);
+    equal(v.namespaces.uri(curie), uri);
+    equal(v.namespaces.uri(scurie), uri);
     
-    ok(z.namespaces.isUri(uri));
-    ok(!z.namespaces.isUri(curie));
-    ok(!z.namespaces.isUri(scurie));
+    ok(v.namespaces.isUri(uri));
+    ok(!v.namespaces.isUri(curie));
+    ok(!v.namespaces.isUri(scurie));
 
-    ok(!z.namespaces.isCurie(uri));
-    ok(z.namespaces.isCurie(curie));
-    ok(z.namespaces.isCurie(scurie));
+    ok(!v.namespaces.isCurie(uri));
+    ok(v.namespaces.isCurie(curie));
+    ok(v.namespaces.isCurie(scurie));
     
 });

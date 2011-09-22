@@ -1,57 +1,42 @@
 VIE.prototype.Entity = function(attrs, opts) {
 
-//namespace the attributes!
-// if (@type)
-// -> search corresponding type (vie.types.get(...))
-// -> foreach (attribute \ {@subject, @type})
-//    -> if (!attribute has Namespace)
-//       -> attribute gets same namespace as @type
-// else 
-// -> foreach (attribute \ {@subject, @type})
-//    -> if (!attribute has Namespace)
-//       -> attribute gets default namespace
-
-
     var vie = this;
     
-    var mapAttributeNS = function (attr) {
+    var mapAttributeNS = function (attr, ns) {
         var a = attr;
-        try {
-            if (vie.vie.namespaces.isUri (attr) || attr.indexOf('@') === 0) {
+        if (ns.isUri (attr) || attr.indexOf('@') === 0) {
             //ignore
-            } else if (vie.vie.namespaces.isCurie(attr)) {
-                a = vie.vie.namespaces.uri(attr);
-            } else {
-                //TODO: what if @subject has namespace?
-                a = '<' + vie.vie.namespaces.get('default') + attr + '>';
-            }
-        } catch (e) {
+        } else if (ns.isCurie(attr)) {
+            a = ns.uri(attr);
+        } else if (!ns.isUri(attr)) {
+        	if (attr.indexOf(":") === -1) {
+                a = '<' + ns.base() + attr + '>';
+        	} else {
+                a = '<' + attr + '>';
+        	}
         }
         return a;
     };
-    
-    //@type is always an array of full URIs of types
-    //makes live of web developers easier
-    try {
-        if (!('@type' in attrs)) {
-            if (!vie.vie.types.get("Thing")) {
-                throw "Please register a type 'Thing' in VIE.";
-            }
-            attrs['@type'] = [vie.vie.types.get("Thing").id];
+        
+    if ('@type' in attrs) {
+        if (_.isArray(attrs['@type'])) {
+            attrs['@type'] = _.map(attrs['@type'], function(val){
+                if (this.types.get(val)) {
+                    return this.types.get(val).id;
+                }
+                else {
+                    return val;
+                }
+            }, vie.vie);
         }
-        else {
-            if (_.isArray(attrs['@type'])) {
-                attrs['@type'] = _.map(attrs['@type'], function(val){
-                    return vie.vie.types.get(val).id;
-                });
-            }
-            else {
-                attrs['@type'] = [vie.vie.types.get(attrs['@type']).id];
+        else if (typeof attrs['@type'] === 'string') {
+            if (this.vie.types.get(attrs['@type'])) {
+                attrs['@type'] = this.vie.types.get(attrs['@type']).id;
             }
         }
-    } catch (e) {
-        console.log(e, "Could not register the @type attribute correctly, this is most likely because there is no type registered for one of the following values: ", attrs['@type']);
-        attrs['@type'] = [vie.vie.types.get("Thing").id];
+    } else {
+        // provide "Thing" as the default type if none was given
+        attrs['@type'] = this.vie.types.get("Thing").id;
     }
     
     //the following provides full seamless namespace support
@@ -61,58 +46,41 @@ VIE.prototype.Entity = function(attrs, opts) {
     //However, if we just overwrite `set()` and `get()`, this
     //raises a lot of side effects, so we need to expand
     //the attributes before we create the model.
-    
     attrs = (attrs) ? attrs : {};
     _.each (attrs, function (value, key) {
-        var newKey = mapAttributeNS(key);
+        var newKey = mapAttributeNS(key, this.namespaces);
         if (key !== newKey) {
             delete attrs[key];
             attrs[newKey] = value;
         }
-    });
+    }, vie.vie);
     
     var Model = Backbone.Model.extend({
         idAttribute: '@subject',
-        
-        initialize: function(attributes, options){
-            var instance = this;
-            _.each(attributes, function(value, predicate){
-                if (predicate === "@subject" && value) {
-                    instance.attributes['@subject'] = instance.id = instance.toReference(value);
-                }
-
-                if (!_.isArray(value)) {
-                    return;
-                }
-                if (predicate === "@type") {
-                    return;
-                }
-                var models = [];
-                _.each(value, function(subject){
-                    models.push(instance.vie.entities.addOrUpdate({
-                        '@subject': subject
-                    }));
-                });
                 
-                var updateValues = {};
-                updateValues[predicate] = new instance.vie.entityCollection(models);
-                instance.set(updateValues, {
-                    silent: true
-                });
-            });
-        },
-        
         get: function (attr) {
-            attr = mapAttributeNS(attr);
+            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
+            var value = Backbone.Model.prototype.get.call(this, attr);
             
-            if (attr === '@type') {
-                var self = this;
-                return _.map(Backbone.Model.prototype.get.call(self, attr), function (val) {
-                    return self.vie.vie.types.get(val);
+            if (_.isArray(value)) {
+                value = _.map(value, function(v) {
+                    if (this.vie.vie.entities.get(v)) {
+                        return this.vie.vie.entities.get(v);
+                    }
+                    else if (this.vie.vie.types.get(v)) {
+                        return this.vie.vie.types.get(v);
+                    } else {
+                        return v;
+                    }
                 }, this);
+            } else {
+                if (this.vie.vie.entities.get(value)) {
+                    value = this.vie.vie.entities.get(value);
+                } else if (this.vie.vie.types.get(value)) {
+                    value = this.vie.vie.types.get(value);
+                }
             }
-            
-            return Backbone.Model.prototype.get.call(this, attr);
+            return value;
         },
         
         set : function(attrs, options) {
@@ -121,36 +89,17 @@ VIE.prototype.Entity = function(attrs, opts) {
                 attrs = attrs.attributes;
           
             _.each (attrs, function (value, key) {
-                var newKey = mapAttributeNS(key);
+                var newKey = mapAttributeNS(key, this.vie.vie.namespaces);
                 if (key !== newKey) {
                     delete attrs[key];
                     attrs[newKey] = value;
-                }
-                if (key === '@type') {
-                    var self = this;
-                    delete attrs[key];
-                    if (_.isArray(value)) {
-                        attrs[newKey] = _.map(value, function (val) {
-                            return self.vie.vie.types.get(val).id;
-                        }, self);
-                    } else {
-                        attrs[newKey] = self.vie.vie.types.get(value).id;
-                    }
                 }
             }, this); 
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
         
         unset: function (attr, opts) {
-            attr = mapAttributeNS(attr);
-            
-            if (attr === '@type') {
-                this.set({
-                    attr: this.vie.vie.types.get("Thing").id
-                });
-                return this;
-            }
-            
+            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
         
@@ -272,17 +221,6 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this.hasPropertyValue("@type", type);
         },
         
-        isof: function (type) {
-            var types = this.get('@type');
-            
-            for (var t in types) {
-                if (this.vie.vie.types.get(types[t]).isof(type)) {
-                    return true;
-                }
-            }
-            return false;
-        },
-                
         hasPropertyValue: function(property, value) {
             var t = this.get(property);
             if (t instanceof Array) {
@@ -291,6 +229,19 @@ VIE.prototype.Entity = function(attrs, opts) {
             else {
                 return t === value;
             }
+        },
+        
+        isof: function (type) {
+            var types = this.get('@type');
+            
+            types = (_.isArray(types))? types : [ types ];
+            
+            for (var t = 0; t < types.length; t++) {
+                if (this.vie.vie.types.get(types[t]).isof(type)) {
+                    return true;
+                }
+            }
+            return false;
         },
         
         isEntity: true,

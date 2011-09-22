@@ -4,7 +4,7 @@ VIE.prototype.RdfaService = function(options) {
     }
     this.vie = null;
     this.name = 'rdfa';
-    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
+    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],[href],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
     this.views = [];
 };
@@ -64,14 +64,18 @@ VIE.prototype.RdfaService.prototype = {
     
     _readEntity : function(element) {
         var subject = this.getElementSubject(element);
-    
+        var type = this._getElementType(element);
+        
         var entity = this._readEntityPredicates(subject, element, false);
-        if (jQuery.isEmptyObject(entity)) {
-            return null;
-        }
+        //if (jQuery.isEmptyObject(entity)) {
+        //    return null;
+        //}
     
         entity['@subject'] = subject;
-    
+        if (type) {
+        	entity['@type'] = type;
+        }
+        
         var entityInstance = new this.vie.Entity(entity);
         entityInstance = this.vie.entities.addOrUpdate(entityInstance);
         this._registerEntityView(entityInstance, element);
@@ -155,6 +159,20 @@ VIE.prototype.RdfaService.prototype = {
         this.views.push(viewInstance);
         return viewInstance;
     },
+    
+    _getElementType : function (element) {
+    	var type;
+     	if (jQuery(element).attr('typeof')) {
+	     	type = jQuery(element).attr('typeof');
+		     	if (type.indexOf("://") !== -1) {
+		     	return "<" + type + ">";
+	     	}
+	     	else {
+		     	return type;
+	     	}
+     	}
+     	return null;
+     },
     
     getElementSubject : function(element) {
         if (typeof document !== 'undefined') {
@@ -323,7 +341,11 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     writeElementValue : function(predicate, element, value) {
-        // The `content` attribute can be used for providing machine-readable
+    	
+    	//TODO: this is a hack, please fix!
+     	if (value instanceof Array && value.length > 0) value = value[0];
+        
+     	// The `content` attribute can be used for providing machine-readable
         // values for elements where the HTML presentation differs from the
         // actual value.
         var content = element.attr('content');

@@ -52,12 +52,20 @@ VIE = function(config){
     this.Entity.prototype.vie = this;
 
     this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
-    this.types = new this.Types({
-        vie: this
-    });
-    this.namespaces = new this.Namespaces({
-        "default": (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://vie.js/"
-    });
+    
+    this.Namespaces.prototype.vie = this;
+    this.namespaces = new this.Namespaces(
+        (this.config.defaultNamespace) ? 
+            this.config.defaultNamespace : 
+            "http://ontology.vie.js/"
+    );
+    
+    this.Type.prototype.vie = this;
+    this.Types.prototype.vie = this;
+    this.Attribute.prototype.vie = this;
+    this.Attributes.prototype.vie = this;
+    this.types = new this.Types();
+    
     this.types.add("Thing");
 
     if (this.config.classic !== false) {

@@ -47,7 +47,7 @@ VIE.prototype.loadSchemaOrg = function () {
     var typeProps = function (id) {
         var props = [];
         var specProps = SchemaOrg["types"][id]["specific_properties"];
-        for (var p in specProps) {
+        for (var p = 0; p < specProps.length; p++) {
             var pId = specProps[p];
             var range = SchemaOrg["properties"][pId]["ranges"];
             props.push({
