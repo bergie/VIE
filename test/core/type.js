@@ -72,7 +72,6 @@ test("VIE - Creation/Extension/Removal of types", function() {
 
     var v = new VIE();
 
-    debugger;
     equal(v.types.get("TestThingy"), undefined);
     
     var thingy = v.types.add("TestThingy");
