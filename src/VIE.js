@@ -68,7 +68,7 @@ VIE = function(config){
 
         this.cleanup = function() {
             this.entities.reset();
-        }
+        };
     }
 };
 
