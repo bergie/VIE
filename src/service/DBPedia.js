@@ -70,7 +70,7 @@ VIE.prototype.DBPediaService.prototype = {
             loadable.resolve([]);
         };
         var success = function (results) {
-            loadable.resolve(results.results);
+            loadable.resolve(results);
         };
         var error = function (e) {
             loadable.reject(e);
@@ -92,6 +92,11 @@ DBPediaConnector.prototype = {
         
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
+
+        if (typeof exports !== "undefined" && typeof process !== "undefined") {
+            // We're on Node.js, don't use jQuery.ajax
+            return this.loadNode(url, success, error, options, format);
+        }
         
         jQuery.ajax({
             success: function(response){
@@ -110,6 +115,20 @@ DBPediaConnector.prototype = {
             contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
+    },
+
+    loadNode: function (uri, success, error, options, format) {
+        var request = require('request');
+        var r = request({
+            method: "GET",
+            uri: uri,
+            headers: {
+                Accept: format
+            }
+        }, function(error, response, body) {
+            success({results: JSON.parse(body)});
+        });
+        r.end();
     },
     
     _proxyUrl: function () {

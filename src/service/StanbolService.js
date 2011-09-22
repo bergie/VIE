@@ -205,7 +205,7 @@ VIE.prototype.StanbolService.prototype = {
         //transform data from Stanbol into VIE.Entities
 
         if (typeof jQuery.rdf !== 'function') {
-            throw "RdfQuery is not loaded";
+            return this._enhancer2EntitiesNoRdfQuery(service, results);
         }
         var rdf = jQuery.rdf().load(results, {});
 
@@ -264,6 +264,34 @@ VIE.prototype.StanbolService.prototype = {
             vieEntities.push(entityInstance);
         });
         return vieEntities; 
+    },
+
+    _enhancer2EntitiesNoRdfQuery: function (service, results) {
+        jsonLD = [];
+        _.forEach(results.results, function(value, key) {
+            var entity = {};
+            entity['@subject'] = '<' + key + '>';
+            _.forEach(value, function(triples, predicate) {
+                predicate = '<' + predicate + '>';
+                _.forEach(triples, function(triple) {
+                    if (triple.type === 'uri') {
+                        triple.value = '<' + triple.value + '>';
+                    }
+
+                    if (entity[predicate] && !_.isArray(entity[predicate])) {
+                        entity[predicate] = [entity[predicate]];
+                    }
+
+                    if (_.isArray(entity[predicate])) {
+                        entity[predicate].push(triple.value);
+                        return;
+                    }
+                    entity[predicate] = triple.value;
+                });
+            });
+            jsonLD.push(entity);
+        });
+        return jsonLD;
     }
 };
 
@@ -283,6 +311,11 @@ StanbolConnector.prototype = {
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
+
+        if (typeof exports !== "undefined" && typeof process !== "undefined") {
+            // We're on Node.js, don't use jQuery.ajax
+            return this.analyzeNode(enhancerUrl, text, success, error, options, format);
+        }
         
         jQuery.ajax({
             success: function(response){
@@ -302,6 +335,21 @@ StanbolConnector.prototype = {
             accepts: {"application/rdf+json": "application/rdf+json"}
 
         });
+    },
+
+    analyzeNode: function(url, text, success, error, options, format) {
+        var request = require('request');
+        var r = request({
+            method: "POST",
+            uri: url,
+            body: text,
+            headers: {
+                Accept: format
+            }
+        }, function(error, response, body) {
+            success({results: JSON.parse(body)});
+        });
+        r.end();
     },
     
     load: function (uri, success, error, options) {
