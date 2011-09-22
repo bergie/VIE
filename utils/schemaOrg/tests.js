@@ -16,6 +16,10 @@ test("Initialization", function() {
     ok (z.types.get("Corporation").isof("Thing"));
     ok (z.types.get("Organization").subsumes("Corporation"));
     
+
+    ok (z.types.get("Person").id.indexOf("http://schema.org/") === 0);
+    
+    
     var hospital = z.types.get("Hospital");
     ok (hospital);
     equal( hospital.attributes.list().length, 27);
