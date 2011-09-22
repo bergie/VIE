@@ -71,13 +71,13 @@ test("VIE - Type API", function() {
 test("VIE - Creation/Extension/Removal of types", function() {
 
     var v = new VIE();
-    
+
+    debugger;
     equal(v.types.get("TestThingy"), undefined);
     
     var thingy = v.types.add("TestThingy");
 
     var persony = v.types.add("TestPersony").inherit("TestThingy");
-    
     ok(persony);
     ok(persony.isof(thingy));
     ok(thingy.subsumes(persony));
