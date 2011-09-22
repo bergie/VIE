@@ -1,10 +1,10 @@
-module("vie.js - Attribute");
+module("VIE - Attribute");
 
-test("vie.js - Attribute API", function() {
+test("VIE - Attribute API", function() {
     
-    var z = new VIE();
-    z.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
-    var thingy = z.types.add("TestTThingy", [
+    var v = new VIE();
+    v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
+    var thingy = v.types.add("TestTThingy", [
         {
             id: "name",
             range: "xsd:string"
@@ -14,7 +14,7 @@ test("vie.js - Attribute API", function() {
     var attributes = thingy.attributes;
     
     ok(attributes);
-    ok(attributes instanceof z.Attributes);
+    ok(attributes instanceof v.Attributes);
     
     ok(attributes.vie);
     ok(attributes.vie instanceof VIE);
@@ -36,7 +36,7 @@ test("vie.js - Attribute API", function() {
     var name = attributes.get('name');
 
     ok (name);
-    ok (name instanceof z.Attribute);
+    ok (name instanceof v.Attribute);
     
     ok (name.vie);
     ok (name.vie instanceof VIE);
@@ -49,24 +49,21 @@ test("vie.js - Attribute API", function() {
     
     ok(name.range);
     ok(jQuery.isArray(name.range));
-    
-    ok(name.remove);
-    equal(typeof name.remove, 'function');
-    
+        
 });
 
-test("vie.js - Creation/Alteration/Removal of Attributes", function() {
+test("VIE - Creation/Alteration/Removal of Attributes", function() {
     
-    var z = new VIE();
-    z.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
+    var v = new VIE();
+    v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
     
-    var tt1 = z.types.add("TestType1", [
+    var tt1 = v.types.add("TestType1", [
         {
             id: "attr0",
             range: "xsd:string"
         }
     ]);
-    var tt2 = z.types.add("TestType2", [
+    var tt2 = v.types.add("TestType2", [
         {
             id: "attr0",
             range: "xsd:string"
@@ -80,7 +77,7 @@ test("vie.js - Creation/Alteration/Removal of Attributes", function() {
             range: "xsd:string"
         }
     ]).inherit(tt1);
-    var tt3 = z.types.add("TestType3", [
+    var tt3 = v.types.add("TestType3", [
         {
             id: "attr0",
             range: "xsd:integer"
@@ -91,15 +88,15 @@ test("vie.js - Creation/Alteration/Removal of Attributes", function() {
         }
 
     ]).inherit(tt1);
-    var tt4 = z.types.add("TestType4", [
+    var tt4 = v.types.add("TestType4", [
         {
             id: "attr0",
             range: "xsd:double"
         }
     ]).inherit(tt1);
     
-    var tt5 = z.types.add("TestType5", []).inherit([tt2, tt3]);
-    var tt6 = z.types.add("TestType6", [
+    var tt5 = v.types.add("TestType5", []).inherit([tt2, tt3]);
+    var tt6 = v.types.add("TestType6", [
         {
             id: "attr3",
             range: "xsd:string"
@@ -117,7 +114,7 @@ test("vie.js - Creation/Alteration/Removal of Attributes", function() {
     ok(tt6);
     
     ok (tt1.attributes);
-    ok(tt1.attributes instanceof z.Attributes);
+    ok(tt1.attributes instanceof v.Attributes);
     ok(jQuery.isArray(tt1.attributes.list()));
     
     equal(tt1.attributes.list().length, 1);

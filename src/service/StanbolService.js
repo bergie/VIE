@@ -49,7 +49,7 @@ VIE.prototype.StanbolService.prototype = {
                 //ignore for now!
             }
         }
-        this.namespaces = new this.vie.Namespaces(this.options.namespaces);
+        this.namespaces = new this.vie.Namespaces(this.vie.namespaces.base(), this.options.namespaces);
         
         this.rules = [
             //rule to add backwards-relations to the triples
@@ -80,11 +80,11 @@ VIE.prototype.StanbolService.prototype = {
                  'right': function(ns){
                      return function(){
                          return jQuery.rdf.triple(this.subject.toString() +
-                         ' a ' + ns["default"] + 'Person>', {
-                             namespaces: ns
+                         ' a <' + ns.base() + 'Person>', {
+                             namespaces: ns.toObj()
                          });
                      };
-                 }(this.namespaces.toObj())
+                 }(this.namespaces)
              },
              {
                 'left' : [
@@ -93,11 +93,11 @@ VIE.prototype.StanbolService.prototype = {
                  'right': function(ns){
                      return function(){
                          return jQuery.rdf.triple(this.subject.toString() +
-                         ' a ' + ns["default"] + 'Person>', {
-                             namespaces: ns
+                         ' a <' + ns.base() + 'Person>', {
+                             namespaces: ns.toObj()
                          });
                      };
-                 }(this.namespaces.toObj())
+                 }(this.namespaces)
              }
         ];
         
@@ -213,7 +213,9 @@ VIE.prototype.StanbolService.prototype = {
         if (service.rules) {
             var rules = jQuery.rdf.ruleset();
             for (var prefix in service.namespaces.toObj()) {
-                rules.prefix(prefix, service.namespaces.get(prefix));
+                if (prefix !== "") {
+                	rules.prefix(prefix, service.namespaces.get(prefix));
+                }
             }
             for (var i = 0; i < service.rules.length; i++) {
                 rules.add(service.rules[i]['left'], service.rules[i]['right']);

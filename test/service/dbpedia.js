@@ -17,8 +17,9 @@ test("VIE.js DBPediaService - Load", function () {
     z.load({entity: entity})
     .using('dbpedia').execute().done(function(x) {
         ok(x, "Something returned");
-        ok(x[0] instanceof z.Entity, "Returned is an array of VIE Entities?");
-        //TODO: add more tests
+        ok(x[0].isEntity, "Returned is an array of VIE Entities.");
+        equals(x[0].id, entity);
+        ok(x[0].get("dbonto:abstract").length === 14);
         start();
     })
     .fail(function(f){

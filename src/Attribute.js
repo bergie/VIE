@@ -1,8 +1,19 @@
-// File:   Attribute.js
-// Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
+// File:   Attribute.js <br />
+// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 
-VIE.prototype.Attribute = function (id, range, domain, options) {
+// Adding capability of handling attribute structure and inheritance to VIE. 
+if (VIE.prototype.Attribute) {
+	throw "ERROR: VIE.Attribute is already defined. Please check your installation!";
+}
+if (VIE.prototype.Attributes) {
+	throw "ERROR: VIE.Attributes is already defined. Please check your installation!";
+}
+
+//The constructor of a VIE.Attribute. 
+//Usage: ``var knowsAttr = new vie.Attribute("knows", ["Person"]);``
+//This creates a attribute that describes a **knows** relationship between persons.
+VIE.prototype.Attribute = function (id, range, domain) {
     if (id === undefined || typeof id !== 'string') {
         throw "The attribute constructor needs an 'id' of type string! E.g., 'Person'";
     }
@@ -12,22 +23,21 @@ VIE.prototype.Attribute = function (id, range, domain, options) {
     if (domain === undefined) {
         throw "The attribute constructor needs a 'domain'.";
     }
-    if (!options || !options.vie || !(options.vie instanceof VIE)) {
-        throw "VIE.Attribute needs an instance of VIE given.";
-    }
-    this.vie = options.vie;
     
     this._domain = domain;
     this.range = (jQuery.isArray(range))? range : [ range ];
-    this.count = {}; //TODO!
+    //TODO! this.count = {};
    
     this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
-            
+    
+    // checks, whether the current attribute applies in the given range.
+    // If range is a string, this does simply string comparison, if it
+    // is a VIE.Type or an ID of a VIE.Type, then inheritance is checked as well.
     this.applies = function (range) {
         if (this.vie.types.get(range)) {
             range = this.vie.types.get(range);
         }
-        for (var r in this.range) {
+        for (var r = 0; r < this.range.length; r++) {
             var x = this.vie.types.get(this.range[r]);
             if (x === undefined && typeof range === "string") {
                 if (range === this.range[r]) {
@@ -42,32 +52,31 @@ VIE.prototype.Attribute = function (id, range, domain, options) {
         }
         return false;
     };
-    
-    this.remove = function () {
-        return this.domain.attributes.remove(this);
-    };
-        
+            
 };
 
-VIE.prototype.Attributes = function (domain, attrs, options) {
+// basically a convenience class that represents a list of `VIE.Attribute`s.
+// As attributes are part of a certain `VIE.Type`, it needs to be passed on
+// for inheritance checks:
+// var attrs = new vie.Attributes("Thing", []);
+VIE.prototype.Attributes = function (domain, attrs) {
     
-    this.vie = options.vie;
-    
-    this.domain = domain;
+    this.domain = this.vie.types.get(domain);
     
     this._local = {};
     this._attributes = {};
     
+    //add a `VIE.Attribute` to the attributes.
+    //Either pass a full `VIE.Attribute` object or
+    //an id/range pair which then gets transformed into
+    //a VIE.Attribute element.
     this.add = function (id, range) {
         if (this.get(id)) {
             throw "Attribute '" + id + "' already registered for domain " + this.domain.id + "!";
         } 
         else {
             if (typeof id === "string") {
-                var options = {
-                    vie: this.vie
-                };
-                var a = new this.vie.Attribute(id, range, this.domain, options);
+                var a = new this.vie.Attribute(id, range, this.domain);
                 this._local[a.id] = a;
                 return a;
             } else if (id instanceof this.vie.Type) {
@@ -81,6 +90,7 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         }
     };
     
+    //removes a `VIE.Attribute` from the attributes.
     this.remove = function (id) {
         var a = this.get(id);
         if (a.id in this._local) {
@@ -89,7 +99,8 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         }
         throw "The attribute " + id + " is inherited and cannot be removed from the domain " + this.domain.id + "!";
     };
-        
+    
+    //retrieve a `VIE.Attribute` from the attributes by it's id.
     this.get = function (id) {
         if (typeof id === 'string') {
             var lid = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
@@ -101,6 +112,8 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         }
     };
     
+    // creates a full list of all attributes (local and inherited).
+    // the ranges of inherited attributes with the same id will be merged. 
     this._inherit = function () {
         var attributes = jQuery.extend(true, {}, this._local);
         
@@ -112,9 +125,9 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         var add = {};
         var merge = {};
         
-        for (var a in inherited) {
+        for (var a = 0; a < inherited.length; a++) {
             var attrs = inherited[a].list();
-            for (var x in attrs) {
+            for (var x = 0; x < attrs.length; x++) {
                 var id = attrs[x].id;
                 if (!(id in attributes)) {
                     if (!(id in add) && !(id in merge)) {
@@ -129,7 +142,7 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
                             delete add[id];
                         }
                         merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = VIE.Util.unduplicate(merge[id]);
+                        merge[id] = merge[id].unduplicate();
                     }
                 }
             }
@@ -142,11 +155,11 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
         for (var id in merge) {
             var merged = merge[id];
             var ranges = [];
-            for (var r in merged) {
+            for (var r = 0; r < merged.length; r++) {
                 var p = this.vie.types.get(merged[r]);
                 var isAncestorOf = false;
                 if (p) {
-                    for (var x in merged) {
+                    for (var x = 0; x < merged.length; x++) {
                         if (x === r) {
                             continue;
                         }
@@ -161,16 +174,15 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
                     ranges.push(merged[r]);
                 }
             }
-            var options = {
-                vie: this.vie
-            };
-            attributes[id] = new this.vie.Attribute(id, ranges, this, options);
+            attributes[id] = new this.vie.Attribute(id, ranges, this);
         }
 
         this._attributes = attributes;
         return this;
     };
 
+    // returns an Array of all attributes, combined
+    // with the inherited ones.
     this.toArray = this.list = function (range) {
         var ret = [];
         var attributes = this._inherit()._attributes;
@@ -185,7 +197,8 @@ VIE.prototype.Attributes = function (domain, attrs, options) {
     if (!jQuery.isArray(attrs)) {
         attrs = [ attrs ];
     }
-    for (var a in attrs) {
+    
+    for (var a = 0; a < attrs.length; a++) {
         this.add(attrs[a].id, attrs[a].range);
     }
 };

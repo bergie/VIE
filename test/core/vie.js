@@ -2,49 +2,48 @@ module("Core");
 
 test("vie.js API", function () {
 
-    notEqual(typeof VIE, 'undefined', "No VIE object found! Please ensure that you build the project first by running 'ant'.");
+	notEqual(typeof VIE, 'undefined', "No VIE object found! Please ensure that you build the project first by running 'ant'.");
     equal(typeof VIE, 'function');
 
-    var z = new VIE();
-    ok(z);
-    ok(z instanceof VIE);
+    var v = new VIE();
+    ok(v);
+    ok(v instanceof VIE);
 
-    ok(z.use);
-    equal(typeof z.use, 'function');
-    ok(z.service);
-    equal(typeof z.service, 'function');
-    ok(z.load);
-    equal(typeof z.load, 'function');
-    ok(z.save);
-    equal(typeof z.save, 'function');
-    ok(z.remove);
-    equal(typeof z.remove, 'function');
-    ok(z.analyze);
-    equal(typeof z.analyze, 'function');
+    ok(v.use);
+    equal(typeof v.use, 'function');
+    ok(v.service);
+    equal(typeof v.service, 'function');
+    ok(v.load);
+    equal(typeof v.load, 'function');
+    ok(v.save);
+    equal(typeof v.save, 'function');
+    ok(v.remove);
+    equal(typeof v.remove, 'function');
+    ok(v.analyze);
+    equal(typeof v.analyze, 'function');
+
 
 });
 
 test("vie.js Entities API", function () {
-    var z = new VIE();
+	var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
-    
     z.entities.add({
         '@subject': 'http://example.net/foo',
         'dc:title': 'Bar'
     });
-    
+
     equal(z.entities.length, 1);
     equal(z.entities.at(0).id, z.entities.get('http://example.net/foo').id);
     equal(z.entities.at(0).get('dc:title'), 'Bar');
-    equal(z.entities.at(0).get('@type')[0].id, z.types.get('Thing').id);
+    equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
 });
 
 test("vie.js Entities API - addOrUpdate", function () {
     var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
-    ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
 
     z.entities.add({
@@ -234,7 +233,7 @@ test("vie.js Savable API - success", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop(2000); // 1 second timeout
     z.save({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
@@ -245,7 +244,7 @@ test("vie.js Savable API - fail", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop(2000); // 1 second timeout
     z.save({mockresult: "fail"}).using("mock").fail(function(result){
         equal(result, "fail");
         start();
@@ -256,7 +255,7 @@ test("vie.js Savable API - always", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop(2000); // 1 second timeout
     z.save({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);

@@ -1,5 +1,5 @@
-// File:   DBPediaService.js
-// Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
+// File:   DBPediaService.js <br />
+// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
 //
 
 (function(){
@@ -62,15 +62,33 @@ VIE.prototype.DBPediaService.prototype = {
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
-        var service = this;
         
+        var service = this;
         var entity = loadable.options.entity;
         if(!entity){
             console.warn("DBPediaConnector: No entity to look for!");
             loadable.resolve([]);
         };
         var success = function (results) {
-            loadable.resolve(results);
+        	var id = entity.replace(/^</, '').replace(/>$/, '');
+        	
+        	if (results[id]) {
+    			var e = service.vie.entities.get(entity);
+        		if (!e) {
+        			var attrs = {
+        		        '@subject': entity,
+        		        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
+        			};
+        			delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
+        			
+        			jQuery.extend(attrs, results[id]);
+        			service.vie.entities.add(attrs);
+        			e = service.vie.entities.get(entity);
+        		}
+        		loadable.resolve([e]);
+        	} else {
+        		loadable.reject(undefined);
+        	}
         };
         var error = function (e) {
             loadable.reject(e);
