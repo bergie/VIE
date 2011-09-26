@@ -50,7 +50,7 @@ exports['test subject singletons'] = function(test) {
     test.equal(backboneEntities[1].get('foaf:name'), 'Al Einstein');
     
     var countryInstance = VIE.EntityManager.getBySubject('<http://dbpedia.org/resource/Germany>');
-    test.equal(countryInstance.id, 'http://dbpedia.org/resource/Germany');
+    test.equal(countryInstance.id, '<http://dbpedia.org/resource/Germany>');
 
     // And then the interesting bit, check that it changed in the HTML as well
     jQuery('[property="foaf:name"]', html).each(function() {

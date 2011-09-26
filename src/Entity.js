@@ -57,6 +57,12 @@ VIE.prototype.Entity = function(attrs, opts) {
     
     var Model = Backbone.Model.extend({
         idAttribute: '@subject',
+
+        initialize: function(attributes, options) {
+            if (attributes['@subject']) {
+                this.id = this['@subject'] = this.toReference(attributes['@subject']);
+            }
+        },
                 
         get: function (attr) {
             attr = mapAttributeNS(attr, this.vie.vie.namespaces);
