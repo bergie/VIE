@@ -67,7 +67,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                     if (this.vie.vie.entities.get(v)) {
                         return this.vie.vie.entities.get(v);
                     }
-                    else if (this.vie.vie.types.get(v)) {
+                    else if (attr === '@type' && this.vie.vie.types.get(v)) {
                         return this.vie.vie.types.get(v);
                     } else {
                         return v;
@@ -76,7 +76,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             } else {
                 if (this.vie.vie.entities.get(value)) {
                     value = this.vie.vie.entities.get(value);
-                } else if (this.vie.vie.types.get(value)) {
+                } else if (attr === '@type' && this.vie.vie.types.get(value)) {
                     value = this.vie.vie.types.get(value);
                 }
             }
