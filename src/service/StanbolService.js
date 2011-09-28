@@ -178,7 +178,8 @@ VIE.prototype.StanbolService.prototype = {
             loadable.resolve([]);
         };
         var success = function (results) {
-            loadable.resolve(results.results);
+            var entities = service._enhancer2Entities(service, results);
+            loadable.resolve(entities);
         };
         var error = function (e) {
             loadable.reject(e);
