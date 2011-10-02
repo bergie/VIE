@@ -241,9 +241,16 @@ VIE.prototype.StanbolService.prototype = {
                 };
             }
             var propertyUri = this.property.toString();
+            var propertyCurie;
 
-            var propertyCurie = jQuery.createCurie(propertyUri.substring(1, propertyUri.length - 1), {namespaces: service.namespaces.toObj()});
-            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
+            propertyUri = propertyUri.substring(1, propertyUri.length - 1);
+            try {
+                property = jQuery.createCurie(propertyUri, {namespaces: service.namespaces.toObj()});
+            } catch (e) {
+                property = propertyUri;
+                console.warn(propertyUri + " doesn't have a namespace definition in '", service.namespaces.toObj());
+            }
+            entities[subject][property] = entities[subject][property] || [];
 
             function getValue(rdfQueryLiteral){
                 if(typeof rdfQueryLiteral.value === "string"){
@@ -254,7 +261,7 @@ VIE.prototype.StanbolService.prototype = {
                     return rdfQueryLiteral.value;
                 }
             }
-            entities[subject][propertyCurie].push(getValue(this.object));
+            entities[subject][property].push(getValue(this.object));
         });
 
         _(entities).each(function(ent){
