@@ -1,51 +1,45 @@
+(function($){
+    $.fn.vieSemanticHallo = function(options) {
 
-jQuery(document).ready(function() {
+        // Default settings
+        var opt = {};
+        $.extend(opt, options);
 
-    VIE.EntityManager.initializeCollection();
-
-    VIE.EntityManager.entities.bind('add', function(model) {
-        model.url = vie_phpcr_path + model.id;
-        model.toJSON = model.toJSONLD;
-    });
-
-    // Load all RDFa entities into VIE
-    VIE.RDFaEntities.getInstances();
-
-    // Make all RDFa entities editable
-    jQuery('[typeof][about]').each(function() {
-        jQuery(this).hallo({
-            plugins: {
-                halloformat: {},
-                hallolinkimg: {},
-                halloheadings: {},
-                hallojustify: {},
-                hallolists: {},
+        this.each(function() {
+            var containerInstance = VIE.RDFaEntities.getInstance($(this));
+            if (!containerInstance) {
+                return;
             }
-        });
-        jQuery(this).bind('halloactivated', function() {
-            jQuery('#savebutton').show();
-        });
-        jQuery(this).bind('hallodeactivated', function() {
-            jQuery('#savebutton').hide();
-        });
-    });
+            if (typeof containerInstance.editables === 'undefined') {
+                containerInstance.editables = {};
+            }
 
-    jQuery('#savebutton').bind('click', function() {
-        // Go through all Backbone model instances loaded for the page
-        VIE.EntityManager.entities.each(function(objectInstance) {
-            // TODO: check if was modified
+            VIE.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
+                var containerProperty = $(this);
 
-            // Set the modified properties to the model instance
-            objectInstance.save(null, {
-                success: function(savedModel, response) {
-                    alert(savedModel.id + " was saved, see JS console for details");
-                    jQuery('#savebutton').hide();
-                },
-                error: function(response) {
-                    console.log("Save failed");
+                var propertyName = containerProperty.attr('property');
+                if (propertyName === undefined) {
+                    return true;
                 }
+
+                if (containerInstance.get(propertyName) instanceof Array) {
+                    // For now we don't deal with multivalued properties in Aloha
+                    return true;
+                }
+
+                containerInstance.editables[propertyName] = $(this).hallo({
+                    plugins: {
+                        'halloformat': {}
+                    },
+                    floating: false,
+                    offset: {
+                        'x':5,
+                        'y':45
+                    }
+                });
+                //console.log(containerInstance.editables[propertyName]);
+                containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
         });
-    });
-
-});
+    };
+})(jQuery);
