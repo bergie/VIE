@@ -1,6 +1,6 @@
 VIE.prototype.Entity = function(attrs, opts) {
 
-    var vie = this;
+    var self = this;
     
     var mapAttributeNS = function (attr, ns) {
         var a = attr;
@@ -27,16 +27,16 @@ VIE.prototype.Entity = function(attrs, opts) {
                 else {
                     return val;
                 }
-            }, vie.vie);
+            }, self.vie);
         }
         else if (typeof attrs['@type'] === 'string') {
-            if (this.vie.types.get(attrs['@type'])) {
-                attrs['@type'] = this.vie.types.get(attrs['@type']).id;
+            if (self.vie.types.get(attrs['@type'])) {
+                attrs['@type'] = self.vie.types.get(attrs['@type']).id;
             }
         }
     } else {
         // provide "Thing" as the default type if none was given
-        attrs['@type'] = this.vie.types.get("Thing").id;
+        attrs['@type'] = self.vie.types.get("Thing").id;
     }
     
     //the following provides full seamless namespace support
@@ -53,7 +53,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             delete attrs[key];
             attrs[newKey] = value;
         }
-    }, vie.vie);
+    }, self.vie);
     
     var Model = Backbone.Model.extend({
         idAttribute: '@subject',
@@ -66,25 +66,25 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
                 
         get: function (attr) {
-            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
+            attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
             
             if (_.isArray(value)) {
                 value = _.map(value, function(v) {
-                    if (this.vie.vie.entities.get(v)) {
-                        return this.vie.vie.entities.get(v);
+                    if (self.vie.entities.get(v)) {
+                        return self.vie.entities.get(v);
                     }
-                    else if (attr === '@type' && this.vie.vie.types.get(v)) {
-                        return this.vie.vie.types.get(v);
+                    else if (attr === '@type' && self.vie.types.get(v)) {
+                        return self.vie.types.get(v);
                     } else {
                         return v;
                     }
                 }, this);
             } else {
-                if (this.vie.vie.entities.get(value)) {
-                    value = this.vie.vie.entities.get(value);
-                } else if (attr === '@type' && this.vie.vie.types.get(value)) {
-                    value = this.vie.vie.types.get(value);
+                if (self.vie.entities.get(value)) {
+                    value = self.vie.entities.get(value);
+                } else if (attr === '@type' && self.vie.types.get(value)) {
+                    value = self.vie.types.get(value);
                 }
             }
             return value;
@@ -96,17 +96,26 @@ VIE.prototype.Entity = function(attrs, opts) {
                 attrs = attrs.attributes;
           
             _.each (attrs, function (value, key) {
-                var newKey = mapAttributeNS(key, this.vie.vie.namespaces);
+                var newKey = mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
                     delete attrs[key];
                     attrs[newKey] = value;
                 }
-            }, this); 
+            }, this);
+            _.each (attrs, function (value, key) {
+               if (key.indexOf('@') === -1 && 
+                       typeof value === "object" && 
+                       !jQuery.isArray(value)) {
+                   var child = new self.vie.Entity(value, options);
+                   self.vie.entities.add(child);
+                   attrs[key] = child.getSubject();
+               }
+            }, this);
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
         
         unset: function (attr, opts) {
-            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
+            attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
         
@@ -169,7 +178,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                     entityValue = entityValue.id;
                 }
 
-                if (value instanceof instance.vie.vie.Collection) {
+                if (value instanceof instance.vie.Collection) {
                     entityValue = value.map(function(instance) {
                         return instance.getSubject();
                     });
@@ -224,14 +233,14 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
         
         hasType: function(type){
-            type = this.vie.vie.types.get(type);
+            type = self.vie.types.get(type);
             return this.hasPropertyValue("@type", type);
         },
         
         hasPropertyValue: function(property, value) {
             var t = this.get(property);
             if (!(value instanceof Object)) {
-                value = this.vie.entities.get(value);
+                value = self.vie.entities.get(value);
             }
             if (t instanceof Array) {
                 return t.indexOf(value) !== -1;
@@ -247,7 +256,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             types = (_.isArray(types))? types : [ types ];
             
             for (var t = 0; t < types.length; t++) {
-                if (this.vie.vie.types.get(types[t]).isof(type)) {
+                if (self.vie.types.get(types[t]).isof(type)) {
                     return true;
                 }
             }
@@ -256,7 +265,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         
         isEntity: true,
         
-        vie: vie
+        vie: self.vie
     });
     
     return new Model(attrs, opts);    
