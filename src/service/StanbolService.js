@@ -435,7 +435,7 @@ StanbolConnector.prototype = {
     
     _proxyUrl: function(){
         this.proxyUrl = "";
-        if(this.baseUrl.indexOf(":") !== -1){
+        if(this.baseUrl.indexOf(":") !== -1 && !this.options.proxyDisabled){
             return this.options.proxyUrl || this.options.defaultProxyUrl;
         } else {
             return '';
