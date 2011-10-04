@@ -224,12 +224,15 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
         
         hasType: function(type){
-            type = this.vie.vie.types.get(type).id;
+            type = this.vie.vie.types.get(type);
             return this.hasPropertyValue("@type", type);
         },
         
         hasPropertyValue: function(property, value) {
             var t = this.get(property);
+            if (!(value instanceof Object)) {
+                value = this.vie.entities.get(value);
+            }
             if (t instanceof Array) {
                 return t.indexOf(value) !== -1;
             }
