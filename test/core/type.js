@@ -65,6 +65,9 @@ test("VIE - Type API", function() {
     
     ok(thingy.toString);
     ok(typeof thingy.toString === 'function');
+    
+    ok (thingy.instance);
+    ok(typeof thingy.instance === "function");
 });
 
 
@@ -128,5 +131,46 @@ test("VIE - Creation/Extension/Removal of types", function() {
     v.types.remove(thingy);
     equal(v.types.list().length, 1);
     
+    
+});
+
+test("VIE - Instantiation of types", function() {
+
+    var v = new VIE();
+
+    var tt1 = v.types.add("TestType1", [
+        {
+            id: "attr0",
+            range: "xsd:string"
+        }
+    ]);
+    var tt2 = v.types.add("TestType2", [
+        {
+            id: "attr0",
+            range: "xsd:string"
+        },
+        {
+            id: "attr1",
+            range: "xsd:string"
+        },
+        {
+            id: "attr2",
+            range: "xsd:string"
+        }
+    ]).inherit(tt1);
+
+    var type1Instance = tt1.instance();
+    
+    var type2Instance = tt2.instance({"attr0" : "This is a test."});
+    
+    ok(type1Instance);
+    ok(type2Instance);
+    ok(type1Instance.isEntity);
+    ok(type2Instance.isEntity);
+    equal(type2Instance.get("attr0"), "This is a test.");
+    
+    raises(function () {
+    	tt1.instance({"attr1" : "This should fail."});
+    });
     
 });

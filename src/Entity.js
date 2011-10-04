@@ -61,7 +61,8 @@ VIE.prototype.Entity = function(attrs, opts) {
         initialize: function(attributes, options) {
             if (attributes['@subject']) {
                 this.id = this['@subject'] = this.toReference(attributes['@subject']);
-            }
+            }            
+            return this;
         },
                 
         get: function (attr) {

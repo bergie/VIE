@@ -1,6 +1,6 @@
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
-
+    
     get: function(id) {
         if (id == null) return null;
         id = this.toReference(id);
