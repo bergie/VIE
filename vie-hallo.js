@@ -27,16 +27,7 @@
                     return true;
                 }
 
-                containerInstance.editables[propertyName] = $(this).hallo({
-                    plugins: {
-                        'halloformat': {}
-                    },
-                    floating: false,
-                    offset: {
-                        'x':5,
-                        'y':45
-                    }
-                });
+                containerInstance.editables[propertyName] = $(this).hallo(opt);
                 //console.log(containerInstance.editables[propertyName]);
                 containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
