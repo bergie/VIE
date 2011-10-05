@@ -105,8 +105,6 @@ VIE.prototype.getServicesArray = function() {
   return res;
 };
 
-VIE.prototype.Able = Able;
-
 // Declaring the ..able classes
 // Loadable
 VIE.prototype.load = function(options) {
@@ -115,11 +113,7 @@ VIE.prototype.load = function(options) {
   return new this.Loadable(options);
 };
 
-VIE.prototype.Loadable = function (options) {
-    this.init(options,"load");
-};
 
-VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
 
 // Savable
 VIE.prototype.save = function(options) {
@@ -128,11 +122,6 @@ VIE.prototype.save = function(options) {
   return new this.Savable(options);
 };
 
-VIE.prototype.Savable = function(options){
-    this.init(options, "save");
-};
-
-VIE.prototype.Savable.prototype = new VIE.prototype.Able();
 
 // Removable
 VIE.prototype.remove = function(options) {
@@ -141,11 +130,6 @@ VIE.prototype.remove = function(options) {
   return new this.Removable(options);
 };
 
-VIE.prototype.Removable = function(options){
-    this.init(options, "remove");
-};
-
-VIE.prototype.Removable.prototype = new VIE.prototype.Able();
 
 // Analyzable
 VIE.prototype.analyze = function(options) {
@@ -154,11 +138,6 @@ VIE.prototype.analyze = function(options) {
   return new this.Analyzable(options);
 };
 
-VIE.prototype.Analyzable = function (options) {
-    this.init(options, "analyze");
-};
-
-VIE.prototype.Analyzable.prototype = new VIE.prototype.Able();
 
 // Findable
 VIE.prototype.find = function(options) {
@@ -167,11 +146,6 @@ VIE.prototype.find = function(options) {
   return new this.Findable(options);
 };
 
-VIE.prototype.Findable = function (options) {
-    this.init(options, "find");
-};
-
-VIE.prototype.Findable.prototype = new VIE.prototype.Able();
 
 if(typeof(exports) !== 'undefined' && exports !== null) {
     exports.VIE = VIE;

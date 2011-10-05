@@ -256,7 +256,8 @@ VIE.prototype.Entity = function(attrs, opts) {
             types = (_.isArray(types))? types : [ types ];
             
             for (var t = 0; t < types.length; t++) {
-                if (self.vie.types.get(types[t]).isof(type)) {
+                if (self.vie.types.get(types[t]) && 
+                    self.vie.types.get(types[t]).isof(type)) {
                     return true;
                 }
             }
