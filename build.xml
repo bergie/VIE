@@ -47,8 +47,8 @@
     <target name="combine" description="combines core/*.js files into one file">
         <echo message="Building vie.js Distribution" />
         <concat destfile="${DIST_DIR}/vie-${VERSION}.debug.js">
-            <fileset dir="${SRC_DIR}" includes="Able.js"/>
         	<fileset dir="${SRC_DIR}" includes="VIE.js"/>
+            <fileset dir="${SRC_DIR}" includes="Able.js"/>
             <fileset dir="${SRC_DIR}" includes="Util.js"/>
             <fileset dir="${SRC_DIR}" includes="Entity.js"/>
             <fileset dir="${SRC_DIR}" includes="Collection.js"/>

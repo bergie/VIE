@@ -1,8 +1,8 @@
 
-Able = function(){
+VIE.prototype.Able = function(){
 };
     // takes a list of services or just one
-Able.prototype = {
+VIE.prototype.Able.prototype = {
     using: function(services) {
         var service = this;
         if ( services instanceof Array ) {
@@ -51,3 +51,30 @@ Able.prototype = {
         return this;
     }
 };
+
+VIE.prototype.Loadable = function (options) {
+    this.init(options,"load");
+};
+VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
+
+VIE.prototype.Savable = function(options){
+    this.init(options, "save");
+};
+VIE.prototype.Savable.prototype = new VIE.prototype.Able();
+
+VIE.prototype.Removable = function(options){
+    this.init(options, "remove");
+};
+VIE.prototype.Removable.prototype = new VIE.prototype.Able();
+
+VIE.prototype.Analyzable = function (options) {
+    this.init(options, "analyze");
+};
+VIE.prototype.Analyzable.prototype = new VIE.prototype.Able();
+
+VIE.prototype.Findable = function (options) {
+    this.init(options, "find");
+};
+
+VIE.prototype.Findable.prototype = new VIE.prototype.Able();
+
