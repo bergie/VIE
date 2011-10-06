@@ -83,9 +83,8 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
         service._findPredicateElements(subject, newElement, false).each(function() {
-            service.writeElementValue(jQuery(this), '');
+            service.writeElementValue(null, jQuery(this), '');
         });
-
-        return element;
+        return newElement;
     }
 });
