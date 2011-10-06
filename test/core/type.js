@@ -29,6 +29,9 @@ test("VIE - Type API", function() {
     ok(v.types.toArray);
     ok(typeof v.types.toArray === 'function');
     
+    ok(v.types.sort);
+    ok(typeof v.types.sort === 'function');
+    
     // Type
     var thingy = v.types.add("TestTypeWithSillyName");
     
@@ -172,5 +175,53 @@ test("VIE - Instantiation of types", function() {
     raises(function () {
     	tt1.instance({"attr1" : "This should fail."});
     });
+    
+});
+
+test("VIE - Type Sorting", function () {
+    var v = new VIE();
+    v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
+    
+    var tt1 = v.types.add("TestType1", []);
+    var tt2 = v.types.add("TestType2", []).inherit(tt1);
+    var tt3 = v.types.add("TestType3", []).inherit(tt1);
+    var tt4 = v.types.add("TestType4", []).inherit(tt1);
+    
+    var tt5 = v.types.add("TestType5", []).inherit([tt2, tt3]);
+    var tt6 = v.types.add("TestType6", []).inherit([tt3, tt4]);
+    
+    var array = ["TestType5", "TestType2", "TestType4", "TestType6", "TestType3", "TestType1"];
+    
+    var shuffle = $.merge([], array);
+    shuffle.sort(function() {return 0.5 - Math.random();});
+    
+
+    var sortedArrayAsc1 = v.types.sort(array);
+    var sortedArrayAsc2 = v.types.sort(shuffle);
+
+    var sortedArrayDesc1 = v.types.sort(array, true);
+    var sortedArrayDesc2 = v.types.sort(shuffle, true);
+
+    ok(sortedArrayAsc1);
+    ok(sortedArrayAsc2);
+    
+    ok(sortedArrayDesc1);
+    ok(sortedArrayDesc2);
+    
+    var test = function (arr) {
+        for (var i = 0; i < arr.length-1; i++) {
+            for (var j = 0; j < i-1; j++) {
+                if (v.types.get(arr[i]).subsumes(arr[j]))
+                    return false;
+            }
+        }
+        return true;
+    };
+
+    ok(test(sortedArrayAsc1.reverse()));
+    ok(test(sortedArrayAsc2.reverse()));
+    ok(test(sortedArrayDesc1));
+    ok(test(sortedArrayDesc2));
+
     
 });

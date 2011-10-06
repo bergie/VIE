@@ -114,7 +114,6 @@ VIE.Util = {
     blankNodeID : function () {
       this._blankNodeSeed += 1;
       return '_:bnode' + this._blankNodeSeed.toString(16);
-    }
-    
+    }    
     
 };

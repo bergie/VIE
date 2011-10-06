@@ -135,6 +135,8 @@ VIE.prototype.Type = function (id, attrs) {
         return this.id;
     };
     
+    
+    
 };
 
 //basically a convenience class that represents a list of `VIE.Type`s.
@@ -218,5 +220,29 @@ VIE.prototype.Types = function () {
             ret.push(this._types[i]);
         }
         return ret;
+    };
+    
+    //Sorts an array of types in their order, given by the
+    //inheritance. If 'desc' is given and 'true', the sorted
+    //array will be in descendant order.
+    this.sort = function (types, desc) {
+        var self = this;
+        var copy = $.merge([], ($.isArray(types))? types : [ types ]);
+        desc = (desc)? true : false;
+        
+        for (var x = 0; x < copy.length; x++) {
+            var a = copy.shift();
+            var idx = 0;
+            for (var y = 0; y < copy.length; y++) {
+                var b = self.vie.types.get(copy[y]);                
+                if (b.subsumes(a))
+                    idx = y;
+            }
+            copy.splice(idx+1,0,a);
+        }
+        
+        if (!desc) 
+            copy.reverse();
+        return copy;
     };
 };
