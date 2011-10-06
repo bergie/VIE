@@ -41,7 +41,7 @@ if (!jQuery) {
 }
 
 var VIE;
-VIE = function(config){
+VIE = function(config) {
     this.config = (config) ? config : {};
     this.services = {};
     this.entities = new this.Collection();
@@ -55,9 +55,7 @@ VIE = function(config){
     
     this.Namespaces.prototype.vie = this;
     this.namespaces = new this.Namespaces(
-        (this.config.defaultNamespace) ? 
-            this.config.defaultNamespace : 
-            "http://ontology.vie.js/"
+        (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://ontology.vie.js/"
     );
     
     this.Type.prototype.vie = this;

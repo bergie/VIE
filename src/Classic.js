@@ -57,5 +57,9 @@ VIE.prototype.ClassicEntityManager.prototype = {
 
     getByJSONLD: function(json) {
         return this.vie.entities.addOrUpdate(json);
+    },
+
+    initializeCollection: function() {
+        return;
     }
 };
