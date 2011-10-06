@@ -135,6 +135,9 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
         
         toReference: function(uri){
+            if (typeof uri !== "string") {
+                return uri;
+            }
             if (this.isReference(uri)) {
                 return uri;
             }
@@ -142,6 +145,9 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
         
         fromReference: function(uri){
+            if (typeof uri !== "string") {
+                return uri;
+            }
             if (!this.isReference(uri)) {
                 return uri;
             }

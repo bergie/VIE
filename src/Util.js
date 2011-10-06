@@ -64,6 +64,9 @@ VIE.Util = {
 		// converts a given URI into a CURIE (or save CURIE), based
 		// on the given VIE.Namespaces object.
 	toCurie : function (uri, safe, namespaces) {
+        if (VIE.Util.isCurie(uri, namespaces)) {
+            return uri;
+        }
         var delim = ":";
         for (var k in namespaces.toObj()) {
             if (uri.indexOf(namespaces.get(k)) === 1) {
