@@ -88,6 +88,11 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return value;
         },
+
+        has: function(attr) {
+            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
+            return Backbone.Model.prototype.has.call(this, attr);
+        },
         
         set : function(attrs, options) {
             if (!attrs) return this;
