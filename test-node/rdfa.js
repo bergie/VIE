@@ -1,6 +1,10 @@
 var jQuery = require('jquery');
 var vie = require('../dist/vie-latest.debug.js');
 var VIE = new vie.VIE();
+VIE.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
+VIE.namespaces.add('foaf', 'http://xmlns.com/foaf/0.1/');
+VIE.namespaces.add('cal', 'http://www.w3.org/2002/12/cal#');
+VIE.namespaces.add('mgd', 'http://www.midgard-project.org/midgard2/10.05');
 
 // Until https://github.com/tmpvar/jsdom/issues/issue/81 is fixed you need to uncomment the following:
 //VIE.RDFa.predicateSelector = '[property]';
@@ -358,7 +362,6 @@ exports['test relation example'] = function(test) {
     var profile = VIE.EntityManager.getBySubject('http://www.blogger.com/profile/1109404');
     var images = profile.get('foaf:img');
     test.equal(images.length, 1);
-
     test.equal(images.at(0).get('dc:creator'), 'Mark Birbeck');
 
     test.equal(images.at(0).id, '<photo1.jpg>');
@@ -372,15 +375,15 @@ exports['test relation example'] = function(test) {
 exports['test table rows'] = function(test) {
     VIE.cleanup();
 
-    var html = jQuery('<table border="1" width="100%" vocab="http://iks.demo.eu/" typeof="Table" about="Table42" rel="member"><tr about="SebastianG" typeof="Person"><td><span property="name">Sebastian</span></td><td><a href="http://www.dfki.de" property="affiliation">DFKI</a></td><td><span property="gender">m</span></td></tr></table>');
+    var html = jQuery('<table border="1" width="100%" vocab="http://iks.demo.eu/" typeof="Table" about="Table42" rel="foaf:member"><tr about="SebastianG" typeof="Person"><td><span property="name">Sebastian</span></td><td><a href="http://www.dfki.de" property="affiliation">DFKI</a></td><td><span property="gender">m</span></td></tr></table>');
 
     VIE.RDFaEntities.getInstances(html);
 
-    test.equal(VIE.EntityManager.entities.length, 2);
+    test.equal(VIE.EntityManager.entities.length, 3);
     test.equal(jQuery('tr', html).length, 1);
 
     var table = VIE.EntityManager.getBySubject('Table42');
-    table.get('member').add({
+    table.get('foaf:member').add({
         gender: 'm',
         name: 'Henri Bergius',
         id: 'bergie'
@@ -388,7 +391,7 @@ exports['test table rows'] = function(test) {
 
     test.equal(jQuery('tr', html).length, 2);
 
-    table.get('member').remove(table.get('member').at(1));
+    table.get('foaf:member').remove(table.get('foaf:member').at(1));
 
     test.equal(jQuery('tr', html).length, 1);
 

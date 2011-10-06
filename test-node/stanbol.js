@@ -12,7 +12,7 @@ exports['test annotations'] = function(test) {
         using('stanbol').
         execute().
         done(function(entities) {
-            test.equal(entities.length, 2);
+            test.equal(entities.length, 3);
         }).
         then(function() {
             test.done();
