@@ -82,8 +82,8 @@ VIE.prototype.Type = function (id, attrs) {
             this.inherit(this.vie.types.get(supertype));
         }
         else if (supertype instanceof this.vie.Type) {
-            supertype.subtypes.add(this);
-            this.supertypes.add(supertype);
+            supertype.subtypes.addOrOverwrite(this);
+            this.supertypes.addOrOverwrite(supertype);
             try {
                 // only for validation of attribute-inheritance!
             	// if this throws an error (inheriting two attributes

@@ -19,13 +19,16 @@ VIE.prototype.StanbolService = function(options) {
             geonames : "http://www.geonames.org/ontology#",
             enhancer : "http://fise.iks-project.eu/ontology/",
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
+            entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
             rdfs: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
-            schema: 'http://schema.org/'
+            schema: 'http://schema.org/',
+            rdfschema: 'http://www.w3.org/2000/01/rdf-schema#',
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
-    this.options = jQuery.extend(defaults, options ? options : {});
+    this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
@@ -75,39 +78,57 @@ VIE.prototype.StanbolService.prototype = {
              //rule(s) to transform a Stanbol person into a VIE person
              {
                 'left' : [
-                    '?subject a dbpedia:Person>',
+                    '?subject a dbpedia:Person',
+                    '?subject rdfschema:label ?label'
                  ],
                  'right': function(ns){
                      return function(){
-                         return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <' + ns.base() + 'Person>', {
-                             namespaces: ns.toObj()
-                         });
+                         return [
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 'a',
+                                 '<' + ns.base() + 'Person>', {
+                                     namespaces: ns.toObj()
+                                 }),
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 '<' + ns.base() + 'name>',
+                                 this.label, {
+                                     namespaces: ns.toObj()
+                                 })
+                             ];
                      };
                  }(this.namespaces)
              },
              {
-                'left' : [
-                    '?subject a foaf:Person>',
-                 ],
-                 'right': function(ns){
-                     return function(){
-                         return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <' + ns.base() + 'Person>', {
-                             namespaces: ns.toObj()
-                         });
-                     };
-                 }(this.namespaces)
-             }
+                 'left' : [
+                     '?subject a dbpedia:Place',
+                     '?subject rdfschema:label ?label'
+                  ],
+                  'right': function(ns) {
+                      return function() {
+                          return [
+                          jQuery.rdf.triple(this.subject.toString(),
+                              'a',
+                              '<' + ns.base() + 'Place>', {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                              this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              })
+                          ];
+                      };
+                  }(this.namespaces)
+              },
         ];
         
-        this.vie.types.add('enhancer:EntityAnnotation', [
+        this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.vie.types.add('enhancer:TextAnnotation', [
+        this.vie.types.addOrOverwrite('enhancer:TextAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.vie.types.add('enhancer:Enhancement', [
+        this.vie.types.addOrOverwrite('enhancer:Enhancement', [
             //TODO: add attributes
         ]).inherit("Thing");
     },
@@ -254,8 +275,12 @@ VIE.prototype.StanbolService.prototype = {
 
             function getValue(rdfQueryLiteral){
                 if(typeof rdfQueryLiteral.value === "string"){
-                    return rdfQueryLiteral.value;
-                } else if (rdfQueryLiteral.value._string){
+                    if (rdfQueryLiteral.lang)
+                        return rdfQueryLiteral.toString();
+                    else 
+                        return rdfQueryLiteral.value;
+                    return rdfQueryLiteral.value.toString();
+                } else if (rdfQueryLiteral.type === "uri"){
                     return rdfQueryLiteral.toString();
                 } else {
                     return rdfQueryLiteral.value;
