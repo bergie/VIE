@@ -38,6 +38,16 @@ test("vie.js Entities API", function () {
     equal(z.entities.length, 1);
     equal(z.entities.at(0).id, z.entities.get('http://example.net/foo').id);
     equal(z.entities.at(0).get('dc:title'), 'Bar');
+    equal(z.entities.at(0).get('http://purl.org/dc/elements/1.1/title'), 'Bar');
+
+    z.entities.at(0).set({'http://purl.org/dc/elements/1.1/title': 'Baz'});
+    equal(z.entities.at(0).get('dc:title'), 'Baz');
+    equal(z.entities.at(0).get('http://purl.org/dc/elements/1.1/title'), 'Baz');
+
+    ok(z.entities.at(0).has('dc:title'));
+    ok(z.entities.at(0).has('http://purl.org/dc/elements/1.1/title'));
+    equal(z.entities.at(0).has('dc:foo'), false);
+
     equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
 });
 
