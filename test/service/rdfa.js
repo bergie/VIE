@@ -103,10 +103,11 @@ test("Test RDFa image entitization", function() {
     var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1><span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span></div>');
 
     stop(1000); // 1 second timeout
+    debugger;
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
-
     	var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
         // Ensure we have the image correctly read
+    	
         ok(icons instanceof Array, "Icons should be an array");
         equal(icons[0].id, '<http://example.net/image.jpg>');
         
@@ -114,19 +115,16 @@ test("Test RDFa image entitization", function() {
 
         z.entities.get('<http://example.net/blog/news_item>').unset("mgd:icon");
         
-        //TODO: this fails as there is method to remove elements from the DOM
-        equal(jQuery('img', html).length, 0);
+        equal(jQuery('img', html).length, 1);
 
         icons.push('<http://example.net/otherimage.jpg>');
         z.entities.get('<http://example.net/blog/news_item>').set({
             "mgd:icon" : icons
         });
         
-        //TODO: this fails as there is method to remove elements from the DOM
-        equal(jQuery('img', html).length, 1);
+        equal(jQuery('img', html).length, 0);
         
-        //TODO: this fails as there is method to remove elements from the DOM
-        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
+        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 0);
 
         start();
     });

@@ -91,7 +91,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         has: function(attr) {
-            attr = mapAttributeNS(attr, this.vie.vie.namespaces);
+            attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.has.call(this, attr);
         },
         
@@ -108,12 +108,20 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
             }, this);
             _.each (attrs, function (value, key) {
-               if (key.indexOf('@') === -1 && 
-                       typeof value === "object" && 
-                       !jQuery.isArray(value)) {
-                   var child = new self.vie.Entity(value, options);
-                   self.vie.entities.add(child);
-                   attrs[key] = child.getSubject();
+               if (key.indexOf('@') === -1) {
+                   if (typeof value === "object" && 
+                       !jQuery.isArray(value) &&
+                       !value.isCollection) {
+                       var child = new self.vie.Entity(value, options);
+                       self.vie.entities.add(child);
+                       attrs[key] = child.getSubject();
+                   } else if (value.isCollection) {
+                       attrs[key] = [];
+                       value.each(function (child) {
+                           self.vie.entities.add(child);
+                           attrs[key].push(child.getSubject());
+                       });
+                   }
                }
             }, this);
             return Backbone.Model.prototype.set.call(this, attrs, options);

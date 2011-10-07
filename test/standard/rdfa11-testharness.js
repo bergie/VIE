@@ -5,6 +5,8 @@ module("vie.js - RDFa 1.1 Test Suite");
 test("Test #1 (required): Predicate establishment with @property", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
+    
+    z.namespaces.add("dc", "http://purl.org/dc/terms/");
 
     var html = jQuery('<p>This photo was taken by <span class="author" about="photo1.jpg" property="dc:creator">Mark Birbeck</span>.</p>');
 
@@ -22,6 +24,9 @@ test("Test #1 (required): Predicate establishment with @property", function() {
 test("Test #6 (required): @rel and @rev", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
+
+    z.namespaces.add("dc", "http://purl.org/dc/terms/");
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
 
     var html = jQuery('<p>This photo was taken by <a about="photo1.jpg" rel="dc:creator" rev="foaf:img" href="http://www.blogger.com/profile/1109404">Mark Birbeck</a>.</p>');
 
@@ -43,6 +48,9 @@ test("Test #7 (required): @rel, @rev, @property, @content", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
+    z.namespaces.add("dc", "http://purl.org/dc/terms/");
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+    
     var html = jQuery('<p>This photo was taken by <a about="photo1.jpg" property="dc:title" content="Portrait of Mark" rel="dc:creator" rev="foaf:img" href="http://www.blogger.com/profile/1109404">Mark Birbeck</a>.</p>');
 
     stop(1000); // 1 second timeout
@@ -64,6 +72,9 @@ test("Test #9 (required): @rev", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
+    z.namespaces.add("dc", "http://purl.org/dc/terms/");
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+    
     var html = jQuery('<link about="http://example.org/people#Person1" rev="foaf:knows" href="http://example.org/people#Person2" />');
 
     stop(1000); // 1 second timeout
@@ -81,6 +92,9 @@ test("Test #10 (required): @rel, @rev, @href", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
+    z.namespaces.add("dc", "http://purl.org/dc/terms/");
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+    
     var html = jQuery('<link about="http://example.org/people#Person1" rel="foaf:knows" rev="foaf:knows" href="http://example.org/people#Person2" />');
 
     stop(1000); // 1 second timeout

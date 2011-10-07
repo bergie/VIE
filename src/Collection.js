@@ -65,5 +65,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             return uri;
         }
         return uri.substring(1, uri.length - 1);
-    }
+    },
+    
+    isCollection: true
 });
