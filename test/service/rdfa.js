@@ -103,7 +103,7 @@ test("Test RDFa image entitization", function() {
     var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title"><span>News item title</span></h1><span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span></div>');
 
     stop(1000); // 1 second timeout
-    debugger;
+    
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
     	var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
         // Ensure we have the image correctly read
