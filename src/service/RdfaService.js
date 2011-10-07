@@ -11,6 +11,16 @@ VIE.prototype.RdfaService = function(options) {
 
 VIE.prototype.RdfaService.prototype = {
     
+    analyze: function(analyzable) {
+        // in a certain way, analyze is the same as load
+        var service = this;
+
+        var correct = analyzable instanceof this.vie.Analyzable;
+        if (!correct) {throw "Invalid Analyzable passed";}
+
+        return this.load(new this.vie.Loadable({element : analyzable.options.element}));
+    },
+        
     load : function(loadable) {
         var service = this;
         var correct = loadable instanceof this.vie.Loadable;
@@ -191,6 +201,8 @@ VIE.prototype.RdfaService.prototype = {
      },
     
     getElementSubject : function(element) {
+        var service = this;
+        
         if (typeof document !== 'undefined') {
             if (element === document) {
                 return document.baseURI;
@@ -207,7 +219,8 @@ VIE.prototype.RdfaService.prototype = {
                 return true;
             }
             if (jQuery(this).attr('typeof')) {
-                subject = this;
+                subject = VIE.Util.blankNodeID();
+                //subject = this;
                 return true;
             }
     
@@ -228,7 +241,7 @@ VIE.prototype.RdfaService.prototype = {
             return subject;
         }
     
-        return "<" + subject + ">";
+        return (subject.indexOf("_:") === 0)? subject : "<" + subject + ">";
     },
     
     setElementSubject : function(subject, element) {

@@ -110,6 +110,13 @@ VIE.Util = {
     // checks, whether the given string is a URI.
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+:.+>$/) === 0);
-    }
+    },
+    
+    _blankNodeSeed : new Date().getTime() % 1000,
+    
+    blankNodeID : function () {
+      this._blankNodeSeed += 1;
+      return '_:bnode' + this._blankNodeSeed.toString(16);
+    }    
     
 };

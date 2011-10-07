@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="vie.js" basedir="." default="all">
 
-	<property name="VERSION" value="0.0.1"/>
+	<property name="VERSION" value="1.0.0"/>
 
     <property name="DOCS_DIR" value="./docs" description="API documentation"/>
     <property name="DIST_DIR" value="./dist"/>

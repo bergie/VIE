@@ -97,6 +97,7 @@ VIE.prototype.Namespaces = function (base, namespaces) {
     
     // get a namespace (or *undefined*) for a given prefix.
     this.get = function (k) {
+    	if (k === "") return this.base();
         return this._namespaces[k];
     };
 
