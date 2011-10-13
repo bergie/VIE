@@ -63,7 +63,6 @@ VIE = function(config) {
     this.Attribute.prototype.vie = this;
     this.Attributes.prototype.vie = this;
     this.types = new this.Types();
-    
     this.types.add("Thing");
 
     if (this.config.classic !== false) {

@@ -11,6 +11,16 @@ VIE.prototype.RdfaService = function(options) {
 
 VIE.prototype.RdfaService.prototype = {
     
+    analyze: function(analyzable) {
+        // in a certain way, analyze is the same as load
+        var service = this;
+
+        var correct = analyzable instanceof this.vie.Analyzable;
+        if (!correct) {throw "Invalid Analyzable passed";}
+
+        return this.load(new this.vie.Loadable({element : analyzable.options.element}));
+    },
+        
     load : function(loadable) {
         var service = this;
         var correct = loadable instanceof this.vie.Loadable;
@@ -65,11 +75,24 @@ VIE.prototype.RdfaService.prototype = {
     _readEntity : function(element) {
         var subject = this.getElementSubject(element);
         var type = this._getElementType(element);
+        var predicate, value, valueCollection;
         
         var entity = this._readEntityPredicates(subject, element, false);
         //if (jQuery.isEmptyObject(entity)) {
         //    return null;
         //}
+
+        for (predicate in entity) {
+            value = entity[predicate]; 
+            if (typeof value !== "object" || toString.call(value) !== '[object Array]') {
+                continue;
+            }
+            valueCollection = new this.vie.Collection();
+            _.each(value, function(valueItem) {
+                valueCollection.addOrUpdate({'@subject': valueItem});
+            });
+            entity[predicate] = valueCollection;
+        }
     
         entity['@subject'] = subject;
         if (type) {
@@ -101,10 +124,13 @@ VIE.prototype.RdfaService.prototype = {
         return true;
     },
     
-    _getViewForElement : function(element) {
+    _getViewForElement : function(element, collectionView) {
         var viewInstance;
         jQuery.each(this.views, function() {
             if (this.el.get(0) === element.get(0)) {
+                if (collectionView && !this.template) {
+                    return true;
+                }
                 viewInstance = this;
                 return false;
             }
@@ -130,7 +156,7 @@ VIE.prototype.RdfaService.prototype = {
     
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
-            var attributeValue = entity.get(predicate);
+            var attributeValue = entity.fromReference(entity.get(predicate));
             if (attributeValue instanceof service.vie.Collection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this));
@@ -141,7 +167,7 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     _registerCollectionView : function(collection, element) {
-        var viewInstance = this._getViewForElement(element);
+        var viewInstance = this._getViewForElement(element, true);
         if (viewInstance) {
             return viewInstance;
         }
@@ -175,6 +201,8 @@ VIE.prototype.RdfaService.prototype = {
      },
     
     getElementSubject : function(element) {
+        var service = this;
+        
         if (typeof document !== 'undefined') {
             if (element === document) {
                 return document.baseURI;
@@ -191,7 +219,8 @@ VIE.prototype.RdfaService.prototype = {
                 return true;
             }
             if (jQuery(this).attr('typeof')) {
-                subject = this;
+                subject = VIE.Util.blankNodeID();
+                //subject = this;
                 return true;
             }
     
@@ -212,7 +241,7 @@ VIE.prototype.RdfaService.prototype = {
             return subject;
         }
     
-        return "<" + subject + ">";
+        return (subject.indexOf("_:") === 0)? subject : "<" + subject + ">";
     },
     
     setElementSubject : function(subject, element) {
@@ -246,7 +275,8 @@ VIE.prototype.RdfaService.prototype = {
         var service = this;
         var subject = this.getElementSubject(element);
         return jQuery(element).find(this.predicateSelector).add(jQuery(element).filter(this.predicateSelector)).filter(function() {
-            if (service.getElementPredicate(jQuery(this)) !== predicate) {
+            var foundPredicate = service.getElementPredicate(jQuery(this));
+            if (service.vie.namespaces.curie(foundPredicate) !== service.vie.namespaces.curie(predicate)) {
                 return false;
             }
     
@@ -270,7 +300,7 @@ VIE.prototype.RdfaService.prototype = {
             if (value === null && !emptyValues) {
                 return;
             }
-    
+   
             entityPredicates[predicate] = value;
         });
     
