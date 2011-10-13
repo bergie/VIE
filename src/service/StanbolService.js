@@ -20,6 +20,7 @@ VIE.prototype.StanbolService = function(options) {
             enhancer : "http://fise.iks-project.eu/ontology/",
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
+            rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             rdfs: "http://www.w3.org/2000/01/rdf-schema#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
@@ -290,8 +291,8 @@ VIE.prototype.StanbolService.prototype = {
         });
 
         _(entities).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent["rdfs:type"]);
-            delete ent["rdfs:type"];
+            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+            delete ent["rdf:type"];
             _(ent).each(function(value, property){
                 if(value.length === 1){
                     ent[property] = value[0];
