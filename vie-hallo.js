@@ -28,7 +28,20 @@
                     return true;
                 }
 
-                containerInstance.editables[propertyName] = $(this).hallo(opt);
+                // Handle plugin: each type can have different plugins.
+                // Because we want different options by content type, pass a copy
+                // of the options to hallo
+                var finalOptions = jQuery.extend(true, {}, opt);
+                if (opt.plugins) {
+                    if (opt.plugins[propertyName]) {
+                        finalOptions.plugins = opt.plugins[propertyName];
+                    } else if (opt.plugins['default']) {
+                        finalOptions.plugins = opt.plugins['default'];
+                    } else {
+                        finalOptions.plugins = {};
+                    }
+                }
+                containerInstance.editables[propertyName] = $(this).hallo(finalOptions);
                 containerInstance.editables[propertyName].vieContainerInstance = containerInstance;
             });
         });
