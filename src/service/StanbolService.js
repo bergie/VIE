@@ -370,7 +370,7 @@ StanbolConnector.prototype = {
                     proxy_url: enhancerUrl, 
                     content: text,
                     verb: "POST",
-                    format: format,
+                    format: format
                 } : text,
             dataType: format,
             contentType: proxyUrl ? undefined : "text/plain",
