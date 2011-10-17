@@ -211,7 +211,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             return instanceLD;
         },
-        
+
         setOrAdd: function (arg1, arg2) {
             var entity = this;
             if (typeof arg1 === "string" && arg2) {
@@ -227,13 +227,15 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
             return this;
         },
-        
-        _setOrAddOne: function (prop, value) {
-            var val = this.get(prop);
+
+        _setOrAddOne: function (attr, value) {
+            attr = mapAttributeNS(attr, self.vie.namespaces);
+            var val = Backbone.Model.prototype.get.call(this, attr);
+
             // No value yet, use the set method
             if (!val) {
                 var obj = {};
-                obj[prop] = value;
+                obj[attr] = value;
                 this.set(obj);
             }
             else {
@@ -245,12 +247,12 @@ VIE.prototype.Entity = function(attrs, opts) {
                     }
                     val.push(value);
                     var obj = {};
-                    obj[prop] = val;
+                    obj[attr] = val;
                     this.set(obj);
                 }
             }
         },
-        
+
         hasType: function(type){
             type = self.vie.types.get(type);
             return this.hasPropertyValue("@type", type);
