@@ -25,7 +25,6 @@ VIE.prototype.StanbolService = function(options) {
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            rdfschema: 'http://www.w3.org/2000/01/rdf-schema#',
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
@@ -80,7 +79,7 @@ VIE.prototype.StanbolService.prototype = {
              {
                 'left' : [
                     '?subject a dbpedia:Person',
-                    '?subject rdfschema:label ?label'
+                    '?subject rdfs:label ?label'
                  ],
                  'right': function(ns){
                      return function(){
@@ -102,7 +101,7 @@ VIE.prototype.StanbolService.prototype = {
              {
                  'left' : [
                      '?subject a dbpedia:Place',
-                     '?subject rdfschema:label ?label'
+                     '?subject rdfs:label ?label'
                   ],
                   'right': function(ns) {
                       return function() {
@@ -454,7 +453,6 @@ StanbolConnector.prototype = {
                     type: "text/plain"
                 } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
