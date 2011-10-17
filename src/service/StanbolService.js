@@ -397,7 +397,7 @@ StanbolConnector.prototype = {
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
-        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri;
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
         
