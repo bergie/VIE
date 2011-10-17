@@ -230,19 +230,29 @@ VIE.prototype.Entity = function(attrs, opts) {
         
         _setOrAddOne: function (prop, value) {
             var val = this.get(prop);
-            // No value yet, use the set method
+            // if value is an entity, convert it to string
+            value = (value.id)? value.id : value;
+            
             if (!val) {
+                // No value yet, use the set method
                 var obj = {};
                 obj[prop] = value;
                 this.set(obj);
             }
             else {
+                if (!(val instanceof Array)) {
+                    val = [val];
+                }
                 // Make sure not to set the same value twice
-                if (val !== value && (!(val instanceof Array) && val.indexOf(value) === -1)) {
-                    // Value already set, make sure it's an Array and extend it
-                    if (!(val instanceof Array)) {
-                        val = [val];
+                var contains = false;
+                for (var v = 0; v < val.length; v++) {
+                    if (typeof val[v] === "string") {
+                        contains |= val[v] == value;
+                    } else {
+                        contains |= val[v].id == value;
                     }
+                }
+                if (!contains) {
                     val.push(value);
                     var obj = {};
                     obj[prop] = val;
