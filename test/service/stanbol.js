@@ -16,9 +16,19 @@ test("VIE.js StanbolService - Analyze", function () {
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
+
         ok(entities);
-        ok (entities.length > 0);
-        //TODO: add more tests
+        ok(entities.length > 0);
+        ok(entities instanceof Array);
+        var allEntities = true;
+        for(var i=0; i<entities.length; i++){
+            var entity = entities[i];
+            if (! (entity instanceof Backbone.Model)){
+                allEntities = false;
+                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+            }
+        }
+        ok(allEntities);
         start();
     })
     .fail(function(f){
@@ -28,8 +38,7 @@ test("VIE.js StanbolService - Analyze", function () {
 });
 
 test("VIE.js StanbolService - Find", function () {
-    
-    var term = "Barack Obama";
+    var term = "European Union";
     var limit = 10;
     var offset = 0;
     var z = new VIE();
@@ -38,9 +47,20 @@ test("VIE.js StanbolService - Find", function () {
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.find({term: term, limit: limit, offset: offset})
-    .using('stanbol').execute().done(function(x) {
-        ok(true);
-        //TODO: add more tests
+    .using('stanbol').execute().done(function(entities) {
+
+        ok(entities);
+        ok(entities.length > 0);
+        ok(entities instanceof Array);
+        var allEntities = true;
+        for(var i=0; i<entities.length; i++){
+            var entity = entities[i];
+            if (! (entity instanceof Backbone.Model)){
+                allEntities = false;
+                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+            }
+        }
+        ok(allEntities);
         start();
     })
     .fail(function(f){
@@ -59,9 +79,19 @@ test("VIE.js StanbolService - Load", function () {
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.load({entity: entity})
-    .using('stanbol').execute().done(function(x) {
-        ok(true);
-        //TODO: add more tests
+    .using('stanbol').execute().done(function(entities) {
+        ok(entities);
+        ok(entities.length > 0);
+        ok(entities instanceof Array);
+        var allEntities = true;
+        for(var i=0; i<entities.length; i++){
+            var entity = entities[i];
+            if (! (entity instanceof Backbone.Model)){
+                allEntities = false;
+                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+            }
+        }
+        ok(allEntities);
         start();
     })
     .fail(function(f){
