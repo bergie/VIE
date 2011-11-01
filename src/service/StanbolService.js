@@ -178,14 +178,8 @@ VIE.prototype.StanbolService.prototype = {
         var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
         var success = function (results) {
-            // TODO: Return an array of vie entities
-            var resultArray = _(results).map(
-                function(v,k){
-                    v.id=k;
-                    return v;
-                }
-            );
-            findable.resolve(resultArray);
+            var entities = service._enhancer2Entities(service, results);
+            findable.resolve(entities);
         };
         var error = function (e) {
             findable.reject(e);
@@ -310,7 +304,7 @@ VIE.prototype.StanbolService.prototype = {
 
     _enhancer2EntitiesNoRdfQuery: function (service, results) {
         jsonLD = [];
-        _.forEach(results.results, function(value, key) {
+        _.forEach(results, function(value, key) {
             var entity = {};
             entity['@subject'] = '<' + key + '>';
             _.forEach(value, function(triples, predicate) {
