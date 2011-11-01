@@ -11,6 +11,14 @@ VIE.prototype.ClassicRDFa.prototype = {
             jsonEntities.push(entity.toJSONLD());
         });
         return jsonEntities;
+    },
+
+    findPredicateElements: function(subject, element, allowNestedPredicates) {
+        return this.vie.services.rdfa._findPredicateElements(subject, element, allowNestedPredicates);
+    },
+
+    getPredicate: function(element) {
+        return this.vie.services.rdfa.getElementPredicate(element);
     }
 };
 
