@@ -43,7 +43,7 @@ VIE.prototype.DBPediaService.prototype = {
              //rule to transform a DBPedia person into a VIE person
              {
                 'left' : [
-                    '?subject a <http://dbpedia.org/ontology/Person>',
+                    '?subject a <http://dbpedia.org/ontology/Person>'
                  ],
                  'right': function(ns){
                      return function(){
@@ -64,29 +64,29 @@ VIE.prototype.DBPediaService.prototype = {
 
         var service = this;
         var entity = loadable.options.entity;
-        if(!entity){
-            console.warn("DBPediaConnector: No entity to look for!");
+        if (!entity) {
+            //console.warn("DBPediaConnector: No entity to look for!");
             loadable.resolve([]);
-        };
+        }
         var success = function (results) {
-        	var id = entity.replace(/^</, '').replace(/>$/, '');
+            var id = entity.replace(/^</, '').replace(/>$/, '');
 
-        	if (results[id]) {
-    			var e = service.vie.entities.get(entity);
-        		if (!e) {
-        			var attrs = {
-        		        '@subject': entity,
-        		        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
-        			};
-        			delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
-        			jQuery.extend(attrs, results[id]);
-        			service.vie.entities.add(attrs);
-        			e = service.vie.entities.get(entity);
-        		}
-        		loadable.resolve([e]);
-        	} else {
-        		loadable.reject(undefined);
-        	}
+            if (results[id]) {
+                var e = service.vie.entities.get(entity);
+                if (!e) {
+                    var attrs = {
+                        '@subject': entity,
+                        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
+                    };
+                    delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
+                    jQuery.extend(attrs, results[id]);
+                    service.vie.entities.add(attrs);
+                    e = service.vie.entities.get(entity);
+                }
+                loadable.resolve([e]);
+            } else {
+                loadable.reject(undefined);
+            }
         };
         var error = function (e) {
             loadable.reject(e);

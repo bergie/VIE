@@ -9,11 +9,11 @@ VIE.prototype.Entity = function(attrs, opts) {
         } else if (ns.isCurie(attr)) {
             a = ns.uri(attr);
         } else if (!ns.isUri(attr)) {
-        	if (attr.indexOf(":") === -1) {
+            if (attr.indexOf(":") === -1) {
                 a = '<' + ns.base() + attr + '>';
-        	} else {
+            } else {
                 a = '<' + attr + '>';
-        	}
+            }
         }
         return a;
     };
@@ -98,10 +98,12 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
         
         set : function(attrs, options) {
-            if (!attrs) return this;
-            if (attrs.attributes) 
+            if (!attrs) {
+                return this;
+            }
+            if (attrs.attributes) {
                 attrs = attrs.attributes;
-          
+            }
             _.each (attrs, function (value, key) {
                 var newKey = mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
@@ -231,12 +233,13 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         _setOrAddOne: function (attr, value) {
+            var obj;
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var val = Backbone.Model.prototype.get.call(this, attr);
 
             // No value yet, use the set method
             if (!val) {
-                var obj = {};
+                obj = {};
                 obj[attr] = value;
                 this.set(obj);
             }
@@ -248,7 +251,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                         val = [val];
                     }
                     val.push(value);
-                    var obj = {};
+                    obj = {};
                     obj[attr] = val;
                     this.set(obj);
                 }

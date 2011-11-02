@@ -2,7 +2,9 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
     
     get: function(id) {
-        if (id == null) return null;
+        if (id === null) {
+            return null;
+        }
 
         id = (id.getSubject)? id.getSubject() : id;        
         if (typeof id === "string" && id.indexOf("_:") === 0) {

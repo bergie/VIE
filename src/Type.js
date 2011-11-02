@@ -86,8 +86,8 @@ VIE.prototype.Type = function (id, attrs) {
             this.supertypes.addOrOverwrite(supertype);
             try {
                 // only for validation of attribute-inheritance!
-            	// if this throws an error (inheriting two attributes
-            	// that cannot be combined) we reverse all changes. 
+                // if this throws an error (inheriting two attributes
+                // that cannot be combined) we reverse all changes. 
                 this.attributes.list();
             } catch (e) {
                 supertype.subtypes.remove(this);
@@ -117,17 +117,17 @@ VIE.prototype.Type = function (id, attrs) {
     };
 
     this.instance = function (attrs, opts) {
-    	attrs = (attrs)? attrs : {};
-    	
-    	for (var a in attrs) {
-    		if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
-    			throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
-    		}
-    	}
-    	
-    	attrs['@type'] = this.id;
-    	
-    	return new this.vie.Entity(attrs, opts);
+        attrs = (attrs)? attrs : {};
+
+        for (var a in attrs) {
+            if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
+                throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+            }
+        }
+
+        attrs['@type'] = this.id;
+
+        return new this.vie.Entity(attrs, opts);
     };
         
     // returns the id of the type.
@@ -178,7 +178,9 @@ VIE.prototype.Types = function () {
     //(for convenience issues).
     //Returnes **undefined** if no type has been found.
     this.get = function (id) {
-        if (!id) return undefined;
+        if (!id) {
+            return undefined;
+        }
         if (typeof id === 'string') {
             var lid = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             return this._types[lid];
@@ -235,14 +237,16 @@ VIE.prototype.Types = function () {
             var idx = 0;
             for (var y = 0; y < copy.length; y++) {
                 var b = self.vie.types.get(copy[y]);                
-                if (b.subsumes(a))
+                if (b.subsumes(a)) {
                     idx = y;
+                }
             }
             copy.splice(idx+1,0,a);
         }
         
-        if (!desc) 
+        if (!desc) {
             copy.reverse();
+        }
         return copy;
     };
 };

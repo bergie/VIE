@@ -24,7 +24,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
     },
 
     addItem: function(entity, collection) {
-        if (collection != this.collection) {
+        if (collection !== this.collection) {
             return;
         }
 
