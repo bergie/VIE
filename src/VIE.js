@@ -102,6 +102,10 @@ VIE.prototype.find = function(options) {
 };
 
 
-if(typeof(exports) !== 'undefined' && exports !== null) {
+if(typeof exports === 'object') {
+    // Running under Node.js or other CommonJS environment
     exports.VIE = VIE;
+    var jQuery = require('jquery');
+    var Backbone = require('backbone');
+    var _ = require('underscore')._;
 }
