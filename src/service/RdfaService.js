@@ -84,7 +84,7 @@ VIE.prototype.RdfaService.prototype = {
 
         for (predicate in entity) {
             value = entity[predicate]; 
-            if (typeof value !== "object" || toString.call(value) !== '[object Array]') {
+            if (!_.isArray(value)) {
                 continue;
             }
             valueCollection = new this.vie.Collection();
