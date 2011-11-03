@@ -19,6 +19,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
 
     addOrUpdate: function(model) {
         var collection = this;
+        var existing;
         if (_.isArray(model)) {
             var entities = [];
             _.each(model, function(item) {
@@ -31,13 +32,19 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             model = new this.model(model);
         }
 
+        if (model.id && this.get(model.id)) {
+            existing = this.get(model.id);
+        }
         if (this.getByCid(model.cid)) {
             var existing = this.getByCid(model.cid);
+        }
+        if (existing) {
             if (model.attributes) {
                 return existing.set(model.attributes);
             }
             return existing.set(model);
         }
+
         this.add(model);
         return model;
     },

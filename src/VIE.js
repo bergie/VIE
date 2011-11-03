@@ -56,7 +56,7 @@ VIE.prototype.service = function(name) {
 
 VIE.prototype.getServicesArray = function() {
   var res = [];
-  _(this.services).each(function(service, i){res.push(service);});
+  _.each(this.services, function(service, i){res.push(service);});
   return res;
 };
 
@@ -105,7 +105,18 @@ VIE.prototype.find = function(options) {
 if(typeof exports === 'object') {
     // Running under Node.js or other CommonJS environment
     exports.VIE = VIE;
-    var jQuery = require('jquery');
-    var Backbone = require('backbone');
-    var _ = require('underscore')._;
+
+    var root = this;
+    var jQuery = this.jQuery;
+    if (!jQuery) {
+        jQuery = require('jquery');
+    }
+    var Backbone = root.Backbone;
+    if (!Backbone) {
+        Backbone = require('backbone');
+    }
+    var _ = this._;
+    if (!_) {
+        _ = require('underscore')._;
+    }
 }

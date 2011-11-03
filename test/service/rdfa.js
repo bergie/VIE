@@ -108,8 +108,8 @@ test("Test RDFa image entitization", function() {
     	var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
         // Ensure we have the image correctly read
     	
-        ok(icons instanceof Array, "Icons should be an array");
-        equal(icons[0].id, '<http://example.net/image.jpg>');
+        ok(icons instanceof z.Collection, "Icons should be a collection");
+        equal(icons.at(0).id, '<http://example.net/image.jpg>');
         
         equal(jQuery('img', html).length, 1);
 
@@ -117,7 +117,7 @@ test("Test RDFa image entitization", function() {
         
         equal(jQuery('img', html).length, 1);
 
-        icons.push('<http://example.net/otherimage.jpg>');
+        icons.add({'@subject': '<http://example.net/otherimage.jpg>'});
         z.entities.get('<http://example.net/blog/news_item>').set({
             "mgd:icon" : icons
         });
