@@ -31,13 +31,8 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             model = new this.model(model);
         }
 
-        if (!model.id) {
-            this.add(model);
-            return model;
-        }
-
-        if (this.get(model.id)) {
-            var existing = this.get(model.id);
+        if (this.getByCid(model.cid)) {
+            var existing = this.getByCid(model.cid);
             if (model.attributes) {
                 return existing.set(model.attributes);
             }
