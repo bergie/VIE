@@ -19,6 +19,10 @@ VIE.prototype.ClassicRDFa.prototype = {
 
     getPredicate: function(element) {
         return this.vie.services.rdfa.getElementPredicate(element);
+    },
+
+    getSubject: function(element) {
+        return this.vie.services.rdfa.getElementSubject(element);
     }
 };
 
