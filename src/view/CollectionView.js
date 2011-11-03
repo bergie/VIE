@@ -40,6 +40,17 @@ VIE.prototype.view.Collection = Backbone.View.extend({
 
         // TODO: Ordering
         this.el.append(entityElement);
+
+        // Ensure we catch all inferred predicates. We add these via JSONLD
+        // so the references get properly Collectionized.
+        var service = this.service;
+        jQuery(entityElement).parent('[rev]').each(function() {
+            var predicate = jQuery(this).attr('rev');
+            var relations = {};
+            relations[predicate] = new service.vie.Collection();
+            relations[predicate].addOrUpdate(service.vie.entities.get(service.getElementSubject(this)));
+            entity.set(relations);
+        });
         
         this.trigger('add', entityView);
         this.entityViews[entity.cid] = entityView;
