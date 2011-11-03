@@ -83,7 +83,7 @@ VIE.prototype.RdfaService.prototype = {
         //}
 
         for (predicate in entity) {
-            value = entity[predicate]; 
+            value = entity[predicate];
             if (!_.isArray(value)) {
                 continue;
             }
@@ -209,7 +209,7 @@ VIE.prototype.RdfaService.prototype = {
         }
         var subject = undefined;
         jQuery(element).closest(this.subjectSelector).each(function() {
-            if (jQuery(this).attr('about')) {
+            if (jQuery(this).attr('about') !== undefined) {
                 subject = jQuery(this).attr('about');
                 return true;
             }
