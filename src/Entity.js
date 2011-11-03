@@ -117,13 +117,13 @@ VIE.prototype.Entity = function(attrs, opts) {
                        !jQuery.isArray(value) &&
                        !value.isCollection) {
                        var child = new self.vie.Entity(value, options);
-                       self.vie.entities.add(child);
+                       self.vie.entities.addOrUpdate(child);
                        attrs[key] = child.getSubject();
                    } else if (value.isCollection) {
-                       attrs[key] = [];
+                       //attrs[key] = [];
                        value.each(function (child) {
-                           self.vie.entities.add(child);
-                           attrs[key].push(child.getSubject());
+                           self.vie.entities.addOrUpdate(child);
+                           //attrs[key].push(child.getSubject());
                        });
                    }
                }
