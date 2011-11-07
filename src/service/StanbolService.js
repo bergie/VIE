@@ -99,6 +99,28 @@ VIE.prototype.StanbolService.prototype = {
                  }(this.namespaces)
              },
              {
+             'left' : [
+                     '?subject a foaf:Person',
+                     '?subject rdfschema:label ?label'
+                  ],
+                  'right': function(ns){
+                      return function(){
+                          return [
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  'a',
+                                  '<' + ns.base() + 'Person>', {
+                                      namespaces: ns.toObj()
+                                  }),
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                                  this.label, {
+                                      namespaces: ns.toObj()
+                                  })
+                              ];
+                      };
+                  }(this.namespaces)
+              },
+             {
                  'left' : [
                      '?subject a dbpedia:Place',
                      '?subject rdfschema:label ?label'
