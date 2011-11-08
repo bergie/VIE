@@ -223,10 +223,11 @@ VIE.prototype.StanbolService.prototype = {
             return element.get(0).val();
         }
         else {
-            return element
+            var res = element
                 .text()    //get the text of element
                 .replace(/\s+/g, ' ') //collapse multiple whitespaces
-                .replace(/\0\b\n\r\f\t/g, '').trim(); // remove non-letter symbols
+                .replace(/\0\b\n\r\f\t/g, ''); // remove non-letter symbols
+            return jQuery.trim(res);
         }
     },
 
