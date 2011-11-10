@@ -22,7 +22,7 @@ VIE.prototype.Namespaces = function (base, namespaces) {
 	this._base = base;
     
     this.base = function (ns) {
-    	// getter
+        // getter
         if (!ns) { 
             return this._base;
         }
@@ -42,7 +42,7 @@ VIE.prototype.Namespaces = function (base, namespaces) {
     //ambiguities in the namespaces. Use `addOrReplace()`
     //to simply overwrite them. 
     this.add = function (k, v) {
-    	//we can also pass multiple namespaces as an object.
+        //we can also pass multiple namespaces as an object.
         if (typeof k === "object") {
             for (var k1 in k) {
                 this.add(k1, k[k1]);
@@ -97,7 +97,9 @@ VIE.prototype.Namespaces = function (base, namespaces) {
     
     // get a namespace (or *undefined*) for a given prefix.
     this.get = function (k) {
-    	if (k === "") return this.base();
+        if (k === "") {
+            return this.base();
+        }
         return this._namespaces[k];
     };
 
@@ -148,12 +150,12 @@ VIE.prototype.Namespaces = function (base, namespaces) {
     
     // checks whether the given string is a CURIE.
     this.isCurie = function (something) {
-    	return VIE.Util.isCurie(something, this);
+        return VIE.Util.isCurie(something, this);
     };
     
     // transforms a CURIE into a URI.
     this.uri = function (curie) {
-        return VIE.Util.toUri (curie, this);
+        return VIE.Util.toUri(curie, this);
     };
     
     // checks wether the given string is a URI.

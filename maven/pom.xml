@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.iks-project</groupId>
+	<artifactId>vie</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<build>
+		<resources>
+			<resource>
+				<directory>../</directory>
+				<excludes>
+          			<exclude>maven/**</exclude>
+          		</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<resourcesDirectory>../</resourcesDirectory>
+					<includes>
+						<include>**/*</include>
+					</includes>
+					<excludes>
+						<exclude>maven/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

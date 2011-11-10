@@ -83,8 +83,8 @@ VIE.prototype.RdfaService.prototype = {
         //}
 
         for (predicate in entity) {
-            value = entity[predicate]; 
-            if (typeof value !== "object" || toString.call(value) !== '[object Array]') {
+            value = entity[predicate];
+            if (!_.isArray(value)) {
                 continue;
             }
             valueCollection = new this.vie.Collection();
@@ -96,7 +96,7 @@ VIE.prototype.RdfaService.prototype = {
     
         entity['@subject'] = subject;
         if (type) {
-        	entity['@type'] = type;
+            entity['@type'] = type;
         }
         
         var entityInstance = new this.vie.Entity(entity);
@@ -187,18 +187,17 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     _getElementType : function (element) {
-    	var type;
-     	if (jQuery(element).attr('typeof')) {
-	     	type = jQuery(element).attr('typeof');
-		     	if (type.indexOf("://") !== -1) {
-		     	return "<" + type + ">";
-	     	}
-	     	else {
-		     	return type;
-	     	}
-     	}
-     	return null;
-     },
+        var type;
+        if (jQuery(element).attr('typeof')) {
+            type = jQuery(element).attr('typeof');
+            if (type.indexOf("://") !== -1) {
+                return "<" + type + ">";
+            } else {
+                return type;
+            }
+        }
+        return null;
+    },
     
     getElementSubject : function(element) {
         var service = this;
@@ -210,7 +209,7 @@ VIE.prototype.RdfaService.prototype = {
         }
         var subject = undefined;
         jQuery(element).closest(this.subjectSelector).each(function() {
-            if (jQuery(this).attr('about')) {
+            if (jQuery(this).attr('about') !== undefined) {
                 subject = jQuery(this).attr('about');
                 return true;
             }
@@ -371,11 +370,12 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     writeElementValue : function(predicate, element, value) {
-    	
-    	//TODO: this is a hack, please fix!
-     	if (value instanceof Array && value.length > 0) value = value[0];
+        //TODO: this is a hack, please fix!
+        if (value instanceof Array && value.length > 0) {
+            value = value[0];
+        }
         
-     	// The `content` attribute can be used for providing machine-readable
+        // The `content` attribute can be used for providing machine-readable
         // values for elements where the HTML presentation differs from the
         // actual value.
         var content = element.attr('content');
@@ -415,8 +415,8 @@ VIE.prototype.RdfaService.prototype = {
                 for (i = 0; i < e.attributes.length; i += 1) {
                     var attr = e.attributes[i];
                     if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
-                        prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
-                        value = attr.nodeValue;
+                        var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
+                        var value = attr.nodeValue;
                         if (prefix === '' || value !== '') {
                             obj[prefix] = attr.nodeValue;
                         }

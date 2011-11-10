@@ -20,11 +20,11 @@ VIE.prototype.StanbolService = function(options) {
             enhancer : "http://fise.iks-project.eu/ontology/",
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
-            rdfs: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            rdfschema: 'http://www.w3.org/2000/01/rdf-schema#',
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
@@ -200,14 +200,8 @@ VIE.prototype.StanbolService.prototype = {
         var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
         var success = function (results) {
-            // TODO: Return an array of vie entities
-            var resultArray = _(results).map(
-                function(v,k){
-                    v.id=k;
-                    return v;
-                }
-            );
-            findable.resolve(resultArray);
+            var entities = service._enhancer2Entities(service, results);
+            findable.resolve(entities);
         };
         var error = function (e) {
             findable.reject(e);
@@ -312,8 +306,8 @@ VIE.prototype.StanbolService.prototype = {
         });
 
         _(entities).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent["rdfs:type"]);
-            delete ent["rdfs:type"];
+            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+            delete ent["rdf:type"];
             _(ent).each(function(value, property){
                 if(value.length === 1){
                     ent[property] = value[0];
@@ -332,7 +326,7 @@ VIE.prototype.StanbolService.prototype = {
 
     _enhancer2EntitiesNoRdfQuery: function (service, results) {
         jsonLD = [];
-        _.forEach(results.results, function(value, key) {
+        _.forEach(results, function(value, key) {
             var entity = {};
             entity['@subject'] = '<' + key + '>';
             _.forEach(value, function(triples, predicate) {
@@ -419,7 +413,7 @@ StanbolConnector.prototype = {
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
-        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri;
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
         
@@ -475,7 +469,6 @@ StanbolConnector.prototype = {
                     type: "text/plain"
                 } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
