@@ -82,12 +82,12 @@ VIE.prototype.Type = function (id, attrs) {
             this.inherit(this.vie.types.get(supertype));
         }
         else if (supertype instanceof this.vie.Type) {
-            supertype.subtypes.add(this);
-            this.supertypes.add(supertype);
+            supertype.subtypes.addOrOverwrite(this);
+            this.supertypes.addOrOverwrite(supertype);
             try {
                 // only for validation of attribute-inheritance!
-            	// if this throws an error (inheriting two attributes
-            	// that cannot be combined) we reverse all changes. 
+                // if this throws an error (inheriting two attributes
+                // that cannot be combined) we reverse all changes. 
                 this.attributes.list();
             } catch (e) {
                 supertype.subtypes.remove(this);
@@ -115,11 +115,27 @@ VIE.prototype.Type = function (id, attrs) {
         }
         return obj;
     };
+
+    this.instance = function (attrs, opts) {
+        attrs = (attrs)? attrs : {};
+
+        for (var a in attrs) {
+            if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
+                throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+            }
+        }
+
+        attrs['@type'] = this.id;
+
+        return new this.vie.Entity(attrs, opts);
+    };
         
     // returns the id of the type.
     this.toString = function () {
         return this.id;
     };
+    
+    
     
 };
 
@@ -162,7 +178,9 @@ VIE.prototype.Types = function () {
     //(for convenience issues).
     //Returnes **undefined** if no type has been found.
     this.get = function (id) {
-        if (!id) return undefined;
+        if (!id) {
+            return undefined;
+        }
         if (typeof id === 'string') {
             var lid = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
             return this._types[lid];
@@ -204,5 +222,31 @@ VIE.prototype.Types = function () {
             ret.push(this._types[i]);
         }
         return ret;
+    };
+    
+    //Sorts an array of types in their order, given by the
+    //inheritance. If 'desc' is given and 'true', the sorted
+    //array will be in descendant order.
+    this.sort = function (types, desc) {
+        var self = this;
+        var copy = $.merge([], ($.isArray(types))? types : [ types ]);
+        desc = (desc)? true : false;
+        
+        for (var x = 0; x < copy.length; x++) {
+            var a = copy.shift();
+            var idx = 0;
+            for (var y = 0; y < copy.length; y++) {
+                var b = self.vie.types.get(copy[y]);                
+                if (b.subsumes(a)) {
+                    idx = y;
+                }
+            }
+            copy.splice(idx+1,0,a);
+        }
+        
+        if (!desc) {
+            copy.reverse();
+        }
+        return copy;
     };
 };

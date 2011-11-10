@@ -24,7 +24,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
     },
 
     addItem: function(entity, collection) {
-        if (collection != this.collection) {
+        if (collection !== this.collection) {
             return;
         }
 
@@ -40,6 +40,17 @@ VIE.prototype.view.Collection = Backbone.View.extend({
 
         // TODO: Ordering
         this.el.append(entityElement);
+
+        // Ensure we catch all inferred predicates. We add these via JSONLD
+        // so the references get properly Collectionized.
+        var service = this.service;
+        jQuery(entityElement).parent('[rev]').each(function() {
+            var predicate = jQuery(this).attr('rev');
+            var relations = {};
+            relations[predicate] = new service.vie.Collection();
+            relations[predicate].addOrUpdate(service.vie.entities.get(service.getElementSubject(this)));
+            entity.set(relations);
+        });
         
         this.trigger('add', entityView);
         this.entityViews[entity.cid] = entityView;
@@ -83,9 +94,8 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
         service._findPredicateElements(subject, newElement, false).each(function() {
-            service.writeElementValue(jQuery(this), '');
+            service.writeElementValue(null, jQuery(this), '');
         });
-
-        return element;
+        return newElement;
     }
 });

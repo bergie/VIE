@@ -7,7 +7,7 @@
 // extension to jQuery to compare two arrays on equality
 // found: <a href="http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays">http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays</a>
 jQuery.fn.compare = function(t) {
-    if (this.length != t.length) { return false; }
+    if (this.length !== t.length) { return false; }
     var a = this.sort(),
         b = t.sort();
     for (var i = 0; t[i]; i++) {
@@ -23,20 +23,22 @@ jQuery.fn.compare = function(t) {
 if (!Array.prototype.remove) {
   Array.prototype.remove = function () {
     var args = this.remove.arguments;
+    var i;
 
     if (args[0] && args[0] instanceof Array) {
       var a = args[0];
-      for (var i = 0; i < a.length; i++) {
+      for (i = 0; i < a.length; i++) {
         this.remove(a[i]);
       }
     } else {
-      for (var i = 0; i < args.length; i++) {
+      for (i = 0; i < args.length; i++) {
         while(true) {
           var index = this.indexOf(args[i]);
-          if (index !== -1)
+          if (index !== -1) {
             this.splice(index, 1);
-          else
+          } else {
             break;
+          }
         }
       }
     }
@@ -51,7 +53,7 @@ if (!Array.prototype.unduplicate) {
 	    var sorted_arr = this.sort();
 	    var results = [];
 	    for (var i = 0; i < sorted_arr.length; i++) {
-	        if (i === sorted_arr.length-1 || sorted_arr[i] != sorted_arr[i+1]) {
+	        if (i === sorted_arr.length-1 || sorted_arr[i] !== sorted_arr[i+1]) {
 	            results.push(sorted_arr[i]);
 	        }
 	    }
@@ -64,11 +66,16 @@ VIE.Util = {
 		// converts a given URI into a CURIE (or save CURIE), based
 		// on the given VIE.Namespaces object.
 	toCurie : function (uri, safe, namespaces) {
+        if (VIE.Util.isCurie(uri, namespaces)) {
+            return uri;
+        }
         var delim = ":";
         for (var k in namespaces.toObj()) {
             if (uri.indexOf(namespaces.get(k)) === 1) {
                 var pattern = new RegExp("^" + "<" + namespaces.get(k));
-                if (k === '') delim = '';
+                if (k === '') {
+                    delim = '';
+                }
                 return ((safe)? "[" : "") + 
                         uri.replace(pattern, k + delim).replace(/>$/, '') +
                         ((safe)? "]" : "");
@@ -79,12 +86,12 @@ VIE.Util = {
 
 	// checks, whether the given string is a CURIE.
     isCurie : function (something, namespaces) {
-    	try {
-    		 VIE.Util.toUri (something, namespaces);
-    		 return true;
-    	} catch (e) {
-    		return false;
-    	}
+        try {
+            VIE.Util.toUri(something, namespaces);
+            return true;
+        } catch (e) {
+            return false;
+        }
     },
 
 	// converts a given CURIE (or save CURIE) into a URI, based
@@ -107,6 +114,13 @@ VIE.Util = {
     // checks, whether the given string is a URI.
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+:.+>$/) === 0);
-    }
+    },
+    
+    _blankNodeSeed : new Date().getTime() % 1000,
+    
+    blankNodeID : function () {
+      this._blankNodeSeed += 1;
+      return '_:bnode' + this._blankNodeSeed.toString(16);
+    }    
     
 };

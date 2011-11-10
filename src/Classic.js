@@ -11,6 +11,18 @@ VIE.prototype.ClassicRDFa.prototype = {
             jsonEntities.push(entity.toJSONLD());
         });
         return jsonEntities;
+    },
+
+    findPredicateElements: function(subject, element, allowNestedPredicates) {
+        return this.vie.services.rdfa._findPredicateElements(subject, element, allowNestedPredicates);
+    },
+
+    getPredicate: function(element) {
+        return this.vie.services.rdfa.getElementPredicate(element);
+    },
+
+    getSubject: function(element) {
+        return this.vie.services.rdfa.getElementSubject(element);
     }
 };
 
@@ -57,5 +69,9 @@ VIE.prototype.ClassicEntityManager.prototype = {
 
     getByJSONLD: function(json) {
         return this.vie.entities.addOrUpdate(json);
+    },
+
+    initializeCollection: function() {
+        return;
     }
 };

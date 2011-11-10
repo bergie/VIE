@@ -7,7 +7,6 @@
 VIE.prototype.DBPediaService = function(options) {
     var defaults = {
         name : 'dbpedia',
-        defaultProxyUrl : "../utils/proxy/proxy.php",
         namespaces : {
             owl    : "http://www.w3.org/2002/07/owl#",
             yago   : "http://dbpedia.org/class/yago/",
@@ -28,7 +27,7 @@ VIE.prototype.DBPediaService = function(options) {
 
 VIE.prototype.DBPediaService.prototype = {
     init: function() {
-        
+
        for (var key in this.options.namespaces) {
             try {
                 var val = this.options.namespaces[key];
@@ -39,12 +38,12 @@ VIE.prototype.DBPediaService.prototype = {
             }
         }
         this.namespaces = new this.vie.Namespaces(this.options.namespaces);
-        
+
         this.rules = [
              //rule to transform a DBPedia person into a VIE person
              {
                 'left' : [
-                    '?subject a <http://dbpedia.org/ontology/Person>',
+                    '?subject a <http://dbpedia.org/ontology/Person>'
                  ],
                  'right': function(ns){
                      return function(){
@@ -57,38 +56,37 @@ VIE.prototype.DBPediaService.prototype = {
              }
         ];
     },
-    
+
     // VIE API load implementation
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
-        
+
         var service = this;
         var entity = loadable.options.entity;
-        if(!entity){
-            console.warn("DBPediaConnector: No entity to look for!");
+        if (!entity) {
+            //console.warn("DBPediaConnector: No entity to look for!");
             loadable.resolve([]);
-        };
+        }
         var success = function (results) {
-        	var id = entity.replace(/^</, '').replace(/>$/, '');
-        	
-        	if (results[id]) {
-    			var e = service.vie.entities.get(entity);
-        		if (!e) {
-        			var attrs = {
-        		        '@subject': entity,
-        		        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
-        			};
-        			delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
-        			
-        			jQuery.extend(attrs, results[id]);
-        			service.vie.entities.add(attrs);
-        			e = service.vie.entities.get(entity);
-        		}
-        		loadable.resolve([e]);
-        	} else {
-        		loadable.reject(undefined);
-        	}
+            var id = entity.replace(/^</, '').replace(/>$/, '');
+
+            if (results[id]) {
+                var e = service.vie.entities.get(entity);
+                if (!e) {
+                    var attrs = {
+                        '@subject': entity,
+                        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
+                    };
+                    delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
+                    jQuery.extend(attrs, results[id]);
+                    service.vie.entities.add(attrs);
+                    e = service.vie.entities.get(entity);
+                }
+                loadable.resolve([e]);
+            } else {
+                loadable.reject(undefined);
+            }
         };
         var error = function (e) {
             loadable.reject(e);
@@ -101,37 +99,28 @@ var DBPediaConnector = function(options){
 };
 
 DBPediaConnector.prototype = {
-    
+
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         var url = uri
         .replace(/^</, '').replace(/>$/, '')
         .replace('resource', 'data') + ".jrdf";
-        
-        var proxyUrl = this._proxyUrl();
+
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
             // We're on Node.js, don't use jQuery.ajax
             return this.loadNode(url, success, error, options, format);
         }
-        
+
         jQuery.ajax({
             success: function(response){
                 success(response);
             },
             error: error,
-            type: (proxyUrl) ? "POST" : "GET",
-            url: proxyUrl || url,
-            data: (proxyUrl) ? {
-                    proxy_url: url, 
-                    content: "",
-                    verb: "GET",
-                    format: format
-                } : text,
-            dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
-            accepts: {"application/rdf+json": "application/rdf+json"}
+            type: "GET",
+            url: url,
+            dataType: "jsonp"
         });
     },
 
@@ -147,10 +136,6 @@ DBPediaConnector.prototype = {
             success({results: JSON.parse(body)});
         });
         r.end();
-    },
-    
-    _proxyUrl: function () {
-        return this.options.proxyUrl || this.options.defaultProxyUrl;
     }
 };
 })();

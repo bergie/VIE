@@ -1,14 +1,25 @@
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
-
+    
     get: function(id) {
-        if (id == null) return null;
-        id = this.toReference(id);
-        return this._byId[id.id != null ? id.id : id];
+        if (id === null) {
+            return null;
+        }
+
+        id = (id.getSubject)? id.getSubject() : id;        
+        if (typeof id === "string" && id.indexOf("_:") === 0) {
+            //bnode!
+            id = id.replace("_:bnode", 'c');
+            return this._byCid[id];
+        } else {
+            id = this.toReference(id);
+            return this._byId[id];
+        }
     },
 
     addOrUpdate: function(model) {
         var collection = this;
+        var existing;
         if (_.isArray(model)) {
             var entities = [];
             _.each(model, function(item) {
@@ -21,18 +32,19 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             model = new this.model(model);
         }
 
-        if (!model.id) {
-            this.add(model);
-            return model;
+        if (model.id && this.get(model.id)) {
+            existing = this.get(model.id);
         }
-
-        if (this.get(model.id)) {
-            var existing = this.get(model.id);
+        if (this.getByCid(model.cid)) {
+            var existing = this.getByCid(model.cid);
+        }
+        if (existing) {
             if (model.attributes) {
                 return existing.set(model.attributes);
             }
             return existing.set(model);
         }
+
         this.add(model);
         return model;
     },
@@ -57,5 +69,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             return uri;
         }
         return uri.substring(1, uri.length - 1);
-    }
+    },
+    
+    isCollection: true
 });

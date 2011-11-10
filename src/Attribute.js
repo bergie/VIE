@@ -82,7 +82,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
             } else if (id instanceof this.vie.Type) {
                 id.domain = this.domain;
                 id.vie = this.vie;
-            	this._local[id.id] = id;
+                this._local[id.id] = id;
                 return id;
             } else {
                 throw "Wrong argument to VIE.Types.add()!";

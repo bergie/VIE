@@ -16,7 +16,7 @@
         <script type="text/javascript">
             $(function() {
                 // load the lib
-                var v = new VIE({defaultNamespace: 'http://schema.org/'});
+                var v = new VIE({defaultNamespace: 'http://base-namespace.org/'});
                 
                 //set some namespaces
                 v.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
@@ -50,8 +50,8 @@
                 // create a new person
                 var person = v.entities.addOrUpdate({
                     '@subject' : '<http://example.org/Barack_Obama1>',
-                    '@type'    : 'Person',      //this actually means: '<' + v.namespaces.get("default") + Person + '>'
-                    'name'     : 'Barack Obama' //this actually means: '<' + v.namespaces.get("default") + name + '>'
+                    '@type'    : 'Person',      //this actually means: '<http://base-namespace.org/Person>'
+                    'name'     : 'Barack Obama' //this actually means: '<http://base-namespace.org/name>'
                 });
                 
                 var x = person.as("JSON");
@@ -60,12 +60,12 @@
                 var personIsAThing = person.isof(thing); // should be true
                 var personIsAPerson1 = person.isof(p1); // should be true
                 var personName1 = person.get("name");
-                var personName2 = person.get('<' + v.namespaces.get("default") + "name" + '>');
+                var personName2 = person.get('<' + v.namespaces.base() + "name" + '>');
                 
                 var foafPerson = v.entities.addOrUpdate({
                     '@subject' : '<http://example.org/Barack_Obama2>',
                     '@type'    : 'foaf:Person', //this actually means: '<' + v.namespaces.get("foaf") + Person + '>'
-                    'name'     : 'Barack Obama' //this actually means: '<' + v.namespaces.get("foaf") + Person + '>'
+                    'name'     : 'Barack Obama' //this actually means: '<http://base-namespace.org/Person>'
                 });
                 
                 var foafPersonIsAThing = foafPerson.isof(thing); // should be true

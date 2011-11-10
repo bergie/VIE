@@ -19,13 +19,16 @@ VIE.prototype.StanbolService = function(options) {
             geonames : "http://www.geonames.org/ontology#",
             enhancer : "http://fise.iks-project.eu/ontology/",
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
-            rdfs: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
+            rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
-            schema: 'http://schema.org/'
+            schema: 'http://schema.org/',
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
-    this.options = jQuery.extend(defaults, options ? options : {});
+    this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
@@ -75,39 +78,57 @@ VIE.prototype.StanbolService.prototype = {
              //rule(s) to transform a Stanbol person into a VIE person
              {
                 'left' : [
-                    '?subject a dbpedia:Person>',
+                    '?subject a dbpedia:Person',
+                    '?subject rdfs:label ?label'
                  ],
                  'right': function(ns){
                      return function(){
-                         return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <' + ns.base() + 'Person>', {
-                             namespaces: ns.toObj()
-                         });
+                         return [
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 'a',
+                                 '<' + ns.base() + 'Person>', {
+                                     namespaces: ns.toObj()
+                                 }),
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 '<' + ns.base() + 'name>',
+                                 this.label, {
+                                     namespaces: ns.toObj()
+                                 })
+                             ];
                      };
                  }(this.namespaces)
              },
              {
-                'left' : [
-                    '?subject a foaf:Person>',
-                 ],
-                 'right': function(ns){
-                     return function(){
-                         return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <' + ns.base() + 'Person>', {
-                             namespaces: ns.toObj()
-                         });
-                     };
-                 }(this.namespaces)
-             }
+                 'left' : [
+                     '?subject a dbpedia:Place',
+                     '?subject rdfs:label ?label'
+                  ],
+                  'right': function(ns) {
+                      return function() {
+                          return [
+                          jQuery.rdf.triple(this.subject.toString(),
+                              'a',
+                              '<' + ns.base() + 'Place>', {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                              this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              })
+                          ];
+                      };
+                  }(this.namespaces)
+              },
         ];
         
-        this.vie.types.add('enhancer:EntityAnnotation', [
+        this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.vie.types.add('enhancer:TextAnnotation', [
+        this.vie.types.addOrOverwrite('enhancer:TextAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
-        this.vie.types.add('enhancer:Enhancement', [
+        this.vie.types.addOrOverwrite('enhancer:Enhancement', [
             //TODO: add attributes
         ]).inherit("Thing");
     },
@@ -157,14 +178,8 @@ VIE.prototype.StanbolService.prototype = {
         var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
         var success = function (results) {
-            // TODO: Return an array of vie entities
-            var resultArray = _(results).map(
-                function(v,k){
-                    v.id=k;
-                    return v;
-                }
-            );
-            findable.resolve(resultArray);
+            var entities = service._enhancer2Entities(service, results);
+            findable.resolve(entities);
         };
         var error = function (e) {
             findable.reject(e);
@@ -254,8 +269,12 @@ VIE.prototype.StanbolService.prototype = {
 
             function getValue(rdfQueryLiteral){
                 if(typeof rdfQueryLiteral.value === "string"){
-                    return rdfQueryLiteral.value;
-                } else if (rdfQueryLiteral.value._string){
+                    if (rdfQueryLiteral.lang)
+                        return rdfQueryLiteral.toString();
+                    else 
+                        return rdfQueryLiteral.value;
+                    return rdfQueryLiteral.value.toString();
+                } else if (rdfQueryLiteral.type === "uri"){
                     return rdfQueryLiteral.toString();
                 } else {
                     return rdfQueryLiteral.value;
@@ -265,8 +284,8 @@ VIE.prototype.StanbolService.prototype = {
         });
 
         _(entities).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent["rdfs:type"]);
-            delete ent["rdfs:type"];
+            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+            delete ent["rdf:type"];
             _(ent).each(function(value, property){
                 if(value.length === 1){
                     ent[property] = value[0];
@@ -285,7 +304,7 @@ VIE.prototype.StanbolService.prototype = {
 
     _enhancer2EntitiesNoRdfQuery: function (service, results) {
         jsonLD = [];
-        _.forEach(results.results, function(value, key) {
+        _.forEach(results, function(value, key) {
             var entity = {};
             entity['@subject'] = '<' + key + '>';
             _.forEach(value, function(triples, predicate) {
@@ -345,7 +364,7 @@ StanbolConnector.prototype = {
                     proxy_url: enhancerUrl, 
                     content: text,
                     verb: "POST",
-                    format: format,
+                    format: format
                 } : text,
             dataType: format,
             contentType: proxyUrl ? undefined : "text/plain",
@@ -372,7 +391,7 @@ StanbolConnector.prototype = {
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
-        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + uri;
+        var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
         
@@ -428,7 +447,6 @@ StanbolConnector.prototype = {
                     type: "text/plain"
                 } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
