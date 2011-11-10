@@ -1,71 +1,47 @@
-/* TODO: give same functionality as RdfaService or remove
-
 VIE.prototype.RdfaRdfQueryService = function(options) {
     if (!options) {
         options = {};
     }
     this.vie = null;
-    this.name = 'rdfa';
-
-    if (typeof jQuery.rdf !== 'function') {
-        throw "RdfQuery is not loaded";
-    }
+    this.name = 'rdfardfquery';
 };
 
 VIE.prototype.RdfaRdfQueryService.prototype = {
+    
+    analyze: function(analyzable) {
+        analyzable.reject("Not yet implemented");
+    },
+        
+    load : function(loadable) {
+        analyzable.reject("Not yet implemented");
+    },
 
-    load: function(loadable){
-        var service = this;
-        var correct = loadable instanceof this.vie.Loadable;
+    save : function(savable) {
+        var correct = savable instanceof this.vie.Savable;
         if (!correct) {
-            throw "Invalid Loadable passed";
+            analyzable.reject("Invalid Savable passed");
+        }
+    
+        if (!savable.options.element) {
+            analyzable.reject("Unable to write entity to RDFa, no element given");
+        }
+    
+        if (!savable.options.entity) {
+            analyzable.reject("Unable to write to RDFa, no entity given");
         }
         
-        var element = loadable.options.element ? loadable.options.element : jQuery(document);
+        if (!jQuery.rdf) {
+            analyzable.reject("No rdfQUery found.");
+        }
         
-        var rdf = jQuery(element).rdfa();
+        var entity = savable.options.entity;
         
-        jQuery.each(jQuery(element).xmlns(), function(prefix, ns){
-            service.vie.namespaces.addOrReplace(prefix, ns.toString());
-        });
-        
-        var entities = {}
-        rdf.where('?subject ?property ?object').each(function(){
-            var subject = this.subject.toString();
-            if (!entities[subject]) {
-                entities[subject] = {
-                    '@subject': subject
-                };
-            }
-            var propertyUri = this.property.toString();
-            
-            var val;
-            if (typeof this.object.value === "string") {
-                val = this.object.value;
-            }
-            else {
-                val = this.object.toString();
-            }
-            if (!entities[subject][propertyUri]) {
-                entities[subject][propertyUri] = val;
-            }
-            else 
-                if (!_.isArray(entities[subject][propertyUri])) {
-                    entities[subject][propertyUri] = [entities[subject][propertyUri]];
-                    entities[subject][propertyUri].push(val);
-                }
-                else {
-                    entities[subject][propertyUri].push(val);
-                }
-        });
-        
-        var vieEntities = [];
-        jQuery.each(entities, function(){
-            vieEntities.push(service.vie.entities.addOrUpdate(this));
-        });
-        loadable.resolve(vieEntities);
+        var triples = [];
+        triples.push(entity.getSubject() + " a " + entity.get('@type'));
+        //TODO: add all attributes!
+        jQuery(savable.options.element).rdfa(triples);
+    
+        savable.resolve();
     }
+    
 };
-
-
-*/
