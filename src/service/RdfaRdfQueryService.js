@@ -13,25 +13,25 @@ VIE.prototype.RdfaRdfQueryService.prototype = {
     },
         
     load : function(loadable) {
-        analyzable.reject("Not yet implemented");
+        loadable.reject("Not yet implemented");
     },
 
     save : function(savable) {
         var correct = savable instanceof this.vie.Savable;
         if (!correct) {
-            analyzable.reject("Invalid Savable passed");
+            savable.reject("Invalid Savable passed");
         }
     
         if (!savable.options.element) {
-            analyzable.reject("Unable to write entity to RDFa, no element given");
+            savable.reject("Unable to write entity to RDFa, no element given");
         }
     
         if (!savable.options.entity) {
-            analyzable.reject("Unable to write to RDFa, no entity given");
+            savable.reject("Unable to write to RDFa, no entity given");
         }
         
         if (!jQuery.rdf) {
-            analyzable.reject("No rdfQUery found.");
+            savable.reject("No rdfQuery found.");
         }
         
         var entity = savable.options.entity;
