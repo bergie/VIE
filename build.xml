@@ -60,6 +60,8 @@
         	<fileset dir="${SRC_DIR}/service" includes="*.js"/>
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>
         </concat>
+        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="^" replace="(function(){" />
+        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="$" replace="})();" />
         <copy file="${DIST_DIR}/vie-${VERSION}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 

@@ -54,7 +54,7 @@ test("Test simple RDFa nested tags", function() {
     stop(1000); // 1 second timeout
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         equal(entities.length, 1);
-        equal(entities[0].get('dcterms:title'), '<span>News item title</span>');
+        equal(entities[0].get('dcterms:title').toUpperCase(), '<span>News item title</span>'.toUpperCase());
         start();
     });
 });

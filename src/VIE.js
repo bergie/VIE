@@ -1,5 +1,9 @@
-var VIE;
-VIE = function(config) {
+var root = this,
+    jQuery = root.jQuery,
+    Backbone = root.Backbone,
+    _ = root._;
+
+var VIE = root.VIE = function(config) {
     this.config = (config) ? config : {};
     this.services = {};
     this.entities = new this.Collection();
@@ -106,16 +110,12 @@ if(typeof exports === 'object') {
     // Running under Node.js or other CommonJS environment
     exports.VIE = VIE;
 
-    var root = this;
-    var jQuery = this.jQuery;
     if (!jQuery) {
         jQuery = require('jquery');
     }
-    var Backbone = root.Backbone;
     if (!Backbone) {
         Backbone = require('backbone');
     }
-    var _ = this._;
     if (!_) {
         _ = require('underscore')._;
     }

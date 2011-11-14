@@ -117,11 +117,12 @@ VIE.prototype.Attributes = function (domain, attrs) {
     this._inherit = function () {
         var attributes = jQuery.extend(true, {}, this._local);
         
-        var inherited = this.domain.supertypes.list().map(
+        var inherited = _.map(this.domain.supertypes.list(),
             function (x) {
                return x.attributes; 
-            });
-        
+            }
+        );
+
         var add = {};
         var merge = {};
         
