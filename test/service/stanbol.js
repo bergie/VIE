@@ -13,7 +13,7 @@ test("VIE.js StanbolService - Analyze", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
@@ -44,7 +44,7 @@ test("VIE.js StanbolService - Find", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.find({term: term, limit: limit, offset: offset})
     .using('stanbol').execute().done(function(entities) {
@@ -76,7 +76,7 @@ test("VIE.js StanbolService - Load", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu:8081", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
     stop(10000); // 10 second timeout
     z.load({entity: entity})
     .using('stanbol').execute().done(function(entities) {
