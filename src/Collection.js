@@ -5,12 +5,16 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         if (id === null) {
             return null;
         }
-
+        
         id = (id.getSubject)? id.getSubject() : id;        
         if (typeof id === "string" && id.indexOf("_:") === 0) {
-            //bnode!
-            id = id.replace("_:bnode", 'c');
-            return this._byCid[id];
+            if (id.indexOf("bnode") === 2) {
+                //bnode!
+                id = id.replace("_:bnode", 'c');
+                return this._byCid[id];
+            } else {
+                return this._byId["<" + id + ">"];
+            }
         } else {
             id = this.toReference(id);
             return this._byId[id];

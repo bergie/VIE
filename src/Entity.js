@@ -244,12 +244,19 @@ VIE.prototype.Entity = function(attrs, opts) {
                 this.set(obj);
             }
             else {
+                if (!(val instanceof Array)) {
+                    val = [val];
+                }
                 // Make sure not to set the same value twice
-                if (val !== value && (!(val instanceof Array) && val.indexOf(value) === -1)) {
-                    // Value already set, make sure it's an Array and extend it
-                    if (!(val instanceof Array)) {
-                        val = [val];
+                var contains = false;
+                for (var v = 0; v < val.length; v++) {
+                    if (typeof val[v] === "string") {
+                        contains |= val[v] == value;
+                    } else {
+                        contains |= val[v].id == value;
                     }
+                }
+                if (!contains) {
                     val.push(value);
                     obj = {};
                     obj[attr] = val;
@@ -278,13 +285,23 @@ VIE.prototype.Entity = function(attrs, opts) {
 
         isof: function (type) {
             var types = this.get('@type');
-
+            
+            if (types === undefined) {
+                return false;
+            }
             types = (_.isArray(types))? types : [ types ];
-
+            
+            type = (self.vie.types.get(type))? self.vie.types.get(type) : new self.vie.Type(type);
             for (var t = 0; t < types.length; t++) {
-                if (self.vie.types.get(types[t]) &&
-                    self.vie.types.get(types[t]).isof(type)) {
-                    return true;
+                if (self.vie.types.get(types[t])) {
+                    if (self.vie.types.get(types[t]).isof(type)) {
+                        return true;
+                    }
+                } else {
+                    var typeTmp = new self.vie.Type(types[t]);
+                    if (typeTmp.id === type.id) {
+                        return true;
+                    }
                 }
             }
             return false;
