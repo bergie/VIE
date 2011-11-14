@@ -23,7 +23,7 @@ VIE.prototype.Type = function (id, attrs) {
 
     // checks whether such a type is already defined. 
     if (this.vie.types.get(this.id)) {
-        throw "The type " + this.id + " is already defined!";
+        throw new Error("The type " + this.id + " is already defined!");
     }    
     
     // the supertypes (parentclasses) of the current type.

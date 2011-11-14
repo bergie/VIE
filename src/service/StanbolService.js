@@ -21,11 +21,12 @@ VIE.prototype.StanbolService = function(options) {
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+            rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
+            skos: "http://www.w3.org/2004/02/skos/core"
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -79,7 +80,7 @@ VIE.prototype.StanbolService.prototype = {
              {
                 'left' : [
                     '?subject a dbpedia:Person',
-                    '?subject rdfs:label ?label'
+                    '?subject rdfschema:label ?label'
                  ],
                  'right': function(ns){
                      return function(){
@@ -99,9 +100,31 @@ VIE.prototype.StanbolService.prototype = {
                  }(this.namespaces)
              },
              {
+             'left' : [
+                     '?subject a foaf:Person',
+                     '?subject rdfschema:label ?label'
+                  ],
+                  'right': function(ns){
+                      return function(){
+                          return [
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  'a',
+                                  '<' + ns.base() + 'Person>', {
+                                      namespaces: ns.toObj()
+                                  }),
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                                  this.label, {
+                                      namespaces: ns.toObj()
+                                  })
+                              ];
+                      };
+                  }(this.namespaces)
+              },
+             {
                  'left' : [
                      '?subject a dbpedia:Place',
-                     '?subject rdfs:label ?label'
+                     '?subject rdfschema:label ?label'
                   ],
                   'right': function(ns) {
                       return function() {
