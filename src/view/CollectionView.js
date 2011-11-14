@@ -72,6 +72,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             return;
         }
 
+        this.trigger('remove', this.entityViews[entity.cid]);
         this.entityViews[entity.cid].el.remove();
         delete(this.entityViews[entity.cid]);
     },
