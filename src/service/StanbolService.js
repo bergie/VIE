@@ -286,7 +286,7 @@ VIE.prototype.StanbolService.prototype = {
                 };
             }
             var propertyUri = this.property.toString();
-            var propertyCurie;
+            var propertyCurie, property;
 
             propertyUri = propertyUri.substring(1, propertyUri.length - 1);
             try {
