@@ -18,7 +18,13 @@
     "backbone"  : ">=0.3.3",
     "jquery"    : ">=1.5.0"
   },
+  "devDependencies": {
+    "nodeunit"  : ">=0.6.0"
+  },
   "lib"           : ".",
-  "main"          : "vie.js",
-  "version"       : "1.0.0"
+  "main"          : "dist/vie-latest.js",
+  "version"       : "2.0.0alpha1",
+  "scripts":    {
+    "test": "./node_modules/nodeunit/bin/nodeunit test-node"
+  }
 }
