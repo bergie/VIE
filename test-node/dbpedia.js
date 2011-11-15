@@ -8,10 +8,8 @@ exports['test loading Salzburg'] = function(test) {
         }).
         using('dbpedia').
         execute().
-        done(function(entity) {
+        always(function(entity) {
             test.equal(typeof entity, "object");
-        }).
-        then(function() {
             test.done();
         });
 };
