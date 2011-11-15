@@ -188,7 +188,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             if (encoding === "JSONLD") {
                 return this.toJSONLD();
             }
-            throw "Unknown encoding " + encoding;
+            throw new Error("Unknown encoding " + encoding);
         },
 
         toJSONLD: function(){

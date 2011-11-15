@@ -4,10 +4,10 @@
 
 // Adding capability of handling attribute structure and inheritance to VIE. 
 if (VIE.prototype.Attribute) {
-	throw "ERROR: VIE.Attribute is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Attribute is already defined. Please check your installation!");
 }
 if (VIE.prototype.Attributes) {
-	throw "ERROR: VIE.Attributes is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Attributes is already defined. Please check your installation!");
 }
 
 //The constructor of a VIE.Attribute. 
@@ -15,13 +15,13 @@ if (VIE.prototype.Attributes) {
 //This creates a attribute that describes a **knows** relationship between persons.
 VIE.prototype.Attribute = function (id, range, domain) {
     if (id === undefined || typeof id !== 'string') {
-        throw "The attribute constructor needs an 'id' of type string! E.g., 'Person'";
+        throw new Error("The attribute constructor needs an 'id' of type string! E.g., 'Person'");
     }
     if (range === undefined) {
-        throw "The attribute constructor needs 'range'.";
+        throw new Error("The attribute constructor needs 'range'.");
     }
     if (domain === undefined) {
-        throw "The attribute constructor needs a 'domain'.";
+        throw new Error("The attribute constructor needs a 'domain'.");
     }
     
     this._domain = domain;
@@ -72,7 +72,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
     //a VIE.Attribute element.
     this.add = function (id, range) {
         if (this.get(id)) {
-            throw "Attribute '" + id + "' already registered for domain " + this.domain.id + "!";
+            throw new Error("Attribute '" + id + "' already registered for domain " + this.domain.id + "!");
         } 
         else {
             if (typeof id === "string") {
@@ -85,7 +85,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
                 this._local[id.id] = id;
                 return id;
             } else {
-                throw "Wrong argument to VIE.Types.add()!";
+                throw new Error("Wrong argument to VIE.Types.add()!");
             }
         }
     };
@@ -97,7 +97,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
             delete this._local[a.id];
             return a;
         }
-        throw "The attribute " + id + " is inherited and cannot be removed from the domain " + this.domain.id + "!";
+        throw new Error("The attribute " + id + " is inherited and cannot be removed from the domain " + this.domain.id + "!");
     };
     
     //retrieve a `VIE.Attribute` from the attributes by it's id.
@@ -108,7 +108,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
         } else if (id instanceof this.vie.Attribute) {
             return this.get(id.id);
         } else {
-            throw "Wrong argument in VIE.Attributes.get()";
+            throw new Error("Wrong argument in VIE.Attributes.get()");
         }
     };
     

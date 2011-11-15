@@ -4,10 +4,10 @@
 
 // Adding capability of handling type/class structure and inheritance to VIE. 
 if (VIE.prototype.Type) {
-	throw "ERROR: VIE.Type is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
 }
 if (VIE.prototype.Types) {
-	throw "ERROR: VIE.Types is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
 }
 
 // The constructor of a VIE.Type. 
@@ -44,7 +44,7 @@ VIE.prototype.Type = function (id, attrs) {
         if (type) {
             return type.subsumes(this.id);
         } else {
-            throw "No valid type given";
+            throw new Error("No valid type given");
         }
     };
     
@@ -70,7 +70,7 @@ VIE.prototype.Type = function (id, attrs) {
             }
             return false;
         } else {
-            throw "No valid type given";
+            throw new Error("No valid type given");
         }
     };
     
@@ -99,7 +99,7 @@ VIE.prototype.Type = function (id, attrs) {
                 this.inherit(supertype[i]);
             }
         } else {
-            throw "Wrong argument in VIE.Type.inherit()";
+            throw new Error("Wrong argument in VIE.Type.inherit()");
         }
         return this;
     };
@@ -161,7 +161,7 @@ VIE.prototype.Types = function () {
             	this._types[id.id] = id;
                 return id;
             } else {
-                throw "Wrong argument to VIE.Types.add()!";
+                throw new Error("Wrong argument to VIE.Types.add()!");
             }
         }
     };
