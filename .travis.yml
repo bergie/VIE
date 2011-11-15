@@ -7,3 +7,6 @@ before_script:
   - ./utils/travis.sh
 
 script: npm test
+
+notifications:
+    irc: "irc.freenode.org#iks"
