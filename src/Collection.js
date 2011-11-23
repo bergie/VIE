@@ -49,10 +49,22 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                     newAttribs[attribute] = value;
                     return true;
                 }
-                if (existing.get(attribute) === value) {
+                else if (existing.attributes[attribute] === value) {
                     return true;
+                } else {
+                    //merge existing attribute values with new ones!
+                    //not just overwrite 'em!!
+                    var oldVals = existing.attributes[attribute];
+                    var newVals = value;
+                    
+                    if (attribute === '@context') {
+                        newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
+                    } else {
+                        oldVals = (jQuery.isArray(oldVals))? oldVals : [ oldVals ];
+                        newVals = (jQuery.isArray(newVals))? newVals : [ newVals ];
+                        newAttribs[attribute] = oldVals.concat(newVals).unduplicate();
+                    }
                 }
-                newAttribs[attribute] = value;
             });
 
             if (!_.isEmpty(newAttribs)) {

@@ -127,7 +127,7 @@ VIE.Util = {
         //transform data from Stanbol into VIE.Entities
 
         if (typeof jQuery.rdf !== 'function') {
-            return this._enhancer2EntitiesNoRdfQuery(service, results);
+            return VIE.Util.rdf2EntitiesNoRdfQuery(service, results);
         }
         var rdf = jQuery.rdf().load(results, {});
 
@@ -200,5 +200,33 @@ VIE.Util = {
         });
         return vieEntities;
     },
+    
+    rdf2EntitiesNoRdfQuery: function (service, results) {
+        jsonLD = [];
+        _.forEach(results, function(value, key) {
+            var entity = {};
+            entity['@subject'] = '<' + key + '>';
+            _.forEach(value, function(triples, predicate) {
+                predicate = '<' + predicate + '>';
+                _.forEach(triples, function(triple) {
+                    if (triple.type === 'uri') {
+                        triple.value = '<' + triple.value + '>';
+                    }
+
+                    if (entity[predicate] && !_.isArray(entity[predicate])) {
+                        entity[predicate] = [entity[predicate]];
+                    }
+
+                    if (_.isArray(entity[predicate])) {
+                        entity[predicate].push(triple.value);
+                        return;
+                    }
+                    entity[predicate] = triple.value;
+                });
+            });
+            jsonLD.push(entity);
+        });
+        return jsonLD;
+    }
     
 };
