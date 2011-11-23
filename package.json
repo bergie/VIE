@@ -15,10 +15,17 @@
     "Jonatan Lundin"
   ],
   "dependencies"  : {
-    "backbone"  : ">=0.3.3",
+    "backbone"  : ">=0.5.0",
+    "underscore": ">=1.2.0",
     "jquery"    : ">=1.5.0"
   },
+  "devDependencies": {
+    "nodeunit"  : ">=0.6.0"
+  },
   "lib"           : ".",
-  "main"          : "vie.js",
-  "version"       : "1.0.0"
+  "main"          : "dist/vie-latest.js",
+  "version"       : "2.0.0alpha1",
+  "scripts":    {
+    "test": "./node_modules/nodeunit/bin/nodeunit test-node"
+  }
 }
