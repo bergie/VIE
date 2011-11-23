@@ -53,7 +53,7 @@ VIE.prototype.StanbolService.prototype = {
                 //ignore for now!
             }
         }
-        this.namespaces = new this.vie.Namespaces(this.vie.namespaces.base(), this.options.namespaces);
+        this.namespaces = this.vie.namespaces;
 
         this.rules = [
             //rule to add backwards-relations to the triples
@@ -251,34 +251,6 @@ VIE.prototype.StanbolService.prototype = {
                 .replace(/\0\b\n\r\f\t/g, ''); // remove non-letter symbols
             return jQuery.trim(res);
         }
-    },
-
-    _enhancer2EntitiesNoRdfQuery: function (service, results) {
-        jsonLD = [];
-        _.forEach(results, function(value, key) {
-            var entity = {};
-            entity['@subject'] = '<' + key + '>';
-            _.forEach(value, function(triples, predicate) {
-                predicate = '<' + predicate + '>';
-                _.forEach(triples, function(triple) {
-                    if (triple.type === 'uri') {
-                        triple.value = '<' + triple.value + '>';
-                    }
-
-                    if (entity[predicate] && !_.isArray(entity[predicate])) {
-                        entity[predicate] = [entity[predicate]];
-                    }
-
-                    if (_.isArray(entity[predicate])) {
-                        entity[predicate].push(triple.value);
-                        return;
-                    }
-                    entity[predicate] = triple.value;
-                });
-            });
-            jsonLD.push(entity);
-        });
-        return jsonLD;
     }
 };
 

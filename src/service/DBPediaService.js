@@ -16,10 +16,12 @@ VIE.prototype.DBPediaService = function(options) {
             rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             dbpedia: "http://dbpedia.org/ontology/",
-            dbprop : "http://dbpedia.org/property/"
+            dbprop : "http://dbpedia.org/property/",
+            purlt : "http://purl.org/dc/terms/subject",
+            purle : "http://purl.org/dc/elements/1.1/description"
         }
     };
-    this.options = jQuery.extend(defaults, options ? options : {});
+    this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
@@ -43,7 +45,7 @@ VIE.prototype.DBPediaService.prototype = {
                 //ignore for now!
             }
         }
-        this.namespaces = new this.vie.Namespaces(this.vie.namespaces.base(), this.options.namespaces);
+        this.namespaces = this.vie.namespaces;
 
         this.rules = [
              //rule to transform a DBPedia person into a VIE person
