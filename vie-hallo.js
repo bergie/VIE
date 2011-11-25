@@ -6,7 +6,7 @@
         $.extend(opt, options);
 
         this.each(function() {
-            var containerInstance = VIE.RDFaEntities.getInstance($(this));
+            var containerInstance = opt.vie.RDFaEntities.getInstance($(this));
             if (!containerInstance) {
                 return;
             }
@@ -15,7 +15,7 @@
                 containerInstance.editables = {};
             }
 
-            VIE.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
+            opt.vie.RDFa.findPredicateElements(containerInstance.id, this, false).each(function() {
                 var containerProperty = $(this);
 
                 var propertyName = containerProperty.attr('property');
