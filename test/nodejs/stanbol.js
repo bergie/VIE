@@ -1,5 +1,5 @@
 var jQuery = require('jquery');
-var vie = require('../dist/vie-latest.debug.js');
+var vie = require('../../dist/vie-latest.debug.js');
 
 exports['test annotations'] = function(test) {
     var html = jQuery('<p>This is a small test, where Steve Jobs sings a song.</p>');
@@ -12,7 +12,14 @@ exports['test annotations'] = function(test) {
         using('stanbol').
         execute().
         done(function(entities) {
-            test.equal(entities.length, 3);
+            test.equal(entities.length, 1);
+            var steveFound = false;
+            for (property in entities[0]) {
+                if (property === '<http://dbpedia.org/resource/Steve_Jobs>') {
+                    steveFound = true;
+                }
+            }
+            test.ok(steveFound, 'We need to find http://dbpedia.org/resource/Steve_Jobs from text');
         }).
         then(function() {
             test.done();

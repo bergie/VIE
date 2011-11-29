@@ -1,9 +1,9 @@
-![VIE](https://github.com/bergie/VIE/raw/master/vie_logo_100.png) Vienna IKS Editables
+![VIE](https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png) Vienna IKS Editables
 ====================
 
 VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://wiki.iks-project.eu/index.php/VIE) the EU-funded [IKS project](http://www.iks-project.eu/).
 
-![Decoupled CMS communications](https://github.com/bergie/VIE/raw/master/cms-decoupled-communications.png)
+![Decoupled CMS communications](https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png)
 
 * In French, _vie_ means life, showcasing how VIE makes your website come alive
 * In English, _vie_ means striving for victory or superiority
