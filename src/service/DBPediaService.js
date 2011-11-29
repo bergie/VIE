@@ -133,7 +133,7 @@ DBPediaConnector.prototype = {
                 Accept: format
             }
         }, function(error, response, body) {
-            success({results: JSON.parse(body)});
+            success(JSON.parse(body));
         });
         r.end();
     }

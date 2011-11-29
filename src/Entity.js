@@ -21,18 +21,17 @@ VIE.prototype.Entity = function(attrs, opts) {
     if (attrs['@type'] !== undefined) {
         if (_.isArray(attrs['@type'])) {
             attrs['@type'] = _.map(attrs['@type'], function(val){
-                if (this.types.get(val)) {
-                    return this.types.get(val).id;
+                if (!self.vie.types.get(val)) {
+                    self.vie.types.add(val).inherit("Thing");
                 }
-                else {
-                    return val;
-                }
-            }, self.vie);
+                return self.vie.types.get(val).id;
+            });
         }
         else if (typeof attrs['@type'] === 'string') {
-            if (self.vie.types.get(attrs['@type'])) {
-                attrs['@type'] = self.vie.types.get(attrs['@type']).id;
+            if (!self.vie.types.get(attrs['@type'])) {
+                self.vie.types.add(attrs['@type']).inherit("Thing");
             }
+            attrs['@type'] = self.vie.types.get(attrs['@type']).id;
         }
     } else {
         // provide "Thing" as the default type if none was given

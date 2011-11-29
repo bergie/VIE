@@ -1,10 +1,12 @@
 var jQuery = require('jquery');
 var vie = require('../../dist/vie-latest.debug.js');
 var VIE = new vie.VIE();
+VIE.use(new VIE.RdfaService({attributeExistenceComparator: ''}), 'rdfa');
 VIE.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
 VIE.namespaces.add('foaf', 'http://xmlns.com/foaf/0.1/');
 VIE.namespaces.add('cal', 'http://www.w3.org/2002/12/cal#');
 VIE.namespaces.add('mgd', 'http://www.midgard-project.org/midgard2/10.05');
+VIE.namespaces.add('dbp', 'http://dbpedia.org/resource/');
 
 // Until https://github.com/tmpvar/jsdom/issues/issue/81 is fixed you need to uncomment the following:
 //VIE.RDFa.predicateSelector = '[property]';
@@ -14,16 +16,15 @@ exports['test inheriting subject'] = function(test) {
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
     test.equal(jsonldEntities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
-
     test.equal(jsonldEntities[1]['<http://xmlns.com/foaf/0.1/name>'], 'Albert Einstein');
-    test.equal(jsonldEntities[0]['<dbp:conventionalLongName>'], 'Federal Republic of Germany');
-    test.equals(jsonldEntities[1]['<dbp:birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
+    test.equal(jsonldEntities[0]['<http://dbpedia.org/resource/conventionalLongName>'], 'Federal Republic of Germany');
+    test.equals(jsonldEntities[1]['<http://dbpedia.org/resource/birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
 
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
-    test.equal(backboneEntities[1].get('dbp:birthplace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
+    test.equal(backboneEntities[1].get('dbp:birthPlace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
     test.equal(backboneEntities[1].get('dbp:birthPlace').at(0).get('dbp:conventionalLongName'), 'Federal Republic of Germany');
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
     
@@ -97,10 +98,10 @@ exports['test global entity'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
+    test.equal(jsonldEntities.length, 1);
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
-    test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
     test.equal(jsonldEntities[0]['@subject'].substr(0, 7), '_:bnode');
     VIE.cleanup();
 
@@ -110,7 +111,7 @@ exports['test global entity'] = function(test) {
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
     test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
 
     VIE.cleanup();
     test.done();
@@ -122,8 +123,7 @@ exports['test global entity with base URL'] = function(test) {
     var jsonldEntities = VIE.RDFa.readEntities(html);
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
-    test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
     test.equal(jsonldEntities[0]['@subject'], '<http://www.example.org/jo/blog>');
 
     VIE.cleanup();
