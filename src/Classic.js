@@ -51,7 +51,7 @@ VIE.prototype.ClassicRDFaEntities.prototype = {
     getInstance: function(selector) {
         var instances = this.getInstances(selector);
         if (instances && instances.length) {
-            return instances[0];
+            return instances.pop();
         }
         return null;
     }

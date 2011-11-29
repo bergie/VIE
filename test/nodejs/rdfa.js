@@ -133,14 +133,14 @@ exports['test about and anonymous'] = function(test) {
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
     test.equal(jsonldEntities.length, 2);
-    test.equal(jsonldEntities[0]['@type'], '<cal:Vevent>');
+    test.equal(jsonldEntities[0]['@type'][1], '<http://www.w3.org/2002/12/cal#Vevent>');
     test.equal(jsonldEntities[0]['@subject'], '<#bbq>');
     // FIXME: This should really have the datatype
-    test.equal(jsonldEntities[0]['cal:dtstart'], '2007-09-16T16:00:00-05:00');
+    test.equal(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>'], '2007-09-16T16:00:00-05:00');
     
     var objectInstance = VIE.EntityManager.getByJSONLD(jsonldEntities[0]);
-    test.equal(objectInstance.id, '#bbq');
-    test.equal(objectInstance.type, 'cal:Vevent');
+    test.equal(objectInstance.id, '<#bbq>');
+    test.equal(objectInstance.isof('cal:Vevent'), true);
 
     VIE.cleanup();
     test.done();
@@ -271,7 +271,7 @@ exports['test image entitization'] = function(test) {
     icons.remove(icons.at(0));
     test.equal(jQuery('img', html).length, 0); 
 
-    icons.add({id: 'http://example.net/otherimage.jpg'});
+    icons.add({'@subject': 'http://example.net/otherimage.jpg'});
 
     test.equal(jQuery('img', html).length, 1);    
     test.equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
@@ -291,10 +291,15 @@ exports['test list inside a list'] = function(test) {
     parts.remove(parts.at(0));
     test.equal(parts.length, 0);
     
-    parts.add({id: 'http://example.net/page#second', 'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
-    
+    parts.add({'@subject': 'http://example.net/page#second', 'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
+   
+    test.equal(jQuery('li', html).length, 1);
+
+    /*
+    FIXME: We need to decide if we still want to support autocollectivization
     test.equal(jQuery('li img', html).length, 1);
     test.equal(jQuery('li img', html).attr('src'), 'http://example.net/otherimage.jpg');
+    */
     
     VIE.cleanup();
     test.done();
