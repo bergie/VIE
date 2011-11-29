@@ -134,7 +134,6 @@ exports['test about and anonymous'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body><p about="#bbq" typeof="cal:Vevent">I\'m holding<span property="cal:summary">one last summer barbecue</span>, on <span property="cal:dtstart" content="2007-09-16T16:00:00-05:00" datatype="xsd:dateTime">September 16th at 4pm</span>.</p></body></html>');
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
-    console.log(jsonldEntities);
 
     test.equal(jsonldEntities.length, 2);
     test.equal(jsonldEntities[0]['@type'], '<cal:Vevent>');
