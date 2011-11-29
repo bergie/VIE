@@ -317,16 +317,20 @@ exports['test adding anonymous elements to list'] = function(test) {
 
     test.equal(parts.at(1).toJSONLD()['@subject'].indexOf('_:bnode'), 0);
     test.equal(objectInstance.toJSONLD()['<http://purl.org/dc/elements/1.1/hasPart>'][1], parts.at(1).toJSONLD()['@subject']);
-
+    /*
+    FIXME: We need to decide if we still want to support autocollectivization
     test.equal(jQuery('li img', html).length, 2);
+    */
     
     VIE.cleanup();
     test.done();
 }
 
 exports['test list inside a list with two lists'] = function(test) {
-    var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#"><span property="dc:title">First part of second</span></li></ol></div></div>');
+    var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#foo"><span property="dc:title">First part of second</span></li></ol></div></div>');
+    var orig = html.html();
     VIE.RDFaEntities.getInstances(html);
+    test.equal(orig, html.html(), 'HTML must not change by reading');
     var objectInstance = VIE.EntityManager.getBySubject('http://example.net/page');
     var parts = objectInstance.get('dc:hasPart');
     test.equal(parts.length, 1);
@@ -381,7 +385,7 @@ exports['test table rows'] = function(test) {
 
     VIE.RDFaEntities.getInstances(html);
 
-    test.equal(VIE.EntityManager.entities.length, 3);
+    test.equal(VIE.EntityManager.entities.length, 2);
     test.equal(jQuery('tr', html).length, 1);
 
     var table = VIE.EntityManager.getBySubject('Table42');
