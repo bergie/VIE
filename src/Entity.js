@@ -306,6 +306,19 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return false;
         },
+        
+        addTo : function (collection, update) {
+            var self = this;
+            if (collection instanceof self.vie.Collection) {
+                if (update) {
+                    collection.addOrUpdate(self);
+                } else {
+                    collection.add(self);
+                }
+                return this;
+            }
+            throw new Error("Please provide a proper collection of type VIE.Collection as argument!");
+        },
 
         isEntity: true,
 
