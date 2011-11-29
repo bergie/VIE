@@ -18,7 +18,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         return a;
     };
 
-    if ('@type' in attrs) {
+    if (attrs['@type'] !== undefined) {
         if (_.isArray(attrs['@type'])) {
             attrs['@type'] = _.map(attrs['@type'], function(val){
                 if (this.types.get(val)) {
@@ -68,27 +68,20 @@ VIE.prototype.Entity = function(attrs, opts) {
         get: function (attr) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
-            if (_.isArray(value)) {
-                value = _.map(value, function(v) {
-                    if (attr === '@type' && self.vie.types.get(v)) {
-                        return self.vie.types.get(v);
-                    } else if (self.vie.entities.get(v)) {
-                        return self.vie.entities.get(v);
-                    } else {
-                        return v;
-                    }
-                }, this);
-            } else {
-                if (typeof value !== "string") {
-                    return value;
+            value = (_.isArray(value))? value : [ value ];
+            
+            value = _.map(value, function(v) {
+                if (v !== undefined && attr === '@type' && self.vie.types.get(v)) {
+                    return self.vie.types.get(v);
+                } else if (v !== undefined && self.vie.entities.get(v)) {
+                    return self.vie.entities.get(v);
+                } else {
+                    return v;
                 }
-
-                if (attr === '@type' && self.vie.types.get(value)) {
-                    value = self.vie.types.get(value);
-                } else if (self.vie.entities.get(value)) {
-                    value = self.vie.entities.get(value);
-                }
-            }
+            }, this);
+            
+            // if there is only one element, just return that one
+            value = (value.length === 1)? value[0] : value;
             return value;
         },
 

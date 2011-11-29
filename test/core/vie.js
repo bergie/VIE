@@ -47,7 +47,7 @@ test("vie.js Entities API", function () {
     ok(z.entities.at(0).has('dc:title'));
     ok(z.entities.at(0).has('http://purl.org/dc/elements/1.1/title'));
     equal(z.entities.at(0).has('dc:foo'), false);
-
+    
     equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
 });
 
