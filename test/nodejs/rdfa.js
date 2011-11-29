@@ -5,6 +5,7 @@ VIE.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
 VIE.namespaces.add('foaf', 'http://xmlns.com/foaf/0.1/');
 VIE.namespaces.add('cal', 'http://www.w3.org/2002/12/cal#');
 VIE.namespaces.add('mgd', 'http://www.midgard-project.org/midgard2/10.05');
+VIE.namespaces.add('dbp', 'http://dbpedia.org/resource/');
 
 // Until https://github.com/tmpvar/jsdom/issues/issue/81 is fixed you need to uncomment the following:
 //VIE.RDFa.predicateSelector = '[property]';

@@ -342,13 +342,13 @@ VIE.prototype.RdfaService.prototype = {
         // RDF resource.
         var resource = element.attr('resource');
         if (resource) {
-            return "<" + resource + ">";
+            return ["<" + resource + ">"];
         }
                 
         // `href` attribute also links to another RDF resource.
         var href = element.attr('href');
         if (href && element.attr('rel') === predicate) {
-            return "<" + href + ">";
+            return ["<" + href + ">"];
         }
     
         // If the predicate is a relation, we look for identified child objects
