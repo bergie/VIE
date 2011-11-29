@@ -76,7 +76,7 @@ VIE.prototype.DBPediaService.prototype = {
                 if (!e) {
                     var attrs = {
                         '@subject': entity,
-                        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]
+                        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]['uri']
                     };
                     delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
                     jQuery.extend(attrs, results[id]);
