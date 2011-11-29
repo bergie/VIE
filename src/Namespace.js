@@ -5,7 +5,7 @@
 // Adding capability of handling different namespaces to VIE. 
 
 if (VIE.prototype.Namespaces) {
-	throw "ERROR: VIE.Namespaces is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Namespaces is already defined. Please check your installation!");
 }
 
  
@@ -17,7 +17,7 @@ VIE.prototype.Namespaces = function (base, namespaces) {
 	// Within VIE, we can define a base namespace, to support easier syntax for
 	// querying types of entities.
 	if (!base) {
-        throw "Please provide a base namespace!";
+        throw new Error("Please provide a base namespace!");
     }
 	this._base = base;
     
@@ -30,7 +30,7 @@ VIE.prototype.Namespaces = function (base, namespaces) {
         else if (typeof ns === "string") {
             this._base = ns;
         } else {
-            throw "Please provide a valid namespace!";
+            throw new Error("Please provide a valid namespace!");
         }
         return this;
     };
@@ -57,13 +57,13 @@ VIE.prototype.Namespaces = function (base, namespaces) {
         }
         //check if we overwrite existing mappings
         else if (this.containsPrefix(k) && v !== this._namespaces[k]) {
-            throw "ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
-                  "There is already a mapping existing: '(" + k + "," + this.get(k) + ")'!";
+            throw new Error("ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
+                  "There is already a mapping existing: '(" + k + "," + this.get(k) + ")'!");
         } else {
             jQuery.each(this._namespaces, function (k1,v1) {
                 if (v1 === v && k1 !== k) {
-                    throw "ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
-                          "There is already a mapping existing: '(" + k1 + "," + v + ")'!";
+                    throw new Error("ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
+                          "There is already a mapping existing: '(" + k1 + "," + v + ")'!");
                 }
             });
         }

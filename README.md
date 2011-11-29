@@ -155,6 +155,7 @@ Direct your browser to the `test/index.html` file to run VIE's [QUnit](http://do
 
 #### Unit tests on Node.js
 
-You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
+You need Node.js and [NPM](http://npmjs.org/). Then just run:
 
-    $ nodeunit test-node/*.js
+    $ npm install --dev
+    $ npm test

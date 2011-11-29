@@ -1,3 +1,4 @@
 .project
 dist
 target
+node_modules
