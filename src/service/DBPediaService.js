@@ -83,6 +83,7 @@ VIE.prototype.DBPediaService.prototype = {
             entity = (typeof entity === "string")? entity : entity.id;
             
             var success = function (results) {
+                results = (typeof results === "string")? JSON.parse(results) : results;
                 var entities = VIE.Util.rdf2Entities(service, results);
                 loadable.resolve(entities);
             };
