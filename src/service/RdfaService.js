@@ -44,7 +44,6 @@ VIE.prototype.RdfaService.prototype = {
         for (var prefix in ns) {
             this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
         }
-        
         var entities = [];
         jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
             var entity = service._readEntity(jQuery(this));
@@ -82,7 +81,6 @@ VIE.prototype.RdfaService.prototype = {
         //if (jQuery.isEmptyObject(entity)) {
         //    return null;
         //}
-
         var vie = this.vie;
         for (predicate in entity) {
             value = entity[predicate];
@@ -101,7 +99,6 @@ VIE.prototype.RdfaService.prototype = {
         if (type) {
             entity['@type'] = type;
         }
-
         var entityInstance = new this.vie.Entity(entity);
         entityInstance = this.vie.entities.addOrUpdate(entityInstance);
         this._registerEntityView(entityInstance, element);
@@ -118,10 +115,13 @@ VIE.prototype.RdfaService.prototype = {
             }
     
             var value = entity.get(predicate);
+            if (value.isCollection) {
+                // Handled by CollectionViews separately
+                return true;
+            }
             if (value === service.readElementValue(predicate, predicateElement)) {
                 return true;
             }
-    
             service.writeElementValue(predicate, predicateElement, value);
         });
         return true;
