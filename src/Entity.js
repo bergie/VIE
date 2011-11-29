@@ -19,20 +19,15 @@ VIE.prototype.Entity = function(attrs, opts) {
     };
 
     if (attrs['@type'] !== undefined) {
-        if (_.isArray(attrs['@type'])) {
-            attrs['@type'] = _.map(attrs['@type'], function(val){
-                if (!self.vie.types.get(val)) {
-                    self.vie.types.add(val).inherit("Thing");
-                }
-                return self.vie.types.get(val).id;
-            });
-        }
-        else if (typeof attrs['@type'] === 'string') {
-            if (!self.vie.types.get(attrs['@type'])) {
-                self.vie.types.add(attrs['@type']).inherit("Thing");
+        attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
+        attrs['@type'] = _.map(attrs['@type'], function(val){
+            if (!self.vie.types.get(val)) {
+                //if there is no such type -> add it and let it inherit from "Thing"
+                self.vie.types.add(val).inherit("Thing");
             }
-            attrs['@type'] = self.vie.types.get(attrs['@type']).id;
-        }
+            return self.vie.types.get(val).id;
+        });
+        attrs['@type'] = (attrs['@type'].length === 1)? attrs['@type'][0] : attrs['@type'];
     } else {
         // provide "Thing" as the default type if none was given
         attrs['@type'] = self.vie.types.get("Thing").id;
