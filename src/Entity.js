@@ -18,7 +18,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         return a;
     };
 
-    if ('@type' in attrs) {
+    if (attrs['@type'] !== undefined) {
         if (_.isArray(attrs['@type'])) {
             attrs['@type'] = _.map(attrs['@type'], function(val){
                 if (this.types.get(val)) {
@@ -32,7 +32,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         else if (typeof attrs['@type'] === 'string') {
             if (self.vie.types.get(attrs['@type'])) {
                 attrs['@type'] = self.vie.types.get(attrs['@type']).id;
-            }
+            } 
         }
     } else {
         // provide "Thing" as the default type if none was given

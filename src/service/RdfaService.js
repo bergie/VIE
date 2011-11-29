@@ -4,8 +4,10 @@ VIE.prototype.RdfaService = function(options) {
     }
     this.vie = null;
     this.name = 'rdfa';
-    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],[href],html";
+    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
+
+    this.attributeExistenceComparator = options.attributeExistenceComparator;
     this.views = [];
 };
 
@@ -82,6 +84,7 @@ VIE.prototype.RdfaService.prototype = {
         //    return null;
         //}
 
+        var vie = this.vie;
         for (predicate in entity) {
             value = entity[predicate];
             if (!_.isArray(value)) {
@@ -89,7 +92,8 @@ VIE.prototype.RdfaService.prototype = {
             }
             valueCollection = new this.vie.Collection();
             _.each(value, function(valueItem) {
-                valueCollection.addOrUpdate({'@subject': valueItem});
+                var linkedEntity = vie.entities.addOrUpdate({'@subject': valueItem});
+                valueCollection.addOrUpdate(linkedEntity);
             });
             entity[predicate] = valueCollection;
         }
@@ -139,6 +143,10 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     _registerEntityView : function(entity, element) {
+        if (!element.length) {
+            return;
+        }
+
         var service = this;
         var viewInstance = this._getViewForElement(element);
         if (viewInstance) {
@@ -209,24 +217,25 @@ VIE.prototype.RdfaService.prototype = {
         }
         var subject = undefined;
         jQuery(element).closest(this.subjectSelector).each(function() {
-            if (jQuery(this).attr('about') !== undefined) {
+
+
+            if (jQuery(this).attr('about') !== service.attributeExistenceComparator) {
                 subject = jQuery(this).attr('about');
                 return true;
             }
-            if (jQuery(this).attr('src')) {
+            if (jQuery(this).attr('src') !== service.attributeExistenceComparator) {
                 subject = jQuery(this).attr('src');
                 return true;
             }
-            if (jQuery(this).attr('typeof')) {
+            if (jQuery(this).attr('typeof') !== service.attributeExistenceComparator) {
                 subject = VIE.Util.blankNodeID();
                 //subject = this;
                 return true;
             }
-    
             // We also handle baseURL outside browser context by manually
             // looking for the `<base>` element inside HTML head.
             if (jQuery(this).get(0).nodeName === 'HTML') {
-                jQuery(this).find('base').each(function() {
+                jQuery('base', this).each(function() {
                     subject = jQuery(this).attr('href');
                 });
             }
