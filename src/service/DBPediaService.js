@@ -10,10 +10,18 @@ VIE.prototype.DBPediaService = function(options) {
         namespaces : {
             owl    : "http://www.w3.org/2002/07/owl#",
             yago   : "http://dbpedia.org/class/yago/",
-            dbonto : 'http://dbpedia.org/ontology/'
+            foaf: 'http://xmlns.com/foaf/0.1/',
+            georss: "http://www.georss.org/georss/",
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
+            rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
+            rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            dbpedia: "http://dbpedia.org/ontology/",
+            dbprop : "http://dbpedia.org/property/",
+            purlt : "http://purl.org/dc/terms/subject",
+            purle : "http://purl.org/dc/elements/1.1/description"
         }
     };
-    this.options = jQuery.extend(defaults, options ? options : {});
+    this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
@@ -37,36 +45,52 @@ VIE.prototype.DBPediaService.prototype = {
                 //ignore for now!
             }
         }
-        this.namespaces = new this.vie.Namespaces(this.options.namespaces);
+        this.namespaces = this.vie.namespaces;
 
         this.rules = [
              //rule to transform a DBPedia person into a VIE person
              {
-                'left' : [
-                    '?subject a <http://dbpedia.org/ontology/Person>'
+                 'left' : [
+                        '?subject a dbpedia:Person'
                  ],
                  'right': function(ns){
                      return function(){
-                         return jQuery.rdf.triple(this.subject.toString() +
-                         ' a <http://schema.org/Person>', {
-                             namespaces: ns
-                         });
+                         return [
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 'a',
+                                 '<' + ns.base() + 'Person>', {
+                                     namespaces: ns.toObj()
+                                 })
+                             ];
                      };
-                 }(this.namespaces.toObj())
+                 }(this.namespaces)
              }
         ];
     },
 
     // VIE API load implementation
     load: function(loadable){
-        var correct = loadable instanceof this.vie.Loadable;
-        if (!correct) {throw "Invalid Loadable passed";}
-
         var service = this;
+        
+        var correct = loadable instanceof this.vie.Loadable;
+        if (!correct) {throw new Error("Invalid Loadable passed");}
+
         var entity = loadable.options.entity;
         if (!entity) {
-            //console.warn("DBPediaConnector: No entity to look for!");
-            loadable.resolve([]);
+            loadable.reject([]);
+        }
+        else {
+            entity = (typeof entity === "string")? entity : entity.id;
+            
+            var success = function (results) {
+                results = (typeof results === "string")? JSON.parse(results) : results;
+                var entities = VIE.Util.rdf2Entities(service, results);
+                loadable.resolve(entities);
+            };
+            var error = function (e) {
+                loadable.reject(e);
+            };
+            this.connector.load(entity, success, error);
         }
         var success = function (results) {
             var id = entity.replace(/^</, '').replace(/>$/, '');
@@ -120,7 +144,7 @@ DBPediaConnector.prototype = {
             error: error,
             type: "GET",
             url: url,
-            dataType: "jsonp"
+            accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
 

@@ -118,9 +118,121 @@ VIE.Util = {
     
     _blankNodeSeed : new Date().getTime() % 1000,
     
+    // generates a new blank node ID
     blankNodeID : function () {
       this._blankNodeSeed += 1;
       return '_:bnode' + this._blankNodeSeed.toString(16);
-    }    
+    },
+    
+    // this method converts rdf/json data from an external service
+    // into VIE.Entities. (this has been embedded in the StanbolService
+    // but as it is needed in other services, too, it made sense to 
+    // put it into the utils.)
+    rdf2Entities: function (service, results) {
+        //transform data from Stanbol into VIE.Entities
+
+        if (typeof jQuery.rdf !== 'function') {
+            return VIE.Util.rdf2EntitiesNoRdfQuery(service, results);
+        }
+        var rdf = jQuery.rdf().load(results, {});
+
+        //execute rules here!
+        if (service.rules) {
+            var rules = jQuery.rdf.ruleset();
+            for (var prefix in service.namespaces.toObj()) {
+                if (prefix !== "") {
+                    rules.prefix(prefix, service.namespaces.get(prefix));
+                }
+            }
+            for (var i = 0; i < service.rules.length; i++) {
+                rules.add(service.rules[i]['left'], service.rules[i]['right']);
+            }
+            rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
+        }
+        var entities = {};
+        rdf.where('?subject ?property ?object').each(function() {
+            var subject = this.subject.toString();
+            if (!entities[subject]) {
+                entities[subject] = {
+                    '@subject': subject,
+                    '@context': service.namespaces.toObj(),
+                    '@type': []
+                };
+            }
+            var propertyUri = this.property.toString();
+            var propertyCurie;
+
+            propertyUri = propertyUri.substring(1, propertyUri.length - 1);
+            try {
+                property = jQuery.createCurie(propertyUri, {namespaces: service.namespaces.toObj()});
+            } catch (e) {
+                property = propertyUri;
+                console.warn(propertyUri + " doesn't have a namespace definition in '", service.namespaces.toObj());
+            }
+            entities[subject][property] = entities[subject][property] || [];
+
+            function getValue(rdfQueryLiteral){
+                if(typeof rdfQueryLiteral.value === "string"){
+                    if (rdfQueryLiteral.lang)
+                        return rdfQueryLiteral.toString();
+                    else
+                        return rdfQueryLiteral.value;
+                    return rdfQueryLiteral.value.toString();
+                } else if (rdfQueryLiteral.type === "uri"){
+                    return rdfQueryLiteral.toString();
+                } else {
+                    return rdfQueryLiteral.value;
+                }
+            }
+            entities[subject][property].push(getValue(this.object));
+        });
+
+        _(entities).each(function(ent){
+            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+            delete ent["rdf:type"];
+            _(ent).each(function(value, property){
+                if(value.length === 1){
+                    ent[property] = value[0];
+                }
+            });
+        });
+
+        var vieEntities = [];
+        jQuery.each(entities, function() {
+            var entityInstance = new service.vie.Entity(this);
+            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+            vieEntities.push(entityInstance);
+        });
+        return vieEntities;
+    },
+    
+    // helper if no rdfQuery can be loaded.
+    rdf2EntitiesNoRdfQuery: function (service, results) {
+        jsonLD = [];
+        _.forEach(results, function(value, key) {
+            var entity = {};
+            entity['@subject'] = '<' + key + '>';
+            _.forEach(value, function(triples, predicate) {
+                predicate = '<' + predicate + '>';
+                _.forEach(triples, function(triple) {
+                    if (triple.type === 'uri') {
+                        triple.value = '<' + triple.value + '>';
+                    }
+
+                    if (entity[predicate] && !_.isArray(entity[predicate])) {
+                        entity[predicate] = [entity[predicate]];
+                    }
+
+                    if (_.isArray(entity[predicate])) {
+                        entity[predicate].push(triple.value);
+                        return;
+                    }
+                    entity[predicate] = triple.value;
+                });
+            });
+            jsonLD.push(entity);
+        });
+        return jsonLD;
+    }
     
 };

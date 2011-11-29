@@ -19,20 +19,15 @@ VIE.prototype.Entity = function(attrs, opts) {
     };
 
     if (attrs['@type'] !== undefined) {
-        if (_.isArray(attrs['@type'])) {
-            attrs['@type'] = _.map(attrs['@type'], function(val){
-                if (!self.vie.types.get(val)) {
-                    self.vie.types.add(val).inherit("Thing");
-                }
-                return self.vie.types.get(val).id;
-            });
-        }
-        else if (typeof attrs['@type'] === 'string') {
-            if (!self.vie.types.get(attrs['@type'])) {
-                self.vie.types.add(attrs['@type']).inherit("Thing");
+        attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
+        attrs['@type'] = _.map(attrs['@type'], function(val){
+            if (!self.vie.types.get(val)) {
+                //if there is no such type -> add it and let it inherit from "Thing"
+                self.vie.types.add(val).inherit("Thing");
             }
-            attrs['@type'] = self.vie.types.get(attrs['@type']).id;
-        }
+            return self.vie.types.get(val).id;
+        });
+        attrs['@type'] = (attrs['@type'].length === 1)? attrs['@type'][0] : attrs['@type'];
     } else {
         // provide "Thing" as the default type if none was given
         attrs['@type'] = self.vie.types.get("Thing").id;
@@ -67,27 +62,19 @@ VIE.prototype.Entity = function(attrs, opts) {
         get: function (attr) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
-            if (_.isArray(value)) {
-                value = _.map(value, function(v) {
-                    if (attr === '@type' && self.vie.types.get(v)) {
-                        return self.vie.types.get(v);
-                    } else if (self.vie.entities.get(v)) {
-                        return self.vie.entities.get(v);
-                    } else {
-                        return v;
-                    }
-                }, this);
-            } else {
-                if (typeof value !== "string") {
-                    return value;
+            value = (_.isArray(value))? value : [ value ];
+            
+            value = _.map(value, function(v) {
+                if (v !== undefined && attr === '@type' && self.vie.types.get(v)) {
+                    return self.vie.types.get(v);
+                } else if (v !== undefined && self.vie.entities.get(v)) {
+                    return self.vie.entities.get(v);
+                } else {
+                    return v;
                 }
-
-                if (attr === '@type' && self.vie.types.get(value)) {
-                    value = self.vie.types.get(value);
-                } else if (self.vie.entities.get(value)) {
-                    value = self.vie.entities.get(value);
-                }
-            }
+            }, this);
+            // if there is only one element, just return that one
+            value = (value.length === 1)? value[0] : value;
             return value;
         },
 
@@ -196,10 +183,6 @@ VIE.prototype.Entity = function(attrs, opts) {
             _.each(instance.attributes, function(value, name){
                 var entityValue = value; //instance.get(name);
 
-                if (name === '@type' && typeof entityValue === 'object') {
-                    entityValue = entityValue.id;
-                }
-
                 if (value instanceof instance.vie.Collection) {
                     entityValue = value.map(function(instance) {
                         return instance.getSubject();
@@ -304,6 +287,19 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
             }
             return false;
+        },
+        
+        addTo : function (collection, update) {
+            var self = this;
+            if (collection instanceof self.vie.Collection) {
+                if (update) {
+                    collection.addOrUpdate(self);
+                } else {
+                    collection.add(self);
+                }
+                return this;
+            }
+            throw new Error("Please provide a proper collection of type VIE.Collection as argument!");
         },
 
         isEntity: true,

@@ -78,7 +78,6 @@ VIE.prototype.RdfaService.prototype = {
         var subject = this.getElementSubject(element);
         var type = this._getElementType(element);
         var predicate, value, valueCollection;
-        
         var entity = this._readEntityPredicates(subject, element, false);
         //if (jQuery.isEmptyObject(entity)) {
         //    return null;
@@ -102,7 +101,7 @@ VIE.prototype.RdfaService.prototype = {
         if (type) {
             entity['@type'] = type;
         }
-        
+
         var entityInstance = new this.vie.Entity(entity);
         entityInstance = this.vie.entities.addOrUpdate(entityInstance);
         this._registerEntityView(entityInstance, element);

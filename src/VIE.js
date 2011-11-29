@@ -105,6 +105,15 @@ VIE.prototype.find = function(options) {
   return new this.Findable(options);
 };
 
+// bootstrap VIE with a type and attribute ontology/schema
+VIE.prototype.loadSchema = function(id) {
+    if (!id) {
+        //TODO: load default schema
+    } else {
+        //TODO: try to load the given schema if available
+    }
+};
+
 
 if(typeof exports === 'object') {
     // Running under Node.js or other CommonJS environment

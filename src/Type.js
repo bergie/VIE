@@ -115,18 +115,27 @@ VIE.prototype.Type = function (id, attrs) {
         }
         return obj;
     };
-
+    
+    // creates an Entity instance from this type.
     this.instance = function (attrs, opts) {
         attrs = (attrs)? attrs : {};
-
-        for (var a in attrs) {
-            if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
-                throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+        opts = (opts)? opts : {};
+        
+        // turn type/attribute checking on by default!
+        if (opts.typeChecking !== false) {
+            for (var a in attrs) {
+                if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
+                    throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+                }
             }
         }
-
-        attrs['@type'] = this.id;
-
+        
+        if (attrs['@type']) {
+            attrs['@type'].push(this.id);
+        } else {
+            attrs['@type'] = this.id;
+        }
+        
         return new this.vie.Entity(attrs, opts);
     };
         

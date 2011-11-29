@@ -22,7 +22,6 @@ exports['test inheriting subject'] = function(test) {
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
-
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
     test.equal(backboneEntities[1].get('dbp:birthPlace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
     test.equal(backboneEntities[1].get('dbp:birthPlace').at(0).get('dbp:conventionalLongName'), 'Federal Republic of Germany');
@@ -81,7 +80,6 @@ exports['test updating views'] = function(test) {
 
     // Ensure that it was changed in the model
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Switzerland');
-    
     var entityViaJSONLD = VIE.EntityManager.getByJSONLD(backboneEntities[0].toJSONLD());
     test.equal(VIE.EntityManager.entities.length, 2);
 
@@ -134,7 +132,6 @@ exports['test about and anonymous'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body><p about="#bbq" typeof="cal:Vevent">I\'m holding<span property="cal:summary">one last summer barbecue</span>, on <span property="cal:dtstart" content="2007-09-16T16:00:00-05:00" datatype="xsd:dateTime">September 16th at 4pm</span>.</p></body></html>');
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
-
     test.equal(jsonldEntities.length, 2);
     test.equal(jsonldEntities[0]['@type'], '<cal:Vevent>');
     test.equal(jsonldEntities[0]['@subject'], '<#bbq>');
