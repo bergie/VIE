@@ -68,6 +68,13 @@ VIE.prototype.ClassicEntityManager.prototype = {
     },
 
     getByJSONLD: function(json) {
+        if (typeof json === 'string') {
+            try {
+                json = jQuery.parseJSON(json);
+            } catch (e) {
+                return null;
+            }
+        }
         return this.vie.entities.addOrUpdate(json);
     },
 

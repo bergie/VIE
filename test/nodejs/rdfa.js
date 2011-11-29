@@ -212,7 +212,7 @@ exports['test jsonld'] = function(test) {
     test.equal(objectInstance.get('dc:title'), 'Wikinomics');
     test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
     
-    test.equal(objectInstance.id, 'http://www.example.com/books/wikinomics');
+    test.equal(objectInstance.id, '<http://www.example.com/books/wikinomics>');
     
     var jsonld = objectInstance.toJSONLD();
     test.equal(jsonld['@subject'], '<http://www.example.com/books/wikinomics>');
@@ -248,7 +248,7 @@ exports['test unknown subject'] = function(test) {
 
     var secondInstance = VIE.EntityManager.getBySubject('<http://foo/bar>');
     
-    var thirdInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    var thirdInstance = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
     
     test.equal(secondInstance, undefined);
     test.equal(thirdInstance, objectInstance);
