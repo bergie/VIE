@@ -118,11 +118,16 @@ VIE.Util = {
     
     _blankNodeSeed : new Date().getTime() % 1000,
     
+    // generates a new blank node ID
     blankNodeID : function () {
       this._blankNodeSeed += 1;
       return '_:bnode' + this._blankNodeSeed.toString(16);
     },
     
+    // this method converts rdf/json data from an external service
+    // into VIE.Entities. (this has been embedded in the StanbolService
+    // but as it is needed in other services, too, it made sense to 
+    // put it into the utils.)
     rdf2Entities: function (service, results) {
         //transform data from Stanbol into VIE.Entities
 
@@ -201,6 +206,7 @@ VIE.Util = {
         return vieEntities;
     },
     
+    // helper if no rdfQuery can be loaded.
     rdf2EntitiesNoRdfQuery: function (service, results) {
         jsonLD = [];
         _.forEach(results, function(value, key) {

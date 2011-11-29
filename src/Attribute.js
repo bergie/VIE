@@ -26,7 +26,6 @@ VIE.prototype.Attribute = function (id, range, domain) {
     
     this._domain = domain;
     this.range = (jQuery.isArray(range))? range : [ range ];
-    //TODO! this.count = {};
    
     this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
     

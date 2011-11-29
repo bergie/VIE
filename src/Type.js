@@ -115,7 +115,8 @@ VIE.prototype.Type = function (id, attrs) {
         }
         return obj;
     };
-
+    
+    // creates an Entity instance from this type.
     this.instance = function (attrs, opts) {
         attrs = (attrs)? attrs : {};
         opts = (opts)? opts : {};
