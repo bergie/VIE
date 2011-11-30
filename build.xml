@@ -69,10 +69,10 @@
 	 	   <arg value="git commit -am 'updating documentation for version ${VERSION}'" />
 		</exec>
 		<echo message="Pushing..."/>
-    	<!--<exec executable="sh" dir=".">
+    	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git push origin gh-pages" />
-		</exec>-->
+		</exec>
     	<echo message="Switching to master branch"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
