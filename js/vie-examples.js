@@ -5,8 +5,15 @@ jQuery(document).ready(function() {
 
     jQuery('#features').accordion();
 
-    jQuery('#analyze button').button().click(function() {
-        jQuery('#analyze .resultsholder').empty();
-        eval(jQuery('#analyze textarea').val()); 
+    jQuery('#features > div').each(function() {
+        var feature = jQuery(this).attr('id');
+        if (!feature) {
+            return true;
+        }
+
+        jQuery('#' + feature + ' button').button().click(function() {
+            jQuery('#' + feature + ' .resultsholder').empty();
+            eval(jQuery('#' + feature + ' textarea').val()); 
+        });
     });
 });
