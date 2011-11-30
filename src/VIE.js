@@ -1,3 +1,8 @@
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://bergie.github.com/VIE/ 
 var root = this,
     jQuery = root.jQuery,
     Backbone = root.Backbone,
@@ -114,9 +119,19 @@ VIE.prototype.loadSchema = function(id) {
     }
 };
 
-
+// ## Running VIE on Node.js
+//
+// When VIE is running under Node.js we can use the CommonJS
+// require interface to load our dependencies automatically.
+//
+// This means Node.js users don't need to care about dependencies
+// and can just run VIE with:
+//
+//     var VIE = require('vie');
+//
+// In browser environments the dependencies have to be included
+// before including VIE itself.
 if(typeof exports === 'object') {
-    // Running under Node.js or other CommonJS environment
     exports.VIE = VIE;
 
     if (!jQuery) {
