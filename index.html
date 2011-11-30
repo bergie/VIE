@@ -105,6 +105,55 @@ v.load({
                         </div>
                         <div class="resultsholder"></div>
                     </div>
+                    <h3><a href="#">Find you what is the capital of Mongolia</a></h3>
+                    <div id="mongolia">
+                        <p>This code digs out the answer:</p>
+                        <div class="exampleholder">
+                            <textarea>
+var vie = new VIE();
+vie.use(new vie.DBPediaService());
+
+var mongoliaURI = "<http://dbpedia.org/resource/Mongolia>";
+var capitalPropURI = "<http://dbpedia.org/property/capital>";
+var namePropURI = "rdfschema:label";
+
+vie
+.load({entity : mongoliaURI})
+.using('dbpedia')
+.execute()
+.done(function (entities) {
+    _.each(entities, function (e) {
+        if (e.id === mongoliaURI) {
+            var capitalURI = e.get(capitalPropURI).id;
+            vie
+            .load({entity : capitalURI})
+            .using('dbpedia')
+            .execute()
+            .done(function(capitalEntities) {
+                _.each(capitalEntities, function(entity) {
+                    if (entity.id != capitalURI) {
+                        return true;
+                    }
+                    var url = entity.id.substr(1, entity.id.length - 2);
+                    var label;
+                    _.each(entity.get('rdfschema:label'), function(labelLang) {
+                        if (labelLang.substr(-2) === 'en') {
+                            label = labelLang.substr(2, labelLang.length - 7);
+                        }
+                    });
+
+                    jQuery('#mongolia .resultsholder').append(
+                        jQuery('<p>The capital of Mongolia is <a href="' + url + '">' + label + '</a>.</p>')
+                    );
+                });
+            });
+        }
+   });
+});
+                        </textarea>
+                        <button>Run</button>
+                    </div>
+                    <div class="resultsholder"></div>
                 </div>
             </article>
 
