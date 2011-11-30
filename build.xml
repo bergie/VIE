@@ -65,7 +65,7 @@
 		<echo message="Pushing..."/>
     	<!--<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git push origin/gh-pages" />
+	 	   <arg value="git push origin gh-pages" />
 		</exec>-->
     	<echo message="Switching to master branch"/>
     	<exec executable="sh" dir=".">
