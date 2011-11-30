@@ -42,20 +42,21 @@
     </target>
 	
 	<target name="doc_copy" depends="doc" description="Generates documentation for vie.js with Docco ">
-        <echo message="Switching to gh-pages branch"/>
-		<echo message="Committing..."/>
+		<echo message="Move docs for now"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' docs"/>
+	 	   <arg value="mv ${DOCS_DIR} ${DOC_ROOT}/tmp"/>
 		</exec>
-    	<exec executable="sh" dir=".">
+		<echo message="Switching to gh-pages branch"/>
+		<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout gh-pages" />
 		</exec>
-    	<echo message="Importing documentation from master branch into gh-pages branch"/>
+		<echo message="Move docs again"/>
+    	<delete dir="${DOCS_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git checkout master -- docs" />
+	 	   <arg value="mv ${DOC_ROOT}/tmp ${DOCS_DIR}"/>
 		</exec>
 		<echo message="Adding..."/>
     	<exec executable="sh" dir=".">
