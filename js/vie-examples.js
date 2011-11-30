@@ -4,6 +4,7 @@ jQuery(document).ready(function() {
     });
 
     jQuery('#features').accordion();
+    jQuery('#moreinfo').tabs();
 
     jQuery('#features > div').each(function() {
         var feature = jQuery(this).attr('id');

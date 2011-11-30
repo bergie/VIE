@@ -94,44 +94,54 @@ v.load({
                 </div>
             </article>
 
-            <article>
-                <h2>VIE widgets</h2>
-
-                <p>There are several semantic interaction widgets built on top of VIE. You can easily drop these widgets into your web application to gain immediate benefit of VIE:</p>
-                <ul>
-                    <li><a href="http://createjs.org/">Create</a> &mdash; inline content editing tool</li>
-                    <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; automatic content annotation tool</li>
+            <div id="moreinfo">
+                <ul class="nav">
+                    <li><a href="#widgets">Widgets</a></li>
+                    <li><a href="#documentation">Documentation</a></li>
+                    <li><a href="#integrating">Integrating VIE</a></li>
+                    <li><a href="#development">Development</a></li>
                 </ul>
-            <article>
-                <h2>Integrating VIE</h2>
+                <article id="widgets">
+                    <h2>VIE widgets</h2>
 
-                <p>In nutshell, integrating VIE into your web application is as easy as:</p>
-                <ol>
-                    <li>Mark up your pages with RDFa annotations</li>
-                    <li>Include VIE into the pages</li>
-                    <li>Implement <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync</a></li>
-                </ol>
+                    <p>There are several user interface widgets built on top of VIE. You can easily drop these widgets into your web application to gain immediate benefit of semantic interaction:</p>
+                    <ul>
+                        <li><a href="http://createjs.org/">Create</a> &mdash; inline content editing tool</li>
+                        <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; automatic content annotation tool</li>
+                    </ul>
+                </article>
+                <article id="documentation">
+                    <h2>Tutorials</h2>
+                    <ul>
+                        <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
+                        <li><a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">Semantic UI Development with VIE</a></li>
+                    </ul>
 
-                <h3>Tutorials</h3>
-                <ul>
-                    <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
-                    <li><a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">Semantic UI Development with VIE</a></li>
-                </ul>
+                    <h2>API documentation</h2>
+                    <ul>
+                        <li><a href="docs/1.0.0/">VIE 1.0.0</a></li>
+                        <li><a href="docs/2.0.0alpha1/VIE.html">VIE 2.0.0alpha1</a></li>
+                    </ul>
+                </article>
+                <article id="integrating">
+                    <h2>Integrating VIE</h2>
 
-                <h3>API documentation</h3>
-                <ul>
-                    <li><a href="docs/1.0.0/">VIE 1.0.0</a></li>
-                    <li><a href="docs/2.0.0alpha1/VIE.html">VIE 2.0.0alpha1</a></li>
-                </ul>
-            </article>
+                    <p>In nutshell, integrating VIE into your web application is as easy as:</p>
+                    <ol>
+                        <li>Mark up your pages with <a href="http://www.w3.org/TR/xhtml-rdfa-primer/#id84624">RDFa annotations</a></li>
+                        <li>Include VIE into the pages</li>
+                        <li>Implement <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync</a></li>
+                    </ol>
+                </article>
 
-            <article>
-                <h2>VIE development</h2>
+                <article id="development">
+                    <h2>VIE development</h2>
 
-                <p>VIE development is coordinated <a href="https://github.com/bergie/VIE">on GitHub</a>. <a href="https://github.com/bergie/VIE#readme">Read more</a> about the development process.</p>
+                    <p>VIE development is coordinated <a href="https://github.com/bergie/VIE">on GitHub</a>. <a href="https://github.com/bergie/VIE#readme">Read more</a> about the development process.</p>
 
-                <p>Current build status: <a href="http://travis-ci.org/bergie/VIE"><img src="http://travis-ci.org/bergie/VIE.png" /></a></p>
-            </article>
+                    <p>Current build status: <a href="http://travis-ci.org/bergie/VIE"><img src="http://travis-ci.org/bergie/VIE.png" /></a></p>
+                </article>
+            </div>
         </div>
         <footer>
             <p>VIE is <a href="http://www.opensource.org/licenses/mit-license.php" rel="doap:license">free software</a> developed by <a href="http://iks-project.eu/">IKS Project</a> and co-funded by the European Union</p>

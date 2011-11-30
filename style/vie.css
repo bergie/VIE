@@ -87,6 +87,29 @@ article button {
     border-radius: 6px;
 }
 
+#moreinfo {
+    margin-top: 5em;
+}
+
+#moreinfo ul.nav {
+    margin: 0px;
+    padding: 0px;
+}
+
+#moreinfo ul.nav li {
+    display: inline;
+    list-style: none;
+    margin-right: 2em;
+}
+
+#moreinfo ul.nav li.ui-state-active {
+    border-bottom: 1px solid #ffffff;
+}
+
+#moreinfo .ui-tabs-hide {
+    display: none;
+}
+
 a {
     color: #ffffff;
     text-decoration: none;
@@ -97,5 +120,5 @@ footer {
     padding-left: 20%;
     padding-right: 20%;
     display: block;
-    margin-top: 2em;
+    margin-top: 5em;
 }
