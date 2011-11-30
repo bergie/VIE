@@ -47,7 +47,7 @@
         <echo message="Importing documentation from master branch into gh-pages branch"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git checkout master -- ${DOCS_DIR}" />
+	 	   <arg value="git checkout master -- docs" />
 		</exec>
     	<echo message="Switching to master branch"/>
     	<exec executable="sh" dir=".">
