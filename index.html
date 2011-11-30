@@ -93,7 +93,7 @@ v.load({
         }
         height.height = height.height.substr(2, 7);
         jQuery('#towerheight .resultsholder').append(
-            "Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower."
+            jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
         );
     });
 });
