@@ -166,14 +166,14 @@ VIE.prototype.RdfaService.prototype = {
             var attributeValue = entity.fromReference(entity.get(predicate));
             if (attributeValue instanceof service.vie.Collection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
-                    service._registerCollectionView(attributeValue, jQuery(this));
+                    service._registerCollectionView(attributeValue, jQuery(this), entity);
                 });
             }
         });
         return viewInstance;
     },
     
-    _registerCollectionView : function(collection, element) {
+    _registerCollectionView : function(collection, element, entity) {
         var viewInstance = this._getViewForElement(element, true);
         if (viewInstance) {
             return viewInstance;
@@ -182,6 +182,7 @@ VIE.prototype.RdfaService.prototype = {
         var entityTemplate = element.children(':first-child');
     
         viewInstance = new this.vie.view.Collection({
+            owner: entity,
             collection: collection,
             model: collection.model,
             el: element,
