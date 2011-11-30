@@ -158,3 +158,9 @@ You need Node.js and [NPM](http://npmjs.org/). Then just run:
 
     $ npm install --dev
     $ npm test
+
+#### Continuous integration
+
+VIE uses [Travis](http://travis-ci.org/) for continuous integration. Simply add your fork there and every time you push you'll get the tests run.
+
+[![Build Status](https://secure.travis-ci.org/bergie/VIE.png)](http://travis-ci.org/bergie/VIE)
