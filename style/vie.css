@@ -58,6 +58,35 @@ article p {
     margin-bottom: 0.5em;
 }
 
+article .exampleholder {
+    position: relative;
+}
+
+article .resultsholder {
+    height: 5em;
+    widthe: 88%;
+    overflow: auto;
+}
+
+article textarea {
+    display: inline;
+    width: 88%;
+    background-color: #eeeeec;
+    color: #000000;
+    border: none;
+}
+
+article button {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 80px;
+    width: 10%;
+    background-color: #73d216;
+    border: none;
+    border-radius: 6px;
+}
+
 a {
     color: #ffffff;
     text-decoration: none;

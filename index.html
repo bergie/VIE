@@ -6,6 +6,10 @@
         <link rel="shortcut icon" href="style/iks_favicon.ico" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+        <script src="js/vendor/underscore.min.js"></script>
+        <script src="js/vendor/backbone.min.js"></script>
+        <script src="js/vendor/jquery.rdfquery.min.js"></script>
+        <script src="js/vie-2.0.0alpha1.js"></script>
         <script src="js/vie-examples.js"></script>
     </head>
     <body xmlns:doap="http://usefulinc.com/ns/doap#" about="http://viejs.org/#vie" typeof="doap:Project">
@@ -22,7 +26,38 @@
 
                 <div id="features">
                     <h3><a href="#">Get enhancements for element content</a></h3>
-                    <div></div>
+                    <div id="analyze">
+                        <p>Given the following contents:</p>
+                        <blockquote class="analyze">
+                            This is a small test, where Steve Jobs sings a song.
+                        </blockquote>
+                        <p>This code can get you analysis:</p>
+                        <div class="exampleholder">
+                            <textarea>
+var v = new VIE();
+v.use(
+    new v.StanbolService({
+        url: "http://dev.iks-project.eu/stanbol",
+        proxyDisabled: true
+    })
+);
+v.analyze({
+    element: jQuery('#analyze blockquote')
+}).using('stanbol').execute().done(function(entities) {
+    
+    _.each(entities, function(entity) {
+        console.log("foo");
+        jQuery('#analyze .resultsholder').append(
+            "<p>" + entity.get('rdfschema:label') + "</p>"
+        );
+    });
+});
+                            
+                            </textarea>
+                            <button>Run</button>
+                        </div>
+                        <div class="resultsholder"></div>
+                    </div>
                     <h3><a href="#">Tell you how tall is the Eiffel tower</a></h3>
                     <div></div>
                 </div>
