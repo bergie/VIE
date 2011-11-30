@@ -17,7 +17,6 @@
 		<echo message="get it from: http://jashkenas.github.com/docco/"/>
 		<exec executable="docco" dir=".">
   			<arg value="${DIST_DIR}/vie-latest.debug.js" />
-  			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
 		</exec>
     </target>
 
