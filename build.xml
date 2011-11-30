@@ -13,7 +13,7 @@
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
 
-    <target name="doc" description="Generates documentation for vie.js with Docco ">
+    <target name="doc" depends="dist" description="Generates documentation for vie.js with Docco ">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
         <echo message="get it from: http://jashkenas.github.com/docco/"/>
