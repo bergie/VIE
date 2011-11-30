@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <project name="vie.js" basedir="." default="all">
 
-	<property name="VERSION" value="1.0.0"/>
+    <property name="VERSION" value="2.0.0alpha1"/>
 
-    <property name="DOCS_DIR" value="./docs" description="API documentation"/>
+    <property name="DOCS_ROOT" value="./docs" />
+    <property name="DOCS_DIR" value="${DOCS_ROOT}/${VERSION}" description="API documentation"/>
     <property name="DIST_DIR" value="./dist"/>
     <property name="DEMOS_DIR" value="./demos"/>
     <property name="LIB_DIR" value="./lib"/>
@@ -17,8 +18,13 @@
 		<echo message="get it from: http://jashkenas.github.com/docco/"/>
 		<exec executable="docco" dir=".">
   			<arg value="${DIST_DIR}/vie-latest.debug.js" />
-  			<arg value="${TOOLS_DIR}/proxy/node_proxy.js" />
 		</exec>
+        <move todir="${DOCS_DIR}">
+            <fileset dir="${DOCS_ROOT}">
+                <include name="*.html" />
+                <include name="*.css" />
+            </fileset>
+        </move>
     </target>
 
 	<target name="clean" description="Tidy up project.">

@@ -12,6 +12,11 @@
         <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
         <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>
         <script type="text/javascript" src="../lib/backboneJS/backbone.js"></script>
+        <script>
+            if ( typeof window.JSON === 'undefined' ) { 
+                document.write("&lt;script src=\"../lib/json/json2.js\">&lt;/script>");
+            }
+        </script>
 
         <!-- vie.js itself -->
 		<script type="text/javascript" src="../dist/vie-latest.debug.js"></script>
@@ -29,7 +34,7 @@
 
         <!-- SERVICES -->
         <script type="text/javascript" src="service/rdfa.js"></script>
-        <!-- TODO: buggy <script type="text/javascript" src="service/rdfardfquery.js"></script>-->
+        <!-- TODO: buggy tests and lib <script type="text/javascript" src="service/rdfardfquery.js"></script>-->
         <script type="text/javascript" src="service/stanbol.js"></script>
         <script type="text/javascript" src="service/dbpedia.js"></script>
 

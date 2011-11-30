@@ -1,10 +1,12 @@
 var jQuery = require('jquery');
 var vie = require('../../dist/vie-latest.debug.js');
 var VIE = new vie.VIE();
+VIE.use(new VIE.RdfaService({attributeExistenceComparator: ''}), 'rdfa');
 VIE.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
 VIE.namespaces.add('foaf', 'http://xmlns.com/foaf/0.1/');
 VIE.namespaces.add('cal', 'http://www.w3.org/2002/12/cal#');
 VIE.namespaces.add('mgd', 'http://www.midgard-project.org/midgard2/10.05');
+VIE.namespaces.add('dbp', 'http://dbpedia.org/resource/');
 
 // Until https://github.com/tmpvar/jsdom/issues/issue/81 is fixed you need to uncomment the following:
 //VIE.RDFa.predicateSelector = '[property]';
@@ -14,16 +16,14 @@ exports['test inheriting subject'] = function(test) {
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
     test.equal(jsonldEntities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
-
     test.equal(jsonldEntities[1]['<http://xmlns.com/foaf/0.1/name>'], 'Albert Einstein');
-    test.equal(jsonldEntities[0]['<dbp:conventionalLongName>'], 'Federal Republic of Germany');
-    test.equals(jsonldEntities[1]['<dbp:birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
+    test.equal(jsonldEntities[0]['<http://dbpedia.org/resource/conventionalLongName>'], 'Federal Republic of Germany');
+    test.equals(jsonldEntities[1]['<http://dbpedia.org/resource/birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
-
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
-    test.equal(backboneEntities[1].get('dbp:birthplace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
+    test.equal(backboneEntities[1].get('dbp:birthPlace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
     test.equal(backboneEntities[1].get('dbp:birthPlace').at(0).get('dbp:conventionalLongName'), 'Federal Republic of Germany');
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Federal Republic of Germany');
     
@@ -80,7 +80,6 @@ exports['test updating views'] = function(test) {
 
     // Ensure that it was changed in the model
     test.equal(backboneEntities[0].get('dbp:conventionalLongName'), 'Switzerland');
-    
     var entityViaJSONLD = VIE.EntityManager.getByJSONLD(backboneEntities[0].toJSONLD());
     test.equal(VIE.EntityManager.entities.length, 2);
 
@@ -97,10 +96,10 @@ exports['test global entity'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
+    test.equal(jsonldEntities.length, 1);
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
-    test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
     test.equal(jsonldEntities[0]['@subject'].substr(0, 7), '_:bnode');
     VIE.cleanup();
 
@@ -110,7 +109,7 @@ exports['test global entity'] = function(test) {
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
     test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
 
     VIE.cleanup();
     test.done();
@@ -122,8 +121,7 @@ exports['test global entity with base URL'] = function(test) {
     var jsonldEntities = VIE.RDFa.readEntities(html);
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
-    test.equal(jsonldEntities.length, 1);
-    test.equal(jsonldEntities[0]['dc:creator'], 'Jo');
+    test.equal(jsonldEntities[0]['<http://purl.org/dc/elements/1.1/creator>'], 'Jo');
     test.equal(jsonldEntities[0]['@subject'], '<http://www.example.org/jo/blog>');
 
     VIE.cleanup();
@@ -134,16 +132,15 @@ exports['test about and anonymous'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body><p about="#bbq" typeof="cal:Vevent">I\'m holding<span property="cal:summary">one last summer barbecue</span>, on <span property="cal:dtstart" content="2007-09-16T16:00:00-05:00" datatype="xsd:dateTime">September 16th at 4pm</span>.</p></body></html>');
 
     var jsonldEntities = VIE.RDFa.readEntities(html);
-
     test.equal(jsonldEntities.length, 2);
-    test.equal(jsonldEntities[0]['@type'], '<cal:Vevent>');
+    test.equal(jsonldEntities[0]['@type'][1], '<http://www.w3.org/2002/12/cal#Vevent>');
     test.equal(jsonldEntities[0]['@subject'], '<#bbq>');
     // FIXME: This should really have the datatype
-    test.equal(jsonldEntities[0]['cal:dtstart'], '2007-09-16T16:00:00-05:00');
+    test.equal(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>'], '2007-09-16T16:00:00-05:00');
     
     var objectInstance = VIE.EntityManager.getByJSONLD(jsonldEntities[0]);
-    test.equal(objectInstance.id, '#bbq');
-    test.equal(objectInstance.type, 'cal:Vevent');
+    test.equal(objectInstance.id, '<#bbq>');
+    test.equal(objectInstance.isof('cal:Vevent'), true);
 
     VIE.cleanup();
     test.done();
@@ -215,7 +212,7 @@ exports['test jsonld'] = function(test) {
     test.equal(objectInstance.get('dc:title'), 'Wikinomics');
     test.equal(objectInstance.get('dc:creator'), 'Don Tapscott');
     
-    test.equal(objectInstance.id, 'http://www.example.com/books/wikinomics');
+    test.equal(objectInstance.id, '<http://www.example.com/books/wikinomics>');
     
     var jsonld = objectInstance.toJSONLD();
     test.equal(jsonld['@subject'], '<http://www.example.com/books/wikinomics>');
@@ -251,7 +248,7 @@ exports['test unknown subject'] = function(test) {
 
     var secondInstance = VIE.EntityManager.getBySubject('<http://foo/bar>');
     
-    var thirdInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    var thirdInstance = VIE.EntityManager.getBySubject('<http://www.example.com/books/wikinomics>');
     
     test.equal(secondInstance, undefined);
     test.equal(thirdInstance, objectInstance);
@@ -274,7 +271,7 @@ exports['test image entitization'] = function(test) {
     icons.remove(icons.at(0));
     test.equal(jQuery('img', html).length, 0); 
 
-    icons.add({id: 'http://example.net/otherimage.jpg'});
+    icons.add({'@subject': 'http://example.net/otherimage.jpg'});
 
     test.equal(jQuery('img', html).length, 1);    
     test.equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
@@ -294,10 +291,15 @@ exports['test list inside a list'] = function(test) {
     parts.remove(parts.at(0));
     test.equal(parts.length, 0);
     
-    parts.add({id: 'http://example.net/page#second', 'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
-    
+    parts.add({'@subject': 'http://example.net/page#second', 'foaf:depiction': ['<http://example.net/otherimage.jpg>'], 'dc:title': 'Second part'});
+   
+    test.equal(jQuery('li', html).length, 1);
+
+    /*
+    FIXME: We need to decide if we still want to support autocollectivization
     test.equal(jQuery('li img', html).length, 1);
     test.equal(jQuery('li img', html).attr('src'), 'http://example.net/otherimage.jpg');
+    */
     
     VIE.cleanup();
     test.done();
@@ -315,16 +317,20 @@ exports['test adding anonymous elements to list'] = function(test) {
 
     test.equal(parts.at(1).toJSONLD()['@subject'].indexOf('_:bnode'), 0);
     test.equal(objectInstance.toJSONLD()['<http://purl.org/dc/elements/1.1/hasPart>'][1], parts.at(1).toJSONLD()['@subject']);
-
+    /*
+    FIXME: We need to decide if we still want to support autocollectivization
     test.equal(jQuery('li img', html).length, 2);
+    */
     
     VIE.cleanup();
     test.done();
 }
 
 exports['test list inside a list with two lists'] = function(test) {
-    var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#"><span property="dc:title">First part of second</span></li></ol></div></div>');
+    var html = jQuery('<div><div about="http://example.net/page"><ol rel="dc:hasPart" rev="dc:partOf"><li about="http://example.net/page#first"><span rel="foaf:depiction"><img src="http://example.net/image.jpg" /></span><span property="dc:title">First part</span></li></ol></div><div about="http://example.net/secondpage"><ol rel="dc:hasPart" rev="dc:partOf"><li about="#foo"><span property="dc:title">First part of second</span></li></ol></div></div>');
+    var orig = html.html();
     VIE.RDFaEntities.getInstances(html);
+    test.equal(orig, html.html(), 'HTML must not change by reading');
     var objectInstance = VIE.EntityManager.getBySubject('http://example.net/page');
     var parts = objectInstance.get('dc:hasPart');
     test.equal(parts.length, 1);
@@ -379,7 +385,7 @@ exports['test table rows'] = function(test) {
 
     VIE.RDFaEntities.getInstances(html);
 
-    test.equal(VIE.EntityManager.entities.length, 3);
+    test.equal(VIE.EntityManager.entities.length, 2);
     test.equal(jQuery('tr', html).length, 1);
 
     var table = VIE.EntityManager.getBySubject('Table42');
