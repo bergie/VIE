@@ -21,7 +21,8 @@
     "request"   : ">=2.2.0"
   },
   "devDependencies": {
-    "nodeunit"  : ">=0.6.0"
+    "nodeunit"  : ">=0.6.0",
+    "docco"     : ">=0.3.0"
   },
   "lib"           : ".",
   "main"          : "dist/vie-latest.js",
