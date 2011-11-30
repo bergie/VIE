@@ -75,8 +75,7 @@ This JS would work across all the different CMS implementations. Backbone.js pro
 
 There is a full static HTML example of VIE at work. Saving outputs the edited contents as JSON into the JavaScript console:
 
-* [Example with Aloha Editor](https://github.com/bergie/VIE/raw/master/example.html)
-* [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
+* [Example with Hallo](http://createjs.org)
 
 Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
 
