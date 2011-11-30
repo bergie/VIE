@@ -39,6 +39,9 @@
             	</patternset>
             </fileset>
        </move>
+        <echo message="Switching to gh-pages branch"/>
+        <echo message="Importing documentation from master branch into gh-pages branch"/>
+        <echo message="Switching to master branch"/>
     </target>
     
     <target name="clean" description="Tidy up project.">
