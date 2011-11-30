@@ -75,6 +75,7 @@ article .resultsholder a {
 article textarea {
     display: inline;
     width: 88%;
+    height: 14em;
     background-color: #eeeeec;
     color: #000000;
     border: none;
