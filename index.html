@@ -44,9 +44,10 @@ v.use(
 v.analyze({
     element: jQuery('#analyze blockquote')
 }).using('stanbol').execute().done(function(entities) {
-    
     _.each(entities, function(entity) {
-        console.log("foo");
+        if (!entity.has('rdfschema:label')) {
+            return true;
+        }
         jQuery('#analyze .resultsholder').append(
             "<p>" + entity.get('rdfschema:label') + "</p>"
         );
