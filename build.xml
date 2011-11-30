@@ -43,6 +43,11 @@
 	
 	<target name="doc_copy" depends="doc" description="Generates documentation for vie.js with Docco ">
         <echo message="Switching to gh-pages branch"/>
+		<echo message="Committing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' docs"/>
+		</exec>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout gh-pages" />
