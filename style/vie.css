@@ -65,7 +65,7 @@ article .exampleholder {
 article .resultsholder {
     height: 5em;
     widthe: 88%;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 article .resultsholder a {

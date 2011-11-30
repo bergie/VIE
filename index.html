@@ -29,7 +29,7 @@
                     <div id="analyze">
                         <p>Given the following contents:</p>
                         <blockquote class="analyze">
-The Hitchhiker's Guide to the Galaxy is a science fiction comedy series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon. Adaptations have included stage shows, a "trilogy" of five books published between 1979 and 1992, a sixth novel penned by Eoin Colfer in 2009, a 1981 TV series, a 1984 computer game, and three series of three-part comic book adaptations of the first three novels published by DC Comics between 1993 and 1996.
+Until September 2008, European policy measures were limited to a small number of countries (Spain and Italy). In both countries, the measures were dedicated to households (tax rebates) reform of the taxation system to support specific sectors such as housing. The European Commission proposed a &euro;200 billion stimulus plan to be implemented at the European level by the countries. At the beginning of 2009, the UK and Spain completed their initial plans, while Germany announced a new plan.
                         </blockquote>
                         <p>This code can get you analysis:</p>
                         <div class="exampleholder">
@@ -37,13 +37,16 @@ The Hitchhiker's Guide to the Galaxy is a science fiction comedy series created 
 var v = new VIE();
 v.use(
     new v.StanbolService({
-        url: "http://dev.iks-project.eu/stanbol",
+        url: "http://dev.iks-project.eu/stanbolfull",
         proxyDisabled: true
     })
 );
 v.analyze({
     element: jQuery('#analyze blockquote')
 }).using('stanbol').execute().done(function(entities) {
+    jQuery('#analyze .resultsholder').append(
+        jQuery('<p>We found ' + entities.length + ' entities, including:</p>')
+    );
     _.each(entities, function(entity) {
         if (!entity.has('rdfschema:label')) {
             return true;
