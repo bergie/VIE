@@ -48,20 +48,15 @@
 	 	   <arg value="git checkout gh-pages" />
 		</exec>
     	<echo message="Importing documentation from master branch into gh-pages branch"/>
-	    	<exec executable="sh" dir=".">
-		 	   <arg value="-c" />
-		 	   <arg value="git checkout master -- docs" />
-			</exec>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout master -- docs" />
+		</exec>
     	<echo message="Importing test cases from master branch into gh-pages branch"/>
-	    	<exec executable="sh" dir=".">
-		 	   <arg value="-c" />
-		 	   <arg value="git checkout master -- test" />
-			</exec>
-		<echo message="Importing distribution from master branch into gh-pages branch"/>
-	    	<exec executable="sh" dir=".">
-		 	   <arg value="-c" />
-		 	   <arg value="git checkout master -- dist" />
-			</exec>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout master -- test" />
+		</exec>
     	<echo message="Switching to master branch"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
