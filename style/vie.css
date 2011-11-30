@@ -68,6 +68,10 @@ article .resultsholder {
     overflow: auto;
 }
 
+article .resultsholder a {
+    margin-right: 1em; 
+}
+
 article textarea {
     display: inline;
     width: 88%;
