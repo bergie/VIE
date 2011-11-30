@@ -10,4 +10,4 @@ ant
 npm install -g nodeunit
 
 # Install dependencies
-npm install
+npm install --dev
