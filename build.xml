@@ -45,7 +45,7 @@
 		<echo message="Move docs for now"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="mv ${DOCS_DIR} ${DOC_ROOT}/tmp"/>
+	 	   <arg value="mv ${DOCS_DIR} ${DOCS_ROOT}/tmp"/>
 		</exec>
 		<echo message="Switching to gh-pages branch"/>
 		<exec executable="sh" dir=".">
@@ -56,7 +56,7 @@
     	<delete dir="${DOCS_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="mv ${DOC_ROOT}/tmp ${DOCS_DIR}"/>
+	 	   <arg value="mv ${DOCS_ROOT}/tmp ${DOCS_DIR}"/>
 		</exec>
 		<echo message="Adding..."/>
     	<exec executable="sh" dir=".">
