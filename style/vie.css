@@ -58,6 +58,17 @@ article p {
     margin-bottom: 0.5em;
 }
 
+#features h3 {
+    margin-bottom: 0.5em;
+    padding-bottom: 0px;
+    border-bottom: 1px solid transparent;
+}
+
+#features h3.ui-state-active,
+#features h3:hover {
+    border-bottom: 1px solid #ffffff;
+}
+
 article .exampleholder {
     position: relative;
 }
@@ -107,7 +118,8 @@ article button {
     margin-right: 2em;
 }
 
-#moreinfo ul.nav li.ui-state-active {
+#moreinfo ul.nav li.ui-state-active,
+#moreinfo ul.nav li:hover {
     border-bottom: 1px solid #ffffff;
 }
 
