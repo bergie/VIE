@@ -8,6 +8,50 @@ var root = this,
     Backbone = root.Backbone,
     _ = root._;
 
+// ## VIE constructor
+//
+// The VIE constructor is the way to initialize VIE for your
+// application. The instance of VIE handles all management of
+// semantic interaction, including keeping track of entities,
+// changes to them, the possible RDFa views on the page where
+// the entities are displayed, and connections to external
+// services like Stanbol and DBPedia.
+//
+// To get a VIE instance, simply run:
+//
+//     var vie = new VIE();
+//
+// You can also pass configurations to the VIE instance through
+// the constructor. For example, to set a different default
+// namespace to be used for names that don't have a namespace
+// specified, do:
+//
+//     var vie = new VIE({
+//         defaultNamespace: 'http://example.net'
+//     });
+//
+// ### Differences with VIE 1.x
+//
+// VIE 1.x used singletons for managing entities and views loaded
+// from a page. This has been changed with VIE 2.x, and now all
+// data managed by VIE is tied to the instance of VIE being used.
+//
+// This means that VIE needs to be instantiated before using. So,
+// when previously you could get entities from page with:
+//
+//     VIE.RDFaEntities.getInstances();
+//
+// Now you need to instantiate VIE first. This example uses the
+// Classic API compatibility layer instead of the `load` method:
+//
+//     var vie = new VIE();
+//     vie.RDFaEntities.getInstances();
+//
+// Currently the Classic API is enabled by default, but it is
+// recommended to ensure it is enabled before using it. So:
+//
+//     var vie = new VIE({classic: true});
+//     vie.RDFaEntities.getInstances();
 var VIE = root.VIE = function(config) {
     this.config = (config) ? config : {};
     this.services = {};

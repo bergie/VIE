@@ -415,11 +415,12 @@ VIE.prototype.RdfaService.prototype = {
         } else {
             $elem = jQuery(elem);
         }
-        
+        // Collect namespace definitions from the element and its parents
+        $elem = $elem.add($elem.parents());
         var obj = {};
-        
+
         $elem.each(function (i, e) {
-            if (e.attributes && e.attributes.getNamedItemNS) {
+            if (e.attributes) {
                 for (i = 0; i < e.attributes.length; i += 1) {
                     var attr = e.attributes[i];
                     if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
