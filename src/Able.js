@@ -16,8 +16,11 @@ VIE.prototype.Able.prototype = {
         return this;
     },
     _using: function(service) {
-        var serviceObj = typeof service === "string" ? this.vie.service(service) : service;
-        this.services.push(serviceObj);
+        var serviceObj = (_.isArray(service))? service : [ service ];
+        _.each (serviceObj, function (s) {
+            var obj = (typeof s === "string")? this.vie.service(s) : s;
+            this.services.push(obj);
+        });
         return this;
     },
     init: function(options, methodName) {
