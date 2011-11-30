@@ -4,10 +4,10 @@
 
 // Adding capability of handling type/class structure and inheritance to VIE. 
 if (VIE.prototype.Type) {
-	throw "ERROR: VIE.Type is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
 }
 if (VIE.prototype.Types) {
-	throw "ERROR: VIE.Types is already defined. Please check your installation!";
+	throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
 }
 
 // The constructor of a VIE.Type. 
@@ -23,7 +23,7 @@ VIE.prototype.Type = function (id, attrs) {
 
     // checks whether such a type is already defined. 
     if (this.vie.types.get(this.id)) {
-        throw "The type " + this.id + " is already defined!";
+        throw new Error("The type " + this.id + " is already defined!");
     }    
     
     // the supertypes (parentclasses) of the current type.
@@ -44,7 +44,7 @@ VIE.prototype.Type = function (id, attrs) {
         if (type) {
             return type.subsumes(this.id);
         } else {
-            throw "No valid type given";
+            throw new Error("No valid type given");
         }
     };
     
@@ -70,7 +70,7 @@ VIE.prototype.Type = function (id, attrs) {
             }
             return false;
         } else {
-            throw "No valid type given";
+            throw new Error("No valid type given");
         }
     };
     
@@ -99,7 +99,7 @@ VIE.prototype.Type = function (id, attrs) {
                 this.inherit(supertype[i]);
             }
         } else {
-            throw "Wrong argument in VIE.Type.inherit()";
+            throw new Error("Wrong argument in VIE.Type.inherit()");
         }
         return this;
     };
@@ -115,18 +115,27 @@ VIE.prototype.Type = function (id, attrs) {
         }
         return obj;
     };
-
+    
+    // creates an Entity instance from this type.
     this.instance = function (attrs, opts) {
         attrs = (attrs)? attrs : {};
-
-        for (var a in attrs) {
-            if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
-                throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+        opts = (opts)? opts : {};
+        
+        // turn type/attribute checking on by default!
+        if (opts.typeChecking !== false) {
+            for (var a in attrs) {
+                if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
+                    throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
+                }
             }
         }
-
-        attrs['@type'] = this.id;
-
+        
+        if (attrs['@type']) {
+            attrs['@type'].push(this.id);
+        } else {
+            attrs['@type'] = this.id;
+        }
+        
         return new this.vie.Entity(attrs, opts);
     };
         
@@ -161,7 +170,7 @@ VIE.prototype.Types = function () {
             	this._types[id.id] = id;
                 return id;
             } else {
-                throw "Wrong argument to VIE.Types.add()!";
+                throw new Error("Wrong argument to VIE.Types.add()!");
             }
         }
     };

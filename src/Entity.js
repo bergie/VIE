@@ -1,7 +1,7 @@
 VIE.prototype.Entity = function(attrs, opts) {
 
     var self = this;
-    
+
     var mapAttributeNS = function (attr, ns) {
         var a = attr;
         if (ns.isUri (attr) || attr.indexOf('@') === 0) {
@@ -17,28 +17,22 @@ VIE.prototype.Entity = function(attrs, opts) {
         }
         return a;
     };
-        
-    if ('@type' in attrs) {
-        if (_.isArray(attrs['@type'])) {
-            attrs['@type'] = _.map(attrs['@type'], function(val){
-                if (this.types.get(val)) {
-                    return this.types.get(val).id;
-                }
-                else {
-                    return val;
-                }
-            }, self.vie);
-        }
-        else if (typeof attrs['@type'] === 'string') {
-            if (self.vie.types.get(attrs['@type'])) {
-                attrs['@type'] = self.vie.types.get(attrs['@type']).id;
+
+    if (attrs['@type'] !== undefined) {
+        attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
+        attrs['@type'] = _.map(attrs['@type'], function(val){
+            if (!self.vie.types.get(val)) {
+                //if there is no such type -> add it and let it inherit from "Thing"
+                self.vie.types.add(val).inherit("Thing");
             }
-        }
+            return self.vie.types.get(val).id;
+        });
+        attrs['@type'] = (attrs['@type'].length === 1)? attrs['@type'][0] : attrs['@type'];
     } else {
         // provide "Thing" as the default type if none was given
         attrs['@type'] = self.vie.types.get("Thing").id;
     }
-    
+
     //the following provides full seamless namespace support
     //for attributes. It should not matter, if you
     //query for `model.get('name')` or `model.get('foaf:name')`
@@ -54,41 +48,33 @@ VIE.prototype.Entity = function(attrs, opts) {
             attrs[newKey] = value;
         }
     }, self.vie);
-    
+
     var Model = Backbone.Model.extend({
         idAttribute: '@subject',
 
         initialize: function(attributes, options) {
             if (attributes['@subject']) {
                 this.id = this['@subject'] = this.toReference(attributes['@subject']);
-            }            
+            }
             return this;
         },
-                
+
         get: function (attr) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
-            if (_.isArray(value)) {
-                value = _.map(value, function(v) {
-                    if (attr === '@type' && self.vie.types.get(v)) {
-                        return self.vie.types.get(v);
-                    } else if (self.vie.entities.get(v)) {
-                        return self.vie.entities.get(v);
-                    } else {
-                        return v;
-                    }
-                }, this);
-            } else {
-                if (typeof value !== "string") {
-                    return value;
-                } 
-                
-                if (attr === '@type' && self.vie.types.get(value)) {
-                    value = self.vie.types.get(value);
-                } else if (self.vie.entities.get(value)) {
-                    value = self.vie.entities.get(value);
+            value = (_.isArray(value))? value : [ value ];
+            
+            value = _.map(value, function(v) {
+                if (v !== undefined && attr === '@type' && self.vie.types.get(v)) {
+                    return self.vie.types.get(v);
+                } else if (v !== undefined && self.vie.entities.get(v)) {
+                    return self.vie.entities.get(v);
+                } else {
+                    return v;
                 }
-            }
+            }, this);
+            // if there is only one element, just return that one
+            value = (value.length === 1)? value[0] : value;
             return value;
         },
 
@@ -96,7 +82,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.has.call(this, attr);
         },
-        
+
         set : function(attrs, options) {
             if (!attrs) {
                 return this;
@@ -113,7 +99,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }, this);
             _.each (attrs, function (value, key) {
                if (key.indexOf('@') === -1) {
-                   if (typeof value === "object" && 
+                   if (typeof value === "object" &&
                        !jQuery.isArray(value) &&
                        !value.isCollection) {
                        var child = new self.vie.Entity(value, options);
@@ -130,12 +116,12 @@ VIE.prototype.Entity = function(attrs, opts) {
             }, this);
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
-        
+
         unset: function (attr, opts) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
-        
+
         getSubject: function(){
             if (typeof this.id === "undefined") {
                 this.id = this.attributes[this.idAttribute];
@@ -148,11 +134,11 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return this.cid.replace('c', '_:bnode');
         },
-        
+
         getSubjectUri: function(){
             return this.fromReference(this.getSubject());
         },
-        
+
         isReference: function(uri){
             var matcher = new RegExp("^\\<([^\\>]*)\\>$");
             if (matcher.exec(uri)) {
@@ -160,7 +146,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return false;
         },
-        
+
         toReference: function(uri){
             if (typeof uri !== "string") {
                 return uri;
@@ -170,7 +156,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return '<' + uri + '>';
         },
-        
+
         fromReference: function(uri){
             if (typeof uri !== "string") {
                 return uri;
@@ -180,7 +166,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return uri.substring(1, uri.length - 1);
         },
-        
+
         as: function(encoding){
             if (encoding === "JSON") {
                 return this.toJSON();
@@ -188,18 +174,14 @@ VIE.prototype.Entity = function(attrs, opts) {
             if (encoding === "JSONLD") {
                 return this.toJSONLD();
             }
-            throw "Unknown encoding " + encoding;
+            throw new Error("Unknown encoding " + encoding);
         },
-        
+
         toJSONLD: function(){
             var instanceLD = {};
             var instance = this;
             _.each(instance.attributes, function(value, name){
                 var entityValue = value; //instance.get(name);
-
-                if (name === '@type' && typeof entityValue === 'object') {
-                    entityValue = entityValue.id;
-                }
 
                 if (value instanceof instance.vie.Collection) {
                     entityValue = value.map(function(instance) {
@@ -210,9 +192,9 @@ VIE.prototype.Entity = function(attrs, opts) {
                 // TODO: Handle collections separately
                 instanceLD[name] = entityValue;
             });
-            
+
             instanceLD['@subject'] = instance.getSubject();
-            
+
             return instanceLD;
         },
 
@@ -222,7 +204,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                 // calling entity.setOrAdd("rdfs:type", "example:Musician")
                 entity._setOrAddOne(arg1, arg2);
             }
-            else 
+            else
                 if (typeof arg1 === "object") {
                     // calling entity.setOrAdd({"rdfs:type": "example:Musician", ...})
                     _(arg1).each(function(val, key){
@@ -244,12 +226,19 @@ VIE.prototype.Entity = function(attrs, opts) {
                 this.set(obj);
             }
             else {
+                if (!(val instanceof Array)) {
+                    val = [val];
+                }
                 // Make sure not to set the same value twice
-                if (val !== value && (!(val instanceof Array) && val.indexOf(value) === -1)) {
-                    // Value already set, make sure it's an Array and extend it
-                    if (!(val instanceof Array)) {
-                        val = [val];
+                var contains = false;
+                for (var v = 0; v < val.length; v++) {
+                    if (typeof val[v] === "string") {
+                        contains |= val[v] == value;
+                    } else {
+                        contains |= val[v].id == value;
                     }
+                }
+                if (!contains) {
                     val.push(value);
                     obj = {};
                     obj[attr] = val;
@@ -262,7 +251,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             type = self.vie.types.get(type);
             return this.hasPropertyValue("@type", type);
         },
-        
+
         hasPropertyValue: function(property, value) {
             var t = this.get(property);
             if (!(value instanceof Object)) {
@@ -275,25 +264,48 @@ VIE.prototype.Entity = function(attrs, opts) {
                 return t === value;
             }
         },
-        
+
         isof: function (type) {
             var types = this.get('@type');
             
+            if (types === undefined) {
+                return false;
+            }
             types = (_.isArray(types))? types : [ types ];
             
+            type = (self.vie.types.get(type))? self.vie.types.get(type) : new self.vie.Type(type);
             for (var t = 0; t < types.length; t++) {
-                if (self.vie.types.get(types[t]) && 
-                    self.vie.types.get(types[t]).isof(type)) {
-                    return true;
+                if (self.vie.types.get(types[t])) {
+                    if (self.vie.types.get(types[t]).isof(type)) {
+                        return true;
+                    }
+                } else {
+                    var typeTmp = new self.vie.Type(types[t]);
+                    if (typeTmp.id === type.id) {
+                        return true;
+                    }
                 }
             }
             return false;
         },
         
+        addTo : function (collection, update) {
+            var self = this;
+            if (collection instanceof self.vie.Collection) {
+                if (update) {
+                    collection.addOrUpdate(self);
+                } else {
+                    collection.add(self);
+                }
+                return this;
+            }
+            throw new Error("Please provide a proper collection of type VIE.Collection as argument!");
+        },
+
         isEntity: true,
-        
+
         vie: self.vie
     });
-    
-    return new Model(attrs, opts);    
+
+    return new Model(attrs, opts);
 };

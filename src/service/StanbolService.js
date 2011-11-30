@@ -21,11 +21,12 @@ VIE.prototype.StanbolService = function(options) {
             entityhub: "http://www.iks-project.eu/ontology/rick/model/",
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+            rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
             dc  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
+            skos: "http://www.w3.org/2004/02/skos/core"
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -33,7 +34,7 @@ VIE.prototype.StanbolService = function(options) {
     this.vie = null; // will be set via VIE.use();
     this.name = this.options.name;
     this.connector = new StanbolConnector(this.options);
-    
+
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
     });
@@ -42,7 +43,7 @@ VIE.prototype.StanbolService = function(options) {
 
 VIE.prototype.StanbolService.prototype = {
     init: function(){
-        
+
         for (var key in this.options.namespaces) {
             try {
                 var val = this.options.namespaces[key];
@@ -52,8 +53,8 @@ VIE.prototype.StanbolService.prototype = {
                 //ignore for now!
             }
         }
-        this.namespaces = new this.vie.Namespaces(this.vie.namespaces.base(), this.options.namespaces);
-        
+        this.namespaces = this.vie.namespaces;
+
         this.rules = [
             //rule to add backwards-relations to the triples
             //this makes querying for entities a lot easier!
@@ -79,7 +80,7 @@ VIE.prototype.StanbolService.prototype = {
              {
                 'left' : [
                     '?subject a dbpedia:Person',
-                    '?subject rdfs:label ?label'
+                    '?subject rdfschema:label ?label'
                  ],
                  'right': function(ns){
                      return function(){
@@ -99,9 +100,31 @@ VIE.prototype.StanbolService.prototype = {
                  }(this.namespaces)
              },
              {
+             'left' : [
+                     '?subject a foaf:Person',
+                     '?subject rdfschema:label ?label'
+                  ],
+                  'right': function(ns){
+                      return function(){
+                          return [
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  'a',
+                                  '<' + ns.base() + 'Person>', {
+                                      namespaces: ns.toObj()
+                                  }),
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                                  this.label, {
+                                      namespaces: ns.toObj()
+                                  })
+                              ];
+                      };
+                  }(this.namespaces)
+              },
+             {
                  'left' : [
                      '?subject a dbpedia:Place',
-                     '?subject rdfs:label ?label'
+                     '?subject rdfschema:label ?label'
                   ],
                   'right': function(ns) {
                       return function() {
@@ -121,7 +144,7 @@ VIE.prototype.StanbolService.prototype = {
                   }(this.namespaces)
               },
         ];
-        
+
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             //TODO: add attributes
         ]).inherit("Thing");
@@ -144,11 +167,10 @@ VIE.prototype.StanbolService.prototype = {
         var text = service._extractText(element);
 
         if (text.length > 0) {
-            var service = this;
             //query enhancer with extracted text
             var success = function (results) {
                 _.defer(function(){
-                    var entities = service._enhancer2Entities(service, results);
+                    var entities = VIE.Util.rdf2Entities(service, results);
                     analyzable.resolve(entities);
                 });
             };
@@ -164,7 +186,7 @@ VIE.prototype.StanbolService.prototype = {
         }
 
     },
-    
+
     // VIE API load implementation
     // Runs a Stanbol entityhub find
     find: function(findable){
@@ -181,7 +203,7 @@ VIE.prototype.StanbolService.prototype = {
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
         var success = function (results) {
             _.defer(function(){
-                var entities = service._enhancer2Entities(service, results);
+                var entities = VIE.Util.rdf2Entities(service, results);
                 findable.resolve(entities);
             });
         };
@@ -190,14 +212,14 @@ VIE.prototype.StanbolService.prototype = {
         };
         this.connector.find(term, limit, offset, success, error);
     },
-    
+
     // VIE API load implementation
     // Runs a Stanbol entityhub find
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
         var service = this;
-        
+
         var entity = loadable.options.entity;
         if(!entity){
             console.warn("StanbolConnector: No entity to look for!");
@@ -205,7 +227,7 @@ VIE.prototype.StanbolService.prototype = {
         };
         var success = function (results) {
             _.defer(function(){
-                var entities = service._enhancer2Entities(service, results);
+                var entities = VIE.Util.rdf2Entities(service, results);
                 loadable.resolve(entities);
             });
         };
@@ -214,10 +236,10 @@ VIE.prototype.StanbolService.prototype = {
         };
         this.connector.load(entity, success, error);
     },
-    
+
     _extractText: function (element) {
-        if (element.get(0) && 
-            element.get(0).tagName && 
+        if (element.get(0) &&
+            element.get(0).tagName &&
             (element.get(0).tagName == 'TEXTAREA' ||
             element.get(0).tagName == 'INPUT' && element.attr('type', 'text'))) {
             return element.get(0).val();
@@ -229,112 +251,6 @@ VIE.prototype.StanbolService.prototype = {
                 .replace(/\0\b\n\r\f\t/g, ''); // remove non-letter symbols
             return jQuery.trim(res);
         }
-    },
-
-    _enhancer2Entities: function (service, results) {
-        //transform data from Stanbol into VIE.Entities
-
-        if (typeof jQuery.rdf !== 'function') {
-            return this._enhancer2EntitiesNoRdfQuery(service, results);
-        }
-        var rdf = jQuery.rdf().load(results, {});
-
-        //execute rules here!
-        if (service.rules) {
-            var rules = jQuery.rdf.ruleset();
-            for (var prefix in service.namespaces.toObj()) {
-                if (prefix !== "") {
-                	rules.prefix(prefix, service.namespaces.get(prefix));
-                }
-            }
-            for (var i = 0; i < service.rules.length; i++) {
-                rules.add(service.rules[i]['left'], service.rules[i]['right']);
-            }
-            rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
-        }
-        var entities = {};
-        rdf.where('?subject ?property ?object').each(function() {
-            var subject = this.subject.toString();
-            if (!entities[subject]) {
-                entities[subject] = {
-                    '@subject': subject,
-                    '@context': service.namespaces.toObj(),
-                    '@type': []
-                };
-            }
-            var propertyUri = this.property.toString();
-            var propertyCurie;
-
-            propertyUri = propertyUri.substring(1, propertyUri.length - 1);
-            try {
-                property = jQuery.createCurie(propertyUri, {namespaces: service.namespaces.toObj()});
-            } catch (e) {
-                property = propertyUri;
-                console.warn(propertyUri + " doesn't have a namespace definition in '", service.namespaces.toObj());
-            }
-            entities[subject][property] = entities[subject][property] || [];
-
-            function getValue(rdfQueryLiteral){
-                if(typeof rdfQueryLiteral.value === "string"){
-                    if (rdfQueryLiteral.lang)
-                        return rdfQueryLiteral.toString();
-                    else 
-                        return rdfQueryLiteral.value;
-                    return rdfQueryLiteral.value.toString();
-                } else if (rdfQueryLiteral.type === "uri"){
-                    return rdfQueryLiteral.toString();
-                } else {
-                    return rdfQueryLiteral.value;
-                }
-            }
-            entities[subject][property].push(getValue(this.object));
-        });
-
-        _(entities).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
-            delete ent["rdf:type"];
-            _(ent).each(function(value, property){
-                if(value.length === 1){
-                    ent[property] = value[0];
-                }
-            });
-        });
-
-        var vieEntities = [];
-        jQuery.each(entities, function() {
-            var entityInstance = new service.vie.Entity(this);
-            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
-            vieEntities.push(entityInstance);
-        });
-        return vieEntities; 
-    },
-
-    _enhancer2EntitiesNoRdfQuery: function (service, results) {
-        jsonLD = [];
-        _.forEach(results, function(value, key) {
-            var entity = {};
-            entity['@subject'] = '<' + key + '>';
-            _.forEach(value, function(triples, predicate) {
-                predicate = '<' + predicate + '>';
-                _.forEach(triples, function(triple) {
-                    if (triple.type === 'uri') {
-                        triple.value = '<' + triple.value + '>';
-                    }
-
-                    if (entity[predicate] && !_.isArray(entity[predicate])) {
-                        entity[predicate] = [entity[predicate]];
-                    }
-
-                    if (_.isArray(entity[predicate])) {
-                        entity[predicate].push(triple.value);
-                        return;
-                    }
-                    entity[predicate] = triple.value;
-                });
-            });
-            jsonLD.push(entity);
-        });
-        return jsonLD;
     }
 };
 
@@ -348,7 +264,7 @@ var StanbolConnector = function(options){
     //TODO: this.factstoreUrlPrefix = "/factstore";
 };
 StanbolConnector.prototype = {
-    
+
     analyze: function(text, success, error, options) {
         if (!options) { options = {}; }
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
@@ -359,7 +275,7 @@ StanbolConnector.prototype = {
             // We're on Node.js, don't use jQuery.ajax
             return this.analyzeNode(enhancerUrl, text, success, error, options, format);
         }
-        
+
         jQuery.ajax({
             success: function(response){
                 success(response);
@@ -368,7 +284,7 @@ StanbolConnector.prototype = {
             type: "POST",
             url: proxyUrl || enhancerUrl,
             data: (proxyUrl) ? {
-                    proxy_url: enhancerUrl, 
+                    proxy_url: enhancerUrl,
                     content: text,
                     verb: "POST",
                     format: format
@@ -394,14 +310,14 @@ StanbolConnector.prototype = {
         });
         r.end();
     },
-    
+
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
-        
+
         jQuery.ajax({
             success: function(response){
                 success(response);
@@ -410,7 +326,7 @@ StanbolConnector.prototype = {
             type: (proxyUrl) ? "POST" : "GET",
             url: proxyUrl || url,
             data: (proxyUrl) ? {
-                    proxy_url: url, 
+                    proxy_url: url,
                     content: "",
                     verb: "GET",
                     format: format
@@ -420,7 +336,7 @@ StanbolConnector.prototype = {
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
-    
+
     find: function (term, limit, offset, success, error, options) {
         // curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find
         if (!options) { options = {}; }
@@ -430,11 +346,11 @@ StanbolConnector.prototype = {
         if (limit == null) {
             limit = 10;
         }
-        
+
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/find";
         var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
-        
+
         jQuery.ajax({
             success: function(response){
                 success(response);
@@ -443,7 +359,7 @@ StanbolConnector.prototype = {
             type: "POST",
             url: proxyUrl || url,
             data: (proxyUrl) ? {
-                    proxy_url: url, 
+                    proxy_url: url,
                     content: {
                         name : term,
                         limit : limit,
@@ -457,7 +373,7 @@ StanbolConnector.prototype = {
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
-    
+
     _proxyUrl: function(){
         this.proxyUrl = "";
         if(this.baseUrl.indexOf(":") !== -1 && !this.options.proxyDisabled){

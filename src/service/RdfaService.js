@@ -4,8 +4,10 @@ VIE.prototype.RdfaService = function(options) {
     }
     this.vie = null;
     this.name = 'rdfa';
-    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],[href],html";
+    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
+
+    this.attributeExistenceComparator = options.attributeExistenceComparator;
     this.views = [];
 };
 
@@ -42,7 +44,6 @@ VIE.prototype.RdfaService.prototype = {
         for (var prefix in ns) {
             this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
         }
-        
         var entities = [];
         jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
             var entity = service._readEntity(jQuery(this));
@@ -76,12 +77,11 @@ VIE.prototype.RdfaService.prototype = {
         var subject = this.getElementSubject(element);
         var type = this._getElementType(element);
         var predicate, value, valueCollection;
-        
         var entity = this._readEntityPredicates(subject, element, false);
         //if (jQuery.isEmptyObject(entity)) {
         //    return null;
         //}
-
+        var vie = this.vie;
         for (predicate in entity) {
             value = entity[predicate];
             if (!_.isArray(value)) {
@@ -89,7 +89,8 @@ VIE.prototype.RdfaService.prototype = {
             }
             valueCollection = new this.vie.Collection();
             _.each(value, function(valueItem) {
-                valueCollection.addOrUpdate({'@subject': valueItem});
+                var linkedEntity = vie.entities.addOrUpdate({'@subject': valueItem});
+                valueCollection.addOrUpdate(linkedEntity);
             });
             entity[predicate] = valueCollection;
         }
@@ -98,7 +99,6 @@ VIE.prototype.RdfaService.prototype = {
         if (type) {
             entity['@type'] = type;
         }
-        
         var entityInstance = new this.vie.Entity(entity);
         entityInstance = this.vie.entities.addOrUpdate(entityInstance);
         this._registerEntityView(entityInstance, element);
@@ -115,10 +115,13 @@ VIE.prototype.RdfaService.prototype = {
             }
     
             var value = entity.get(predicate);
+            if (value.isCollection) {
+                // Handled by CollectionViews separately
+                return true;
+            }
             if (value === service.readElementValue(predicate, predicateElement)) {
                 return true;
             }
-    
             service.writeElementValue(predicate, predicateElement, value);
         });
         return true;
@@ -139,6 +142,10 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     _registerEntityView : function(entity, element) {
+        if (!element.length) {
+            return;
+        }
+
         var service = this;
         var viewInstance = this._getViewForElement(element);
         if (viewInstance) {
@@ -209,24 +216,25 @@ VIE.prototype.RdfaService.prototype = {
         }
         var subject = undefined;
         jQuery(element).closest(this.subjectSelector).each(function() {
-            if (jQuery(this).attr('about') !== undefined) {
+
+
+            if (jQuery(this).attr('about') !== service.attributeExistenceComparator) {
                 subject = jQuery(this).attr('about');
                 return true;
             }
-            if (jQuery(this).attr('src')) {
+            if (jQuery(this).attr('src') !== service.attributeExistenceComparator) {
                 subject = jQuery(this).attr('src');
                 return true;
             }
-            if (jQuery(this).attr('typeof')) {
+            if (jQuery(this).attr('typeof') !== service.attributeExistenceComparator) {
                 subject = VIE.Util.blankNodeID();
                 //subject = this;
                 return true;
             }
-    
             // We also handle baseURL outside browser context by manually
             // looking for the `<base>` element inside HTML head.
             if (jQuery(this).get(0).nodeName === 'HTML') {
-                jQuery(this).find('base').each(function() {
+                jQuery('base', this).each(function() {
                     subject = jQuery(this).attr('href');
                 });
             }
@@ -342,13 +350,13 @@ VIE.prototype.RdfaService.prototype = {
         // RDF resource.
         var resource = element.attr('resource');
         if (resource) {
-            return "<" + resource + ">";
+            return ["<" + resource + ">"];
         }
                 
         // `href` attribute also links to another RDF resource.
         var href = element.attr('href');
         if (href && element.attr('rel') === predicate) {
-            return "<" + href + ">";
+            return ["<" + href + ">"];
         }
     
         // If the predicate is a relation, we look for identified child objects
@@ -407,11 +415,12 @@ VIE.prototype.RdfaService.prototype = {
         } else {
             $elem = jQuery(elem);
         }
-        
+        // Collect namespace definitions from the element and its parents
+        $elem = $elem.add($elem.parents());
         var obj = {};
-        
+
         $elem.each(function (i, e) {
-            if (e.attributes && e.attributes.getNamedItemNS) {
+            if (e.attributes) {
                 for (i = 0; i < e.attributes.length; i += 1) {
                     var attr = e.attributes[i];
                     if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {

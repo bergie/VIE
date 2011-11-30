@@ -1,4 +1,4 @@
-var vie = require('../dist/vie-latest.debug.js');
+var vie = require('../../dist/vie-latest.debug.js');
 
 exports['test loading Salzburg'] = function(test) {
     var VIE = new vie.VIE();
@@ -8,10 +8,8 @@ exports['test loading Salzburg'] = function(test) {
         }).
         using('dbpedia').
         execute().
-        done(function(entity) {
+        always(function(entity) {
             test.equal(typeof entity, "object");
-        }).
-        then(function() {
             test.done();
         });
 };

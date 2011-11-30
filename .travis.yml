@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 0.4
+  - 0.6
+
+before_script:
+  - ./utils/travis.sh
+
+script: npm test
+
+notifications:
+    irc: "irc.freenode.org#iks"

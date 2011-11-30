@@ -5,12 +5,16 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         if (id === null) {
             return null;
         }
-
+        
         id = (id.getSubject)? id.getSubject() : id;        
         if (typeof id === "string" && id.indexOf("_:") === 0) {
-            //bnode!
-            id = id.replace("_:bnode", 'c');
-            return this._byCid[id];
+            if (id.indexOf("bnode") === 2) {
+                //bnode!
+                id = id.replace("_:bnode", 'c');
+                return this._byCid[id];
+            } else {
+                return this._byId["<" + id + ">"];
+            }
         } else {
             id = this.toReference(id);
             return this._byId[id];
@@ -39,10 +43,39 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             var existing = this.getByCid(model.cid);
         }
         if (existing) {
-            if (model.attributes) {
-                return existing.set(model.attributes);
+            var newAttribs = {};
+            _.each(model.attributes, function(value, attribute) {
+                if (!existing.has(attribute)) {
+                    newAttribs[attribute] = value;
+                    return true;
+                }
+                else if (existing.get(attribute) === value) {
+                    return true;
+                } else {
+                    //merge existing attribute values with new ones!
+                    //not just overwrite 'em!!
+                    var oldVals = existing.attributes[attribute];
+                    var newVals = value;
+                    if (oldVals instanceof collection.vie.Collection) {
+                        // TODO: Merge collections
+                        return true;
+                    }
+                    
+                    if (attribute === '@context') {
+                        newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
+                    } else {
+                        oldVals = (jQuery.isArray(oldVals))? oldVals : [ oldVals ];
+                        newVals = (jQuery.isArray(newVals))? newVals : [ newVals ];
+                        newAttribs[attribute] = oldVals.concat(newVals).unduplicate();
+                        newAttribs[attribute] = (newAttribs[attribute].length === 1)? newAttribs[attribute][0] : newAttribs[attribute];
+                    }
+                }
+            });
+
+            if (!_.isEmpty(newAttribs)) {
+                existing.set(newAttribs);
             }
-            return existing.set(model);
+            return existing;
         }
 
         this.add(model);

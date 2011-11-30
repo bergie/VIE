@@ -1,2 +1,6 @@
 .project
+dist
+docs
 target
+node_modules
+npm-debug.log

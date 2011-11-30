@@ -113,18 +113,14 @@ test("Test RDFa image entitization", function() {
         
         equal(jQuery('img', html).length, 1);
 
-        z.entities.get('<http://example.net/blog/news_item>').unset("mgd:icon");
-        
-        equal(jQuery('img', html).length, 1);
+        // Remove it and replace with another image
+        icons.remove(icons.at(0));
+        equal(jQuery('img', html).length, 0);
 
         icons.add({'@subject': '<http://example.net/otherimage.jpg>'});
-        z.entities.get('<http://example.net/blog/news_item>').set({
-            "mgd:icon" : icons
-        });
         
-        equal(jQuery('img', html).length, 0);
-        
-        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 0);
+        equal(jQuery('img', html).length, 1);
+        equal(jQuery('img[src="http://example.net/otherimage.jpg"]', html).length, 1);
 
         start();
     });

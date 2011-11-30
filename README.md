@@ -1,14 +1,14 @@
-![VIE](https://github.com/bergie/VIE/raw/master/vie_logo_100.png) Vienna IKS Editables
+![VIE](https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png) Vienna IKS Editables
 ====================
 
 VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://wiki.iks-project.eu/index.php/VIE) the EU-funded [IKS project](http://www.iks-project.eu/).
 
-![Decoupled CMS communications](https://github.com/bergie/VIE/raw/master/cms-decoupled-communications.png)
+![Decoupled CMS communications](https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png)
 
 * In French, _vie_ means life, showcasing how VIE makes your website come alive
 * In English, _vie_ means striving for victory or superiority
 
-VIE development is now targeting a 2.0 release. [Read this blog post](http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/) to find out the changes from VIE 1.0.
+VIE development is now targeting a 2.0 release. [Read this blog post](http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/) to find out the changes from VIE 1.0. There is also a [good introductory post on VIE](http://blog.iks-project.eu/semantic-ui-development-with-vie/) on the IKS blog.
 
 ## VIE integration in nutshell
 
@@ -155,6 +155,7 @@ Direct your browser to the `test/index.html` file to run VIE's [QUnit](http://do
 
 #### Unit tests on Node.js
 
-You need Node.js and [nodeunit](https://github.com/caolan/nodeunit) installed on your system. Then just run:
+You need Node.js and [NPM](http://npmjs.org/). Then just run:
 
-    $ nodeunit test-node/*.js
+    $ npm install --dev
+    $ npm test

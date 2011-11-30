@@ -51,7 +51,7 @@ VIE.prototype.ClassicRDFaEntities.prototype = {
     getInstance: function(selector) {
         var instances = this.getInstances(selector);
         if (instances && instances.length) {
-            return instances[0];
+            return instances.pop();
         }
         return null;
     }
@@ -68,6 +68,13 @@ VIE.prototype.ClassicEntityManager.prototype = {
     },
 
     getByJSONLD: function(json) {
+        if (typeof json === 'string') {
+            try {
+                json = jQuery.parseJSON(json);
+            } catch (e) {
+                return null;
+            }
+        }
         return this.vie.entities.addOrUpdate(json);
     },
 

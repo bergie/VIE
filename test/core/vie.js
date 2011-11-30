@@ -47,7 +47,7 @@ test("vie.js Entities API", function () {
     ok(z.entities.at(0).has('dc:title'));
     ok(z.entities.at(0).has('http://purl.org/dc/elements/1.1/title'));
     equal(z.entities.at(0).has('dc:foo'), false);
-
+    
     equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
 });
 
@@ -114,6 +114,26 @@ test("vie.js Entity API - setOrAdd", function () {
 
     clapton.setOrAdd({'plays': 'vocals'});
     equals(clapton.get('plays').length, 2, "Same value twice is the same value and mustn't be added twice.");
+});
+
+test("vie.js Entity API - addTo", function () {
+    var z = new VIE();
+    
+    var clapton = new z.Entity({
+        '@subject': 'http://example.org/EricClapton'
+    });
+    
+    ok(clapton.addTo);
+    ok(typeof clapton.addTo === "function");
+    
+    var sizeBefore = z.entities.size();
+    clapton.addTo(z.entities);
+    var sizeAfter = z.entities.size();
+    equals(sizeAfter, sizeBefore + 1);
+    z.entities.remove(clapton);
+    clapton.addTo(z.entities, true);
+    sizeAfter = z.entities.size();
+    equals(sizeAfter, sizeBefore + 1);
 });
 
 VIE.prototype.MockService = function () {
