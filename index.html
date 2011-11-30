@@ -60,7 +60,37 @@ v.analyze({
                         <div class="resultsholder"></div>
                     </div>
                     <h3><a href="#">Tell you how tall is the Eiffel tower</a></h3>
-                    <div></div>
+                    <div id="towerheight">
+                        <div class="exampleholder">
+                            <textarea>
+var eiffel = "http://dbpedia.org/resource/Eiffel_Tower";
+var heightByYear = '<http://dbpedia.org/property/years>';
+var v = new VIE();
+v.use(
+    new v.DBPediaService()
+);
+v.load({
+    entity : eiffel
+}).using("dbpedia").execute().done(function (a) {
+    _.each(a, function (entity, key) { 
+        if (entity.id !== '<' + eiffel + '>') {
+            return true; 
+        }
+        var height = {
+            year: entity.get(heightByYear)[0],
+            height: entity.get(heightByYear)[1],
+        }
+        height.height = height.height.substr(2, 7);
+        jQuery('#towerheight .resultsholder').append(
+            "Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower."
+        );
+    });
+});
+                            </textarea>
+                            <button>Run</button>
+                        </div>
+                        <div class="resultsholder"></div>
+                    </div>
                 </div>
             </article>
 
