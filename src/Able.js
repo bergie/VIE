@@ -16,10 +16,11 @@ VIE.prototype.Able.prototype = {
         return this;
     },
     _using: function(service) {
-        var serviceObj = (_.isArray(service))? service : [ service ];
+        var self = this;
+        var serviceObj = (_.isArray(service))? service : [ service ];
         _.each (serviceObj, function (s) {
-            var obj = (typeof s === "string")? this.vie.service(s) : s;
-            this.services.push(obj);
+            var obj = (typeof s === "string")? self.vie.service(s) : s;
+            self.services.push(obj);
         });
         return this;
     },
