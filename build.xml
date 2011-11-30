@@ -52,6 +52,11 @@
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout master -- docs" />
 		</exec>
+		<echo message="Adding..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git add docs/*" />
+		</exec>
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
