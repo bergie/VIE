@@ -62,6 +62,7 @@ article p {
     margin-bottom: 0.5em;
     padding-bottom: 0px;
     border-bottom: 1px solid transparent;
+    width: 60%;
 }
 
 #features h3.ui-state-active,
