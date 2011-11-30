@@ -54,6 +54,7 @@ article img.logo {
 }
 
 article p {
+    text-indent: 2em;
     margin-top: 0px;
     margin-bottom: 0.5em;
 }
