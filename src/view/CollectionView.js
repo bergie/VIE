@@ -10,7 +10,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         if (!this.service) {
             throw "No RDFa service provided to the Collection View";
         }
-
+        this.owner = this.options.owner;
         this.entityViews = {};
         _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
         this.collection.bind('add', this.addItem);
