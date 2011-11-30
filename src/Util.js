@@ -134,7 +134,7 @@ VIE.Util = {
         if (typeof jQuery.rdf !== 'function') {
             return VIE.Util.rdf2EntitiesNoRdfQuery(service, results);
         }
-        var rdf = jQuery.rdf().load(results, {});
+        var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
 
         //execute rules here!
         if (service.rules) {
