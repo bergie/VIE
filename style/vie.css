@@ -54,8 +54,21 @@ article img.logo {
 }
 
 article p {
+    text-indent: 2em;
     margin-top: 0px;
     margin-bottom: 0.5em;
+}
+
+#features h3 {
+    margin-bottom: 0.5em;
+    padding-bottom: 0px;
+    border-bottom: 1px solid transparent;
+    width: 60%;
+}
+
+#features h3.ui-state-active,
+#features h3:hover {
+    border-bottom: 1px solid #ffffff;
 }
 
 article .exampleholder {
@@ -65,12 +78,17 @@ article .exampleholder {
 article .resultsholder {
     height: 5em;
     widthe: 88%;
-    overflow: auto;
+    overflow-y: auto;
+}
+
+article .resultsholder a {
+    margin-right: 1em; 
 }
 
 article textarea {
     display: inline;
     width: 88%;
+    height: 14em;
     background-color: #eeeeec;
     color: #000000;
     border: none;
@@ -87,6 +105,30 @@ article button {
     border-radius: 6px;
 }
 
+#moreinfo {
+    margin-top: 5em;
+}
+
+#moreinfo ul.nav {
+    margin: 0px;
+    padding: 0px;
+}
+
+#moreinfo ul.nav li {
+    display: inline;
+    list-style: none;
+    margin-right: 2em;
+}
+
+#moreinfo ul.nav li.ui-state-active,
+#moreinfo ul.nav li:hover {
+    border-bottom: 1px solid #ffffff;
+}
+
+#moreinfo .ui-tabs-hide {
+    display: none;
+}
+
 a {
     color: #ffffff;
     text-decoration: none;
@@ -97,5 +139,5 @@ footer {
     padding-left: 20%;
     padding-right: 20%;
     display: block;
-    margin-top: 2em;
+    margin-top: 5em;
 }

@@ -24,12 +24,14 @@
 
                 <h2>What can VIE do for your application?</h2>
 
+                <p>VIE can do quite a bit to make applications smarter. If you're looking for simple in-page editing, check out the VIE-powered <a href="http://createjs.org/">Create UI</a>. Otherwise, open the examples below:</p>
+
                 <div id="features">
                     <h3><a href="#">Get enhancements for element content</a></h3>
                     <div id="analyze">
                         <p>Given the following contents:</p>
                         <blockquote class="analyze">
-                            This is a small test, where Steve Jobs sings a song.
+Until September 2008, European policy measures were limited to a small number of countries (Spain and Italy). In both countries, the measures were dedicated to households (tax rebates) reform of the taxation system to support specific sectors such as housing. The European Commission proposed a &euro;200 billion stimulus plan to be implemented at the European level by the countries. At the beginning of 2009, the UK and Spain completed their initial plans, while Germany announced a new plan.
                         </blockquote>
                         <p>This code can get you analysis:</p>
                         <div class="exampleholder">
@@ -37,19 +39,30 @@
 var v = new VIE();
 v.use(
     new v.StanbolService({
-        url: "http://dev.iks-project.eu/stanbol",
+        url: "http://dev.iks-project.eu/stanbolfull",
         proxyDisabled: true
     })
 );
 v.analyze({
     element: jQuery('#analyze blockquote')
 }).using('stanbol').execute().done(function(entities) {
+    jQuery('#analyze .resultsholder').append(
+        jQuery('<p>We found ' + entities.length + ' entities, including:</p>')
+    );
     _.each(entities, function(entity) {
         if (!entity.has('rdfschema:label')) {
             return true;
         }
+
+        var url = entity.id.substr(1, entity.id.length - 2);
+        var label;
+        _.each(entity.get('rdfschema:label'), function(labelLang) {
+            if (labelLang.substr(-2) === 'en') {
+                label = labelLang.substr(2, labelLang.length - 7);
+            }
+        });
         jQuery('#analyze .resultsholder').append(
-            "<p>" + entity.get('rdfschema:label') + "</p>"
+            jQuery('<a href="' + url + '">' + label + '</a>')
         );
     });
 });
@@ -61,6 +74,7 @@ v.analyze({
                     </div>
                     <h3><a href="#">Tell you how tall is the Eiffel tower</a></h3>
                     <div id="towerheight">
+                        <p>This code answers the question:</p>
                         <div class="exampleholder">
                             <textarea>
 var eiffel = "http://dbpedia.org/resource/Eiffel_Tower";
@@ -82,7 +96,7 @@ v.load({
         }
         height.height = height.height.substr(2, 7);
         jQuery('#towerheight .resultsholder').append(
-            "Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower."
+            jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
         );
     });
 });
@@ -91,47 +105,106 @@ v.load({
                         </div>
                         <div class="resultsholder"></div>
                     </div>
+                    <h3><a href="#">Find you what is the capital of Mongolia</a></h3>
+                    <div id="mongolia">
+                        <p>This code digs out the answer:</p>
+                        <div class="exampleholder">
+                            <textarea>
+var vie = new VIE();
+vie.use(new vie.DBPediaService());
+
+var mongoliaURI = "<http://dbpedia.org/resource/Mongolia>";
+var capitalPropURI = "<http://dbpedia.org/property/capital>";
+var namePropURI = "rdfschema:label";
+
+vie
+.load({entity : mongoliaURI})
+.using('dbpedia')
+.execute()
+.done(function (entities) {
+    _.each(entities, function (e) {
+        if (e.id === mongoliaURI) {
+            var capitalURI = e.get(capitalPropURI).id;
+            vie
+            .load({entity : capitalURI})
+            .using('dbpedia')
+            .execute()
+            .done(function(capitalEntities) {
+                _.each(capitalEntities, function(entity) {
+                    if (entity.id != capitalURI) {
+                        return true;
+                    }
+                    var url = entity.id.substr(1, entity.id.length - 2);
+                    var label;
+                    _.each(entity.get('rdfschema:label'), function(labelLang) {
+                        if (labelLang.substr(-2) === 'en') {
+                            label = labelLang.substr(2, labelLang.length - 7);
+                        }
+                    });
+
+                    jQuery('#mongolia .resultsholder').append(
+                        jQuery('<p>The capital of Mongolia is <a href="' + url + '">' + label + '</a>.</p>')
+                    );
+                });
+            });
+        }
+   });
+});
+                        </textarea>
+                        <button>Run</button>
+                    </div>
+                    <div class="resultsholder"></div>
                 </div>
             </article>
 
-            <article>
-                <h2>VIE widgets</h2>
-
-                <p>There are several semantic interaction widgets built on top of VIE. You can easily drop these widgets into your web application to gain immediate benefit of VIE:</p>
-                <ul>
-                    <li><a href="http://createjs.org/">Create</a> &mdash; inline content editing tool</li>
-                    <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; automatic content annotation tool</li>
+            <div id="moreinfo">
+                <ul class="nav">
+                    <li><a href="#widgets">Widgets</a></li>
+                    <li><a href="#documentation">Documentation</a></li>
+                    <li><a href="#integrating">Integrating VIE</a></li>
+                    <li><a href="#development">Development</a></li>
                 </ul>
-            <article>
-                <h2>Integrating VIE</h2>
+                <article id="widgets">
+                    <h2>VIE widgets</h2>
 
-                <p>In nutshell, integrating VIE into your web application is as easy as:</p>
-                <ol>
-                    <li>Mark up your pages with RDFa annotations</li>
-                    <li>Include VIE into the pages</li>
-                    <li>Implement <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync</a></li>
-                </ol>
+                    <p>There are several user interface widgets built on top of VIE. You can easily drop these widgets into your web application to gain immediate benefit of semantic interaction:</p>
+                    <ul>
+                        <li><a href="http://createjs.org/">Create</a> &mdash; inline content editing tool</li>
+                        <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; automatic content annotation tool</li>
+                    </ul>
+                </article>
+                <article id="documentation">
+                    <h2>Tutorials</h2>
+                    <ul>
+                        <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
+                        <li><a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">Semantic UI Development with VIE</a></li>
+                    </ul>
 
-                <h3>Tutorials</h3>
-                <ul>
-                    <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
-                    <li><a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">Semantic UI Development with VIE</a></li>
-                </ul>
+                    <h2>API documentation</h2>
+                    <ul>
+                        <li><a href="docs/1.0.0/">VIE 1.0.0</a></li>
+                        <li><a href="docs/2.0.0alpha1/VIE.html">VIE 2.0.0alpha1</a></li>
+                    </ul>
+                </article>
+                <article id="integrating">
+                    <h2>Integrating VIE</h2>
 
-                <h3>API documentation</h3>
-                <ul>
-                    <li><a href="docs/1.0.0/">VIE 1.0.0</a></li>
-                    <li><a href="docs/2.0.0alpha1/VIE.html">VIE 2.0.0alpha1</a></li>
-                </ul>
-            </article>
+                    <p>In nutshell, integrating VIE into your web application is as easy as:</p>
+                    <ol>
+                        <li>Mark up your pages with <a href="http://www.w3.org/TR/xhtml-rdfa-primer/#id84624">RDFa annotations</a></li>
+                        <li>Include VIE into the pages</li>
+                        <li>Implement <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync</a></li>
+                    </ol>
+                </article>
 
-            <article>
-                <h2>VIE development</h2>
+                <article id="development">
+                    <h2>VIE development</h2>
 
-                <p>VIE development is coordinated <a href="https://github.com/bergie/VIE">on GitHub</a>. <a href="https://github.com/bergie/VIE#readme">Read more</a> about the development process.</p>
+                    <p>VIE development is coordinated <a href="https://github.com/bergie/VIE">on GitHub</a>. <a href="https://github.com/bergie/VIE#readme">Read more</a> about the development process.</p>
 
-                <p>Current build status: <a href="http://travis-ci.org/bergie/VIE"><img src="http://travis-ci.org/bergie/VIE.png" /></a></p>
-            </article>
+                    <p>Current build status: <a href="http://travis-ci.org/bergie/VIE"><img src="http://travis-ci.org/bergie/VIE.png" /></a></p>
+                </article>
+            </div>
         </div>
         <footer>
             <p>VIE is <a href="http://www.opensource.org/licenses/mit-license.php" rel="doap:license">free software</a> developed by <a href="http://iks-project.eu/">IKS Project</a> and co-funded by the European Union</p>

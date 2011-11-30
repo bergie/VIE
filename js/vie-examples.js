@@ -1,9 +1,9 @@
 jQuery(document).ready(function() {
-    jQuery('#features textarea').each(function() {
-        jQuery(this).css('height', jQuery(this).get(0).scrollHeight);
+    jQuery('#features').accordion({
+        collapsible: true,
+        active: false
     });
-
-    jQuery('#features').accordion();
+    jQuery('#moreinfo').tabs();
 
     jQuery('#features > div').each(function() {
         var feature = jQuery(this).attr('id');
