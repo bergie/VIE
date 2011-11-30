@@ -52,11 +52,16 @@
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout master -- docs" />
 		</exec>
-    	<echo message="Importing test cases from master branch into gh-pages branch"/>
+		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git checkout master -- test" />
+	 	   <arg value="git commit -am 'updating documentation for version ${VERSION}'" />
 		</exec>
+		<echo message="Pushing..."/>
+    	<!--<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git push gh-pages" />
+		</exec>-->
     	<echo message="Switching to master branch"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
