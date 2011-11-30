@@ -1,13 +1,36 @@
 body {
-    padding-left: 20%;
-    padding-right: 20%;
-    padding-top: 50px;
-    background-color: #eeeeec;
+    background-color: #555753;
+    color: #ffffff;
+    margin: 0px;
+    padding: 0px;
 }
 
-aside {
-    float: right;
-    padding-top: 80px;
+header {
+    display: block;
+    background-color: #ffffff;
+    color: #000000;
+    height: 150px;
+    width: 100%;
+    margin-bottom: 2em;
+}
+
+header img {
+    position: absolute;
+    top: 40px;
+    left: 20%;
+}
+
+header h1 {
+    font-family: "Georgia", serif;
+    font-variant: small-caps;
+    position: absolute;
+    top: 32px;
+    left: 30%;
+}
+
+.content {
+    padding-left: 20%;
+    padding-right: 20%;
 }
 
 article h1, h2, h3 {
@@ -37,13 +60,14 @@ article p {
 }
 
 a {
-    color: #000000;
+    color: #ffffff;
     text-decoration: none;
     font-weight: bold;
 }
 
 footer {
+    padding-left: 20%;
+    padding-right: 20%;
     display: block;
-    background-color: #eeeeec;
     margin-top: 2em;
 }
