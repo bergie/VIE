@@ -10,7 +10,7 @@ test("Test #1 (required): Predicate establishment with @property", function() {
 
     var html = jQuery('<p>This photo was taken by <span class="author" about="photo1.jpg" property="dc:creator">Mark Birbeck</span>.</p>');
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 1);
@@ -22,7 +22,7 @@ test("Test #1 (required): Predicate establishment with @property", function() {
 });
 
 test("Test #6 (required): @rel and @rev", function() {
-    // Skip for now, not supported in VIE
+    //TODO:  Skip for now, not supported in VIE
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -32,7 +32,7 @@ test("Test #6 (required): @rel and @rev", function() {
 
     var html = jQuery('<p>This photo was taken by <a about="photo1.jpg" rel="dc:creator" rev="foaf:img" href="http://www.blogger.com/profile/1109404">Mark Birbeck</a>.</p>');
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 2);
@@ -47,7 +47,7 @@ test("Test #6 (required): @rel and @rev", function() {
 });
 
 test("Test #7 (required): @rel, @rev, @property, @content", function() {
-    // Skip for now, not supported in VIE
+    //TODO:  Skip for now, not supported in VIE
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -57,7 +57,7 @@ test("Test #7 (required): @rel, @rev, @property, @content", function() {
     
     var html = jQuery('<p>This photo was taken by <a about="photo1.jpg" property="dc:title" content="Portrait of Mark" rel="dc:creator" rev="foaf:img" href="http://www.blogger.com/profile/1109404">Mark Birbeck</a>.</p>');
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 2);
@@ -73,7 +73,7 @@ test("Test #7 (required): @rel, @rev, @property, @content", function() {
 });
 
 test("Test #9 (required): @rev", function() {
-    // Skip for now, not supported in VIE
+    //TODO:  Skip for now, not supported in VIE
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -83,7 +83,7 @@ test("Test #9 (required): @rev", function() {
     
     var html = jQuery('<link about="http://example.org/people#Person1" rev="foaf:knows" href="http://example.org/people#Person2" />');
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 1);
@@ -95,7 +95,7 @@ test("Test #9 (required): @rev", function() {
 });
 
 test("Test #10 (required): @rel, @rev, @href", function() {
-    // Skip for now, not supported in VIE
+    //TODO: Skip for now, not supported in VIE
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -105,7 +105,7 @@ test("Test #10 (required): @rel, @rev, @href", function() {
     
     var html = jQuery('<link about="http://example.org/people#Person1" rel="foaf:knows" rev="foaf:knows" href="http://example.org/people#Person2" />');
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 2);
