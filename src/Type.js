@@ -173,6 +173,7 @@ VIE.prototype.Types = function () {
                 throw new Error("Wrong argument to VIE.Types.add()!");
             }
         }
+        return this;
     };
     
     //This is the same as ``this.remove(id); this.add(id, attrs);``
