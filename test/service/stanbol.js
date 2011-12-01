@@ -32,7 +32,7 @@ test("VIE.js StanbolService - Analyze", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
@@ -64,7 +64,7 @@ test("VIE.js StanbolService - Find", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
@@ -95,7 +95,7 @@ test("VIE.js StanbolService - Load", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });

@@ -24,7 +24,7 @@ test("VIE.js DBPediaService - Load", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
