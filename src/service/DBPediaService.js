@@ -17,8 +17,8 @@ VIE.prototype.DBPediaService = function(options) {
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             dbpedia: "http://dbpedia.org/ontology/",
             dbprop : "http://dbpedia.org/property/",
-            purlt : "http://purl.org/dc/terms/subject",
-            purle : "http://purl.org/dc/elements/1.1/description"
+            purlt : "http://purl.org/dc/terms/",
+            purle : "http://purl.org/dc/elements/1.1/"
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -93,30 +93,6 @@ VIE.prototype.DBPediaService.prototype = {
             };
             this.connector.load(entity, success, error);
         }
-        var success = function (results) {
-            var id = entity.replace(/^</, '').replace(/>$/, '');
-
-            if (results[id]) {
-                var e = service.vie.entities.get(entity);
-                if (!e) {
-                    var attrs = {
-                        '@subject': entity,
-                        '@type': results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"]['uri']
-                    };
-                    delete results[id]["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"];
-                    jQuery.extend(attrs, results[id]);
-                    service.vie.entities.add(attrs);
-                    e = service.vie.entities.get(entity);
-                }
-                loadable.resolve([e]);
-            } else {
-                loadable.reject(undefined);
-            }
-        };
-        var error = function (e) {
-            loadable.reject(e);
-        };
-        this.connector.load(entity, success, error);
     }
 };
 var DBPediaConnector = function(options){
@@ -128,13 +104,13 @@ DBPediaConnector.prototype = {
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         
-        //CONSTRUCT   { <http://dbpedia.org/resource/Germany> ?attr ?val }
-//WHERE       { <http://dbpedia.org/resource/Germany> ?attr ?val }
+        uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
         
-        var url = uri
-        .replace(/^</, '').replace(/>$/, '')
-        .replace('resource', 'data') + ".jrdf";
-
+        var url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&timeout=0" + 
+        "&format=" + encodeURIComponent("application/rdf+json") + 
+        "&query=" +
+        encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
+        
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
