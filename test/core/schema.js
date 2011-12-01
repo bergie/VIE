@@ -1,6 +1,9 @@
 module("vie.js - Schema.org Ontology");
 
 test("Initialization", function() {
+    if (window.location.protocol !== 'file:') {
+        return;
+    }
     var z = new VIE();
     
     ok(z.loadSchema);
