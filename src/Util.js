@@ -99,7 +99,7 @@ VIE.Util = {
     toUri : function (curie, namespaces) {
         var delim = ":";
         for (var k in namespaces.toObj()) {
-            if (k !== "" && (curie.indexOf(k) === 0 || curie.indexOf("[" + k) === 0)) {
+            if (k !== "" && (curie.indexOf(k + ":") === 0 || curie.indexOf("[" + k + ":") === 0)) {
                 var pattern = new RegExp("^" + "\\[{0,1}" + k + delim);
                 return "<" + curie.replace(pattern, namespaces.get(k)).replace(/\]{0,1}$/, '') + ">";
             }
