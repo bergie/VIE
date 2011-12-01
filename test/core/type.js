@@ -103,7 +103,7 @@ test("VIE - Creation/Extension/Removal of types", function() {
     ok(v.types.list());
     ok(jQuery.isArray(v.types.list()));
     equal(v.types.list().length, 3);
-    equal(v.types.list()[0].id, v.types.get('Thing').id);
+    equal(v.types.list()[0].id, v.types.get('owl:Thing').id);
     equal(v.types.list()[1].id, thingy.id);
     equal(v.types.list()[2].id, persony.id);
     

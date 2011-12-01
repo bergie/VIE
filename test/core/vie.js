@@ -48,7 +48,7 @@ test("vie.js Entities API", function () {
     ok(z.entities.at(0).has('http://purl.org/dc/elements/1.1/title'));
     equal(z.entities.at(0).has('dc:foo'), false);
     
-    equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
+    equal(z.entities.at(0).get('@type').id, z.types.get('owl:Thing').id);
 });
 
 test("vie.js Entities API - addOrUpdate", function () {
@@ -76,9 +76,9 @@ test("vie.js Entities API - addOrUpdate", function () {
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
     
-    var person = z.types.add("foaf:Person").inherit(z.types.get('Thing'));
+    var person = z.types.add("foaf:Person").inherit(z.types.get('owl:Thing'));
                 
-    var musician = z.types.add("example:Musician").inherit(z.types.get('Thing'));
+    var musician = z.types.add("example:Musician").inherit(z.types.get('owl:Thing'));
 
     z.entities.add({
         '@subject': 'http://example.net/Madonna',

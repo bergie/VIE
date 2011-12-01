@@ -142,7 +142,7 @@ test ("CURIE <-> URI", function () {
     var uri = "<http://this.is.a/test#foo>";
     var curie = "test:foo";
     var scurie = "[test:foo]";
-    
+
     // URI -> CURIE
     equal(v.namespaces.curie(uri), curie);
     equal(v.namespaces.curie(uri, false), v.namespaces.curie(uri));
