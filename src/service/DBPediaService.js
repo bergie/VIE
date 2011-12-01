@@ -17,8 +17,7 @@ VIE.prototype.DBPediaService = function(options) {
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             dbpedia: "http://dbpedia.org/ontology/",
             dbprop : "http://dbpedia.org/property/",
-            purlt : "http://purl.org/dc/terms/",
-            purle : "http://purl.org/dc/elements/1.1/"
+            dcelements : "http://purl.org/dc/elements/1.1/"
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -38,13 +37,8 @@ VIE.prototype.DBPediaService.prototype = {
     init: function() {
 
        for (var key in this.options.namespaces) {
-            try {
-                var val = this.options.namespaces[key];
-                this.vie.namespaces.add(key, val);
-            } catch (e) {
-                //this means that the namespace is already in the VIE.namespace
-                //ignore for now!
-            }
+            var val = this.options.namespaces[key];
+            this.vie.namespaces.add(key, val);
         }
         this.namespaces = this.vie.namespaces;
 

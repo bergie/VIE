@@ -22,11 +22,10 @@ VIE.prototype.StanbolService = function(options) {
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             rdfs: "http://www.w3.org/2000/01/rdf-schema#",
-            dc  : 'http://purl.org/dc/terms/',
+            dcterms  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
-            skos: "http://www.w3.org/2004/02/skos/core"
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -45,13 +44,8 @@ VIE.prototype.StanbolService.prototype = {
     init: function(){
 
         for (var key in this.options.namespaces) {
-            try {
-                var val = this.options.namespaces[key];
-                this.vie.namespaces.add(key, val);
-            } catch (e) {
-                //this means that the namespace is already in the VIE.namespace
-                //ignore for now!
-            }
+            var val = this.options.namespaces[key];
+            this.vie.namespaces.add(key, val);
         }
         this.namespaces = this.vie.namespaces;
 
@@ -63,7 +57,7 @@ VIE.prototype.StanbolService.prototype = {
                 '?subject enhancer:entity-type ?type',
                 '?subject enhancer:confidence ?confidence',
                 '?subject enhancer:entity-reference ?entity',
-                '?subject dc:relation ?relation',
+                '?subject dcterms:relation ?relation',
                 '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
                 '?relation enhancer:selected-text ?selected-text',
                 '?relation enhancer:selection-context ?selection-context',
