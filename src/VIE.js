@@ -79,7 +79,8 @@ var VIE = root.VIE = function(config) {
             dbprop : "http://dbpedia.org/property/",
             skos   : "http://www.w3.org/2004/02/skos/core#",
             xsd    : "http://www.w3.org/2001/XMLSchema#",
-            sioc   : "http://rdfs.org/sioc/ns#"
+            sioc   : "http://rdfs.org/sioc/ns#",
+            dcterms: "http://purl.org/dc/terms/"
         }
     );
     
