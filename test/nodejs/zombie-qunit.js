@@ -2,7 +2,9 @@ var zombie = require("zombie");
 var express = require("express");
 var _ = require("underscore")._;
 
-exports['test QUnit with a headless browser'] = function(test) {
+var qunitResults;
+
+exports.setUp = function(callback) {
     var server = express.createServer();
     server.configure(function() {
         server.use(express.errorHandler());
@@ -18,15 +20,23 @@ exports['test QUnit with a headless browser'] = function(test) {
             browser.fire('load', browser.window);
 
             browser.wait(function(err, browser) {
-                _.each(browser.css('#qunit-tests > li'), function(listItem) {
-                    var testMessage = listItem._childNodes[0]._childNodes[0].textContent + listItem._childNodes[0]._childNodes[2].textContent;
-                    var testState = listItem._attributes._nodes['class']._nodeValue;
-
-                    test.equal(testState, 'pass', testMessage);
-                });
+                qunitResults = browser.css('#qunit-tests > li');
+                console.log(qunitResults.length);
                 server.close();
-                test.done();
+                callback();
             });
         });
     });
+};
+
+exports['Client-side VIE tests with a headless browser'] = function(test) {
+    _.each(qunitResults, function(listItem) {
+        var testGroup = listItem._childNodes[0]._childNodes[0].textContent + ': ' + listItem._childNodes[0]._childNodes[2].textContent;
+        _.each(listItem._childNodes[2]._childNodes, function(individualTest) {
+            var testMessage = individualTest.textContent;
+            var testState = individualTest._attributes._nodes['class']._nodeValue;
+            test.equal(testState, 'pass', testGroup + ': ' + testMessage);
+        });
+    });
+    test.done();
 };
