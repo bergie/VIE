@@ -8,7 +8,7 @@
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">service</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">throw</span> <span class="s2">&quot;No RDFa service provided to the Collection View&quot;</span><span class="p">;</span>
         <span class="p">}</span>
-
+        <span class="k">this</span><span class="p">.</span><span class="nx">owner</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">owner</span><span class="p">;</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">entityViews</span> <span class="o">=</span> <span class="p">{};</span>
         <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;addItem&#39;</span><span class="p">,</span> <span class="s1">&#39;removeItem&#39;</span><span class="p">,</span> <span class="s1">&#39;refreshItems&#39;</span><span class="p">);</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">addItem</span><span class="p">);</span>

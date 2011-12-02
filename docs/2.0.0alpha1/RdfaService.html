@@ -156,14 +156,14 @@
             <span class="kd">var</span> <span class="nx">attributeValue</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">fromReference</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">predicate</span><span class="p">));</span>
             <span class="k">if</span> <span class="p">(</span><span class="nx">attributeValue</span> <span class="k">instanceof</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Collection</span><span class="p">)</span> <span class="p">{</span>
                 <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementByPredicate</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">element</span><span class="p">),</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-                    <span class="nx">service</span><span class="p">.</span><span class="nx">_registerCollectionView</span><span class="p">(</span><span class="nx">attributeValue</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+                    <span class="nx">service</span><span class="p">.</span><span class="nx">_registerCollectionView</span><span class="p">(</span><span class="nx">attributeValue</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="nx">entity</span><span class="p">);</span>
                 <span class="p">});</span>
             <span class="p">}</span>
         <span class="p">});</span>
         <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
     <span class="p">},</span>
     
-    <span class="nx">_registerCollectionView</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">collection</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_registerCollectionView</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">collection</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getViewForElement</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">viewInstance</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
@@ -172,6 +172,7 @@
         <span class="kd">var</span> <span class="nx">entityTemplate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">&#39;:first-child&#39;</span><span class="p">);</span>
     
         <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+            <span class="nx">owner</span><span class="o">:</span> <span class="nx">entity</span><span class="p">,</span>
             <span class="nx">collection</span><span class="o">:</span> <span class="nx">collection</span><span class="p">,</span>
             <span class="nx">model</span><span class="o">:</span> <span class="nx">collection</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
             <span class="nx">el</span><span class="o">:</span> <span class="nx">element</span><span class="p">,</span>

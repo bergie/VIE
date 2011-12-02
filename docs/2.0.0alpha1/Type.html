@@ -136,6 +136,7 @@ already exists.</p>             </td>             <td class="code">             
                 <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Wrong argument to VIE.Types.add()!&quot;</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
     <span class="p">};</span>
     </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>This is the same as <code>this.remove(id); this.add(id, attrs);</code></p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">addOrOverwrite</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">){</span>
         <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
@@ -162,7 +163,10 @@ removes all children if their only parent were this
 type. Furthermore, this removes the link from the
 super- and subtypes.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* test whether the type actually exists in VIE</span>
+<span class="cm">         * and prevents removing *owl:Thing*.</span>
+<span class="cm">         */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">t</span> <span class="o">||</span> <span class="nx">t</span><span class="p">.</span><span class="nx">subsumes</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">))</span> <span class="p">{</span>
             <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">t</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
