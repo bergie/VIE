@@ -171,9 +171,7 @@ VIE.prototype.service = function(name) {
 };
 
 VIE.prototype.getServicesArray = function() {
-  var res = [];
-  _.each(this.services, function(service, i){res.push(service);});
-  return res;
+  return _.map(this.services, function (v) {return v;});
 };
 
 // Declaring the ..able classes
