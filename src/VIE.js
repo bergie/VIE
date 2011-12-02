@@ -1,8 +1,10 @@
 //     VIE - Vienna IKS Editables
 //     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://bergie.github.com/VIE/ 
+//     <a href="http://viejs.org/">http://viejs.org/</a>
 var root = this,
     jQuery = root.jQuery,
     Backbone = root.Backbone,
@@ -27,7 +29,7 @@ var root = this,
 // specified, do:
 //
 //     var vie = new VIE({
-//         defaultNamespace: 'http://example.net'
+//         baseNamespace: 'http://example.net'
 //     });
 //
 // ### Differences with VIE 1.x
@@ -61,13 +63,39 @@ var VIE = root.VIE = function(config) {
     this.entities.vie = this;
     this.Entity.prototype.entityCollection = this.Collection;
     this.Entity.prototype.vie = this;
-
-    //TODO: remove proxy
-    this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
     
     this.Namespaces.prototype.vie = this;
+// ### Namespaces with VIE
+// VIE supports different ontologies and an easy use of them.
+// Namespace prefixes reduce the amount of code you have to
+// write. In VIE, it does not matter if you access an entitie's
+// property with 
+// `entity.get('<http://dbpedia.org/property/capitalOf>')` or 
+// `entity.get('dbprop:capitalOf')` or even 
+// `entity.get('capitalOf')` once the corresponding namespace
+// is registered as *baseNamespace*.
+// For more information about how to set, get and list all
+// registered namespaces, refer to the 
+// <a href="Namespaces.html">Namespaces documentation</a>.
+
     this.namespaces = new this.Namespaces(
-        (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://ontology.vie.js/",
+        (this.config.baseNamespace) ? this.config.baseNamespace : "http://viejs.org/ns/",
+    
+// By default, VIE is shipped with common namespace prefixes:
+
+// +    owl    : "http://www.w3.org/2002/07/owl#"
+// +    rdfs   : "http://www.w3.org/2000/01/rdf-schema#"
+// +    rdf    : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+// +    schema : 'http://schema.org/'
+// +    foaf   : 'http://xmlns.com/foaf/0.1/'
+// +    geo    : 'http://www.w3.org/2003/01/geo/wgs84_pos#'
+// +    dbpedia: "http://dbpedia.org/ontology/"
+// +    dbprop : "http://dbpedia.org/property/"
+// +    skos   : "http://www.w3.org/2004/02/skos/core#"
+// +    xsd    : "http://www.w3.org/2001/XMLSchema#"
+// +    sioc   : "http://rdfs.org/sioc/ns#"
+// +    dcterms: "http://purl.org/dc/terms/"
+    
         {
             owl    : "http://www.w3.org/2002/07/owl#",
             rdfs   : "http://www.w3.org/2000/01/rdf-schema#",
@@ -89,6 +117,7 @@ var VIE = root.VIE = function(config) {
     this.Attribute.prototype.vie = this;
     this.Attributes.prototype.vie = this;
     this.types = new this.Types();
+    // all entities have 
     this.types.add("owl:Thing");
 
     if (this.config.classic !== false) {

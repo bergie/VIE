@@ -7,7 +7,6 @@ VIE.prototype.StanbolService = function(options) {
     var defaults = {
         name : 'stanbol',
         url: 'http://dev.iks-project.eu:8080/',
-        defaultProxyUrl : "../utils/proxy/proxy.php",
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
             semdeskf : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
@@ -262,7 +261,6 @@ StanbolConnector.prototype = {
     analyze: function(text, success, error, options) {
         if (!options) { options = {}; }
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
@@ -276,15 +274,10 @@ StanbolConnector.prototype = {
             },
             error: error,
             type: "POST",
-            url: proxyUrl || enhancerUrl,
-            data: (proxyUrl) ? {
-                    proxy_url: enhancerUrl,
-                    content: text,
-                    verb: "POST",
-                    format: format
-                } : text,
+            url: enhancerUrl,
+            data: text,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
+            contentType: "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
 
         });
@@ -309,7 +302,6 @@ StanbolConnector.prototype = {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         jQuery.ajax({
@@ -317,16 +309,11 @@ StanbolConnector.prototype = {
                 success(response);
             },
             error: error,
-            type: (proxyUrl) ? "POST" : "GET",
-            url: proxyUrl || url,
-            data: (proxyUrl) ? {
-                    proxy_url: url,
-                    content: "",
-                    verb: "GET",
-                    format: format
-                } : null,
+            type: "GET",
+            url: url,
+            data: null,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
+            contentType: "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
@@ -342,7 +329,6 @@ StanbolConnector.prototype = {
         }
 
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/find";
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         jQuery.ajax({
@@ -351,30 +337,11 @@ StanbolConnector.prototype = {
             },
             error: error,
             type: "POST",
-            url: proxyUrl || url,
-            data: (proxyUrl) ? {
-                    proxy_url: url,
-                    content: {
-                        name : term,
-                        limit : limit,
-                        offset: offset
-                    },
-                    verb: "POST",
-                    format: format,
-                    type: "text/plain"
-                } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
+            url: url,
+            data: "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
-    },
-
-    _proxyUrl: function(){
-        this.proxyUrl = "";
-        if(this.baseUrl.indexOf(":") !== -1 && !this.options.proxyDisabled){
-            return this.options.proxyUrl || this.options.defaultProxyUrl;
-        } else {
-            return '';
-        }
     }
 };
 })();
