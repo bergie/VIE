@@ -29,7 +29,7 @@ VIE.prototype.StanbolService = function(options) {
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
-    this.vie = null; // will be set via VIE.use();
+    this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
     this.connector = new StanbolConnector(this.options);
 
@@ -49,8 +49,9 @@ VIE.prototype.StanbolService.prototype = {
         this.namespaces = this.vie.namespaces;
 
         this.rules = [
-            //rule to add backwards-relations to the triples
-            //this makes querying for entities a lot easier!
+            /* rule to add backwards-relations to the triples
+             * this makes querying for entities a lot easier!
+             */
             {'left' : [
                 '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
                 '?subject enhancer:entity-type ?type',
@@ -69,7 +70,7 @@ VIE.prototype.StanbolService.prototype = {
                  '?entity enhancer:hasEntityAnnotation ?subject'
              ]
              },
-             //rule(s) to transform a Stanbol person into a VIE person
+             /* rule(s) to transform a Stanbol person into a VIE person */
              {
                 'left' : [
                     '?subject a dbpedia:Person',
@@ -139,13 +140,13 @@ VIE.prototype.StanbolService.prototype = {
         ];
 
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
         this.vie.types.addOrOverwrite('enhancer:TextAnnotation', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
         this.vie.types.addOrOverwrite('enhancer:Enhancement', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
     },
     // VIE API analyze implementation

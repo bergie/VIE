@@ -2,7 +2,7 @@ VIE.prototype.RdfaService = function(options) {
     if (!options) {
         options = {};
     }
-    this.vie = null;
+    this.vie = null; /* will be set via VIE.use(); */
     this.name = 'rdfa';
     this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
     this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";

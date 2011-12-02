@@ -1,9 +1,15 @@
-// File:   DBPediaService.js <br />
-// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
-//
-
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     <a href="http://viejs.org/">http://viejs.org/</a>
 (function(){
-    
+
+// ## VIE - DBPedia service
+//
+// TODO: fill with more documentation
 VIE.prototype.DBPediaService = function(options) {
     var defaults = {
         name : 'dbpedia',
@@ -22,7 +28,7 @@ VIE.prototype.DBPediaService = function(options) {
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
-    this.vie = null; // will be set via VIE.use();
+    this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
     this.connector = new DBPediaConnector(this.options);
 
