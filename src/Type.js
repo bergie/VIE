@@ -206,7 +206,10 @@ VIE.prototype.Types = function () {
     //super- and subtypes.
     this.remove = function (id) {
         var t = this.get(id);
-        if (!t) {
+        /* test whether the type actually exists in VIE
+         * and prevents removing *owl:Thing*.
+         */
+        if (!t || t.subsumes("owl:Thing")) {
             return this;
         }
         delete this._types[t.id];
