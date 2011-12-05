@@ -1,8 +1,10 @@
 //     VIE - Vienna IKS Editables
 //     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     http://bergie.github.com/VIE/ 
+//     http://viejs.org/
 var root = this,
     jQuery = root.jQuery,
     Backbone = root.Backbone,
@@ -27,7 +29,7 @@ var root = this,
 // specified, do:
 //
 //     var vie = new VIE({
-//         defaultNamespace: 'http://example.net'
+//         baseNamespace: 'http://example.net'
 //     });
 //
 // ### Differences with VIE 1.x
@@ -61,13 +63,38 @@ var VIE = root.VIE = function(config) {
     this.entities.vie = this;
     this.Entity.prototype.entityCollection = this.Collection;
     this.Entity.prototype.vie = this;
-
-    //TODO: remove proxy
-    this.defaultProxyUrl = (this.config.defaultProxyUrl) ? this.config.defaultProxyUrl : "../utils/proxy/proxy.php";
     
     this.Namespaces.prototype.vie = this;
+// ### Namespaces in VIE
+// VIE supports different ontologies and an easy use of them.
+// Namespace prefixes reduce the amount of code you have to
+// write. In VIE, it does not matter if you access an entitie's
+// property with 
+// `entity.get('<http://dbpedia.org/property/capitalOf>')` or 
+// `entity.get('dbprop:capitalOf')` or even 
+// `entity.get('capitalOf')` once the corresponding namespace
+// is registered as *baseNamespace*.
+// By default `"http://viejs.org/ns/"`is set as base namespace.
+// For more information about how to set, get and list all
+// registered namespaces, refer to the 
+// <a href="Namespace.html">Namespaces documentation</a>.
     this.namespaces = new this.Namespaces(
-        (this.config.defaultNamespace) ? this.config.defaultNamespace : "http://ontology.vie.js/",
+        (this.config.baseNamespace) ? this.config.baseNamespace : "http://viejs.org/ns/",
+        
+// By default, VIE is shipped with common namespace prefixes:
+
+// +    owl    : "http://www.w3.org/2002/07/owl#"
+// +    rdfs   : "http://www.w3.org/2000/01/rdf-schema#"
+// +    rdf    : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+// +    schema : 'http://schema.org/'
+// +    foaf   : 'http://xmlns.com/foaf/0.1/'
+// +    geo    : 'http://www.w3.org/2003/01/geo/wgs84_pos#'
+// +    dbpedia: "http://dbpedia.org/ontology/"
+// +    dbprop : "http://dbpedia.org/property/"
+// +    skos   : "http://www.w3.org/2004/02/skos/core#"
+// +    xsd    : "http://www.w3.org/2001/XMLSchema#"
+// +    sioc   : "http://rdfs.org/sioc/ns#"
+// +    dcterms: "http://purl.org/dc/terms/"
         {
             owl    : "http://www.w3.org/2002/07/owl#",
             rdfs   : "http://www.w3.org/2000/01/rdf-schema#",
@@ -79,19 +106,39 @@ var VIE = root.VIE = function(config) {
             dbprop : "http://dbpedia.org/property/",
             skos   : "http://www.w3.org/2004/02/skos/core#",
             xsd    : "http://www.w3.org/2001/XMLSchema#",
-            sioc   : "http://rdfs.org/sioc/ns#"
+            sioc   : "http://rdfs.org/sioc/ns#",
+            dcterms: "http://purl.org/dc/terms/"
         }
     );
-    
+
+
     this.Type.prototype.vie = this;
     this.Types.prototype.vie = this;
     this.Attribute.prototype.vie = this;
     this.Attributes.prototype.vie = this;
+// ### Type hierarchy in VIE
+// VIE takes care about type hierarchy of entities
+// (aka. *schema* or *ontology*).
+// Once a type hierarchy is known to VIE, we can leverage
+// this information, to easily ask, whether an entity
+// is of type, e.g., *foaf:Person* or *schema:Place*.
+// For more information about how to generate such a type
+// hierarchy, refer to the 
+// <a href="Type.html">Types documentation</a>.
     this.types = new this.Types();
+// By default, there is a parent type in VIE, called
+// *owl:Thing*. All types automatically inherit from this
+// type and all registered entities, are of this type.
     this.types.add("owl:Thing");
 
+// As described above, the Classic API of VIE 1.x is loaded
+// by default. As this might change in the future, it is
+// recommended to ensure it is enabled before using it. So:
+//
+//     var vie = new VIE({classic: true});
+//     vie.RDFaEntities.getInstances();
     if (this.config.classic !== false) {
-        // Load Classic API as well
+        /* Load Classic API as well */
         this.RDFa = new this.ClassicRDFa(this);
         this.RDFaEntities = new this.ClassicRDFaEntities(this);
         this.EntityManager = new this.ClassicEntityManager(this);
@@ -102,6 +149,8 @@ var VIE = root.VIE = function(config) {
     }
 };
 
+// ### Service API of VIE
+// TODO: describe me!
 VIE.prototype.use = function(service, name) {
   if (!name) {
     name = service.name;
@@ -122,9 +171,7 @@ VIE.prototype.service = function(name) {
 };
 
 VIE.prototype.getServicesArray = function() {
-  var res = [];
-  _.each(this.services, function(service, i){res.push(service);});
-  return res;
+  return _.map(this.services, function (v) {return v;});
 };
 
 // Declaring the ..able classes
@@ -168,7 +215,20 @@ VIE.prototype.find = function(options) {
   return new this.Findable(options);
 };
 
-// bootstrap VIE with a type and attribute ontology/schema
+// VIE only knows the *owl:Thing* type by default.
+// You can use `vie.loadSchema()` to import another
+// schema (ontology) from an external resource.
+// As this method works asynchronously, you might want
+// to register `success` and `error` callbacks via the
+// options:
+//    
+//     var vie = new VIE();
+//     vie.loadSchema("http://schema.rdfs.org/all.json", 
+//        {
+//          baseNS : "http://schema.org/",
+//          succes : function () {console.log("success");},
+//          error  : function (msg) {console.warn(msg);}
+//        });
 VIE.prototype.loadSchema = function(url, options) {
     options = (!options)? {} : options;
     
@@ -180,6 +240,7 @@ VIE.prototype.loadSchema = function(url, options) {
         jQuery.getJSON(url)
         .success(function(data) {
             VIE.Util.loadSchemaOrg.call(vie, data);
+            /* sets the baseNamespace in VIE if given */
             if (options.baseNS) {
                 vie.namespaces.base(options.baseNS);
             }

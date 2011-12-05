@@ -14,14 +14,18 @@ test("VIE namespace", function () {
    equal(typeof v.namespaces.get, "function");
    ok(v.namespaces.getPrefix);
    equal(typeof v.namespaces.getPrefix, "function");
-   ok(v.namespaces.containsPrefix);
-   equal(typeof v.namespaces.containsPrefix, "function");
+   ok(v.namespaces.contains);
+   equal(typeof v.namespaces.contains, "function");
    ok(v.namespaces.containsNamespace);
    equal(typeof v.namespaces.containsNamespace, "function");
    ok(v.namespaces.update);
    equal(typeof v.namespaces.update, "function");
+   ok(v.namespaces.updateNamespace);
+   equal(typeof v.namespaces.updateNamespace, "function");
    ok(v.namespaces.remove);
    equal(typeof v.namespaces.remove, "function");
+   ok(v.namespaces.removeNamespace);
+   equal(typeof v.namespaces.removeNamespace, "function");
    ok(v.namespaces.toObj);
    equal(typeof v.namespaces.toObj, "function");
    ok(v.namespaces.curie);
@@ -122,6 +126,16 @@ test ("Manually adding wrong duplicate (value) - addOrReplace", function () {
     
 });
 
+test ("Tests getter methods in Namespaces.", function () {
+    var v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
+    
+    equal(v.namespaces.getPrefix("http://this.is.a/test#"), "test");
+    equal(v.namespaces.get("test"), "http://this.is.a/test#");
+    equal(v.namespaces.get("foo"), undefined);
+    ok(v.namespaces.containsNamespace("http://this.is.a/test#"));
+});
+
 test ("Manually removing namespaces", function () {
     var v = new VIE();
     v.namespaces.add("test", "http://this.is.a/test#");
@@ -129,6 +143,16 @@ test ("Manually removing namespaces", function () {
     delete reference["test"];
      
     v.namespaces.remove("test");
+   
+    deepEqual(v.namespaces.toObj(), reference, "Manually removing namespaces.");
+    strictEqual(v.namespaces['test'], undefined, "Manually removing namespaces.");
+
+    v = new VIE();
+    v.namespaces.add("test", "http://this.is.a/test#");
+    var reference = v.namespaces.toObj();
+    delete reference["test"];
+     
+    v.namespaces.removeNamespace("http://this.is.a/test#");
    
     deepEqual(v.namespaces.toObj(), reference, "Manually removing namespaces.");
     strictEqual(v.namespaces['test'], undefined, "Manually removing namespaces.");

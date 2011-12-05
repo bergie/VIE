@@ -2,7 +2,7 @@ VIE.prototype.RdfaRdfQueryService = function(options) {
     if (!options) {
         options = {};
     }
-    this.vie = null;
+    this.vie = null; /* will be set via VIE.use(); */
     this.name = 'rdfardfquery';
 };
 

@@ -1,8 +1,11 @@
-// File:   Type.js <br />
-// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
-//
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 
-// Adding capability of handling type/class structure and inheritance to VIE. 
 if (VIE.prototype.Type) {
 	throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
 }
@@ -206,7 +209,10 @@ VIE.prototype.Types = function () {
     //super- and subtypes.
     this.remove = function (id) {
         var t = this.get(id);
-        if (!t) {
+        /* test whether the type actually exists in VIE
+         * and prevents removing *owl:Thing*.
+         */
+        if (!t || t.subsumes("owl:Thing")) {
             return this;
         }
         delete this._types[t.id];

@@ -1,163 +1,256 @@
-// File:   Namespace.js <br />
-// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
-//
-
-// Adding capability of handling different namespaces to VIE. 
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 
 if (VIE.prototype.Namespaces) {
-	throw new Error("ERROR: VIE.Namespaces is already defined. Please check your installation!");
+    throw new Error("ERROR: VIE.Namespaces is already defined. " + 
+        "Please check your installation!");
 }
 
- 
-// Usage: ``var namespaces = new VIE.Namespaces("http://base.namespace.com/");``
-// We can also bootstrap namespaces by passing an object:
-//``var namespaces = new vie.Namespaces("http://base.namespace.com/", {"foaf": "http://xmlns.com/foaf/0.1/"});
+// ## VIE Namespaces constructor
+//
+// In general, a namespace is a container that provides context for the identifiers.
+// Within VIE, namespaces are used to distinguish different ontolgies or vocabularies
+// of identifiers, types and attributes. However, because of their verbosity, namespaces
+// tend to make their usage pretty circuitous. The ``VIE.Namespaces(...)`` class provides VIE
+// with methods to maintain abbreviations (akak **prefixes**) for namespaces in order to
+// alleviate their usage. By default, every VIE instance is equipped with a main instance
+// of the namespaces in ``myVIE.namespaces``. Furthermore, VIE uses a **base namespace**, 
+// which is used if no prefix is given (has an empty prefix).
+// In the upcoming sections, we will explain the
+// methods to add, access and remove prefixes.
+//
+// The constructor: The constructor initially needs a *base namespace* and can optionally be initialised
+// with an associative array of prefixes and namespaces.
+//
+//     var namespaces = new myVIE.Namespaces("http://viejs.org/ns/");
+//
+// The above code initialises the namespaces with a base namespace ``http://viejs.org/ns/``. Which means
+// that every non-prefixed, non-expanded attribute or type is assumed to be of that namespace. This helps, e.g.,
+// in an environment where only one namespace is given.
+//
+// We can also bootstrap namespaces within the constructor:
+//
+//     var ns = new myVIE.Namespaces("http://viejs.org/ns/", 
+//           {
+//            "foaf": "http://xmlns.com/foaf/0.1/"
+//           });
 VIE.prototype.Namespaces = function (base, namespaces) {
     
-	// Within VIE, we can define a base namespace, to support easier syntax for
-	// querying types of entities.
-	if (!base) {
+    if (!base) {
         throw new Error("Please provide a base namespace!");
     }
-	this._base = base;
-    
-    this.base = function (ns) {
-        // getter
-        if (!ns) { 
-            return this._base;
-        }
-        // setter
-        else if (typeof ns === "string") {
-            this._base = ns;
-        } else {
-            throw new Error("Please provide a valid namespace!");
-        }
-        return this;
-    };
+    this._base = base;
     
     this._namespaces = (namespaces)? namespaces : {};
-    
-    //Add new namespacs. This also checks if there are
-    //prefixes or namespaces already defined to avoid
-    //ambiguities in the namespaces. Use `addOrReplace()`
-    //to simply overwrite them. 
-    this.add = function (k, v) {
-        //we can also pass multiple namespaces as an object.
-        if (typeof k === "object") {
-            for (var k1 in k) {
-                this.add(k1, k[k1]);
-            }
-            return this;
-        }
-        //use `add("", "http://new.base.namespace/");` to set
-        //a new base namespace. This is the same as 
-        //`base("http://new.base.namespace/");`
-        if (k === "") {
-            this.base(v);
-        }
-        //check if we overwrite existing mappings
-        else if (this.containsPrefix(k) && v !== this._namespaces[k]) {
-            throw new Error("ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
-                  "There is already a mapping existing: '(" + k + "," + this.get(k) + ")'!");
-        } else {
-            jQuery.each(this._namespaces, function (k1,v1) {
-                if (v1 === v && k1 !== k) {
-                    throw new Error("ERROR: Trying to register namespace prefix mapping (" + k + "," + v + ")!" +
-                          "There is already a mapping existing: '(" + k1 + "," + v + ")'!");
-                }
-            });
-        }
-        this._namespaces[k] = v;
-        
-        return this;
-    };
-    
-    // this has the same capabilities as `add(k, v);` but
-    // overwrites already exising mappings.
-    this.addOrReplace = function (k, v) {
-        if (typeof k === "object") {
-            for (var k1 in k) {
-                this.addOrReplace(k1, k[k1]);
-            }
-            return this;
-        }
-        var self = this;
-        //check if we overwrite existing mappings
-        if (this.containsPrefix(k) && v !== this._namespaces[k]) {
-            this.remove(k);
-        } else {
-            jQuery.each(this._namespaces, function (k1,v1) {
-                if (v1 === v && k1 !== k) {
-                    self.remove(k1);
-                }
-            });
-        }
-        return this.add(k, v);
-    };
-    
-    // get a namespace (or *undefined*) for a given prefix.
-    this.get = function (k) {
-        if (k === "") {
-            return this.base();
-        }
-        return this._namespaces[k];
-    };
+    if (typeof this._namespaces !== "object" || _.isArray(this._namespaces)) {
+        throw new Error("If you want to initialise VIE namespace prefixes, " + 
+            "please provide a proper object!");
+    }
+};
 
-    // get a prefix (or *undefined*) for a given namespace.
-    this.getPrefix = function (v) {
+// This is a **getter** and **setter** for the base
+// namespace. If called like ``myVIE.namespaces.base();`` it
+// returns the actual base namespace as a string. If provided
+// with a string, e.g., ``myVIE.namespaces.base("http://viejs.org/ns/");``
+// it sets the current base namespace and retuns the namespace object
+// for the purpose of chaining. If provided with anything except a string,
+// it throws an Error. 
+VIE.prototype.Namespaces.prototype.base = function (ns) {
+    if (!ns) { 
+        return this._base;
+    }
+    else if (typeof ns === "string") {
+        this._base = ns;
+        return this;
+    } else {
+        throw new Error("Please provide a valid namespace!");
+    }
+};
+    
+// This method (``add()``) adds new prefix mappings to the
+// current instance. If a prefix or a namespace is already
+// present (in order to avoid ambiguities), an Error is thrown. 
+// ``prefix`` can also be an object in which case, the method 
+// is called sequentially on all elements.
+// It returns the current instance for the sake of chaining.
+//
+//     calling: 
+//     myVIE.namespaces.add("", "http://...");
+//     // is always equal to
+//     myVIE.namespaces.base("http://..."); // <-- setter of base namespace
+VIE.prototype.Namespaces.prototype.add = function (prefix, namespace) {
+    if (typeof prefix === "object") {
+        for (var k1 in prefix) {
+            this.add(k1, prefix[k1]);
+        }
+        return this;
+    }
+    if (prefix === "") {
+        this.base(namespace);
+        return this;
+    }
+    /* checking if we overwrite existing mappings */
+    else if (this.contains(prefix) && namespace !== this._namespaces[prefix]) {
+        throw new Error("ERROR: Trying to register namespace prefix mapping (" + prefix + "," + namespace + ")!" +
+              "There is already a mapping existing: '(" + prefix + "," + this.get(prefix) + ")'!");
+    } else {
         jQuery.each(this._namespaces, function (k1,v1) {
-            if (v1 === v) {
-                return k1;
+            if (v1 === namespace && k1 !== prefix) {
+                throw new Error("ERROR: Trying to register namespace prefix mapping (" + prefix + "," + namespace + ")!" +
+                      "There is already a mapping existing: '(" + k1 + "," + namespace + ")'!");
             }
         });
-        return undefined;
-    };
-    
-    // check if a prefix exists. 
-    this.containsPrefix = function (k) {
-        return (k in this._namespaces);
-    };
-    
-    // check if a namespace exists. 
-    this.containsNamespace = function (v) {
-        return this.getPrefix(v) !== undefined;
-    };
-
-    //update the prefix *p* with the namespace *n*.
-	this.update = function (p, n) {
-        this._namespaces[p] = n;
-        return this;
-    };
-    
-    // remove the namespace with the prefix *p*
-    this.remove = function (p) {
-        delete this._namespaces[p];
-        return this;
-    };
-    
-    // return a copy of the internal structure of the namespaces
-    // as key/value pairs.
-    this.toObj = function () {
-        return jQuery.extend({'' : this._base}, this._namespaces);
-    };
-    
-    // transform a URI into a CURIE with the given
-    // namespaces. If *safe* is true, this returns
-    // a SCURIE. 
-    this.curie = function(uri, safe){
-        return VIE.Util.toCurie(uri, safe, this);
-    };
-    
-    // checks whether the given string is a CURIE.
-    this.isCurie = function (something) {
-        return VIE.Util.isCurie(something, this);
-    };
-    
-    // transforms a CURIE into a URI.
-    this.uri = function (curie) {
-        return VIE.Util.toUri(curie, this);
-    };
-    
-    // checks wether the given string is a URI.
-    this.isUri = VIE.Util.isUri;
+    }
+    /* if not, just add them */
+    this._namespaces[prefix] = namespace;
+    return this;
 };
+    
+// This method (``addOrReplace()``) overwrites existing mappings or adds them.
+// It returns the current instance for the sake of chaining. ``prefix`` can also
+// be an object in which case, the method is called sequentially on all elements.
+VIE.prototype.Namespaces.prototype.addOrReplace = function (prefix, namespace) {
+    if (typeof prefix === "object") {
+        for (var k1 in prefix) {
+            this.addOrReplace(k1, prefix[k1]);
+        }
+        return this;
+    }
+    this.remove(prefix);
+    this.removeNamespace(namespace);
+    return this.add(prefix, namespace);
+};
+    
+// This method (``get()``) returns the namespace for the given prefix ``prefix`` or
+// ``undefined`` if no such prefix could be found.
+//
+//     calling: 
+//     myVIE.namespaces.get(""); // <-- empty string
+//     // is always equal to
+//     myVIE.namespaces.base(); // <-- getter of base namespace
+VIE.prototype.Namespaces.prototype.get = function (prefix) {
+    if (prefix === "") {
+        return this.base();
+    }
+    return this._namespaces[prefix];
+};
+
+// This method (``getPrefix()``) returns a prefix for the given ``namespace`` or
+// ``undefined`` if the namespace could not be found in the current instance.
+VIE.prototype.Namespaces.prototype.getPrefix = function (namespace) {
+    var prefix = undefined;
+    jQuery.each(this._namespaces, function (k1,v1) {
+        if (v1 === namespace) {
+            prefix = k1;
+        }
+    });
+    return prefix;
+};
+
+// This method (``contains()``) checks, whether a prefix is stored in the instance and
+// returns ``true`` if so and ``false`` otherwise. 
+VIE.prototype.Namespaces.prototype.contains = function (prefix) {
+    return (prefix in this._namespaces);
+};
+    
+// This method (``containsNamespace()``) checks, whether a namespace is stored in the instance and
+// returns ``true`` if so and ``false`` otherwise. 
+VIE.prototype.Namespaces.prototype.containsNamespace = function (namespace) {
+    return this.getPrefix(namespace) !== undefined;
+};
+
+// This method (``update()``) overwrites the namespace that is stored under the prefix ``prefix``
+// with the new namespace ``namespace``. If a namespace is already bound to another prefix, an
+// Error is thrown.
+// The method returns the namespace instance for the purpose of chaining.
+VIE.prototype.Namespaces.prototype.update = function (prefix, namespace) {
+    this.remove(prefix);
+    return this.add(prefix, namespace);
+};
+
+// This method (``updateNamespace()``) overwrites the prefix that is bound to the 
+// namespace ``namespace`` with the new prefix ``prefix``. If another namespace is
+// already registered with the given ``prefix``, an Error is thrown.
+// The method returns the namespace instance for the purpose of chaining.
+VIE.prototype.Namespaces.prototype.updateNamespace = function (prefix, namespace) {
+    this.removeNamespace(prefix);
+    return this.add(prefix, namespace);
+};
+
+// This method (``remove()``) removes the namespace that is stored under the prefix ``prefix``.
+// The method returns the namespace instance for the purpose of chaining.
+VIE.prototype.Namespaces.prototype.remove = function (prefix) {
+    if (prefix) {
+        delete this._namespaces[prefix];
+    }
+    return this;
+};
+
+// This method (``removeNamespace()``) removes the namespace ``namespace``
+// from the instance.
+// The method returns the namespace instance for the purpose of chaining.
+VIE.prototype.Namespaces.prototype.removeNamespace = function (namespace) {
+    var prefix = this.getPrefix(namespace);
+    if (prefix) {
+        delete this._namespaces[prefix];
+    }
+    return this;
+};
+    
+// This serializes the namespace instance into an associative
+// array representation. The base namespace is given an empty
+// string as key.
+VIE.prototype.Namespaces.prototype.toObj = function () {
+    return jQuery.extend({'' : this._base}, this._namespaces);
+};
+    
+// This method transforms a URI into a CURIE, based on the given
+// namespace instance. If ``safe`` is set to ``true``, it will
+// return a safe CURIE. If no prefix can be found, an Error is
+// thrown.
+//
+//     calling: 
+//     myVIE.namespaces.curie("...", true|false); 
+//     // is always equal to
+//     VIE.Util.toCurie("...", true|false, myVIE.namespaces);
+VIE.prototype.Namespaces.prototype.curie = function(uri, safe){
+    return VIE.Util.toCurie(uri, safe, this);
+};
+    
+// This method checks, whether the passed string is a proper CURIE, 
+// based on the prefixes in the current namespace instance and
+// returns ``true`` if so and ``false`` otherwise.
+//
+//     calling: 
+//     myVIE.namespaces.isCurie("..."); 
+//     // is always equal to
+//     VIE.Util.isCurie("...", myVIE.namespaces);
+VIE.prototype.Namespaces.prototype.isCurie = function (something) {
+    return VIE.Util.isCurie(something, this);
+};
+    
+// This method transforms the passed ``curie`` into a URI, based
+// on the current namespace instance. If no prefix could be found, 
+// an Error is thrown. 
+//
+//     calling: 
+//     myVIE.namespaces.uri("..."); 
+//     // is always equal to
+//     VIE.Util.toUri("...", myVIE.namespaces);
+VIE.prototype.Namespaces.prototype.uri = function (curie) {
+    return VIE.Util.toUri(curie, this);
+};
+    
+// This method checks, whether the given string is a URI and
+// returns ``true`` if so and ``false`` otherwise.
+//
+//     calling: 
+//     myVIE.namespaces.isUri("..."); 
+//     // is always equal to
+//     VIE.Util.isUri("...");
+VIE.prototype.Namespaces.prototype.isUri = VIE.Util.isUri;

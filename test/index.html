@@ -11,26 +11,61 @@
         <script type="text/javascript">
             //QUnit.config.testTimeout(60000); // 60 seconds
         </script>
-
+        
         <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
         <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>
         <script type="text/javascript" src="../lib/backboneJS/backbone.js"></script>
-        <script>
-            if ( typeof window.JSON === 'undefined' ) { 
-                document.write("&lt;script src=\"../lib/json/json2.js\">&lt;/script>");
+
+        
+        <!-- FALLBACKS -->
+        
+        <script type="text/javascript">
+            if (window.jQuery === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></' + 'script>');
+            }
+            if (window.JSON === undefined ) { 
+                document.write('<' + 'script src="../lib/json/json2.js">/script>"></' + 'script>');
             }
         </script>
-
+        <script type="text/javascript">
+            if (jQuery.rdf === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/jquery.rdfquery.min.js"></' + 'script>');
+            }
+            if (window._ === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/underscore.min.js"></' + 'script>');
+            }
+        </script>
+        <script type="text/javascript">
+            if (window.Backbone === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/backbone.min.js"></' + 'script>');
+            }
+        </script>
+        <script type="text/javascript">
+            if (window.JSON === undefined ) { 
+                document.write('<' + 'script src="https://raw.github.com/douglascrockford/JSON-js/master/json2.js"></' + 'script>');
+            }
+        </script>
+        
         <!-- vie.js itself -->
-		<script type="text/javascript" src="../dist/vie-latest.debug.js"></script>
+        <script type="text/javascript" src="../dist/vie-latest.debug.js"></script>
+        <script type="text/javascript">
+            if (window.VIE === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vie-2.0.0alpha1.js"></' + 'script>');
+            }
+        </script>
 
         <!-- load test scripts -->
         <!-- CORE -->
         <script type="text/javascript" src="core/vie.js"></script>
-		<script type="text/javascript" src="core/type.js"></script>
-		<script type="text/javascript" src="core/attribute.js"></script>
-		<script type="text/javascript" src="core/namespaces.js"></script>
-		<script type="text/javascript" src="core/classic.js"></script>
+        <script type="text/javascript" src="core/type.js"></script>
+        <script type="text/javascript" src="core/attribute.js"></script>
+        <script type="text/javascript" src="core/namespaces.js"></script>
+        <script type="text/javascript" src="core/classic.js"></script>
 
         <!-- SERVICES -->
         <script type="text/javascript" src="service/rdfa.js"></script>

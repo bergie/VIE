@@ -7,7 +7,6 @@ VIE.prototype.StanbolService = function(options) {
     var defaults = {
         name : 'stanbol',
         url: 'http://dev.iks-project.eu:8080/',
-        defaultProxyUrl : "../utils/proxy/proxy.php",
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
             semdeskf : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
@@ -22,16 +21,15 @@ VIE.prototype.StanbolService = function(options) {
             entityhub2: "http://www.iks-project.eu/ontology/rick/query/",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             rdfs: "http://www.w3.org/2000/01/rdf-schema#",
-            dc  : 'http://purl.org/dc/terms/',
+            dcterms  : 'http://purl.org/dc/terms/',
             foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
-            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
-            skos: "http://www.w3.org/2004/02/skos/core"
+            geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
-    this.vie = null; // will be set via VIE.use();
+    this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
     this.connector = new StanbolConnector(this.options);
 
@@ -45,25 +43,21 @@ VIE.prototype.StanbolService.prototype = {
     init: function(){
 
         for (var key in this.options.namespaces) {
-            try {
-                var val = this.options.namespaces[key];
-                this.vie.namespaces.add(key, val);
-            } catch (e) {
-                //this means that the namespace is already in the VIE.namespace
-                //ignore for now!
-            }
+            var val = this.options.namespaces[key];
+            this.vie.namespaces.add(key, val);
         }
         this.namespaces = this.vie.namespaces;
 
         this.rules = [
-            //rule to add backwards-relations to the triples
-            //this makes querying for entities a lot easier!
+            /* rule to add backwards-relations to the triples
+             * this makes querying for entities a lot easier!
+             */
             {'left' : [
                 '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
                 '?subject enhancer:entity-type ?type',
                 '?subject enhancer:confidence ?confidence',
                 '?subject enhancer:entity-reference ?entity',
-                '?subject dc:relation ?relation',
+                '?subject dcterms:relation ?relation',
                 '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
                 '?relation enhancer:selected-text ?selected-text',
                 '?relation enhancer:selection-context ?selection-context',
@@ -76,7 +70,7 @@ VIE.prototype.StanbolService.prototype = {
                  '?entity enhancer:hasEntityAnnotation ?subject'
              ]
              },
-             //rule(s) to transform a Stanbol person into a VIE person
+             /* rule(s) to transform a Stanbol person into a VIE person */
              {
                 'left' : [
                     '?subject a dbpedia:Person',
@@ -146,13 +140,13 @@ VIE.prototype.StanbolService.prototype = {
         ];
 
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
         this.vie.types.addOrOverwrite('enhancer:TextAnnotation', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
         this.vie.types.addOrOverwrite('enhancer:Enhancement', [
-            //TODO: add attributes
+            /*TODO: add attributes */
         ]).inherit("owl:Thing");
     },
     // VIE API analyze implementation
@@ -268,7 +262,6 @@ StanbolConnector.prototype = {
     analyze: function(text, success, error, options) {
         if (!options) { options = {}; }
         var enhancerUrl = this.baseUrl + this.enhancerUrlPrefix;
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
@@ -282,15 +275,10 @@ StanbolConnector.prototype = {
             },
             error: error,
             type: "POST",
-            url: proxyUrl || enhancerUrl,
-            data: (proxyUrl) ? {
-                    proxy_url: enhancerUrl,
-                    content: text,
-                    verb: "POST",
-                    format: format
-                } : text,
+            url: enhancerUrl,
+            data: text,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
+            contentType: "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
 
         });
@@ -315,7 +303,6 @@ StanbolConnector.prototype = {
         if (!options) { options = {}; }
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         jQuery.ajax({
@@ -323,16 +310,11 @@ StanbolConnector.prototype = {
                 success(response);
             },
             error: error,
-            type: (proxyUrl) ? "POST" : "GET",
-            url: proxyUrl || url,
-            data: (proxyUrl) ? {
-                    proxy_url: url,
-                    content: "",
-                    verb: "GET",
-                    format: format
-                } : null,
+            type: "GET",
+            url: url,
+            data: null,
             dataType: format,
-            contentType: proxyUrl ? undefined : "text/plain",
+            contentType: "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
@@ -348,7 +330,6 @@ StanbolConnector.prototype = {
         }
 
         var url = this.baseUrl + this.entityhubUrlPrefix + "/sites/find";
-        var proxyUrl = this._proxyUrl();
         var format = options.format || "application/rdf+json";
 
         jQuery.ajax({
@@ -357,30 +338,11 @@ StanbolConnector.prototype = {
             },
             error: error,
             type: "POST",
-            url: proxyUrl || url,
-            data: (proxyUrl) ? {
-                    proxy_url: url,
-                    content: {
-                        name : term,
-                        limit : limit,
-                        offset: offset
-                    },
-                    verb: "POST",
-                    format: format,
-                    type: "text/plain"
-                } : "name=" + term + "&limit=" + limit + "&offset=" + offset,
+            url: url,
+            data: "name=" + term + "&limit=" + limit + "&offset=" + offset,
             dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
-    },
-
-    _proxyUrl: function(){
-        this.proxyUrl = "";
-        if(this.baseUrl.indexOf(":") !== -1 && !this.options.proxyDisabled){
-            return this.options.proxyUrl || this.options.defaultProxyUrl;
-        } else {
-            return '';
-        }
     }
 };
 })();
