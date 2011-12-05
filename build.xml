@@ -9,6 +9,7 @@
     <property name="DEMOS_DIR" value="./demos"/>
     <property name="LIB_DIR" value="./lib"/>
     <property name="SRC_DIR" value="./src"/>
+    <property name="TEST_DIR" value="./test"/>
     <property name="TMP_DIR" value="./tmp"/>
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
@@ -41,8 +42,8 @@
        </move>
     </target>
 	
-	<target name="doc_copy" depends="doc" description="Generates documentation for vie.js with Docco ">
-		<echo message="Move docs for now"/>
+	<target name="doc_copy" depends="doc" description="Copies documentation into gh-pages branch ">
+		<echo message="Move docs temporarily"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="mv ${DOCS_DIR} ${DOCS_ROOT}/tmp"/>
@@ -66,7 +67,7 @@
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -am 'updating documentation for version ${VERSION}'" />
+	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' ${DOCS_DIR}" />
 		</exec>
 		<echo message="Pushing..."/>
     	<exec executable="sh" dir=".">
@@ -79,7 +80,47 @@
 	 	   <arg value="git checkout master" />
 		</exec>
     </target>
-    
+	
+	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
+		<echo message="Move tests temporarily"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${TEST_DIR} ${TEST_DIR}_tmp"/>
+		</exec>
+		<echo message="Switching to gh-pages branch"/>
+		<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout gh-pages" />
+		</exec>
+		<echo message="Move tests again"/>
+    	<delete dir="test" quiet="true"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${TEST_DIR}_tmp ${TEST_DIR}"/>
+		</exec>
+		<echo message="Adding..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git add ${TEST_DIR}/*" />
+		</exec>
+		<echo message="Committing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}' ${TEST_DIR}" />
+		</exec>
+		<echo message="Pushing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git push origin gh-pages" />
+		</exec>
+    	<echo message="Switching to master branch"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout master" />
+		</exec>
+    </target>
+	    
+	    
     <target name="clean" description="Tidy up project.">
         <echo message="Deleting distribution and API documentation"/>
         <delete dir="${DIST_DIR}"/>
