@@ -4,7 +4,7 @@
 //     (c) 2011 Szaby Grünwald, IKS Consortium
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
-//     <a href="http://viejs.org/">http://viejs.org/</a>
+//     http://viejs.org/
 var root = this,
     jQuery = root.jQuery,
     Backbone = root.Backbone,
