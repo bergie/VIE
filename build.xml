@@ -93,7 +93,7 @@
 	 	   <arg value="git checkout gh-pages" />
 		</exec>
 		<echo message="Move tests again"/>
-    	<delete dir="test" quiet="true"/>
+    	<delete dir="${TEST_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="mv ${TEST_DIR}_tmp ${TEST_DIR}"/>
