@@ -63,7 +63,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
             value = (_.isArray(value))? value : [ value ];
-            
+
             value = _.map(value, function(v) {
                 if (v !== undefined && attr === '@type' && self.vie.types.get(v)) {
                     return self.vie.types.get(v);
@@ -73,6 +73,9 @@ VIE.prototype.Entity = function(attrs, opts) {
                     return v;
                 }
             }, this);
+            if(value.length === 0) {
+                return undefined;
+            }
             // if there is only one element, just return that one
             value = (value.length === 1)? value[0] : value;
             return value;
