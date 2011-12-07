@@ -144,7 +144,7 @@ VIE.Util = {
                     rules.prefix(prefix, service.namespaces.get(prefix));
                 }
             }
-            for (var i = 0; i < service.rules.length; i++) {
+            for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
                 rules.add(service.rules[i]['left'], service.rules[i]['right']);
             }
             rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
