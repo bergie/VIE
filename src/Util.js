@@ -145,7 +145,8 @@ VIE.Util = {
                 }
             }
             for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
-                rules.add(service.rules[i]['left'], service.rules[i]['right']);
+                var rule = service.rules[i];
+                rules.add(rule['left'], rule['right']);
             }
             rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
         }
