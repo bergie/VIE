@@ -48,7 +48,7 @@ test("vie.js Entities API", function () {
     ok(z.entities.at(0).has('http://purl.org/dc/elements/1.1/title'));
     equal(z.entities.at(0).has('dc:foo'), false);
     
-    equal(z.entities.at(0).get('@type').id, z.types.get('Thing').id);
+    equal(z.entities.at(0).get('@type').id, z.types.get('owl:Thing').id);
 });
 
 test("vie.js Entities API - addOrUpdate", function () {
@@ -76,9 +76,9 @@ test("vie.js Entities API - addOrUpdate", function () {
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
     
-    var person = z.types.add("foaf:Person").inherit(z.types.get('Thing'));
+    var person = z.types.add("foaf:Person").inherit(z.types.get('owl:Thing'));
                 
-    var musician = z.types.add("example:Musician").inherit(z.types.get('Thing'));
+    var musician = z.types.add("example:Musician").inherit(z.types.get('owl:Thing'));
 
     z.entities.add({
         '@subject': 'http://example.net/Madonna',
@@ -223,7 +223,7 @@ test("vie.js Loadable API - success", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.load({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
@@ -233,7 +233,7 @@ test("vie.js Loadable API - success", 1, function () {
 test("vie.js Loadable API - fail", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
-    stop(1000); // 1 second timeout
+    stop();
     z.load({mockresult: "fail"}).using("mock").execute()
     .fail(function(result){
         equal(result, "fail");
@@ -244,7 +244,7 @@ test("vie.js Loadable API - fail", 1, function () {
 test("vie.js Loadable API - always", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
-    stop(1000); // 1 second timeout
+    stop();
     z.load({mockresult: "fail"}).using("mock").execute()
     .always(function(result){
         ok(true);
@@ -263,7 +263,7 @@ test("vie.js Savable API - success", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(2000); // 1 second timeout
+    stop();
     z.save({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
@@ -274,7 +274,7 @@ test("vie.js Savable API - fail", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(2000); // 1 second timeout
+    stop();
     z.save({mockresult: "fail"}).using("mock").fail(function(result){
         equal(result, "fail");
         start();
@@ -285,7 +285,7 @@ test("vie.js Savable API - always", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(2000); // 1 second timeout
+    stop();
     z.save({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
@@ -304,7 +304,7 @@ test("vie.js Removable API - success", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.remove({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
@@ -315,7 +315,7 @@ test("vie.js Removable API - fail", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.remove({mockresult: "fail"}).using("mock")
     .fail(function(result){
         equal(result, "fail");
@@ -327,7 +327,7 @@ test("vie.js Removable API - always", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.remove({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);
@@ -346,7 +346,7 @@ test("vie.js Analyzable API - success", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.analyze({mockresult: "success"}).using("mock").execute().success(function(result){
         equal(result, "success");
         start();
@@ -357,7 +357,7 @@ test("vie.js Analyzable API - fail", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.analyze({mockresult: "fail"}).using("mock")
     .fail(function(result){
         equal(result, "fail");
@@ -374,7 +374,7 @@ test("vie.js Analyzable API - always", 1, function () {
     var z = new VIE();
     z.use(new z.MockService());
 
-    stop(1000); // 1 second timeout
+    stop();
     z.analyze({mockresult: "fail"}).using("mock")
     .always(function(result){
         ok(true);

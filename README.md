@@ -75,8 +75,7 @@ This JS would work across all the different CMS implementations. Backbone.js pro
 
 There is a full static HTML example of VIE at work. Saving outputs the edited contents as JSON into the JavaScript console:
 
-* [Example with Aloha Editor](https://github.com/bergie/VIE/raw/master/example.html)
-* [Example with WYMeditor](https://github.com/bergie/VIE/blob/wymeditor/example-wymeditor.html)
+* [Example with Hallo](http://createjs.org)
 
 Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
 
@@ -159,3 +158,9 @@ You need Node.js and [NPM](http://npmjs.org/). Then just run:
 
     $ npm install --dev
     $ npm test
+
+#### Continuous integration
+
+VIE uses [Travis](http://travis-ci.org/) for continuous integration. Simply add your fork there and every time you push you'll get the tests run.
+
+[![Build Status](https://secure.travis-ci.org/bergie/VIE.png)](http://travis-ci.org/bergie/VIE)

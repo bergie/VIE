@@ -22,15 +22,15 @@ VIE.prototype.Entity = function(attrs, opts) {
         attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
         attrs['@type'] = _.map(attrs['@type'], function(val){
             if (!self.vie.types.get(val)) {
-                //if there is no such type -> add it and let it inherit from "Thing"
-                self.vie.types.add(val).inherit("Thing");
+                //if there is no such type -> add it and let it inherit from "owl:Thing"
+                self.vie.types.add(val).inherit("owl:Thing");
             }
             return self.vie.types.get(val).id;
         });
         attrs['@type'] = (attrs['@type'].length === 1)? attrs['@type'][0] : attrs['@type'];
     } else {
-        // provide "Thing" as the default type if none was given
-        attrs['@type'] = self.vie.types.get("Thing").id;
+        // provide "owl:Thing" as the default type if none was given
+        attrs['@type'] = self.vie.types.get("owl:Thing").id;
     }
 
     //the following provides full seamless namespace support

@@ -4,11 +4,14 @@
     xmlns="http://www.w3.org/1999/xhtml" 
     xml:lang="en">
     <head>
-        <script type="text/javascript" src="../lib/jquery/1.6/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="../lib/jquery/1.7/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../lib/jquery/xdr.js"></script>
 
         <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
         <script type="text/javascript" src="qunit.js"></script>
+        <script type="text/javascript">
+            //QUnit.config.testTimeout(60000); // 60 seconds
+        </script>
 
         <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
         <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>
@@ -21,9 +24,6 @@
 
         <!-- vie.js itself -->
 		<script type="text/javascript" src="../dist/vie-latest.debug.js"></script>
-		<!-- This makes the http://schema.org ontology initializable.-->
-    	<script type="text/javascript" src="../utils/schemaOrg/schema.json"></script>
-    	<script type="text/javascript" src="../utils/schemaOrg/wrapper.js"></script>
 
         <!-- load test scripts -->
         <!-- CORE -->
@@ -43,11 +43,11 @@
         <script type="text/javascript" src="standard/rdfa11-testharness.js"></script>
 
         <!-- MISC -->
-        <script type="text/javascript" src="../utils/schemaOrg/tests.js"></script>
+        <script type="text/javascript" src="core/schema.js"></script>
 
         <!-- Performance testing -->
-        <script type="text/javascript" src="../utils/jslitmus/JSLitmus.js"></script>
-        <script type="text/javascript" src="speed.js"></script>
+        <!--<script type="text/javascript" src="../utils/jslitmus/JSLitmus.js"></script>
+        <script type="text/javascript" src="speed.js"></script>-->
 
     </head>
     <body>
@@ -58,7 +58,7 @@
         <ol id="qunit-tests"></ol>
         <div id="qunit-fixture">test markup, will be hidden</div>
 
-        <h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>
-        <div id="jslitmus_container" style="margin: 20px 10px;"></div>
+        <!--<h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>
+        <div id="jslitmus_container" style="margin: 20px 10px;"></div>-->
     </body>
 </html>

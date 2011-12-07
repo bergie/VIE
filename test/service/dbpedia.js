@@ -13,7 +13,7 @@ test("VIE.js DBPediaService - Load", function () {
     ok (z.DBPediaService);
     equal(typeof z.DBPediaService, "function");
     z.use(new z.DBPediaService());
-    stop(30000); // 30 seconds timeout
+    stop();
     z
     .load({entity: entity})
     .using('dbpedia')
@@ -24,7 +24,7 @@ test("VIE.js DBPediaService - Load", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });

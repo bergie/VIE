@@ -13,7 +13,7 @@ VIE.prototype.DBPediaService = function(options) {
             foaf: 'http://xmlns.com/foaf/0.1/',
             georss: "http://www.georss.org/georss/",
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#',
-            rdfschema: "http://www.w3.org/2000/01/rdf-schema#",
+            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             dbpedia: "http://dbpedia.org/ontology/",
             dbprop : "http://dbpedia.org/property/",
@@ -28,7 +28,8 @@ VIE.prototype.DBPediaService = function(options) {
     this.connector = new DBPediaConnector(this.options);
 
     jQuery.ajaxSetup({
-        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
+        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+        timeout: 60000 /* 60 seconds timeout */
     });
 
 };
@@ -126,6 +127,10 @@ DBPediaConnector.prototype = {
 
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
+        
+        //CONSTRUCT   { <http://dbpedia.org/resource/Germany> ?attr ?val }
+//WHERE       { <http://dbpedia.org/resource/Germany> ?attr ?val }
+        
         var url = uri
         .replace(/^</, '').replace(/>$/, '')
         .replace('resource', 'data') + ".jrdf";

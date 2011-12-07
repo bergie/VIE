@@ -40,6 +40,45 @@
             </fileset>
        </move>
     </target>
+	
+	<target name="doc_copy" depends="doc" description="Generates documentation for vie.js with Docco ">
+		<echo message="Move docs for now"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${DOCS_DIR} ${DOCS_ROOT}/tmp"/>
+		</exec>
+		<echo message="Switching to gh-pages branch"/>
+		<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout gh-pages" />
+		</exec>
+		<echo message="Move docs again"/>
+    	<delete dir="${DOCS_DIR}" quiet="true"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${DOCS_ROOT}/tmp ${DOCS_DIR}"/>
+		</exec>
+		<echo message="Adding..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git add docs/*" />
+		</exec>
+		<echo message="Committing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git commit -am 'updating documentation for version ${VERSION}'" />
+		</exec>
+		<echo message="Pushing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git push origin gh-pages" />
+		</exec>
+    	<echo message="Switching to master branch"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git checkout master" />
+		</exec>
+    </target>
     
     <target name="clean" description="Tidy up project.">
         <echo message="Deleting distribution and API documentation"/>

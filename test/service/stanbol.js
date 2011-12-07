@@ -14,7 +14,7 @@ test("VIE.js StanbolService - Analyze", function () {
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
-    stop(10000); // 10 second timeout
+    stop();
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
         ok(entities);
@@ -32,7 +32,7 @@ test("VIE.js StanbolService - Analyze", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
@@ -45,7 +45,7 @@ test("VIE.js StanbolService - Find", function () {
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
-    stop(10000); // 10 second timeout
+    stop();
     z.find({term: term, limit: limit, offset: offset})
     .using('stanbol').execute().done(function(entities) {
 
@@ -64,7 +64,7 @@ test("VIE.js StanbolService - Find", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
@@ -77,7 +77,7 @@ test("VIE.js StanbolService - Load", function () {
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
-    stop(10000); // 10 second timeout
+    stop();
     z.load({entity: entity})
     .using('stanbol').execute().done(function(entities) {
         ok(entities);
@@ -95,7 +95,7 @@ test("VIE.js StanbolService - Load", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f);
+        ok(false, f.statusText);
         start();
     });
 });
