@@ -239,11 +239,7 @@ VIE.prototype.loadSchema = function(url, options) {
         var vie = this;
         jQuery.getJSON(url)
         .success(function(data) {
-            VIE.Util.loadSchemaOrg.call(vie, data);
-            /* sets the baseNamespace in VIE if given */
-            if (options.baseNS) {
-                vie.namespaces.base(options.baseNS);
-            }
+            VIE.Util.loadSchemaOrg(vie, data, options.baseNS);
             if (options.success) {
                 options.success.call(vie);
             }
