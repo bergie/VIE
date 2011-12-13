@@ -1,22 +1,17 @@
 module("vie.js - Schema.org Ontology");
 
 test("Initialization", function() {
-    if (window.location.protocol !== 'file:') {
-        return;
-    }
     var z = new VIE();
     
     ok(z.loadSchema);
     equal(typeof z.loadSchema, "function");
     
     stop();
-    z
-    .loadSchema("http://schema.rdfs.org/all.json", {
+    z.loadSchema("http://schema.rdfs.org/all.json", {
         baseNS : "http://schema.org/",
         success : function () {
             ok(true, "successfully loaded types!");
-            
-        equal(z.types.list().length, 298);
+        equal(z.types.list().length, 299);
         
         //just pick some and test them:
         ok (z.types.get("Person"));
