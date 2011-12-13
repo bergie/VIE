@@ -1,70 +1,63 @@
-// File:   Util.js <br />
-// Author: <a href="http://github.com/neogermi/">Sebastian Germesin</a>
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
+
+// ## VIE Utils
 //
-
-// Utilities for the day-to-day VIE.js usage
-
-// extension to jQuery to compare two arrays on equality
-// found: <a href="http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays">http://stackoverflow.com/questions/1773069/using-jquery-to-compare-two-arrays</a>
-jQuery.fn.compare = function(t) {
-    if (this.length !== t.length) { return false; }
-    var a = this.sort(),
-        b = t.sort();
-    for (var i = 0; t[i]; i++) {
-        if (a[i] !== b[i]) { 
-                return false;
-        }
-    }
-    return true;
-};
-
-// Extension to the JS native Array implementation to remove values from an array.
-// from: <a href="http://sebastian.germes.in/blog/2011/09/javascripts-missing-array-remove-function/">http://sebastian.germes.in/blog/2011/09/javascripts-missing-array-remove-function/</a>
-if (!Array.prototype.remove) {
-  Array.prototype.remove = function () {
-    var args = this.remove.arguments;
-    var i;
-
-    if (args[0] && args[0] instanceof Array) {
-      var a = args[0];
-      for (i = 0; i < a.length; i++) {
-        this.remove(a[i]);
-      }
-    } else {
-      for (i = 0; i < args.length; i++) {
-        while(true) {
-          var index = this.indexOf(args[i]);
-          if (index !== -1) {
-            this.splice(index, 1);
-          } else {
-            break;
-          }
-        }
-      }
-    }
-  return this;
-  };
-}
-
-//Extension to the JS native Array implementation to remove duplicates from an array.
-//This actually leaves the original Array untouched and returns a copy with no duplicates.
-if (!Array.prototype.unduplicate) {
-	Array.prototype.unduplicate = function () {
-	    var sorted_arr = this.sort();
-	    var results = [];
-	    for (var i = 0; i < sorted_arr.length; i++) {
-	        if (i === sorted_arr.length-1 || sorted_arr[i] !== sorted_arr[i+1]) {
-	            results.push(sorted_arr[i]);
-	        }
-	    }
-	    return results;
-	};
-} 
-
-
+// The here-listed methods are utility methods for the day-to-day 
+// VIE.js usage. All methods are within the static namespace ```VIE.Util```.
 VIE.Util = {
-		// converts a given URI into a CURIE (or save CURIE), based
-		// on the given VIE.Namespaces object.
+    
+// ```VIE.Util.unduplicate(arr)```: This is a method which removes duplicates from an array.
+//This methods leaves the original array untouched and returns a copy with no duplicates.  
+// **Parameters**:  
+// *{array}* **arr** The array where the duplicates should be removed from.  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{array}* : A **new** array, containing unique entries of the given array. **!Attention!**:
+// The order of the returned array might differ from the input array.  
+// **Example usage**:  
+//
+//     var arr = ["a", "a", "b" , "c", "d", "c", "e", "a"];
+//     console.log(VIE.Util.unduplicate(arr).join(" "));
+//         // --> "a b c d e"
+    unduplicate : function (arr) {
+        var sorted_arr = arr.sort();
+        var results = [];
+        for (var i = 0; i < sorted_arr.length; i++) {
+            if (i === sorted_arr.length-1 || sorted_arr[i] !== sorted_arr[i+1]) {
+                results.push(sorted_arr[i]);
+            }
+        }
+        return results;
+    },
+
+// ```VIE.Util.toCurie(uri, safe, namespaces)```: This method converts a given 
+// URI into a CURIE (or SCURIE), based on the given ```VIE.Namespaces``` object.
+// If the given uri is already a URI, it is left untouched and directly returned.
+// If no prefix could be found, an ```Error``` is thrown.  
+// **Parameters**:  
+// *{string}* **uri** The URI to be transformed.  
+// *{boolean}* **safe** A flag whether to generate CURIEs or SCURIEs.  
+// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.  
+// **Throws**:  
+// *{Error}* If no prefix could be found in the passed namespaces.  
+// **Returns**:  
+// *{string}* The CURIE or SCURIE.  
+// **Example usage**: 
+//
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var uri = "<http://dbpedia.org/ontology/Person>";
+//     VIE.Util.toCurie(uri, false, ns); // --> dbp:Person
+//     VIE.Util.toCurie(uri, true, ns); // --> [dbp:Person]
 	toCurie : function (uri, safe, namespaces) {
         if (VIE.Util.isCurie(uri, namespaces)) {
             return uri;
@@ -84,59 +77,127 @@ VIE.Util = {
         throw new Error("No prefix found for URI '" + uri + "'!");
     },
 
-	// checks, whether the given string is a CURIE.
-    isCurie : function (something, namespaces) {
+// ```VIE.Util.isCurie(curie, namespaces)```: This method checks, whether 
+// the given string is a CURIE and returns ```true``` if so and ```false```otherwise.  
+// **Parameters**:  
+// *{string}* **curie** The CURIE (or SCURIE) to be checked.  
+// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.  
+// **Throws**:  
+// nothing.  
+// **Returns**:  
+// *{boolean}* ```true``` if the given curie is a CURIE or SCURIE and ```false``` otherwise.  
+// **Example usage**: 
+//
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var uri = "<http://dbpedia.org/ontology/Person>";
+//     var curie = "dbp:Person";
+//     var scurie = "[dbp:Person]";
+//     var text = "This is some text.";
+//     VIE.Util.isCurie(uri, ns);    // --> false
+//     VIE.Util.isCurie(curie, ns);  // --> true
+//     VIE.Util.isCurie(scurie, ns); // --> true
+//     VIE.Util.isCurie(text, ns);   // --> false
+    isCurie : function (curie, namespaces) {
         try {
-            VIE.Util.toUri(something, namespaces);
+            VIE.Util.toUri(curie, namespaces);
             return true;
         } catch (e) {
             return false;
         }
     },
 
-	// converts a given CURIE (or save CURIE) into a URI, based
-	// on the given VIE.Namespaces object.
+// ```VIE.Util.toUri(curie, namespaces)```: This method converts a 
+// given CURIE (or save CURIE) into a URI, based on the given ```VIE.Namespaces``` object.  
+// **Parameters**:  
+// *{string}* **curie** The CURIE to be transformed.  
+// *{VIE.Namespaces}* **namespaces** The namespaces object  
+// **Throws**:  
+// *{Error}* If no URI could be assembled.  
+// **Returns**:  
+// *{string}* : A string, representing the URI.  
+// **Example usage**: 
+//
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var curie = "dbp:Person";
+//     var scurie = "[dbp:Person]";
+//     VIE.Util.toUri(curie, ns); 
+//          --> <http://dbpedia.org/ontology/Person>
+//     VIE.Util.toUri(scurie, ns);
+//          --> <http://dbpedia.org/ontology/Person>
     toUri : function (curie, namespaces) {
         var delim = ":";
-        for (var k in namespaces.toObj()) {
-            if (k !== "" && (curie.indexOf(k + ":") === 0 || curie.indexOf("[" + k + ":") === 0)) {
-                var pattern = new RegExp("^" + "\\[{0,1}" + k + delim);
-                return "<" + curie.replace(pattern, namespaces.get(k)).replace(/\]{0,1}$/, '') + ">";
+        for (var prefix in namespaces.toObj()) {
+            if (prefix !== "" && (curie.indexOf(prefix + ":") === 0 || curie.indexOf("[" + prefix + ":") === 0)) {
+                var pattern = new RegExp("^" + "\\[{0,1}" + prefix + delim);
+                return "<" + curie.replace(pattern, namespaces.get(prefix)).replace(/\]{0,1}$/, '') + ">";
             }
         }
-        //default:
-        if (curie.indexOf(delim) === -1 && namespaces.base()) {
+        /* check for the default namespace */
+        if (curie.indexOf(delim) === -1) {
             return "<" + namespaces.base() + curie + ">";
         }
         throw new Error("No prefix found for CURIE '" + curie + "'!");
     },
     
-    // checks, whether the given string is a URI.
+// ```VIE.Util.isUri(something)```: This method checks, whether the given string is a URI.  
+// **Parameters**:  
+// *{string}* **something** : The string to be checked.  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{boolean}* : ```true``` if the string is a URI, ```false``` otherwise.  
+// **Example usage**: 
+//
+//     var uri = "<http://dbpedia.org/ontology/Person>";
+//     var curie = "dbp:Person";
+//     VIE.Util.isUri(uri, ns);   // --> true
+//     VIE.Util.isUri(curie, ns); // --> false
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+:.+>$/) === 0);
     },
     
+    
+// ```VIE.Util.blankNodeID()```: This method generates a new blank id for an entity.  
+// **Parameters**:  
+// nothing  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{string}* : A string, representing a unique blank id with the prefix ```'_:bnode'```.  
+// **Example usage**: 
+//
+//     VIE.Util.blankNodeID(); // --> _:bnode38e
+//     VIE.Util.blankNodeID(); // --> _:bnode38f
     _blankNodeSeed : new Date().getTime() % 1000,
     
-    // generates a new blank node ID
     blankNodeID : function () {
-      this._blankNodeSeed += 1;
-      return '_:bnode' + this._blankNodeSeed.toString(16);
+      VIE.Util._blankNodeSeed += 1;
+      return '_:bnode' + VIE.Util._blankNodeSeed.toString(16);
     },
-    
-    // this method converts rdf/json data from an external service
-    // into VIE.Entities. (this has been embedded in the StanbolService
-    // but as it is needed in other services, too, it made sense to 
-    // put it into the utils.)
-    rdf2Entities: function (service, results) {
-        //transform data from Stanbol into VIE.Entities
 
+// ```VIE.Util.rdf2Entities(service, results)```: This method converts *rdf/json* data from an external service
+// into VIE.Entities.  
+// **Parameters**:  
+// *{object}* **service** The service that retrieved the data.  
+// *{object}* **results** The data to be transformed.  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
+    rdf2Entities: function (service, results) {
         if (typeof jQuery.rdf !== 'function') {
-            return VIE.Util.rdf2EntitiesNoRdfQuery(service, results);
+            /* fallback if no rdfQuery has been loaded */
+            return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
         var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
 
-        //execute rules here!
+        /* if the service contains rules to apply special transformation, they are executed here.*/
         if (service.rules) {
             var rules = jQuery.rdf.ruleset();
             for (var prefix in service.namespaces.toObj()) {
@@ -148,7 +209,7 @@ VIE.Util = {
                 var rule = service.rules[i];
                 rules.add(rule['left'], rule['right']);
             }
-            rdf = rdf.reason(rules, 10); // execute the rules only 10 times to avoid looping
+            rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
         }
         var entities = {};
         rdf.where('?subject ?property ?object').each(function() {
@@ -207,9 +268,18 @@ VIE.Util = {
         return vieEntities;
     },
     
-    // helper if no rdfQuery can be loaded.
-    rdf2EntitiesNoRdfQuery: function (service, results) {
-        jsonLD = [];
+// ```VIE.Util._rdf2EntitiesNoRdfQuery(service, results)```: This is a **private** method which should
+// only be accessed through ```VIE.Util._rdf2Entities()``` and is a helper method in case there is no
+// rdfQuery loaded (*not recommended*).  
+// **Parameters**:  
+// *{object}* **service** The service that retrieved the data.  
+// *{object}* **results** The data to be transformed.  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
+    _rdf2EntitiesNoRdfQuery: function (service, results) {
+        var jsonLD = [];
         _.forEach(results, function(value, key) {
             var entity = {};
             entity['@subject'] = '<' + key + '>';
@@ -235,16 +305,29 @@ VIE.Util = {
         });
         return jsonLD;
     },
-    
-    loadSchemaOrg : function (SchemaOrg) {
+
+// ```VIE.Util.loadSchemaOrg(SchemaOrg)```: This method is a wrapper around
+// the <a href="http://schema.org/">schema.org</a> ontology. It adds all the
+// given types and properties as ```VIE.Type``` instances to the given VIE instance.
+// If the paramenter **baseNS** is set, the method automatically sets the namespace
+// to the provided one. If it is not set, it will keep the base namespace of VIE untouched.  
+// **Parameters**:  
+// *{VIE}* **vie** The instance of ```VIE```.   
+// *{object}* **SchemaOrg** The data imported from schema.org.   
+// *{string|undefined}* **baseNS** If set, this will become the new baseNamespace within the given ```VIE``` instance.   
+// **Throws**:  
+// *{Error}* If the parameter was not given.  
+// **Returns**:  
+// nothing.
+    loadSchemaOrg : function (vie, SchemaOrg, baseNS) {
     
         if (!SchemaOrg) {
-            throw "Please load the schema.json file."
+            throw new Error("Please load the schema.json file.");
         }
-        this.types.remove("<http://schema.org/Thing>");
+        vie.types.remove("<http://schema.org/Thing>");
         
-        var baseNSBefore = this.namespaces.base();
-        this.namespaces.base("http://schema.org/");
+        var baseNSBefore = (baseNS)? baseNS : vie.namespaces.base();
+        vie.namespaces.base(baseNS);
         
         var datatypeMapping = {
             'DataType': 'xsd:anyType',
@@ -258,20 +341,20 @@ VIE.Util = {
         };
         
         var dataTypeHelper = function (ancestors, id) {
-            var type = this.types.add(id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
+            var type = vie.types.add(id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
             
             for (var i = 0; i < ancestors.length; i++) {
-                var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
-                    dataTypeHelper.call(this, SchemaOrg["datatypes"][ancestors[i]].supertypes, ancestors[i]);
+                var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
+                    dataTypeHelper.call(vie, SchemaOrg["datatypes"][ancestors[i]].supertypes, ancestors[i]);
                 type.inherit(supertype);
             }
             return type;
         };
         
         for (var dt in SchemaOrg["datatypes"]) {
-            if (!this.types.get(dt)) {
+            if (!vie.types.get(dt)) {
                 var ancestors = SchemaOrg["datatypes"][dt].supertypes;
-                dataTypeHelper.call(this, ancestors, dt);
+                dataTypeHelper.call(vie, ancestors, dt);
             }
         }
         
@@ -290,31 +373,26 @@ VIE.Util = {
         };
         
         var typeHelper = function (ancestors, id, props) {
-            var type = this.types.add(id, props);
+            var type = vie.types.add(id, props);
            
             for (var i = 0; i < ancestors.length; i++) {
-                var supertype = (this.types.get(ancestors[i]))? this.types.get(ancestors[i]) :
-                    typeHelper.call(this, SchemaOrg["types"][ancestors[i]].supertypes, ancestors[i], typeProps.call(this, ancestors[i]));
+                var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
+                    typeHelper.call(vie, SchemaOrg["types"][ancestors[i]].supertypes, ancestors[i], typeProps.call(vie, ancestors[i]));
                 type.inherit(supertype);
             }
             if (id === "Thing" && !type.isof("owl:Thing")) {
                 type.inherit("owl:Thing");
             }
-            if (id === "BowlingAlley") {
-                /* debugger */
-            }
             return type;
         };
         
         for (var t in SchemaOrg["types"]) {
-            if (!this.types.get(t)) {
+            if (!vie.types.get(t)) {
                 var ancestors = SchemaOrg["types"][t].supertypes;
-                typeHelper.call(this, ancestors, t, typeProps.call(this, t));
+                typeHelper.call(vie, ancestors, t, typeProps.call(vie, t));
             }
         }
-        
-        this.namespaces.base(baseNSBefore);
-    
+        /* set the namespace to either the old value or the provided baseNS value */
+        vie.namespaces.base(baseNSBefore);
     }
-    
 };
