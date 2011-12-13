@@ -142,7 +142,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
                             delete add[id];
                         }
                         merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = merge[id].unduplicate();
+                        merge[id] = VIE.Util.unduplicate(merge[id]);
                     }
                 }
             }

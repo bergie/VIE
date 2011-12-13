@@ -66,7 +66,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                     } else {
                         oldVals = (jQuery.isArray(oldVals))? oldVals : [ oldVals ];
                         newVals = (jQuery.isArray(newVals))? newVals : [ newVals ];
-                        newAttribs[attribute] = oldVals.concat(newVals).unduplicate();
+                        newAttribs[attribute] = VIE.Util.unduplicate(oldVals.concat(newVals));
                         newAttribs[attribute] = (newAttribs[attribute].length === 1)? newAttribs[attribute][0] : newAttribs[attribute];
                     }
                 }
