@@ -18,6 +18,7 @@ VIE.prototype.StanbolService = function(options) {
             foaf: "http://xmlns.com/foaf/0.1/",
             opengis: "http://www.opengis.net/gml/",
             dbpedia: "http://dbpedia.org/ontology/",
+            dbprop: "http://dbpedia.org/property/",
             owl : "http://www.w3.org/2002/07/owl#",
             geonames : "http://www.geonames.org/ontology#",
             enhancer : "http://fise.iks-project.eu/ontology/",
@@ -134,6 +135,40 @@ VIE.prototype.StanbolService.prototype = {
                           jQuery.rdf.triple(this.subject.toString(),
                                   '<' + ns.base() + 'name>',
                               this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              })
+                          ];
+                      };
+                  }(this.namespaces)
+              },
+			  {
+                 'left' : [
+                     '?subject a dbpedia:City',
+                     '?subject rdfs:label ?label',
+                     '?subject dbpedia:abstract ?abs',
+                     '?subject dbpedia:country ?country'
+                  ],
+                  'right': function(ns) {
+                      return function() {
+                          return [
+                          jQuery.rdf.triple(this.subject.toString(),
+                              'a',
+                              '<' + ns.base() + 'Place>', {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                              this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'description>',
+                              this.abs.toString(), {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'containedIn>',
+                              this.country.toString(), {
                                   namespaces: ns.toObj()
                               })
                           ];
