@@ -12,7 +12,8 @@
 // VIE.js usage. All methods are within the static namespace ```VIE.Util```.
 VIE.Util = {
     
-// ```VIE.Util.unduplicate(arr)```: This is a method which removes duplicates from an array.
+// ### VIE.Util.unduplicate(arr)
+// This is a method which removes duplicates from an array.
 //This methods leaves the original array untouched and returns a copy with no duplicates.  
 // **Parameters**:  
 // *{array}* **arr** The array where the duplicates should be removed from.  
@@ -37,7 +38,8 @@ VIE.Util = {
         return results;
     },
 
-// ```VIE.Util.toCurie(uri, safe, namespaces)```: This method converts a given 
+// ### VIE.Util.toCurie(uri, safe, namespaces)
+// This method converts a given 
 // URI into a CURIE (or SCURIE), based on the given ```VIE.Namespaces``` object.
 // If the given uri is already a URI, it is left untouched and directly returned.
 // If no prefix could be found, an ```Error``` is thrown.  
@@ -77,7 +79,8 @@ VIE.Util = {
         throw new Error("No prefix found for URI '" + uri + "'!");
     },
 
-// ```VIE.Util.isCurie(curie, namespaces)```: This method checks, whether 
+// ### VIE.Util.isCurie(curie, namespaces)
+// This method checks, whether 
 // the given string is a CURIE and returns ```true``` if so and ```false```otherwise.  
 // **Parameters**:  
 // *{string}* **curie** The CURIE (or SCURIE) to be checked.  
@@ -109,7 +112,8 @@ VIE.Util = {
         }
     },
 
-// ```VIE.Util.toUri(curie, namespaces)```: This method converts a 
+// ### VIE.Util.toUri(curie, namespaces)
+// This method converts a 
 // given CURIE (or save CURIE) into a URI, based on the given ```VIE.Namespaces``` object.  
 // **Parameters**:  
 // *{string}* **curie** The CURIE to be transformed.  
@@ -145,7 +149,8 @@ VIE.Util = {
         throw new Error("No prefix found for CURIE '" + curie + "'!");
     },
     
-// ```VIE.Util.isUri(something)```: This method checks, whether the given string is a URI.  
+// ### VIE.Util.isUri(something)
+// This method checks, whether the given string is a URI.  
 // **Parameters**:  
 // *{string}* **something** : The string to be checked.  
 // **Throws**:  
@@ -163,7 +168,8 @@ VIE.Util = {
     },
     
     
-// ```VIE.Util.blankNodeID()```: This method generates a new blank id for an entity.  
+// ### VIE.Util.blankNodeID()
+// This method generates a new blank id for an entity.  
 // **Parameters**:  
 // nothing  
 // **Throws**:  
@@ -181,7 +187,8 @@ VIE.Util = {
       return '_:bnode' + VIE.Util._blankNodeSeed.toString(16);
     },
 
-// ```VIE.Util.rdf2Entities(service, results)```: This method converts *rdf/json* data from an external service
+// ### VIE.Util.rdf2Entities(service, results)
+// This method converts *rdf/json* data from an external service
 // into VIE.Entities.  
 // **Parameters**:  
 // *{object}* **service** The service that retrieved the data.  
@@ -268,7 +275,8 @@ VIE.Util = {
         return vieEntities;
     },
     
-// ```VIE.Util._rdf2EntitiesNoRdfQuery(service, results)```: This is a **private** method which should
+// ### VIE.Util._rdf2EntitiesNoRdfQuery(service, results)
+// This is a **private** method which should
 // only be accessed through ```VIE.Util._rdf2Entities()``` and is a helper method in case there is no
 // rdfQuery loaded (*not recommended*).  
 // **Parameters**:  
@@ -306,7 +314,8 @@ VIE.Util = {
         return jsonLD;
     },
 
-// ```VIE.Util.loadSchemaOrg(SchemaOrg)```: This method is a wrapper around
+// ### VIE.Util.loadSchemaOrg(vie, SchemaOrg, baseNS)
+// This method is a wrapper around
 // the <a href="http://schema.org/">schema.org</a> ontology. It adds all the
 // given types and properties as ```VIE.Type``` instances to the given VIE instance.
 // If the paramenter **baseNS** is set, the method automatically sets the namespace

@@ -1,7 +1,10 @@
-// File:   StanbolService.js
-// Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
-// Author: <a href="mailto:szaby.gruenwald@salzburgresearch.at">Szaby Gruenwald</a>
-//
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 (function(){
 VIE.prototype.StanbolService = function(options) {
     var defaults = {
@@ -23,7 +26,6 @@ VIE.prototype.StanbolService = function(options) {
             rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             rdfs: "http://www.w3.org/2000/01/rdf-schema#",
             dcterms  : 'http://purl.org/dc/terms/',
-            foaf: 'http://xmlns.com/foaf/0.1/',
             schema: 'http://schema.org/',
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         }

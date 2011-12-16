@@ -5,10 +5,9 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
-
 if (VIE.prototype.Namespaces) {
     throw new Error("ERROR: VIE.Namespaces is already defined. " + 
-        "Please check your installation!");
+        "Please check your VIE installation!");
 }
 
 // ## VIE Namespaces constructor
