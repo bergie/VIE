@@ -1,5 +1,6 @@
 module("vie.js - Apache Stanbol Service");
 
+var stanbolRootUrl = "http://dev.iks-project.eu/stanbolfull";
 test("Test stanbol connection", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -13,7 +14,7 @@ test("VIE.js StanbolService - Analyze", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : stanbolRootUrl, proxyDisabled: true}));
     stop();
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
@@ -44,7 +45,7 @@ test("VIE.js StanbolService - Find", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : stanbolRootUrl, proxyDisabled: true}));
     stop();
     z.find({term: term, limit: limit, offset: offset})
     .using('stanbol').execute().done(function(entities) {
@@ -76,7 +77,7 @@ test("VIE.js StanbolService - Load", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    z.use(new z.StanbolService({url : "http://dev.iks-project.eu/stanbolfull", proxyDisabled: true}));
+    z.use(new z.StanbolService({url : stanbolRootUrl, proxyDisabled: true}));
     stop();
     z.load({entity: entity})
     .using('stanbol').execute().done(function(entities) {
