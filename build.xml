@@ -159,6 +159,8 @@
             <fileset dir="${SRC_DIR}" includes="Classic.js"/>
             <fileset dir="${SRC_DIR}/service" includes="*.js"/>
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>
+            <!-- Internet Explorer specific jQuery Ajax transport handler -->
+            <fileset dir="${SRC_DIR}" includes="xdr.js"/>
         </concat>
         <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="^" replace="(function(){" />
         <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="$" replace="})();" />
