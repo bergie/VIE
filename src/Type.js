@@ -5,7 +5,12 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
+//
 
+// ## VIE.Types
+// Within VIE, we provide special capabilities of handling types of entites. This helps
+// for example to query easily for certain entities (e.g., you only need to query for *Person*s 
+// and not for all subtypes).
 if (VIE.prototype.Type) {
 	throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
 }
@@ -13,35 +18,97 @@ if (VIE.prototype.Types) {
 	throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
 }
 
-// The constructor of a VIE.Type. 
-//Usage: ``var personType = new vie.Type("Person", []).inherit("Thing");``
-// This creates a type person in the base namespace that has no attributes
-// but inherits from the type "Thing". 
+// ### VIE.Type(id, attrs)
+// This is the constructor of a VIE.Type.  
+// **Parameters**:  
+// *{string}* **id** The id of the type.  
+// *{string|array|VIE.Attribute}* **attrs** A string, proper ```VIE.Attribute``` or an array of these which 
+// are the possible attributes of the type  
+// **Throws**:  
+// *{Error}* if one of the given paramenters is missing.  
+// **Returns**:  
+// *{VIE.Type}* : A **new** VIE.Type object.  
+// **Example usage**:  
+//
+//     var person = new vie.Type("Person", ["name", "knows"]);
 VIE.prototype.Type = function (id, attrs) {
     if (id === undefined || typeof id !== 'string') {
         throw "The type constructor needs an 'id' of type string! E.g., 'Person'";
     }
 
+// ### id
+// This field stores the id of the type's instance.  
+// **Parameters**:  
+// nothing
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{string}* : The id of the type as a URI.  
+// **Example usage**:  
+//
+//     console.log(person.id);
+//      // --> "<http://viejs.org/ns/Person>"
     this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
 
-    // checks whether such a type is already defined. 
+    /* checks whether such a type is already defined. */
     if (this.vie.types.get(this.id)) {
         throw new Error("The type " + this.id + " is already defined!");
     }    
     
-    // the supertypes (parentclasses) of the current type.
+// ### supertypes
+// This field stores all parent types of the type's instance. This
+// is set if the current type inherits from another type.   
+// **Parameters**:  
+// nothing  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{VIE.Types}* : The supertypes (parents) of the type.  
+// **Example usage**:  
+//
+//     console.log(person.supertypes);
     this.supertypes = new this.vie.Types();
-    // the subtypes (childclasses) of the current type.
+
+// ### subtypes
+// This field stores all children types of the type's instance. This
+// will be set if another type inherits from the current type.  
+// **Parameters**:  
+// nothing  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{VIE.Types}* : The subtypes (parents) of the type.  
+// **Example usage**:  
+//
+//     console.log(person.subtypes);
     this.subtypes = new this.vie.Types();
     
-    // the given attributes as a `vie.Attributes` element.
+// ### attributes
+// This field stores all attributes of the type's instance as
+// a proper ```VIE.Attributes``` class. (see also <a href="Attribute.html">VIE.Attributes</a>)  
+// **Parameters**:  
+// nothing  
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{VIE.Attributes}* : The attributes of the type.  
+// **Example usage**:  
+//
+//     console.log(person.attributes);
     this.attributes = new this.vie.Attributes(this, (attrs)? attrs : []);
-    
-    // checks whether the current type inherits of the
-    // given type, e.g.,: ``personType.isof("Thing");``
-    // would evaluate to `true`.
-    // We can either pass a type object or a string that
-    // represents the id of the type.
+
+// ### isof(type)
+// This method checks whether the current type is a child of the given type.  
+// **Parameters**:  
+// *{string|VIE.Type}* **type** The type (or the id of that type) to be checked.  
+// **Throws**:  
+// *{Error}* If the type is not valid.   
+// **Returns**:  
+// *{boolean}* : ```true``` if the current type inherits from the type, ```false``` otherwise.  
+// **Example usage**:  
+//
+//     console.log(person.isof("owl:Thing"));
+//     // <-- true    
     this.isof = function (type) {
         type = this.vie.types.get(type);
         if (type) {
@@ -50,12 +117,20 @@ VIE.prototype.Type = function (id, attrs) {
             throw new Error("No valid type given");
         }
     };
-    
-    // checks whether the current type subsumes the
-    // given type, e.g.,: ``thingType.subsumes("Person");``
-    // would evaluate to `true`.
-    // We can either pass a type object or a string that
-    // represents the id of the type.
+
+// ### subsumes(type)
+// This method checks whether the current type is a parent of the given type.  
+// **Parameters**:  
+// *{string|VIE.Type}* **type** The type (or the id of that type) to be checked.  
+// **Throws**:  
+// *{Error}* If the type is not valid.   
+// **Returns**:  
+// *{boolean}* : ```true``` if the current type is a parent of the type, ```false``` otherwise.  
+// **Example usage**:  
+//
+//     var x = new vie.Type(...);
+//     var y = new vie.Type(...).inherit(x);
+//     y.isof(x) === x.subsumes(y);
     this.subsumes = function (type) {
         type = this.vie.types.get(type);
         if (type) {
@@ -77,9 +152,21 @@ VIE.prototype.Type = function (id, attrs) {
         }
     };
     
-    //inherit all attributes from the supertype (recursively).
-    //we can either pass a string (id) of the supertype, the
-    //supertype itself or an array of both.
+// ### inherit(supertype)
+// This method invokes inheritance throught the types. This adds the current type to the
+// subtypes of the supertype and vice versa.   
+// **Parameters**:  
+// *{string|VIE.Type|array}* **supertype** The type to be inherited from. If this is an array
+// the inherit method is called sequentially on all types.  
+// **Throws**:  
+// *{Error}* If the type is not valid.   
+// **Returns**:  
+// *{VIE.Type}* : The instance itself.  
+// **Example usage**:  
+//
+//     var x = new vie.Type(...);
+//     var y = new vie.Type(...).inherit(x);
+//     y.isof(x) // <-- true
     this.inherit = function (supertype) {
         if (typeof supertype === "string") {
             this.inherit(this.vie.types.get(supertype));
@@ -88,9 +175,9 @@ VIE.prototype.Type = function (id, attrs) {
             supertype.subtypes.addOrOverwrite(this);
             this.supertypes.addOrOverwrite(supertype);
             try {
-                // only for validation of attribute-inheritance!
-                // if this throws an error (inheriting two attributes
-                // that cannot be combined) we reverse all changes. 
+                /* only for validation of attribute-inheritance!
+                   if this throws an error (inheriting two attributes
+                   that cannot be combined) we reverse all changes. */
                 this.attributes.list();
             } catch (e) {
                 supertype.subtypes.remove(this);
@@ -98,7 +185,7 @@ VIE.prototype.Type = function (id, attrs) {
                 throw e;
             }
         } else if (jQuery.isArray(supertype)) {
-            for (var i = 0; i < supertype.length; i++) {
+            for (var i = 0, slen = supertype.length; i < slen; i++) {
                 this.inherit(supertype[i]);
             }
         } else {
@@ -107,24 +194,50 @@ VIE.prototype.Type = function (id, attrs) {
         return this;
     };
         
-    // serializes the hierarchy of child types into an
-    // object.
+// ### hierarchy()
+// This method serializes the hierarchy of child types into an object.   
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*   
+// **Returns**:  
+// *{object}* : The hierachy of child types as an object.  
+// **Example usage**:  
+//
+//     var x = new vie.Type(...);
+//     var y = new vie.Type(...).inherit(x);
+//     x.hierarchy();
     this.hierarchy = function () {
         var obj = {id : this.id, subtypes: []};
         var list = this.subtypes.list();
-        for (var c = 0; c < list.length; c++) {
+        for (var c = 0, llen = list.length; c < llen; c++) {
             var childObj = this.vie.types.get(list[c]);
             obj.subtypes.push(childObj.hierarchy());
         }
         return obj;
     };
     
-    // creates an Entity instance from this type.
+// ### instance()
+// This method creates a ```VIE.Entity``` instance from this type.
+// **Parameters**:  
+// *{object}* **attrs**  see <a href="Entity.html">constructor of VIE.Entity</a>  
+// *{object}* **opts**  see <a href="Entity.html">constructor of VIE.Entity</a>  
+// **Throws**:  
+// *{Error}* if the instance could not be built   
+// **Returns**:  
+// *{VIE.Entity}* : A **new** instance of a ```VIE.Entity``` with the current type.  
+// **Example usage**:  
+//
+//     var person = new vie.Type("person");
+//     var sebastian = person.instance(
+//         {"@subject" : "#me", 
+//          "name" : "Sebastian"});
+//     console.log(sebastian.get("name")); // <-- "Sebastian"
     this.instance = function (attrs, opts) {
         attrs = (attrs)? attrs : {};
         opts = (opts)? opts : {};
         
-        // turn type/attribute checking on by default!
+        /* turn type/attribute checking on by default! */
         if (opts.typeChecking !== false) {
             for (var a in attrs) {
                 if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
@@ -141,28 +254,56 @@ VIE.prototype.Type = function (id, attrs) {
         
         return new this.vie.Entity(attrs, opts);
     };
-        
-    // returns the id of the type.
+
+// ### toString()
+// This method returns the id of the type.   
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*   
+// **Returns**:  
+// *{string}* : The id of the type.  
+// **Example usage**:  
+//
+//     var x = new vie.Type(...);
+//     x.toString() === x.id;
     this.toString = function () {
         return this.id;
     };
-    
-    
-    
 };
 
-//basically a convenience class that represents a list of `VIE.Type`s.
-//var types = new vie.Types();
+// ### VIE.Types()
+// This is the constructor of a VIE.Types. This is a convenience class
+// to store ```VIE.Type``` instances properly.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Types}* : A **new** VIE.Types object.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
 VIE.prototype.Types = function () {
         
     this._types = {};
     
-    //Adds a `VIE.Type` to the types.
-    //This throws an exception if a type with the given id
-    //already exists.
+// ### add(id, attrs)
+// This method adds a `VIE.Type` to the types.  
+// **Parameters**:  
+// *{string|VIE.Type}* **id** If this is a string, the type is created and directly added.  
+// *{string|object}* **attrs** Only used if ```id``` is a string.   
+// **Throws**:  
+// *{Error}* if a type with the given id already exists a ```VIE.Entity``` instance from this type.  
+// **Returns**:  
+// *{VIE.Types}* : The instance itself.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.add("Person", ["name", "knows"]);
     this.add = function (id, attrs) {
         if (this.get(id)) {
-            throw "Type '" + id + "' already registered.";
+            throw new Error("Type '" + id + "' already registered.");
         } 
         else {
             if (typeof id === "string") {
@@ -179,7 +320,20 @@ VIE.prototype.Types = function () {
         return this;
     };
     
-    //This is the same as ``this.remove(id); this.add(id, attrs);``
+// ### addOrOverwrite(id, attrs)
+// This method adds or overwrites a `VIE.Type` to the types. This is the same as 
+// ``this.remove(id); this.add(id, attrs);``  
+// **Parameters**:  
+// *{string|VIE.Type}* **id** If this is a string, the type is created and directly added.  
+// *{string|object}* **attrs** Only used if ```id``` is a string.   
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Types}* : The instance itself.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.addOrOverwrite("Person", ["name", "knows"]);
     this.addOrOverwrite = function(id, attrs){
         if (this.get(id)) {
             this.remove(id);
@@ -187,9 +341,19 @@ VIE.prototype.Types = function () {
         return this.add(id, attrs);
     };
     
-    //Retrieve a type by either it's id or by the type itself
-    //(for convenience issues).
-    //Returnes **undefined** if no type has been found.
+// ### get(id)
+// This method retrieves a `VIE.Type` from the types by it's id.  
+// **Parameters**:  
+// *{string|VIE.Type}* **id** The id or the type itself.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Type}* : The instance of the type or ```undefined```.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.addOrOverwrite("Person", ["name", "knows"]);
+//     types.get("Person");
     this.get = function (id) {
         if (!id) {
             return undefined;
@@ -203,10 +367,22 @@ VIE.prototype.Types = function () {
         return undefined;
     };
     
-    //Removes a type of given id from the type. This also
-    // removes all children if their only parent were this
-    //type. Furthermore, this removes the link from the
-    //super- and subtypes.
+// ### remove(id)
+// This method removes a type of given id from the type. This also
+// removes all children if their only parent were this
+// type. Furthermore, this removes the link from the
+// super- and subtypes.   
+// **Parameters**:  
+// *{string|VIE.Type}* **id** The id or the type itself.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Type}* : The removed type.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.addOrOverwrite("Person", ["name", "knows"]);
+//     types.remove("Person");
     this.remove = function (id) {
         var t = this.get(id);
         /* test whether the type actually exists in VIE
@@ -221,8 +397,8 @@ VIE.prototype.Types = function () {
         for (var c = 0; c < subtypes.length; c++) {
             var childObj = subtypes[c];
             if (childObj.supertypes.list().length === 1) {
-                //recursively remove all children 
-                //that inherit only from this type
+                /* recursively remove all children 
+                   that inherit only from this type */
                 this.remove(childObj);
             } else {
                 childObj.supertypes.remove(t.id);
@@ -231,7 +407,19 @@ VIE.prototype.Types = function () {
         return t;
     };
     
-    //returns an array of all types.
+// ### toArray() === list()
+// This method returns an array of all types.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{array}* : An array of ```VIE.Type``` instances.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.addOrOverwrite("Person", ["name", "knows"]);
+//     types.list();
     this.toArray = this.list = function () {
         var ret = [];
         for (var i in this._types) {
@@ -239,13 +427,27 @@ VIE.prototype.Types = function () {
         }
         return ret;
     };
-    
-    //Sorts an array of types in their order, given by the
-    //inheritance. If 'desc' is given and 'true', the sorted
-    //array will be in descendant order.
+
+// ### sort(types, desc)
+// This method sorts an array of types in their order, given by the
+// inheritance. This returns a copy and leaves the original array untouched.  
+// **Parameters**:  
+// *{array}* **types** The array of ```VIE.Type``` instances to be sorted.  
+// *{boolean}* **desc** If 'desc' is given and 'true', the array will be sorted 
+// in descendant order.  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{array}* : A sorted copy of the array.  
+// **Example usage**:  
+//
+//     var types = new vie.Types();
+//     types.addOrOverwrite("Person", ["name", "knows"]);
+//     types.sort(types.list(), true);
     this.sort = function (types, desc) {
         var self = this;
-        var copy = $.merge([], ($.isArray(types))? types : [ types ]);
+        var copy = jQuery.merge([], (jQuery.isArray(types))? types : [ types ]);
         desc = (desc)? true : false;
         
         for (var x = 0; x < copy.length; x++) {
