@@ -36,6 +36,8 @@ VIE.prototype.StanbolService = function(options) {
     this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
     this.connector = new StanbolConnector(this.options);
+    
+    this.rules = (this.options.rules)? this.options.rules : VIE.Util.transformationRules;
 
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
@@ -45,137 +47,12 @@ VIE.prototype.StanbolService = function(options) {
 
 VIE.prototype.StanbolService.prototype = {
     init: function(){
+        this.connector = new this.vie.StanbolConnector(this.options);
 
         for (var key in this.options.namespaces) {
             var val = this.options.namespaces[key];
             this.vie.namespaces.add(key, val);
         }
-        this.namespaces = this.vie.namespaces;
-
-        this.rules = [
-            /* rule to add backwards-relations to the triples
-             * this makes querying for entities a lot easier!
-             */
-            {'left' : [
-                '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
-                '?subject enhancer:entity-type ?type',
-                '?subject enhancer:confidence ?confidence',
-                '?subject enhancer:entity-reference ?entity',
-                '?subject dcterms:relation ?relation',
-                '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
-                '?relation enhancer:selected-text ?selected-text',
-                '?relation enhancer:selection-context ?selection-context',
-                '?relation enhancer:start ?start',
-                '?relation enhancer:end ?end'
-            ],
-             'right' : [
-                 '?entity a ?type',
-                 '?entity enhancer:hasTextAnnotation ?relation',
-                 '?entity enhancer:hasEntityAnnotation ?subject'
-             ]
-             },
-             /* rule(s) to transform a Stanbol person into a VIE person */
-             {
-                'left' : [
-                    '?subject a dbpedia:Person',
-                    '?subject rdfs:label ?label'
-                 ],
-                 'right': function(ns){
-                     return function(){
-                         return [
-                             jQuery.rdf.triple(this.subject.toString(),
-                                 'a',
-                                 '<' + ns.base() + 'Person>', {
-                                     namespaces: ns.toObj()
-                                 }),
-                             jQuery.rdf.triple(this.subject.toString(),
-                                 '<' + ns.base() + 'name>',
-                                 this.label, {
-                                     namespaces: ns.toObj()
-                                 })
-                             ];
-                     };
-                 }(this.namespaces)
-             },
-             {
-             'left' : [
-                     '?subject a foaf:Person',
-                     '?subject rdfs:label ?label'
-                  ],
-                  'right': function(ns){
-                      return function(){
-                          return [
-                              jQuery.rdf.triple(this.subject.toString(),
-                                  'a',
-                                  '<' + ns.base() + 'Person>', {
-                                      namespaces: ns.toObj()
-                                  }),
-                              jQuery.rdf.triple(this.subject.toString(),
-                                  '<' + ns.base() + 'name>',
-                                  this.label, {
-                                      namespaces: ns.toObj()
-                                  })
-                              ];
-                      };
-                  }(this.namespaces)
-              },
-             {
-                 'left' : [
-                     '?subject a dbpedia:Place',
-                     '?subject rdfs:label ?label'
-                  ],
-                  'right': function(ns) {
-                      return function() {
-                          return [
-                          jQuery.rdf.triple(this.subject.toString(),
-                              'a',
-                              '<' + ns.base() + 'Place>', {
-                                  namespaces: ns.toObj()
-                              }),
-                          jQuery.rdf.triple(this.subject.toString(),
-                                  '<' + ns.base() + 'name>',
-                              this.label.toString(), {
-                                  namespaces: ns.toObj()
-                              })
-                          ];
-                      };
-                  }(this.namespaces)
-              },
-			  {
-                 'left' : [
-                     '?subject a dbpedia:City',
-                     '?subject rdfs:label ?label',
-                     '?subject dbpedia:abstract ?abs',
-                     '?subject dbpedia:country ?country'
-                  ],
-                  'right': function(ns) {
-                      return function() {
-                          return [
-                          jQuery.rdf.triple(this.subject.toString(),
-                              'a',
-                              '<' + ns.base() + 'Place>', {
-                                  namespaces: ns.toObj()
-                              }),
-                          jQuery.rdf.triple(this.subject.toString(),
-                                  '<' + ns.base() + 'name>',
-                              this.label.toString(), {
-                                  namespaces: ns.toObj()
-                              }),
-                          jQuery.rdf.triple(this.subject.toString(),
-                                  '<' + ns.base() + 'description>',
-                              this.abs.toString(), {
-                                  namespaces: ns.toObj()
-                              }),
-                          jQuery.rdf.triple(this.subject.toString(),
-                                  '<' + ns.base() + 'containedIn>',
-                              this.country.toString(), {
-                                  namespaces: ns.toObj()
-                              })
-                          ];
-                      };
-                  }(this.namespaces)
-              },
-        ];
 
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             /*TODO: add attributes */
@@ -286,7 +163,7 @@ VIE.prototype.StanbolService.prototype = {
     }
 };
 
-var StanbolConnector = function(options){
+VIE.prototype.StanbolConnector = function(options){
     this.options = options;
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
     this.enhancerUrlPrefix = "/engines";
@@ -295,7 +172,7 @@ var StanbolConnector = function(options){
     //TODO: this.rulesUrlPrefix = "/rules";
     //TODO: this.factstoreUrlPrefix = "/factstore";
 };
-StanbolConnector.prototype = {
+VIE.prototype.StanbolConnector.prototype = {
 
     analyze: function(text, success, error, options) {
         if (!options) { options = { urlIndex : 0}; }

@@ -18,7 +18,7 @@ VIE.Util = {
 // **Parameters**:  
 // *{array}* **arr** The array where the duplicates should be removed from.  
 // **Throws**:  
-// nothing  
+// *nothing*  
 // **Returns**:  
 // *{array}* : A **new** array, containing unique entries of the given array. **!Attention!**:
 // The order of the returned array might differ from the input array.  
@@ -86,7 +86,7 @@ VIE.Util = {
 // *{string}* **curie** The CURIE (or SCURIE) to be checked.  
 // *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.  
 // **Throws**:  
-// nothing.  
+// *nothing*  
 // **Returns**:  
 // *{boolean}* ```true``` if the given curie is a CURIE or SCURIE and ```false``` otherwise.  
 // **Example usage**: 
@@ -154,7 +154,7 @@ VIE.Util = {
 // **Parameters**:  
 // *{string}* **something** : The string to be checked.  
 // **Throws**:  
-// nothing  
+// *nothing*  
 // **Returns**:  
 // *{boolean}* : ```true``` if the string is a URI, ```false``` otherwise.  
 // **Example usage**: 
@@ -171,9 +171,9 @@ VIE.Util = {
 // ### VIE.Util.blankNodeID()
 // This method generates a new blank id for an entity.  
 // **Parameters**:  
-// nothing  
+// *nothing*  
 // **Throws**:  
-// nothing  
+// *nothing*  
 // **Returns**:  
 // *{string}* : A string, representing a unique blank id with the prefix ```'_:bnode'```.  
 // **Example usage**: 
@@ -194,7 +194,7 @@ VIE.Util = {
 // *{object}* **service** The service that retrieved the data.  
 // *{object}* **results** The data to be transformed.  
 // **Throws**:  
-// nothing  
+// *nothing*  
 // **Returns**:  
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     rdf2Entities: function (service, results) {
@@ -207,9 +207,9 @@ VIE.Util = {
         /* if the service contains rules to apply special transformation, they are executed here.*/
         if (service.rules) {
             var rules = jQuery.rdf.ruleset();
-            for (var prefix in service.namespaces.toObj()) {
+            for (var prefix in service.vie.namespaces.toObj()) {
                 if (prefix !== "") {
-                    rules.prefix(prefix, service.namespaces.get(prefix));
+                    rules.prefix(prefix, service.vie.namespaces.get(prefix));
                 }
             }
             for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
@@ -224,7 +224,7 @@ VIE.Util = {
             if (!entities[subject]) {
                 entities[subject] = {
                     '@subject': subject,
-                    '@context': service.namespaces.toObj(),
+                    '@context': service.vie.namespaces.toObj(),
                     '@type': []
                 };
             }
@@ -233,10 +233,10 @@ VIE.Util = {
 
             propertyUri = propertyUri.substring(1, propertyUri.length - 1);
             try {
-                property = jQuery.createCurie(propertyUri, {namespaces: service.namespaces.toObj()});
+                property = jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj()});
             } catch (e) {
                 property = propertyUri;
-                console.warn(propertyUri + " doesn't have a namespace definition in '", service.namespaces.toObj());
+                console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
             }
             entities[subject][property] = entities[subject][property] || [];
 
@@ -283,7 +283,7 @@ VIE.Util = {
 // *{object}* **service** The service that retrieved the data.  
 // *{object}* **results** The data to be transformed.  
 // **Throws**:  
-// nothing  
+// *nothing*  
 // **Returns**:  
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     _rdf2EntitiesNoRdfQuery: function (service, results) {
@@ -327,7 +327,7 @@ VIE.Util = {
 // **Throws**:  
 // *{Error}* If the parameter was not given.  
 // **Returns**:  
-// nothing.
+// *nothing*
     loadSchemaOrg : function (vie, SchemaOrg, baseNS) {
     
         if (!SchemaOrg) {
@@ -403,5 +403,144 @@ VIE.Util = {
         }
         /* set the namespace to either the old value or the provided baseNS value */
         vie.namespaces.base(baseNSBefore);
-    }
+    },
+    
+// ### VIE.Util.transformationRules
+// This is a default set of rdfQuery rules that transform semantic data into the
+// VIE entity types.
+// **Parameters**:  
+// *nothing*
+// *{object}* **SchemaOrg** The data imported from schema.org.   
+// *nothing*
+// **Throws**:  
+// *nothing*
+// **Returns**:  
+// *{array}* An array of rules with 'left' and 'right' side.
+    transformationRules : [
+            /* rule to add backwards-relations to the triples
+             * this makes querying for entities a lot easier!
+             */
+            {'left' : [
+                '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
+                '?subject enhancer:entity-type ?type',
+                '?subject enhancer:confidence ?confidence',
+                '?subject enhancer:entity-reference ?entity',
+                '?subject dcterms:relation ?relation',
+                '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
+                '?relation enhancer:selected-text ?selected-text',
+                '?relation enhancer:selection-context ?selection-context',
+                '?relation enhancer:start ?start',
+                '?relation enhancer:end ?end'
+            ],
+             'right' : [
+                 '?entity a ?type',
+                 '?entity enhancer:hasTextAnnotation ?relation',
+                 '?entity enhancer:hasEntityAnnotation ?subject'
+             ]
+             },
+             /* rule(s) to transform a dbpedia:Person into a VIE:Person */
+             {
+                'left' : [
+                    '?subject a dbpedia:Person',
+                    '?subject rdfs:label ?label'
+                 ],
+                 'right': function(ns){
+                     return function(){
+                         return [
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 'a',
+                                 '<' + ns.base() + 'Person>', {
+                                     namespaces: ns.toObj()
+                                 }),
+                             jQuery.rdf.triple(this.subject.toString(),
+                                 '<' + ns.base() + 'name>',
+                                 this.label, {
+                                     namespaces: ns.toObj()
+                                 })
+                             ];
+                     };
+                 }(this.namespaces)
+             },
+             /* rule(s) to transform a foaf:Person into a VIE:Person */
+             {
+             'left' : [
+                     '?subject a foaf:Person',
+                     '?subject rdfs:label ?label'
+                  ],
+                  'right': function(ns){
+                      return function(){
+                          return [
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  'a',
+                                  '<' + ns.base() + 'Person>', {
+                                      namespaces: ns.toObj()
+                                  }),
+                              jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                                  this.label, {
+                                      namespaces: ns.toObj()
+                                  })
+                              ];
+                      };
+                  }(this.namespaces)
+              },
+             /* rule(s) to transform a dbpedia:Place into a VIE:Place */
+             {
+                 'left' : [
+                     '?subject a dbpedia:Place',
+                     '?subject rdfs:label ?label'
+                  ],
+                  'right': function(ns) {
+                      return function() {
+                          return [
+                          jQuery.rdf.triple(this.subject.toString(),
+                              'a',
+                              '<' + ns.base() + 'Place>', {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                              this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              })
+                          ];
+                      };
+                  }(this.namespaces)
+              },
+             /* rule(s) to transform a dbpedia:City into a VIE:City */
+              {
+                 'left' : [
+                     '?subject a dbpedia:City',
+                     '?subject rdfs:label ?label',
+                     '?subject dbpedia:abstract ?abs',
+                     '?subject dbpedia:country ?country'
+                  ],
+                  'right': function(ns) {
+                      return function() {
+                          return [
+                          jQuery.rdf.triple(this.subject.toString(),
+                              'a',
+                              '<' + ns.base() + 'Place>', {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'name>',
+                              this.label.toString(), {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'description>',
+                              this.abs.toString(), {
+                                  namespaces: ns.toObj()
+                              }),
+                          jQuery.rdf.triple(this.subject.toString(),
+                                  '<' + ns.base() + 'containedIn>',
+                              this.country.toString(), {
+                                  namespaces: ns.toObj()
+                              })
+                          ];
+                      };
+                  }(this.namespaces)
+              },
+        ]
 };

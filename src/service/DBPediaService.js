@@ -30,7 +30,8 @@ VIE.prototype.DBPediaService = function(options) {
 
     this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
-    this.connector = new DBPediaConnector(this.options);
+    
+    this.rules = (this.options.rules)? this.options.rules : VIE.Util.transformationRules;
 
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
@@ -41,32 +42,12 @@ VIE.prototype.DBPediaService = function(options) {
 
 VIE.prototype.DBPediaService.prototype = {
     init: function() {
+        this.connector = new this.vie.DBPediaConnector(this.options);
 
-       for (var key in this.options.namespaces) {
+        for (var key in this.options.namespaces) {
             var val = this.options.namespaces[key];
             this.vie.namespaces.add(key, val);
-        }
-        this.namespaces = this.vie.namespaces;
-
-        this.rules = [
-             //rule to transform a DBPedia person into a VIE person
-             {
-                 'left' : [
-                        '?subject a dbpedia:Person'
-                 ],
-                 'right': function(ns){
-                     return function(){
-                         return [
-                             jQuery.rdf.triple(this.subject.toString(),
-                                 'a',
-                                 '<' + ns.base() + 'Person>', {
-                                     namespaces: ns.toObj()
-                                 })
-                             ];
-                     };
-                 }(this.namespaces)
-             }
-        ];
+         }
     },
 
     // VIE API load implementation
@@ -95,11 +76,12 @@ VIE.prototype.DBPediaService.prototype = {
         }
     }
 };
-var DBPediaConnector = function(options){
+
+VIE.prototype.DBPediaConnector = function(options){
     this.options = options;
 };
 
-DBPediaConnector.prototype = {
+VIE.prototype.DBPediaConnector.prototype = {
 
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
