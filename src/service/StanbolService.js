@@ -29,15 +29,35 @@ VIE.prototype.StanbolService = function(options) {
             dcterms  : 'http://purl.org/dc/terms/',
             schema: 'http://schema.org/',
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
-        }
+        },
+        rules : [
+            /* rule to add backwards-relations to the triples
+             * this makes querying for entities a lot easier!
+             */
+            {'left' : [
+                '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
+                '?subject enhancer:entity-type ?type',
+                '?subject enhancer:confidence ?confidence',
+                '?subject enhancer:entity-reference ?entity',
+                '?subject dcterms:relation ?relation',
+                '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
+                '?relation enhancer:selected-text ?selected-text',
+                '?relation enhancer:selection-context ?selection-context',
+                '?relation enhancer:start ?start',
+                '?relation enhancer:end ?end'
+            ],
+             'right' : [
+                 '?entity a ?type',
+                 '?entity enhancer:hasTextAnnotation ?relation',
+                 '?entity enhancer:hasEntityAnnotation ?subject'
+             ]
+             }
+         ]
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
-    this.connector = new StanbolConnector(this.options);
-    
-    this.rules = (this.options.rules)? this.options.rules : VIE.Util.transformationRules;
 
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
@@ -47,12 +67,16 @@ VIE.prototype.StanbolService = function(options) {
 
 VIE.prototype.StanbolService.prototype = {
     init: function(){
-        this.connector = new this.vie.StanbolConnector(this.options);
 
         for (var key in this.options.namespaces) {
             var val = this.options.namespaces[key];
             this.vie.namespaces.add(key, val);
         }
+        
+        this.rules = jQuery.merge([], VIE.Util.transformationRules(this));
+        this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
+        
+        this.connector = new this.vie.StanbolConnector(this.options);
 
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             /*TODO: add attributes */

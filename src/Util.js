@@ -405,40 +405,18 @@ VIE.Util = {
         vie.namespaces.base(baseNSBefore);
     },
     
-// ### VIE.Util.transformationRules
-// This is a default set of rdfQuery rules that transform semantic data into the
+// ### VIE.Util.transformationRules(service)
+// This returns a default set of rdfQuery rules that transform semantic data into the
 // VIE entity types.
 // **Parameters**:  
-// *nothing*
-// *{object}* **SchemaOrg** The data imported from schema.org.   
-// *nothing*
+// *{object}* **service** An instance of a vie.service.
 // **Throws**:  
 // *nothing*
 // **Returns**:  
 // *{array}* An array of rules with 'left' and 'right' side.
-    transformationRules : [
-            /* rule to add backwards-relations to the triples
-             * this makes querying for entities a lot easier!
-             */
-            {'left' : [
-                '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
-                '?subject enhancer:entity-type ?type',
-                '?subject enhancer:confidence ?confidence',
-                '?subject enhancer:entity-reference ?entity',
-                '?subject dcterms:relation ?relation',
-                '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
-                '?relation enhancer:selected-text ?selected-text',
-                '?relation enhancer:selection-context ?selection-context',
-                '?relation enhancer:start ?start',
-                '?relation enhancer:end ?end'
-            ],
-             'right' : [
-                 '?entity a ?type',
-                 '?entity enhancer:hasTextAnnotation ?relation',
-                 '?entity enhancer:hasEntityAnnotation ?subject'
-             ]
-             },
-             /* rule(s) to transform a dbpedia:Person into a VIE:Person */
+    transformationRules : function (service) {
+        return [
+            /* rule(s) to transform a dbpedia:Person into a VIE:Person */
              {
                 'left' : [
                     '?subject a dbpedia:Person',
@@ -459,7 +437,7 @@ VIE.Util = {
                                  })
                              ];
                      };
-                 }(this.namespaces)
+                 }(service.vie.namespaces)
              },
              /* rule(s) to transform a foaf:Person into a VIE:Person */
              {
@@ -482,7 +460,7 @@ VIE.Util = {
                                   })
                               ];
                       };
-                  }(this.namespaces)
+                  }(service.vie.namespaces)
               },
              /* rule(s) to transform a dbpedia:Place into a VIE:Place */
              {
@@ -505,7 +483,7 @@ VIE.Util = {
                               })
                           ];
                       };
-                  }(this.namespaces)
+                  }(service.vie.namespaces)
               },
              /* rule(s) to transform a dbpedia:City into a VIE:City */
               {
@@ -540,7 +518,8 @@ VIE.Util = {
                               })
                           ];
                       };
-                  }(this.namespaces)
+                  }(service.vie.namespaces)
               },
-        ]
+        ];
+    }
 };

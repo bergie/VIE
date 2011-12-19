@@ -24,15 +24,14 @@ VIE.prototype.DBPediaService = function(options) {
             dbpedia: "http://dbpedia.org/ontology/",
             dbprop : "http://dbpedia.org/property/",
             dcelements : "http://purl.org/dc/elements/1.1/"
-        }
+        },
+        rules : []
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; /* will be set via VIE.use(); */
     this.name = this.options.name;
     
-    this.rules = (this.options.rules)? this.options.rules : VIE.Util.transformationRules;
-
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
         timeout: 60000 /* 60 seconds timeout */
@@ -42,12 +41,16 @@ VIE.prototype.DBPediaService = function(options) {
 
 VIE.prototype.DBPediaService.prototype = {
     init: function() {
-        this.connector = new this.vie.DBPediaConnector(this.options);
 
         for (var key in this.options.namespaces) {
             var val = this.options.namespaces[key];
             this.vie.namespaces.add(key, val);
-         }
+        }
+        
+        this.rules = jQuery.merge([], VIE.Util.transformationRules(this));
+        this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
+        
+        this.connector = new this.vie.DBPediaConnector(this.options);
     },
 
     // VIE API load implementation
