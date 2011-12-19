@@ -1,8 +1,9 @@
 // Based on https://github.com/jaubourg/ajaxHooks/blob/master/src/ajax/xdr.js written by Julian Aubourg
 // Author: Szaby Grünwald @ Salzburg Research, 2011
+var root = this;
 (function( jQuery ) {
 
-if ( window.XDomainRequest ) {
+if ( root.XDomainRequest ) {
 	jQuery.ajaxTransport(function( s ) {
 		if ( s.crossDomain && s.async ) {
 			if ( s.timeout ) {
