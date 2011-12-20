@@ -45,7 +45,7 @@ VIE.prototype.RdfaService.prototype = {
             this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
         }
         var entities = [];
-        jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
+        var entityElements = jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
             var entity = service._readEntity(jQuery(this));
             if (entity) {
                 entities.push(entity);
@@ -78,9 +78,9 @@ VIE.prototype.RdfaService.prototype = {
         var type = this._getElementType(element);
         var predicate, value, valueCollection;
         var entity = this._readEntityPredicates(subject, element, false);
-        //if (jQuery.isEmptyObject(entity)) {
-        //    return null;
-        //}
+        if (jQuery.isEmptyObject(entity)) {
+            return null;
+        }
         var vie = this.vie;
         for (predicate in entity) {
             value = entity[predicate];
@@ -94,7 +94,6 @@ VIE.prototype.RdfaService.prototype = {
             });
             entity[predicate] = valueCollection;
         }
-    
         entity['@subject'] = subject;
         if (type) {
             entity['@type'] = type;
@@ -164,7 +163,7 @@ VIE.prototype.RdfaService.prototype = {
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.fromReference(entity.get(predicate));
-            if (attributeValue instanceof service.vie.Collection) {
+            if (attributeValue.isCollection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this), entity);
                 });
@@ -196,7 +195,7 @@ VIE.prototype.RdfaService.prototype = {
     
     _getElementType : function (element) {
         var type;
-        if (jQuery(element).attr('typeof')) {
+        if (jQuery(element).attr('typeof') !== this.attributeExistenceComparator) {
             type = jQuery(element).attr('typeof');
             if (type.indexOf("://") !== -1) {
                 return "<" + type + ">";
@@ -210,15 +209,13 @@ VIE.prototype.RdfaService.prototype = {
     getElementSubject : function(element) {
         var service = this;
         
-        if (typeof document !== 'undefined') {
-            if (element === document) {
-                return document.baseURI;
-            }
+        if (document !== undefined && element === document) {
+            return document.baseURI;
         }
         var subject = undefined;
+        var matched = null;
         jQuery(element).closest(this.subjectSelector).each(function() {
-
-
+            matched = this;
             if (jQuery(this).attr('about') !== service.attributeExistenceComparator) {
                 subject = jQuery(this).attr('about');
                 return true;
@@ -229,7 +226,6 @@ VIE.prototype.RdfaService.prototype = {
             }
             if (jQuery(this).attr('typeof') !== service.attributeExistenceComparator) {
                 subject = VIE.Util.blankNodeID();
-                //subject = this;
                 return true;
             }
             // We also handle baseURL outside browser context by manually
@@ -240,16 +236,25 @@ VIE.prototype.RdfaService.prototype = {
                 });
             }
         });
-                
+
         if (!subject) {
+            if (matched === element) {
+                // Workaround for https://github.com/assaf/zombie/issues/235
+                return service.getElementSubject(jQuery(element).parent());
+            }
             return undefined;
         }
                 
         if (typeof subject === 'object') {
             return subject;
         }
-    
-        return (subject.indexOf("_:") === 0)? subject : "<" + subject + ">";
+        if (subject.indexOf('_:') === 0) {
+            return subject;
+        }
+        if (subject.indexOf('<') === 0) {
+            return subject;
+        }
+        return "<" + subject + ">";
     },
     
     setElementSubject : function(subject, element) {
@@ -288,7 +293,7 @@ VIE.prototype.RdfaService.prototype = {
                 return false;
             }
     
-            if (service.getElementSubject(jQuery(this)) !== subject) {
+            if (service.getElementSubject(this) !== subject) {
                 return false;
             }
      
@@ -303,8 +308,10 @@ VIE.prototype.RdfaService.prototype = {
         this._findPredicateElements(subject, element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
+            if (predicate === '') {
+                return;
+            }
             var value = service.readElementValue(predicate, predicateElement);
-    
             if (value === null && !emptyValues) {
                 return;
             }
@@ -314,10 +321,13 @@ VIE.prototype.RdfaService.prototype = {
     
         if (jQuery(element).get(0).tagName !== 'HTML') {
             jQuery(element).parent('[rev]').each(function() {
+                var relation = jQuery(this).attr('rev');
+                if (!relation) {
+                    return;
+                }
                 entityPredicates[jQuery(this).attr('rev')] = service.getElementSubject(this); 
             });
         }
-    
         return entityPredicates;
     },
     
