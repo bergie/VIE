@@ -24,7 +24,7 @@
   "devDependencies": {
     "nodeunit"  : ">=0.6.0",
     "docco"     : ">=0.3.0",
-    "zombie"    : "=0.11.7",
+    "zombie"    : "=0.11.6",
     "express"   : ">=2.5.0"
   },
   "lib"           : ".",
