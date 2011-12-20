@@ -208,9 +208,10 @@ VIE.prototype.RdfaService.prototype = {
     
     getElementSubject : function(element) {
         var service = this;
-        
-        if (document !== undefined && element === document) {
-            return document.baseURI;
+        if (typeof document !== 'undefined') { 
+            if (element === document) {
+                return document.baseURI;
+            }
         }
         var subject = undefined;
         var matched = null;
