@@ -14,7 +14,10 @@ exports.setUp = function(callback) {
     });
     server.listen(3000, function() {
         var location = "http://localhost:3000/test/index.html";
-        var browser = new zombie.Browser({debug: false});
+        var browser = new zombie.Browser({
+            debug: false,
+            userAgent: 'Zombie'
+        });
         browser.visit(location, function(err, browser, status) {
             // Start QUnit
             browser.fire('load', browser.window);
