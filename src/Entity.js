@@ -108,7 +108,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                        var child = new self.vie.Entity(value, options);
                        self.vie.entities.addOrUpdate(child);
                        attrs[key] = child.getSubject();
-                   } else if (value.isCollection) {
+                   } else if (value && value.isCollection) {
                        //attrs[key] = [];
                        value.each(function (child) {
                            self.vie.entities.addOrUpdate(child);

@@ -115,7 +115,7 @@ VIE.prototype.RdfaService.prototype = {
             }
     
             var value = entity.get(predicate);
-            if (value.isCollection) {
+            if (value && value.isCollection) {
                 // Handled by CollectionViews separately
                 return true;
             }
