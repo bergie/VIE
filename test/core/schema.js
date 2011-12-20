@@ -16,7 +16,7 @@ test("Initialization", function() {
         success : function () {
             ok(true, "successfully loaded types!");
             
-        equal(z.types.list().length, 298);
+        equal(z.types.list().length, 299);
         
         //just pick some and test them:
         ok (z.types.get("Person"));
