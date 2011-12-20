@@ -6,6 +6,11 @@ test("Initialization", function() {
     ok(z.loadSchema);
     equal(typeof z.loadSchema, "function");
     
+    if (navigator.userAgent === 'Zombie') {
+        // ignore this test on the headless browser
+        return;
+    }
+    
     stop();
     z.loadSchema("http://schema.rdfs.org/all.json", {
         baseNS : "http://schema.org/",
