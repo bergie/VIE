@@ -4,7 +4,7 @@ test("Test simple RDFa parsing", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
-    var html = jQuery('#qunit-fixture .rdfa-simple');
+    var html = jQuery('#qunit-fixture .rdfa-simple div');
 
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -12,7 +12,6 @@ test("Test simple RDFa parsing", function() {
         equal(entities.length, 2);
         var albert = z.entities.get('<http://dbpedia.org/resource/Albert_Einstein>');
         var germany = z.entities.get('<http://dbpedia.org/resource/Germany>');
-
         equal(albert.id, '<http://dbpedia.org/resource/Albert_Einstein>');
         equal(albert.get('foaf:name'), 'Albert Einstein');
         equal(germany.get('dbp:conventionalLongName'), 'Federal Republic of Germany');
@@ -25,7 +24,7 @@ test("Test updating RDFa views", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
-    var html = jQuery('#qunit-fixture .rdfa-updating');
+    var html = jQuery('#qunit-fixture .rdfa-updating div');
     
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -51,7 +50,7 @@ test("Test simple RDFa nested tags", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
-    var html = jQuery('#qunit-fixture .rdfa-nested');
+    var html = jQuery('#qunit-fixture .rdfa-nested div');
 
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -65,7 +64,7 @@ test("Test RDFa property content", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
-    var html = jQuery('#qunit-fixture .rdfa-property-content');
+    var html = jQuery('#qunit-fixture .rdfa-property-content div');
 
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -85,7 +84,7 @@ test("Test RDFa example from Wikipedia", function() {
     var z = new VIE();
     z.use(new z.RdfaService);
 
-    var html = jQuery('#qunit-fixture .rdfa-wikipedia');
+    var html = jQuery('#qunit-fixture .rdfa-wikipedia p');
 
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
@@ -97,12 +96,14 @@ test("Test RDFa example from Wikipedia", function() {
 });
 
 test("Test RDFa image entitization", function() {
+    var options = {}
+    if (navigator.userAgent === 'Zombie') {
+        options.attributeExistenceComparator = '';
+    }
     var z = new VIE();
-    z.namespaces.add('mgd', 'http://midgard-project.org/ontology/');
-    z.namespaces.add('dcterms', 'http://purl.org/dc/terms/');
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService(options));
 
-    var html = jQuery('#qunit-fixture .rdfa-image-entitization');
+    var html = jQuery('#qunit-fixture .rdfa-image-entitization div');
 
     stop();
     

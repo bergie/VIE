@@ -8,7 +8,7 @@ test("Test #1 (required): Predicate establishment with @property", function() {
     
     z.namespaces.add("dcterms", "http://purl.org/dc/terms/");
 
-    var html = jQuery('#qunit-fixture .rdfa11-1');
+    var html = jQuery('#qunit-fixture .rdfa11-1 p');
 
     stop();
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
