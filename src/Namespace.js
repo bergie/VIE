@@ -10,7 +10,7 @@ if (VIE.prototype.Namespaces) {
         "Please check your VIE installation!");
 }
 
-// ## VIE Namespaces constructor
+// ## VIE Namespaces
 //
 // In general, a namespace is a container that provides context for the identifiers.
 // Within VIE, namespaces are used to distinguish different ontolgies or vocabularies
@@ -22,17 +22,23 @@ if (VIE.prototype.Namespaces) {
 // which is used if no prefix is given (has an empty prefix).
 // In the upcoming sections, we will explain the
 // methods to add, access and remove prefixes.
-//
-// The constructor: The constructor initially needs a *base namespace* and can optionally be initialised
-// with an associative array of prefixes and namespaces.
-//
-//     var namespaces = new myVIE.Namespaces("http://viejs.org/ns/");
-//
-// The above code initialises the namespaces with a base namespace ``http://viejs.org/ns/``. Which means
-// that every non-prefixed, non-expanded attribute or type is assumed to be of that namespace. This helps, e.g.,
-// in an environment where only one namespace is given.
-//
-// We can also bootstrap namespaces within the constructor:
+
+
+
+// ## VIE.Namespaces(base, namespaces)
+// This is the constructor of a VIE.Namespaces. The constructor initially 
+// needs a *base namespace* and can optionally be initialised with an 
+// associative array of prefixes and namespaces. The base namespace is used in a way
+// that every non-prefixed, non-expanded attribute or type is assumed to be of that 
+// namespace. This helps, e.g., in an environment where only one namespace is given.  
+// **Parameters**:  
+// *{string}* **base** The base namespace.  
+// *{object}* **namespaces** Initial namespaces to bootstrap the namespaces. (optional)  
+// **Throws**:  
+// *{Error}* if the base namespace is missing.  
+// **Returns**:  
+// *{VIE.Attribute}* : A **new** VIE.Attribute object.  
+// **Example usage**:  
 //
 //     var ns = new myVIE.Namespaces("http://viejs.org/ns/", 
 //           {
@@ -52,36 +58,60 @@ VIE.prototype.Namespaces = function (base, namespaces) {
     }
 };
 
+
+// ### base(ns)
 // This is a **getter** and **setter** for the base
-// namespace. If called like ``myVIE.namespaces.base();`` it
+// namespace. If called like ``base();`` it
 // returns the actual base namespace as a string. If provided
-// with a string, e.g., ``myVIE.namespaces.base("http://viejs.org/ns/");``
+// with a string, e.g., ``base("http://viejs.org/ns/");``
 // it sets the current base namespace and retuns the namespace object
 // for the purpose of chaining. If provided with anything except a string,
-// it throws an Error. 
+// it throws an Error.  
+// **Parameters**:  
+// *{string}* **ns** The namespace to be set. (optional)  
+// **Throws**:  
+// *{Error}* if the namespace is not of type string.  
+// **Returns**:  
+// *{string}* : The current base namespace.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     console.log(namespaces.base()); // <-- "http://base.ns/"
+//     namespaces.base("http://viejs.org/ns/");
+//     console.log(namespaces.base()); // <-- "http://viejs.org/ns/"
 VIE.prototype.Namespaces.prototype.base = function (ns) {
     if (!ns) { 
         return this._base;
     }
     else if (typeof ns === "string") {
         this._base = ns;
-        return this;
+        return this._base;
     } else {
         throw new Error("Please provide a valid namespace!");
     }
 };
-    
-// This method (``add()``) adds new prefix mappings to the
+
+// ### add(prefix, namespace)
+// This method adds new prefix mappings to the
 // current instance. If a prefix or a namespace is already
 // present (in order to avoid ambiguities), an Error is thrown. 
 // ``prefix`` can also be an object in which case, the method 
-// is called sequentially on all elements.
-// It returns the current instance for the sake of chaining.
+// is called sequentially on all elements.  
+// **Parameters**:  
+// *{string|object}* **prefix** The prefix to be set. If it is an object, the
+// method will be applied to all key,value pairs sequentially.  
+// *{string}* **namespace** The namespace to be set.  
+// **Throws**:  
+// *{Error}* If a prefix or a namespace is already
+// present (in order to avoid ambiguities).  
+// **Returns**:  
+// *{VIE.Namespaces}* : The current namespaces instance.  
+// **Example usage**:  
 //
-//     calling: 
-//     myVIE.namespaces.add("", "http://...");
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.add("", "http://...");
 //     // is always equal to
-//     myVIE.namespaces.base("http://..."); // <-- setter of base namespace
+//     namespaces.base("http://..."); // <-- setter of base namespace
 VIE.prototype.Namespaces.prototype.add = function (prefix, namespace) {
     if (typeof prefix === "object") {
         for (var k1 in prefix) {
@@ -110,9 +140,23 @@ VIE.prototype.Namespaces.prototype.add = function (prefix, namespace) {
     return this;
 };
     
-// This method (``addOrReplace()``) overwrites existing mappings or adds them.
-// It returns the current instance for the sake of chaining. ``prefix`` can also
-// be an object in which case, the method is called sequentially on all elements.
+// ### addOrReplace(prefix, namespace)
+// This method adds new prefix mappings to the
+// current instance. This will overwrite existing mappings.  
+// **Parameters**:  
+// *{string|object}* **prefix** The prefix to be set. If it is an object, the
+// method will be applied to all key,value pairs sequentially.  
+// *{string}* **namespace** The namespace to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Namespaces}* : The current namespaces instance.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("", "http://...");
+//     // is always equal to
+//     namespaces.base("http://..."); // <-- setter of base namespace
 VIE.prototype.Namespaces.prototype.addOrReplace = function (prefix, namespace) {
     if (typeof prefix === "object") {
         for (var k1 in prefix) {
@@ -124,14 +168,21 @@ VIE.prototype.Namespaces.prototype.addOrReplace = function (prefix, namespace) {
     this.removeNamespace(namespace);
     return this.add(prefix, namespace);
 };
-    
-// This method (``get()``) returns the namespace for the given prefix ``prefix`` or
-// ``undefined`` if no such prefix could be found.
+
+// ### get(prefix)
+// This method retrieves a namespaces, given a prefix. If the
+// prefix is the empty string, the base namespace is returned.  
+// **Parameters**:  
+// *{string}* **prefix** The prefix to be retrieved.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{string|undefined}* : The namespace or ```undefined``` if no namespace could be found.  
+// **Example usage**:  
 //
-//     calling: 
-//     myVIE.namespaces.get(""); // <-- empty string
-//     // is always equal to
-//     myVIE.namespaces.base(); // <-- getter of base namespace
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("test", "http://test.ns");
+//     console.log(namespaces.get("test")); // <-- "http://test.ns"
 VIE.prototype.Namespaces.prototype.get = function (prefix) {
     if (prefix === "") {
         return this.base();
@@ -139,8 +190,19 @@ VIE.prototype.Namespaces.prototype.get = function (prefix) {
     return this._namespaces[prefix];
 };
 
-// This method (``getPrefix()``) returns a prefix for the given ``namespace`` or
-// ``undefined`` if the namespace could not be found in the current instance.
+// ### getPrefix(namespace)
+// This method retrieves a prefix, given a namespace.  
+// **Parameters**:  
+// *{string}* **namespace** The namespace to be retrieved.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{string|undefined}* : The prefix or ```undefined``` if no prefix could be found.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("test", "http://test.ns");
+//     console.log(namespaces.getPrefix("http://test.ns")); // <-- "test"
 VIE.prototype.Namespaces.prototype.getPrefix = function (namespace) {
     var prefix = undefined;
     jQuery.each(this._namespaces, function (k1,v1) {
@@ -151,38 +213,96 @@ VIE.prototype.Namespaces.prototype.getPrefix = function (namespace) {
     return prefix;
 };
 
-// This method (``contains()``) checks, whether a prefix is stored in the instance and
-// returns ``true`` if so and ``false`` otherwise. 
+// ### contains(prefix)
+// This method checks, whether a prefix is stored in the instance.  
+// **Parameters**:  
+// *{string}* **prefix** The prefix to be checked.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{boolean}* : ```true``` if the prefix could be found, ```false``` otherwise.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("test", "http://test.ns");
+//     console.log(namespaces.contains("test")); // <-- true
 VIE.prototype.Namespaces.prototype.contains = function (prefix) {
     return (prefix in this._namespaces);
 };
-    
-// This method (``containsNamespace()``) checks, whether a namespace is stored in the instance and
-// returns ``true`` if so and ``false`` otherwise. 
+
+// ### containsNamespace(namespace)
+// This method checks, whether a namespace is stored in the instance.  
+// **Parameters**:  
+// *{string}* **namespace** The namespace to be checked.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{boolean}* : ```true``` if the namespace could be found, ```false``` otherwise.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("test", "http://test.ns");
+//     console.log(namespaces.containsNamespace("http://test.ns")); // <-- true
 VIE.prototype.Namespaces.prototype.containsNamespace = function (namespace) {
     return this.getPrefix(namespace) !== undefined;
 };
 
-// This method (``update()``) overwrites the namespace that is stored under the prefix ``prefix``
-// with the new namespace ``namespace``. If a namespace is already bound to another prefix, an
-// Error is thrown.
-// The method returns the namespace instance for the purpose of chaining.
+// ### update(prefix, namespace)
+// This method overwrites the namespace that is stored under the 
+// prefix ``prefix`` with the new namespace ``namespace``. 
+// If a namespace is already bound to another prefix, an Error is thrown.
+// **Parameters**:  
+// *{string}* **prefix** The prefix.  
+// *{string}* **namespace** The namespace.  
+// **Throws**:  
+// *{Error}* If a namespace is already bound to another prefix.  
+// **Returns**:  
+// *{VIE.Namespaces}* : The namespace instance.  
+// **Example usage**:  
+//
+//     ...
 VIE.prototype.Namespaces.prototype.update = function (prefix, namespace) {
     this.remove(prefix);
     return this.add(prefix, namespace);
 };
 
-// This method (``updateNamespace()``) overwrites the prefix that is bound to the 
+// ### updateNamespace(prefix, namespace)
+// This method overwrites the prefix that is bound to the 
 // namespace ``namespace`` with the new prefix ``prefix``. If another namespace is
-// already registered with the given ``prefix``, an Error is thrown.
-// The method returns the namespace instance for the purpose of chaining.
+// already registered with the given ``prefix``, an Error is thrown.  
+// **Parameters**:  
+// *{string}* **prefix** The prefix.  
+// *{string}* **namespace** The namespace.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Namespaces}* : The namespace instance.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.add("test", "http://test.ns");
+//     namespaces.updateNamespace("test2", "http://test.ns");
+//     namespaces.get("test2"); // <-- "http://test.ns"
 VIE.prototype.Namespaces.prototype.updateNamespace = function (prefix, namespace) {
     this.removeNamespace(prefix);
     return this.add(prefix, namespace);
 };
 
-// This method (``remove()``) removes the namespace that is stored under the prefix ``prefix``.
-// The method returns the namespace instance for the purpose of chaining.
+// ### remove(prefix)
+// This method removes the namespace that is stored under the prefix ``prefix``.  
+// **Parameters**:  
+// *{string}* **prefix** The prefix to be removed.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Namespaces}* : The namespace instance.   
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.add("test", "http://test.ns");
+//     namespaces.get("test"); // <-- "http://test.ns"
+//     namespaces.remove("test");
+//     namespaces.get("test"); // <-- undefined
 VIE.prototype.Namespaces.prototype.remove = function (prefix) {
     if (prefix) {
         delete this._namespaces[prefix];
@@ -190,9 +310,21 @@ VIE.prototype.Namespaces.prototype.remove = function (prefix) {
     return this;
 };
 
-// This method (``removeNamespace()``) removes the namespace ``namespace``
-// from the instance.
-// The method returns the namespace instance for the purpose of chaining.
+// ### removeNamespace(namespace)
+// This method removes removes the namespace ``namespace`` from the instance.  
+// **Parameters**:  
+// *{string}* **namespace** The namespace to be removed.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Namespaces}* : The namespace instance.   
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.add("test", "http://test.ns");
+//     namespaces.get("test"); // <-- "http://test.ns"
+//     namespaces.removeNamespace("http://test.ns");
+//     namespaces.get("test"); // <-- undefined
 VIE.prototype.Namespaces.prototype.removeNamespace = function (namespace) {
     var prefix = this.getPrefix(namespace);
     if (prefix) {
@@ -200,56 +332,119 @@ VIE.prototype.Namespaces.prototype.removeNamespace = function (namespace) {
     }
     return this;
 };
-    
-// This serializes the namespace instance into an associative
+
+// ### toObj()
+// This method serializes the namespace instance into an associative
 // array representation. The base namespace is given an empty
-// string as key.
+// string as key.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{object}* : A serialization of the namespaces as an object.  
+// **Example usage**:  
+//
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.add("test", "http://test.ns");
+//     console.log(namespaces.toObj()); 
+//     // <-- {""    : "http://base.ns/", 
+//             "test": "http://test.ns"}
 VIE.prototype.Namespaces.prototype.toObj = function () {
     return jQuery.extend({'' : this._base}, this._namespaces);
 };
-    
-// This method transforms a URI into a CURIE, based on the given
-// namespace instance. If ``safe`` is set to ``true``, it will
-// return a safe CURIE. If no prefix can be found, an Error is
-// thrown.
+
+// ### curie(uri, safe)
+// This method converts a given 
+// URI into a CURIE (or SCURIE), based on the given ```VIE.Namespaces``` object.
+// If the given uri is already a URI, it is left untouched and directly returned.
+// If no prefix could be found, an ```Error``` is thrown.  
+// **Parameters**:  
+// *{string}* **uri** The URI to be transformed.  
+// *{boolean}* **safe** A flag whether to generate CURIEs or SCURIEs.  
+// **Throws**:  
+// *{Error}* If no prefix could be found in the passed namespaces.  
+// **Returns**:  
+// *{string}* The CURIE or SCURIE.  
+// **Example usage**: 
 //
-//     calling: 
-//     myVIE.namespaces.curie("...", true|false); 
-//     // is always equal to
-//     VIE.Util.toCurie("...", true|false, myVIE.namespaces);
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var uri = "<http://dbpedia.org/ontology/Person>";
+//     ns.curie(uri, false); // --> dbp:Person
+//     ns.curie(uri, true); // --> [dbp:Person]
 VIE.prototype.Namespaces.prototype.curie = function(uri, safe){
     return VIE.Util.toCurie(uri, safe, this);
 };
-    
-// This method checks, whether the passed string is a proper CURIE, 
-// based on the prefixes in the current namespace instance and
-// returns ``true`` if so and ``false`` otherwise.
+
+// ### isCurie(curie)
+// This method checks, whether 
+// the given string is a CURIE and returns ```true``` if so and ```false```otherwise.  
+// **Parameters**:  
+// *{string}* **curie** The CURIE (or SCURIE) to be checked.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{boolean}* ```true``` if the given curie is a CURIE or SCURIE and ```false``` otherwise.  
+// **Example usage**: 
 //
-//     calling: 
-//     myVIE.namespaces.isCurie("..."); 
-//     // is always equal to
-//     VIE.Util.isCurie("...", myVIE.namespaces);
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var uri = "<http://dbpedia.org/ontology/Person>";
+//     var curie = "dbp:Person";
+//     var scurie = "[dbp:Person]";
+//     var text = "This is some text.";
+//     ns.isCurie(uri);    // --> false
+//     ns.isCurie(curie);  // --> true
+//     ns.isCurie(scurie); // --> true
+//     ns.isCurie(text);   // --> false
 VIE.prototype.Namespaces.prototype.isCurie = function (something) {
     return VIE.Util.isCurie(something, this);
 };
     
-// This method transforms the passed ``curie`` into a URI, based
-// on the current namespace instance. If no prefix could be found, 
-// an Error is thrown. 
+// ### uri(curie)
+// This method converts a 
+// given CURIE (or save CURIE) into a URI, based on the given ```VIE.Namespaces``` object.  
+// **Parameters**:  
+// *{string}* **curie** The CURIE to be transformed.  
+// **Throws**:  
+// *{Error}* If no URI could be assembled.  
+// **Returns**:  
+// *{string}* : A string, representing the URI.  
+// **Example usage**: 
 //
-//     calling: 
-//     myVIE.namespaces.uri("..."); 
-//     // is always equal to
-//     VIE.Util.toUri("...", myVIE.namespaces);
+//     var ns = new myVIE.Namespaces(
+//           "http://viejs.org/ns/", 
+//           { "dbp": "http://dbpedia.org/ontology/" }
+//     );
+//     var curie = "dbp:Person";
+//     var scurie = "[dbp:Person]";
+//     ns.uri(curie); 
+//          --> <http://dbpedia.org/ontology/Person>
+//     ns.uri(scurie);
+//          --> <http://dbpedia.org/ontology/Person>
 VIE.prototype.Namespaces.prototype.uri = function (curie) {
     return VIE.Util.toUri(curie, this);
 };
-    
-// This method checks, whether the given string is a URI and
-// returns ``true`` if so and ``false`` otherwise.
+
+// ### isUri(something)
+// This method checks, whether the given string is a URI.  
+// **Parameters**:  
+// *{string}* **something** : The string to be checked.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{boolean}* : ```true``` if the string is a URI, ```false``` otherwise.  
+// **Example usage**: 
 //
-//     calling: 
-//     myVIE.namespaces.isUri("..."); 
-//     // is always equal to
-//     VIE.Util.isUri("...");
+//     var namespaces = new vie.Namespaces("http://base.ns/");
+//     namespaces.addOrReplace("test", "http://test.ns");
+//     var uri = "<http://test.ns/Person>";
+//     var curie = "test:Person";
+//     namespaces.isUri(uri);   // --> true
+//     namespaces.isUri(curie); // --> false
 VIE.prototype.Namespaces.prototype.isUri = VIE.Util.isUri;

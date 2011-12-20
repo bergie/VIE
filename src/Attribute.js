@@ -115,7 +115,6 @@ VIE.prototype.Attribute = function (id, range, domain) {
             
 };
 
-
 // ## VIE.Attributes(domain, attrs)
 // This is the constructor of a VIE.Attributes. Basically a convenience class
 // that represents a list of ```VIE.Attribute```. As attributes are part of a 

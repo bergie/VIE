@@ -161,8 +161,8 @@ VIE.Util = {
 //
 //     var uri = "<http://dbpedia.org/ontology/Person>";
 //     var curie = "dbp:Person";
-//     VIE.Util.isUri(uri, ns);   // --> true
-//     VIE.Util.isUri(curie, ns); // --> false
+//     VIE.Util.isUri(uri);   // --> true
+//     VIE.Util.isUri(curie); // --> false
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+:.+>$/) === 0);
     },
