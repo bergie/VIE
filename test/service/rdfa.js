@@ -111,6 +111,10 @@ test("Test RDFa image entitization", function() {
         // Ensure we have the image correctly read
     	
         ok(icons instanceof z.Collection, "Icons should be a collection");
+        if (!icons) {
+            start();
+            return;
+        }
         equal(icons.at(0).id, '<http://example.net/image.jpg>');
         
         equal(jQuery('img', html).length, 1);
