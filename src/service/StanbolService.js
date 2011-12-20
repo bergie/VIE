@@ -34,25 +34,26 @@ VIE.prototype.StanbolService = function(options) {
             /* rule to add backwards-relations to the triples
              * this makes querying for entities a lot easier!
              */
-            {'left' : [
-                '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
-                '?subject enhancer:entity-type ?type',
-                '?subject enhancer:confidence ?confidence',
-                '?subject enhancer:entity-reference ?entity',
-                '?subject dcterms:relation ?relation',
-                '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
-                '?relation enhancer:selected-text ?selected-text',
-                '?relation enhancer:selection-context ?selection-context',
-                '?relation enhancer:start ?start',
-                '?relation enhancer:end ?end'
-            ],
-             'right' : [
-                 '?entity a ?type',
-                 '?entity enhancer:hasTextAnnotation ?relation',
-                 '?entity enhancer:hasEntityAnnotation ?subject'
-             ]
-             }
-         ]
+            {
+                'left' : [
+                    '?subject a <http://fise.iks-project.eu/ontology/EntityAnnotation>',
+                    '?subject enhancer:entity-type ?type',
+                    '?subject enhancer:confidence ?confidence',
+                    '?subject enhancer:entity-reference ?entity',
+                    '?subject dcterms:relation ?relation',
+                    '?relation a <http://fise.iks-project.eu/ontology/TextAnnotation>',
+                    '?relation enhancer:selected-text ?selected-text',
+                    '?relation enhancer:selection-context ?selection-context',
+                    '?relation enhancer:start ?start',
+                    '?relation enhancer:end ?end'
+                ],
+                'right' : [
+                    '?entity a ?type',
+                    '?entity enhancer:hasTextAnnotation ?relation',
+                    '?entity enhancer:hasEntityAnnotation ?subject'
+                ]
+            }
+        ]
     };
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
@@ -60,7 +61,8 @@ VIE.prototype.StanbolService = function(options) {
     this.name = this.options.name;
 
     jQuery.ajaxSetup({
-        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}}
+        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+        timeout: 60000 /* 60 seconds timeout */
     });
 
 };
@@ -187,14 +189,14 @@ VIE.prototype.StanbolService.prototype = {
     }
 };
 
-VIE.prototype.StanbolConnector = function(options){
+VIE.prototype.StanbolConnector = function (options) {
     this.options = options;
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
     this.enhancerUrlPrefix = "/engines";
     this.entityhubUrlPrefix = "/entityhub";
-    //TODO: this.ontonetUrlPrefix = "/ontonet";
-    //TODO: this.rulesUrlPrefix = "/rules";
-    //TODO: this.factstoreUrlPrefix = "/factstore";
+    /*TODO: this.ontonetUrlPrefix = "/ontonet"; */
+    /*TODO: this.rulesUrlPrefix = "/rules"; */
+    /*TODO: this.factstoreUrlPrefix = "/factstore"; */
 };
 VIE.prototype.StanbolConnector.prototype = {
 
@@ -217,7 +219,7 @@ VIE.prototype.StanbolConnector.prototype = {
         }(this, text, success, error, options);
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
-            // We're on Node.js, don't use jQuery.ajax
+            /* We're on Node.js, don't use jQuery.ajax */
             return this.analyzeNode(enhancerUrl, text, success, retryErrorCb, options, format);
         }
 
@@ -285,7 +287,7 @@ VIE.prototype.StanbolConnector.prototype = {
     },
 
     find: function (term, limit, offset, success, error, options) {
-        // curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find
+        /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
         if (!options) { options = { urlIndex : 0}; }
         
         if (options.urlIndex >= this.baseUrl.length) {

@@ -149,20 +149,53 @@ var VIE = root.VIE = function(config) {
     }
 };
 
-// ### Service API of VIE
-// TODO: describe me!
+// ### use(service, name)
+// This method registers services within VIE.  
+// **Parameters**:  
+// *{string|object}* **service** The service to be registered.  
+// *{string}* **name** An optional name to register the service with. If this
+// is not set, the default name that comes with the service is taken.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE}* : The current VIE instance.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     var conf1 = {...};
+//     var conf2 = {...};
+//     vie.use(new vie.StanbolService());
+//     vie.use(new vie.StanbolService(conf1), "stanbol_1");
+//     vie.use(new vie.StanbolService(conf2), "stanbol_2");
+//     // <-- this means that there are now 3 services registered!
 VIE.prototype.use = function(service, name) {
-  if (!name) {
-    name = service.name;
+  if (!name && !service.name) {
+    throw new Error("Please provide a name for the service!");
   }
   service.vie = this;
-  service.name = name;
+  service.name = (name)? name : service.name;
   if (service.init) {
       service.init();
   }
-  this.services[name] = service;
+  this.services[service.name] = service;
+  
+  return this;
 };
 
+// ### service(name)
+// This method returns the service object that is
+// registered under the given name.  
+// **Parameters**:  
+// *{string}* **name** ...  
+// **Throws**:  
+// *{Error}* if no service could be found.  
+// **Returns**:  
+// *{object}* : The service to be queried.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var service = vie.service("stanbol");
 VIE.prototype.service = function(name) {
   if (!this.services[name]) {
     throw "Undefined service " + name;
@@ -170,58 +203,142 @@ VIE.prototype.service = function(name) {
   return this.services[name];
 };
 
+// ### getServicesArray()
+// This method returns an array of all registered services.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{array}* : An array of service instances.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var services = vie.getServicesArray();
+//     services.length; // <-- 1
 VIE.prototype.getServicesArray = function() {
   return _.map(this.services, function (v) {return v;});
 };
 
-// Declaring the ..able classes
-// Loadable
+// ### load(options)
+// This method instantiates a new VIE.Loadable in order to
+// perform queries on the services.  
+// **Parameters**:  
+// *{object}* **options** Options to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Loadable}* : A new instance of VIE.Loadable.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var loader = vie.load({...});
 VIE.prototype.load = function(options) {
   if (!options) { options = {}; }
   options.vie = this;
   return new this.Loadable(options);
 };
 
-
-
-// Savable
+// ### save(options)
+// This method instantiates a new VIE.Savable in order to
+// perform queries on the services.  
+// **Parameters**:  
+// *{object}* **options** Options to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Savable}* : A new instance of VIE.Savable.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var saver = vie.save({...});
 VIE.prototype.save = function(options) {
   if (!options) { options = {}; }
   options.vie = this;
   return new this.Savable(options);
 };
 
-
-// Removable
+// ### remove(options)
+// This method instantiates a new VIE.Removable in order to
+// perform queries on the services.  
+// **Parameters**:  
+// *{object}* **options** Options to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Removable}* : A new instance of VIE.Removable.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var remover = vie.remove({...});
 VIE.prototype.remove = function(options) {
   if (!options) { options = {}; }
   options.vie = this;
   return new this.Removable(options);
 };
 
-
-// Analyzable
+// ### analyze(options)
+// This method instantiates a new VIE.Analyzable in order to
+// perform queries on the services.  
+// **Parameters**:  
+// *{object}* **options** Options to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Analyzable}* : A new instance of VIE.Analyzable.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var analyzer = vie.analyze({...});
 VIE.prototype.analyze = function(options) {
   if (!options) { options = {}; }
   options.vie = this;
   return new this.Analyzable(options);
 };
 
-
-// Findable
+// ### find(options)
+// This method instantiates a new VIE.Findable in order to
+// perform queries on the services.  
+// **Parameters**:  
+// *{object}* **options** Options to be set.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.Findable}* : A new instance of VIE.Findable.  
+// **Example usage**:  
+//
+//     var vie = new VIE();
+//     vie.use(new vie.StanbolService(), "stanbol");
+//     var finder = vie.find({...});
 VIE.prototype.find = function(options) {
   if (!options) { options = {}; }
   options.vie = this;
   return new this.Findable(options);
 };
 
+// ### loadSchema(url, options)
 // VIE only knows the *owl:Thing* type by default.
-// You can use `vie.loadSchema()` to import another
+// You can use this method to import another
 // schema (ontology) from an external resource.
+// (Currently, this supports only the JSON format!!)
 // As this method works asynchronously, you might want
 // to register `success` and `error` callbacks via the
-// options:
-//    
+// options.  
+// **Parameters**:  
+// *{string}* **url** The url, pointing to the schema to import.  
+// *{object}* **options** Options to be set.
+// (Set ```success``` and ```error``` as callbacks.).  
+// **Throws**:  
+// *{Error}* if the url is not set.  
+// **Returns**:  
+// *{VIE}* : The VIE instance itself.  
+// **Example usage**:  
+//
 //     var vie = new VIE();
 //     vie.loadSchema("http://schema.rdfs.org/all.json", 
 //        {
@@ -250,6 +367,8 @@ VIE.prototype.loadSchema = function(url, options) {
             }
          });
     }
+    
+    return this;
 };
 
 // ## Running VIE on Node.js

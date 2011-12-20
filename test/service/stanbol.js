@@ -9,7 +9,9 @@ test("Test stanbol connection", function() {
 });
 
 test("VIE.js StanbolService - Analyze", function () {
-    
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    } 
     var elem = $('<p>This is a small test, where Steve Jobs sings a song.</p>');
     var z = new VIE();
     ok (z.StanbolService);
@@ -39,6 +41,9 @@ test("VIE.js StanbolService - Analyze", function () {
 });
 
 test("VIE.js StanbolService - Find", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    } 
     var term = "European Union";
     var limit = 10;
     var offset = 0;
@@ -72,7 +77,9 @@ test("VIE.js StanbolService - Find", function () {
 
 
 test("VIE.js StanbolService - Load", function () {
-    
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    }
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
     var z = new VIE();
     ok (z.StanbolService);

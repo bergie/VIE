@@ -8,6 +8,9 @@ test("Test DBPedia connection", function() {
 });
 
 test("VIE.js DBPediaService - Load", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    } 
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
     var z = new VIE();
     ok (z.DBPediaService);

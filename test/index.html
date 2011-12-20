@@ -4,6 +4,7 @@
     xmlns="http://www.w3.org/1999/xhtml" 
     xml:lang="en">
     <head>
+        <title>VIE browser tests</title>
         <script type="text/javascript" src="../lib/jquery/1.7/jquery-1.7.1.min.js"></script>
 
         <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
@@ -84,13 +85,57 @@
         <script type="text/javascript" src="speed.js"></script>-->
 
     </head>
-    <body>
+    <body xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:iks="http://iks-project.eu/ontology/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03/">
         <h1 id="qunit-header">Unit tests for vie.js - using QUnit</h1>
         <h2 id="qunit-banner"></h2>
         <div id="qunit-testrunner-toolbar"></div>
         <h2 id="qunit-userAgent"></h2>
         <ol id="qunit-tests"></ol>
-        <div id="qunit-fixture">test markup, will be hidden</div>
+        <div id="qunit-fixture">
+            <div class="rdfa-simple">
+                <div about="http://dbpedia.org/resource/Albert_Einstein">
+                    <span property="foaf:name">Albert Einstein</span>
+                    <span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span>
+                    <div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany"></div>
+                    <span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span>
+                </div>
+            </div>
+            <div class="rdfa-updating">
+                <div about="http://dbpedia.org/resource/Albert_Einstein">
+                    <span property="foaf:name">Albert Einstein</span>
+                    <span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span>
+                    <div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany"></div>
+                    <span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span>
+                </div>
+            </div>
+            <div class="rdfa-nested">
+                <div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                    <h1 property="dcterms:title">
+                        <span>News item title</span>
+                    </h1>
+                </div>
+            </div>
+            <div class="rdfa-property-content">
+                <div about="http://twitter.com/bergie">
+                    <span property="foaf:name">Henri Bergius</span>
+                    <span property="iks:online" content="0"></span>
+                </div>
+            </div>
+            <div class="rdfa-wikipedia">
+                <p about="http://www.example.com/books/wikinomics">
+                In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.
+                </p>
+            </div>
+            <div class="rdfa-image-entitization">
+                <div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                    <h1 property="dcterms:title"><span>News item title</span></h1>
+                    <span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span>
+                 </div>
+             </div>
+             <div class="rdfa11-1">
+                 <p>This photo was taken by <span class="author" about="photo1.jpg" property="dc:creator">Mark Birbeck</span>.</p>'
+             </div>
+        </div>
 
         <!--<h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>
         <div id="jslitmus_container" style="margin: 20px 10px;"></div>-->

@@ -14,14 +14,15 @@ exports.setUp = function(callback) {
     });
     server.listen(3000, function() {
         var location = "http://localhost:3000/test/index.html";
-        var browser = new zombie.Browser({debug: false});
+        var browser = new zombie.Browser({
+            debug: false,
+            userAgent: 'Zombie'
+        });
         browser.visit(location, function(err, browser, status) {
             // Start QUnit
             browser.fire('load', browser.window);
-
-            browser.wait(function(err, browser) {
-                qunitResults = browser.css('#qunit-tests > li');
-                console.log(qunitResults.length);
+            browser.wait(10000, function(err, browser) {
+                qunitResults = browser.queryAll('#qunit-tests > li');
                 server.close();
                 callback();
             });
@@ -31,8 +32,14 @@ exports.setUp = function(callback) {
 
 exports['Client-side VIE tests with a headless browser'] = function(test) {
     _.each(qunitResults, function(listItem) {
-        var testGroup = listItem._childNodes[0]._childNodes[0].textContent + ': ' + listItem._childNodes[0]._childNodes[2].textContent;
-        _.each(listItem._childNodes[2]._childNodes, function(individualTest) {
+        var group = listItem.childNodes.item(0);
+        var groupName = group.childNodes.item(0).textContent;
+        if (!listItem.childNodes.item(2)) {
+            return;
+        }
+        var group = listItem.childNodes.item(0);
+        var testGroup = group.childNodes.item(0).textContent + ': ' + group.childNodes.item(2).textContent;
+        _.each(listItem.childNodes.item(2).childNodes, function(individualTest) {
             var testMessage = individualTest.textContent;
             var testState = individualTest._attributes._nodes['class']._nodeValue;
             test.equal(testState, 'pass', testGroup + ': ' + testMessage);

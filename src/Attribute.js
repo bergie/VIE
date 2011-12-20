@@ -127,7 +127,7 @@ VIE.prototype.Attribute = function (id, range, domain) {
 // **Throws**:  
 // *{Error}* if one of the given paramenters is missing.  
 // **Returns**:  
-// *{VIE.Attribute}* : A **new** VIE.Attribute object.  
+// *{VIE.Attribute}* : A **new** VIE.Attribute instance.  
 // **Example usage**:  
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");

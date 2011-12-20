@@ -84,6 +84,8 @@ VIE.prototype.Namespaces.prototype.base = function (ns) {
         return this._base;
     }
     else if (typeof ns === "string") {
+        /* remove another mapping */
+        this.removeNamespace(ns);
         this._base = ns;
         return this._base;
     } else {

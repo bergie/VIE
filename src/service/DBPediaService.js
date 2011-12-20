@@ -5,14 +5,29 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
-(function(){
 
 // ## VIE - DBPedia service
+// The DBPedia service allows a VIE developer to directly query
+// the DBPedia database for entities and their properties. Obviously,
+// the service does not allow for saving, removing or analyzing methods.
+(function(){
+
+// ## VIE.DBPediaService(options)
+// ...  
+// **Parameters**:  
+// *{object}* **options** ...  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.DBPediaService}* : A **new** VIE.DBPediaService instance.  
+// **Example usage**:  
 //
-// TODO: fill with more documentation
-VIE.prototype.DBPediaService = function(options) {
+//     var dbpService = new vie.DBPediaService({<some-configuration>});
+VIE.prototype.DBPediaService = function (options) {
     var defaults = {
+        /* the default name of this service */
         name : 'dbpedia',
+        /* default namespaces that are shipped with this service */
         namespaces : {
             owl    : "http://www.w3.org/2002/07/owl#",
             yago   : "http://dbpedia.org/class/yago/",
@@ -25,21 +40,38 @@ VIE.prototype.DBPediaService = function(options) {
             dbprop : "http://dbpedia.org/property/",
             dcelements : "http://purl.org/dc/elements/1.1/"
         },
+        /* default rules that are shipped with this service */
         rules : []
     };
+    /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; /* will be set via VIE.use(); */
+    /* overwrite options.name if you want to set another name */
     this.name = this.options.name;
     
+    /* basic setup for the ajax connection */
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
         timeout: 60000 /* 60 seconds timeout */
     });
-
 };
 
 VIE.prototype.DBPediaService.prototype = {
+    
+// ### init()
+// This method initializes certain properties of the service and is called
+// via ```VIE.use()```.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.DBPediaService}* : The VIE.DBPediaService instance itself.  
+// **Example usage**:  
+//
+//     var dbpService = new vie.DBPediaService({<some-configuration>});
+//     dbpService.init();
     init: function() {
 
         for (var key in this.options.namespaces) {
@@ -51,14 +83,29 @@ VIE.prototype.DBPediaService.prototype = {
         this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
         
         this.connector = new this.vie.DBPediaConnector(this.options);
+        
+        return this;
     },
 
-    // VIE API load implementation
+// ### load(loadable)
+// This method loads the entity that is stored within the loadable into VIE.  
+// **Parameters**:  
+// *{VIE.Loadable}* **lodable** The loadable.  
+// **Throws**:  
+// *{Error}* if an invalid VIE.Loadable is passed.  
+// **Returns**:  
+// *{VIE.DBPediaService}* : The VIE.DBPediaService instance itself.  
+// **Example usage**:  
+//
+//     var dbpService = new vie.DBPediaService({<some-configuration>});
+//     dbpService.load(...);
     load: function(loadable){
         var service = this;
         
         var correct = loadable instanceof this.vie.Loadable;
-        if (!correct) {throw new Error("Invalid Loadable passed");}
+        if (!correct) {
+            throw new Error("Invalid Loadable passed");
+        }
 
         var entity = loadable.options.entity;
         if (!entity) {
@@ -77,11 +124,13 @@ VIE.prototype.DBPediaService.prototype = {
             };
             this.connector.load(entity, success, error);
         }
+        return this;
     }
 };
 
-VIE.prototype.DBPediaConnector = function(options){
+VIE.prototype.DBPediaConnector = function (options) {
     this.options = options;
+    this.baseUrl = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&timeout=0";
 };
 
 VIE.prototype.DBPediaConnector.prototype = {
@@ -91,7 +140,7 @@ VIE.prototype.DBPediaConnector.prototype = {
         
         uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
         
-        var url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&timeout=0" + 
+        var url = this.baseUrl + 
         "&format=" + encodeURIComponent("application/rdf+json") + 
         "&query=" +
         encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
@@ -99,7 +148,7 @@ VIE.prototype.DBPediaConnector.prototype = {
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
-            // We're on Node.js, don't use jQuery.ajax
+            /* We're on Node.js, don't use jQuery.ajax */
             return this.loadNode(url, success, error, options, format);
         }
 
