@@ -35,7 +35,6 @@ exports['Client-side VIE tests with a headless browser'] = function(test) {
         var group = listItem.childNodes.item(0);
         var groupName = group.childNodes.item(0).textContent;
         if (!listItem.childNodes.item(2)) {
-            console.log("Skipping " + groupName);
             return;
         }
         var group = listItem.childNodes.item(0);
