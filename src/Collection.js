@@ -21,13 +21,15 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         }
     },
 
-    addOrUpdate: function(model) {
+    addOrUpdate: function(model, options) {
+        options || (options = {});
+
         var collection = this;
         var existing;
         if (_.isArray(model)) {
             var entities = [];
             _.each(model, function(item) {
-                entities.push(collection.addOrUpdate(item));
+                entities.push(collection.addOrUpdate(item, options));
             });
             return entities;
         }
@@ -73,12 +75,11 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             });
 
             if (!_.isEmpty(newAttribs)) {
-                existing.set(newAttribs);
+                existing.set(newAttribs, options.updateOptions);
             }
             return existing;
         }
-
-        this.add(model);
+        this.add(model, options.addOptions);
         return model;
     },
 
