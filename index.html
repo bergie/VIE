@@ -50,17 +50,20 @@ v.analyze({
         jQuery('<p>We found ' + entities.length + ' entities, including:</p>')
     );
     _.each(entities, function(entity) {
-        if (!entity.has('rdfschema:label')) {
+        if (!entity.has('http://www.w3.org/2000/01/rdf-schema#label')) {
             return true;
         }
 
         var url = entity.id.substr(1, entity.id.length - 2);
         var label;
-        _.each(entity.get('rdfschema:label'), function(labelLang) {
+        _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
             if (labelLang.substr(-2) === 'en') {
                 label = labelLang.substr(2, labelLang.length - 7);
             }
         });
+        if (!label) {
+            return true;
+        }
         jQuery('#analyze .resultsholder').append(
             jQuery('<a href="' + url + '">' + label + '</a>')
         );
@@ -91,9 +94,9 @@ v.load({
             return true; 
         }
         var height = {
-            year: entity.get(heightByYear)[0],
-            height: entity.get(heightByYear)[1],
-        }
+            year: entity.get(heightByYear)[1],
+            height: entity.get(heightByYear)[0],
+            }
         height.height = height.height.substr(2, 7);
         jQuery('#towerheight .resultsholder').append(
             jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
@@ -124,7 +127,7 @@ vie
 .done(function (entities) {
     _.each(entities, function (e) {
         if (e.id === mongoliaURI) {
-            var capitalURI = e.get(capitalPropURI).id;
+            var capitalURI = e.get(capitalPropURI);
             vie
             .load({entity : capitalURI})
             .using('dbpedia')
@@ -136,7 +139,7 @@ vie
                     }
                     var url = entity.id.substr(1, entity.id.length - 2);
                     var label;
-                    _.each(entity.get('rdfschema:label'), function(labelLang) {
+                    _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
                         if (labelLang.substr(-2) === 'en') {
                             label = labelLang.substr(2, labelLang.length - 7);
                         }
