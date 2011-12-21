@@ -13,9 +13,10 @@
 (function(){
 
 // ## VIE.DBPediaService(options)
-// ...  
+// This is the constructor to instantiate a new service to collect
+// properties of an entity from <a href="http://dbpedia.org">DBPedia</a>.  
 // **Parameters**:  
-// *{object}* **options** ...  
+// *{object}* **options** Optional set of fields, ```namespaces```, ```rules```, or ```name```.  
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
@@ -46,7 +47,7 @@ VIE.prototype.DBPediaService = function (options) {
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
-    this.vie = null; /* will be set via VIE.use(); */
+    this.vie = null; /* this.vie will be set via VIE.use(); */
     /* overwrite options.name if you want to set another name */
     this.name = this.options.name;
     
@@ -98,7 +99,7 @@ VIE.prototype.DBPediaService.prototype = {
 // **Example usage**:  
 //
 //     var dbpService = new vie.DBPediaService({<some-configuration>});
-//     dbpService.load(...);
+//     dbpService.load(new vie.Loadable({entity : "<http://...>"}));
     load: function(loadable){
         var service = this;
         
@@ -116,8 +117,10 @@ VIE.prototype.DBPediaService.prototype = {
             
             var success = function (results) {
                 results = (typeof results === "string")? JSON.parse(results) : results;
-                var entities = VIE.Util.rdf2Entities(service, results);
-                loadable.resolve(entities);
+                _.defer(function(){
+                    var entities = VIE.Util.rdf2Entities(service, results);
+                    loadable.resolve(entities);
+                });
             };
             var error = function (e) {
                 loadable.reject(e);
@@ -128,6 +131,18 @@ VIE.prototype.DBPediaService.prototype = {
     }
 };
 
+// ## VIE.DBPediaConnector(options)
+// The DBPediaConnector is the connection between the DBPedia service
+// and the backend service.  
+// **Parameters**:  
+// *{object}* **options** The options.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.DBPediaConnector}* : The **new** VIE.DBPediaConnector instance.  
+// **Example usage**:  
+//
+//     var dbpConn = new vie.DBPediaConnector({<some-configuration>});
 VIE.prototype.DBPediaConnector = function (options) {
     this.options = options;
     this.baseUrl = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&timeout=0";
@@ -135,6 +150,23 @@ VIE.prototype.DBPediaConnector = function (options) {
 
 VIE.prototype.DBPediaConnector.prototype = {
 
+// ### load(uri, success, error, options)
+// This method loads all properties from an entity and returns the result by the success callback.  
+// **Parameters**:  
+// *{string}* **uri** The URI of the entity to be loaded.  
+// *{function}* **success** The success callback.  
+// *{function}* **error** The error callback.  
+// *{object}* **options** Options, like the ```format```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.DBPediaConnector}* : The VIE.DBPediaConnector instance itself.  
+// **Example usage**:  
+//
+//     var dbpConn = new vie.DBPediaConnector(opts);
+//     dbpConn.load("<http://dbpedia.org/resource/Barack_Obama>",
+//                 function (res) { ... },
+//                 function (err) { ... });
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         
@@ -149,7 +181,7 @@ VIE.prototype.DBPediaConnector.prototype = {
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
             /* We're on Node.js, don't use jQuery.ajax */
-            return this.loadNode(url, success, error, options, format);
+            return this._loadNode(url, success, error, options, format);
         }
 
         jQuery.ajax({
@@ -161,9 +193,11 @@ VIE.prototype.DBPediaConnector.prototype = {
             url: url,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
+        
+        return this;
     },
 
-    loadNode: function (uri, success, error, options, format) {
+    _loadNode: function (uri, success, error, options, format) {
         var request = require('request');
         var r = request({
             method: "GET",
@@ -175,6 +209,8 @@ VIE.prototype.DBPediaConnector.prototype = {
             success(JSON.parse(body));
         });
         r.end();
+        
+        return this;
     }
 };
 })();

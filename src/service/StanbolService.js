@@ -5,11 +5,31 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
+
+// ## VIE - StanbolService service
+// The StanbolService service allows a VIE developer to directly query
+// the <a href="http://incubator.apache.org/stanbol/">Apache Stanbol</a> entityhub for entities and their properties. 
+// Furthermore, it gives access to the enhance facilities of
+// Stanbol to analyze content and semantically enrich it.
 (function(){
+
+// ## VIE.StanbolService(options)
+// This is the constructor to instantiate a new service to collect
+// properties of an entity from <a href="http://incubator.apache.org/stanbol/">Apache Stanbol</a>.  
+// **Parameters**:  
+// *{object}* **options** Optional set of fields, ```namespaces```, ```rules```, ```url```, or ```name```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolService}* : A **new** VIE.StanbolService instance.  
+// **Example usage**:  
+//
+//     var stnblService = new vie.StanbolService({<some-configuration>});
 VIE.prototype.StanbolService = function(options) {
     var defaults = {
+        /* the default name of this service */
         name : 'stanbol',
-        // you can also pass an array of URLs which are then tried sequentially
+        /* you can pass an array of URLs which are then tried sequentially */
         url: ["http://dev.iks-project.eu/stanbolfull"],
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
@@ -30,6 +50,7 @@ VIE.prototype.StanbolService = function(options) {
             schema: 'http://schema.org/',
             geo: 'http://www.w3.org/2003/01/geo/wgs84_pos#'
         },
+        /* default rules that are shipped with this service */
         rules : [
             /* rule to add backwards-relations to the triples
              * this makes querying for entities a lot easier!
@@ -55,11 +76,14 @@ VIE.prototype.StanbolService = function(options) {
             }
         ]
     };
+    /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.vie = null; /* will be set via VIE.use(); */
+    /* overwrite options.name if you want to set another name */
     this.name = this.options.name;
-
+    
+    /* basic setup for the ajax connection */
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
         timeout: 60000 /* 60 seconds timeout */
@@ -68,6 +92,20 @@ VIE.prototype.StanbolService = function(options) {
 };
 
 VIE.prototype.StanbolService.prototype = {
+    
+// ### init()
+// This method initializes certain properties of the service and is called
+// via ```VIE.use()```.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+// **Example usage**:  
+//
+//     var stnblService = new vie.StanbolService({<some-configuration>});
+//     stnblService.init();
     init: function(){
 
         for (var key in this.options.namespaces) {
@@ -80,6 +118,7 @@ VIE.prototype.StanbolService.prototype = {
         
         this.connector = new this.vie.StanbolConnector(this.options);
 
+        /* adding these entity types to VIE helps later the querying */
         this.vie.types.addOrOverwrite('enhancer:EntityAnnotation', [
             /*TODO: add attributes */
         ]).inherit("owl:Thing");
@@ -90,7 +129,19 @@ VIE.prototype.StanbolService.prototype = {
             /*TODO: add attributes */
         ]).inherit("owl:Thing");
     },
-    // VIE API analyze implementation
+
+// ### analyze(analyzable)
+// This method extracts text from the jQuery element and sends it to Apache Stanbol for analysis.  
+// **Parameters**:  
+// *{VIE.Analyzable}* **analyzable** The analyzable.  
+// **Throws**:  
+// *{Error}* if an invalid VIE.Findable is passed.  
+// **Returns**:  
+// *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+// **Example usage**:  
+//
+//     var stnblService = new vie.StanbolService({<some-configuration>});
+//     stnblService.analyzable(new vie.Analyzable({element : jQuery("#foo")}));
     analyze: function(analyzable) {
         var service = this;
 
@@ -102,7 +153,7 @@ VIE.prototype.StanbolService.prototype = {
         var text = service._extractText(element);
 
         if (text.length > 0) {
-            //query enhancer with extracted text
+            /* query enhancer with extracted text */
             var success = function (results) {
                 _.defer(function(){
                     var entities = VIE.Util.rdf2Entities(service, results);
@@ -122,13 +173,23 @@ VIE.prototype.StanbolService.prototype = {
 
     },
 
-    // VIE API load implementation
-    // Runs a Stanbol entityhub find
+// ### find(findable)
+// This method finds entities given the term from the entity hub.  
+// **Parameters**:  
+// *{VIE.Findable}* **findable** The findable.  
+// **Throws**:  
+// *{Error}* if an invalid VIE.Findable is passed.  
+// **Returns**:  
+// *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+// **Example usage**:  
+//
+//     var stnblService = new vie.StanbolService({<some-configuration>});
+//     stnblService.load(new vie.Findable({term : "Bischofsh", limit : 10, offset: 0}));
     find: function (findable) {
         var correct = findable instanceof this.vie.Findable;
         if (!correct) {throw "Invalid Findable passed";}
         var service = this;
-        // The term to find, * as wildcard allowed
+        /* The term to find, * as wildcard allowed */
         var term = escape(findable.options.term);
         if(!term){
             console.warn("StanbolConnector: No term to look for!");
@@ -148,8 +209,18 @@ VIE.prototype.StanbolService.prototype = {
         this.connector.find(term, limit, offset, success, error);
     },
 
-    // VIE API load implementation
-    // Runs a Stanbol entityhub find
+// ### load(loadable)
+// This method loads the entity that is stored within the loadable into VIE.  
+// **Parameters**:  
+// *{VIE.Loadable}* **lodable** The loadable.  
+// **Throws**:  
+// *{Error}* if an invalid VIE.Loadable is passed.  
+// **Returns**:  
+// *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+// **Example usage**:  
+//
+//     var stnblService = new vie.StanbolService({<some-configuration>});
+//     stnblService.load(new vie.Loadable({entity : "<http://...>"}));
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
@@ -172,6 +243,7 @@ VIE.prototype.StanbolService.prototype = {
         this.connector.load(entity, success, error);
     },
 
+    /* this private method extracts text from a jQuery element */
     _extractText: function (element) {
         if (element.get(0) &&
             element.get(0).tagName &&
@@ -181,14 +253,26 @@ VIE.prototype.StanbolService.prototype = {
         }
         else {
             var res = element
-                .text()    //get the text of element
-                .replace(/\s+/g, ' ') //collapse multiple whitespaces
-                .replace(/\0\b\n\r\f\t/g, ''); // remove non-letter symbols
+                .text()    /* get the text of element */
+                .replace(/\s+/g, ' ') /* collapse multiple whitespaces */
+                .replace(/\0\b\n\r\f\t/g, ''); /* remove non-letter symbols */
             return jQuery.trim(res);
         }
     }
 };
 
+// ## VIE.StanbolConnector(options)
+// The StanbolConnector is the connection between the Apache Stanbol service
+// and the backend service.  
+// **Parameters**:  
+// *{object}* **options** The options.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolConnector}* : The **new** VIE.StanbolConnector instance.  
+// **Example usage**:  
+//
+//     var stnblConn = new vie.StanbolConnector({<some-configuration>});
 VIE.prototype.StanbolConnector = function (options) {
     this.options = options;
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
@@ -198,8 +282,26 @@ VIE.prototype.StanbolConnector = function (options) {
     /*TODO: this.rulesUrlPrefix = "/rules"; */
     /*TODO: this.factstoreUrlPrefix = "/factstore"; */
 };
+
 VIE.prototype.StanbolConnector.prototype = {
 
+// ### analyze(text, success, error, options)
+// This method sends the given text to Apache Stanbol returns the result by the success callback.  
+// **Parameters**:  
+// *{string}* **text** The text to be analyzed.  
+// *{function}* **success** The success callback.  
+// *{function}* **error** The error callback.  
+// *{object}* **options** Options, like the ```format```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
+// **Example usage**:  
+//
+//     var stnblConn = new vie.StanbolConnector(opts);
+//     stnblConn.analyze("This is some text.",
+//                 function (res) { ... },
+//                 function (err) { ... });
     analyze: function(text, success, error, options) {
         if (!options) { options = { urlIndex : 0}; }
         if (options.urlIndex >= this.baseUrl.length) {
@@ -213,6 +315,9 @@ VIE.prototype.StanbolConnector.prototype = {
         var format = options.format || "application/rdf+json";
         
         var retryErrorCb = function (c, t, s, e, o) {
+            /* in case an backend of Stanbol is not responding and
+             * multiple URLs have been registered
+             */
             return  function () {
                 c.analyze(t, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
             };
@@ -220,7 +325,7 @@ VIE.prototype.StanbolConnector.prototype = {
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
             /* We're on Node.js, don't use jQuery.ajax */
-            return this.analyzeNode(enhancerUrl, text, success, retryErrorCb, options, format);
+            return this._analyzeNode(enhancerUrl, text, success, retryErrorCb, options, format);
         }
 
         jQuery.ajax({
@@ -238,7 +343,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    analyzeNode: function(url, text, success, error, options, format) {
+    _analyzeNode: function(url, text, success, error, options, format) {
         var request = require('request');
         var r = request({
             method: "POST",
@@ -253,6 +358,23 @@ VIE.prototype.StanbolConnector.prototype = {
         r.end();
     },
 
+// ### load(uri, success, error, options)
+// This method loads all properties from an entity and returns the result by the success callback.  
+// **Parameters**:  
+// *{string}* **uri** The URI of the entity to be loaded.  
+// *{function}* **success** The success callback.  
+// *{function}* **error** The error callback.  
+// *{object}* **options** Options, like the ```format```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
+// **Example usage**:  
+//
+//     var stnblConn = new vie.StanbolConnector(opts);
+//     stnblConn.load("<http://dbpedia.org/resource/Barack_Obama>",
+//                 function (res) { ... },
+//                 function (err) { ... });
     load: function (uri, success, error, options) {
         if (!options) { options = { urlIndex : 0}; }
         if (options.urlIndex >= this.baseUrl.length) {
@@ -267,10 +389,18 @@ VIE.prototype.StanbolConnector.prototype = {
         var format = options.format || "application/rdf+json";
         
         var retryErrorCb = function (c, u, s, e, o) {
+            /* in case an backend of Stanbol is not responding and
+             * multiple URLs have been registered
+             */
             return  function () {
                 c.load(u, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
             };
         }(this, uri, success, error, options);
+        
+        if (typeof exports !== "undefined" && typeof process !== "undefined") {
+            /* We're on Node.js, don't use jQuery.ajax */
+            return this._loadNode(url, success, retryErrorCb, options, format);
+        }
         
         jQuery.ajax({
             success: function(response){
@@ -286,6 +416,41 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
+    _loadNode: function (uri, success, error, options, format) {
+        var request = require('request');
+        var r = request({
+            method: "GET",
+            uri: uri,
+            headers: {
+                Accept: format
+            }
+        }, function(error, response, body) {
+            success(JSON.parse(body));
+        });
+        r.end();
+        
+        return this;
+    },
+
+// ### find(term, limit, offset, success, error, options)
+// This method finds entities given the term from the entity hub and returns the result by the success callback.  
+// **Parameters**:  
+// *{string}* **term** The term to be searched for. 
+// *{int}* **limit** The limit of results to be returned. 
+// *{int}* **offset** The offset to be search for.  
+// *{function}* **success** The success callback.  
+// *{function}* **error** The error callback.  
+// *{object}* **options** Options, like the ```format```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
+// **Example usage**:  
+//
+//     var stnblConn = new vie.StanbolConnector(opts);
+//     stnblConn.find("Bishofsh", 10, 0,
+//                 function (res) { ... },
+//                 function (err) { ... });
     find: function (term, limit, offset, success, error, options) {
         /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
         if (!options) { options = { urlIndex : 0}; }
@@ -308,10 +473,18 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var retryErrorCb = function (c, t, l, of, s, e, o) {
+            /* in case an backend of Stanbol is not responding and
+             * multiple URLs have been registered
+             */
             return  function () {
                 c.find(t, l, of, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
             };
         }(this, term, limit, offset, success, error, options);
+        
+        if (typeof exports !== "undefined" && typeof process !== "undefined") {
+            /* We're on Node.js, don't use jQuery.ajax */
+            return this._findNode(url, term, limit, offset, success, retryErrorCb, options, format);
+        }
         
         jQuery.ajax({
             success: function(response){
@@ -324,6 +497,23 @@ VIE.prototype.StanbolConnector.prototype = {
             dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
+    },
+
+    _findNode: function (uri, term, limit, offset, success, error, options, format) {
+        var request = require('request');
+        var r = request({
+            method: "POST",
+            uri: uri,
+            headers: {
+                Accept: format
+            },
+            body : "name=" + term + "&limit=" + limit + "&offset=" + offset
+        }, function(error, response, body) {
+            success(JSON.parse(body));
+        });
+        r.end();
+        
+        return this;
     }
 };
 })();
