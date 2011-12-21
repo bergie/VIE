@@ -27,6 +27,77 @@
                 <p>VIE can do quite a bit to make applications smarter. If you're looking for simple in-page editing, check out the VIE-powered <a href="http://createjs.org/">Create UI</a>. Otherwise, open the examples below:</p>
 
                 <div id="features">
+                    <h3><a href="#">Make annotated content editable</a></h3>
+                    <div id="editable">
+                        <div class="examplecontent">
+                            <p>Remember to buy:</p>
+                            <ul about="#shoppinglist" rel="hasItem">
+                                <li about="#milk">
+                                    <span property="name">Milk</span>
+                                </li>
+                                <li about="#bread">
+                                    <span property="name">Bread</span>
+                                </li>
+                                <li about="#yogurt">
+                                    <span property="name">Yogurt</span>
+                                </li>
+                             </ul>
+                        </div>
+                        <p>Now make the list above editable:</p>
+                        <div class="exampleholder">
+                          <textarea>
+var changedEntities = [];
+var saveButton = null;
+
+var v = new VIE();
+v.use(new v.RdfaService);
+v.entities.bind('add', function(entity) {
+  jQuery('[about="' + entity.getSubjectUri() + '"] [property]').each(function() {
+    if (v.services.rdfa.getElementSubject(this) !== entity.id) {
+      return;
+    }
+    var editableElement = jQuery(this);
+    var property = v.services.rdfa.getElementPredicate(this);
+    editableElement.attr('contenteditable', true);
+    editableElement.effect('highlight', {color: '#67cc08'}, 3000);
+    editableElement.bind('keyup click change', function() {
+      var content = editableElement.html();
+      if (content !== entity.get(property)) {
+        var changedProps = {};
+        changedProps[property] = content;
+        entity.set(changedProps);
+      }
+    });
+  });
+
+  entity.bind('change', function() {
+    if (changedEntities.indexOf(entity) === -1) {
+      changedEntities.push(entity);
+    }
+    if (saveButton) {
+      return;
+    }
+
+    saveButton = jQuery('<button>Save</button>');
+    saveButton.hide();
+    saveButton.click(function() {
+      alert('We would save ' + changedEntities.length + ' changed entities');
+      _.each(changedEntities, function(entity) {
+        //entity.save();
+      });
+      changedEntities = [];
+      saveButton.remove();
+      saveButton = null;
+    });
+    jQuery('#editable .examplecontent').append(saveButton);
+    saveButton.show('blind');
+  });
+});
+  v.load({element: '#editable'}).using('rdfa').execute();
+                            </textarea>
+                            <button>Run</button> 
+                         </div>
+                    </div>
                     <h3><a href="#">Get enhancements for element content</a></h3>
                     <div id="analyze">
                         <p>Given the following contents:</p>

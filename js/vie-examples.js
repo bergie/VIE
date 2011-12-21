@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
             return true;
         }
 
-        jQuery('#' + feature + ' button').button().click(function() {
+        jQuery('#' + feature + ' .exampleholder button').button().click(function() {
             jQuery('#' + feature + ' .resultsholder').empty();
             eval(jQuery('#' + feature + ' textarea').val()); 
         });

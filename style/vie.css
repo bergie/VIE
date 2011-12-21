@@ -94,7 +94,7 @@ article textarea {
     border: none;
 }
 
-article button {
+article .exampleholder button {
     position: absolute;
     right: 0px;
     top: 0px;
