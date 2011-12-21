@@ -95,7 +95,11 @@
             <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
         <span class="p">}</span>
         <span class="kd">var</span> <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Entity</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
-        <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">);</span>
+        <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">updateOptions</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">_registerEntityView</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">,</span> <span class="nx">element</span><span class="p">);</span>
         <span class="k">return</span> <span class="nx">entityInstance</span><span class="p">;</span>
     <span class="p">},</span>
@@ -255,6 +259,7 @@ looking for the <code>&lt;base&gt;</code> element inside HTML head.</p>         
     
     <span class="nx">getElementPredicate</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">predicate</span><span class="p">;</span>
+        <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
         <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">predicate</span><span class="p">)</span> <span class="p">{</span>
             <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">);</span>

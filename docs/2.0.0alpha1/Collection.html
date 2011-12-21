@@ -19,13 +19,15 @@
         <span class="p">}</span>
     <span class="p">},</span>
 
-    <span class="nx">addOrUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">addOrUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span> <span class="o">||</span> <span class="p">(</span><span class="nx">options</span> <span class="o">=</span> <span class="p">{});</span>
+
         <span class="kd">var</span> <span class="nx">collection</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
         <span class="kd">var</span> <span class="nx">existing</span><span class="p">;</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">model</span><span class="p">))</span> <span class="p">{</span>
             <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">[];</span>
             <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nx">entities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">collection</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">item</span><span class="p">));</span>
+                <span class="nx">entities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">collection</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">item</span><span class="p">,</span> <span class="nx">options</span><span class="p">));</span>
             <span class="p">});</span>
             <span class="k">return</span> <span class="nx">entities</span><span class="p">;</span>
         <span class="p">}</span>
@@ -67,12 +69,11 @@ not just overwrite 'em!!</p>             </td>             <td class="code">    
             <span class="p">});</span>
 
             <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span><span class="nx">newAttribs</span><span class="p">))</span> <span class="p">{</span>
-                <span class="nx">existing</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">newAttribs</span><span class="p">);</span>
+                <span class="nx">existing</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">newAttribs</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">updateOptions</span><span class="p">);</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="nx">existing</span><span class="p">;</span>
         <span class="p">}</span>
-
-        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">addOptions</span><span class="p">);</span>
         <span class="k">return</span> <span class="nx">model</span><span class="p">;</span>
     <span class="p">},</span>
 
