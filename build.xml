@@ -14,7 +14,7 @@
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
 
-    <target name="doc" depends="dist" description="Generates documentation for vie.js with Docco ">
+    <target name="doc" depends="distAll" description="Generates documentation for vie.js with Docco ">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
         <echo message="get it from: http://jashkenas.github.com/docco/"/>
@@ -81,7 +81,7 @@
 		</exec>
     </target>
 	
-	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
+	<target name="test_copy" depends="distAll" description="Copies browser-tests into gh-pages branch ">
 		<echo message="Move tests temporarily"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
@@ -190,8 +190,8 @@
 	            <!-- Internet Explorer specific jQuery Ajax transport handler -->
 	            <fileset dir="${SRC_DIR}" includes="xdr.js"/>
 	        </concat>
-	        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="^" replace="(function(){" />
-	        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="$" replace="})();" />
+	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" match="^" replace="(function(){" />
+	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" match="$" replace="})();" />
 	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" tofile="${DIST_DIR}/vie-latest-ALL.debug.js" overwrite="true" />
 	    </target>
 	
