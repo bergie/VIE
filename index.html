@@ -38,36 +38,36 @@ Until September 2008, European policy measures were limited to a small number of
                             <textarea>
 var v = new VIE();
 v.use(
-    new v.StanbolService({
-        url: "http://dev.iks-project.eu/stanbolfull",
-        proxyDisabled: true
-    })
+  new v.StanbolService({
+    url: "http://dev.iks-project.eu/stanbolfull",
+    proxyDisabled: true
+  })
 );
 v.analyze({
-    element: jQuery('#analyze blockquote')
+  element: jQuery('#analyze blockquote')
 }).using('stanbol').execute().done(function(entities) {
-    jQuery('#analyze .resultsholder').append(
-        jQuery('<p>We found ' + entities.length + ' entities, including:</p>')
-    );
-    _.each(entities, function(entity) {
-        if (!entity.has('http://www.w3.org/2000/01/rdf-schema#label')) {
-            return true;
-        }
+  jQuery('#analyze .resultsholder').append(
+    jQuery('<p>We found ' + entities.length + ' entities, including:</p>')
+  );
+  _.each(entities, function(entity) {
+    if (!entity.has('http://www.w3.org/2000/01/rdf-schema#label')) {
+      return true;
+    }
 
-        var url = entity.id.substr(1, entity.id.length - 2);
-        var label;
-        _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
-            if (labelLang.substr(-2) === 'en') {
-                label = labelLang.substr(2, labelLang.length - 7);
-            }
-        });
-        if (!label) {
-            return true;
-        }
-        jQuery('#analyze .resultsholder').append(
-            jQuery('<a href="' + url + '">' + label + '</a>')
-        );
+    var url = entity.getSubjectUri();
+    var label;
+    _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
+       if (labelLang.substr(-2) === 'en') {
+         label = labelLang.substr(2, labelLang.length - 7);
+       }
     });
+    if (!label) {
+      return true;
+    }
+    jQuery('#analyze .resultsholder').append(
+      jQuery('<a href="' + url + '">' + label + '</a>')
+    );
+  });
 });
                             
                             </textarea>
@@ -84,24 +84,24 @@ var eiffel = "http://dbpedia.org/resource/Eiffel_Tower";
 var heightByYear = '<http://dbpedia.org/property/years>';
 var v = new VIE();
 v.use(
-    new v.DBPediaService()
+  new v.DBPediaService()
 );
 v.load({
-    entity : eiffel
+  entity : eiffel
 }).using("dbpedia").execute().done(function (a) {
-    _.each(a, function (entity, key) { 
-        if (entity.id !== '<' + eiffel + '>') {
-            return true; 
-        }
-        var height = {
-            year: entity.get(heightByYear)[1],
-            height: entity.get(heightByYear)[0],
-            }
-        height.height = height.height.substr(2, 7);
-        jQuery('#towerheight .resultsholder').append(
-            jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
-        );
-    });
+  _.each(a, function (entity, key) { 
+    if (entity.id !== '<' + eiffel + '>') {
+      return true; 
+    }
+    var height = {
+      year: entity.get(heightByYear)[1],
+      height: entity.get(heightByYear)[0],
+    };
+    height.height = height.height.substr(2, 7);
+    jQuery('#towerheight .resultsholder').append(
+      jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
+    );
+  });
 });
                             </textarea>
                             <button>Run</button>
@@ -125,33 +125,33 @@ vie
 .using('dbpedia')
 .execute()
 .done(function (entities) {
-    _.each(entities, function (e) {
-        if (e.id === mongoliaURI) {
-            var capitalURI = e.get(capitalPropURI);
-            vie
-            .load({entity : capitalURI})
-            .using('dbpedia')
-            .execute()
-            .done(function(capitalEntities) {
-                _.each(capitalEntities, function(entity) {
-                    if (entity.id != capitalURI) {
-                        return true;
-                    }
-                    var url = entity.id.substr(1, entity.id.length - 2);
-                    var label;
-                    _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
-                        if (labelLang.substr(-2) === 'en') {
-                            label = labelLang.substr(2, labelLang.length - 7);
-                        }
-                    });
+  _.each(entities, function (e) {
+    if (e.id === mongoliaURI) {
+      var capitalURI = e.get(capitalPropURI);
+      vie
+      .load({entity : capitalURI})
+      .using('dbpedia')
+      .execute()
+      .done(function(capitalEntities) {
+        _.each(capitalEntities, function(entity) {
+          if (entity.id != capitalURI) {
+            return true;
+          }
+          var url = entity.getSubjectUri();
+          var label;
+          _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
+            if (labelLang.substr(-2) === 'en') {
+              label = labelLang.substr(2, labelLang.length - 7);
+            }
+          });
 
-                    jQuery('#mongolia .resultsholder').append(
-                        jQuery('<p>The capital of Mongolia is <a href="' + url + '">' + label + '</a>.</p>')
-                    );
-                });
-            });
-        }
-   });
+          var capitalString = jQuery('<p>The capital of Mongolia is <a href="' + url + '">' + label + '</a>.</p>');
+ 
+          jQuery('#mongolia .resultsholder').append(capitalString);
+        });
+      });
+    }
+  });
 });
                         </textarea>
                         <button>Run</button>
