@@ -267,6 +267,7 @@ VIE.prototype.RdfaService.prototype = {
     
     getElementPredicate : function(element) {
         var predicate;
+        element = jQuery(element);
         predicate = element.attr('property');
         if (!predicate) {
             predicate = element.attr('rel');
