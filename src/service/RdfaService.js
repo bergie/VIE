@@ -99,7 +99,11 @@ VIE.prototype.RdfaService.prototype = {
             entity['@type'] = type;
         }
         var entityInstance = new this.vie.Entity(entity);
-        entityInstance = this.vie.entities.addOrUpdate(entityInstance);
+        entityInstance = this.vie.entities.addOrUpdate(entityInstance, {
+          updateOptions: {
+            silent: true
+          }
+        });
         this._registerEntityView(entityInstance, element);
         return entityInstance;
     },
@@ -267,6 +271,7 @@ VIE.prototype.RdfaService.prototype = {
     
     getElementPredicate : function(element) {
         var predicate;
+        element = jQuery(element);
         predicate = element.attr('property');
         if (!predicate) {
             predicate = element.attr('rel');
