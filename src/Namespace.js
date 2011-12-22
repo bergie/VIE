@@ -340,7 +340,7 @@ VIE.prototype.Namespaces.prototype.removeNamespace = function (namespace) {
 // array representation. The base namespace is given an empty
 // string as key.  
 // **Parameters**:  
-// *nothing*  
+// *{boolean}* **omitBase** If set to ```true``` this omits the baseNamespace.  
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
@@ -352,7 +352,12 @@ VIE.prototype.Namespaces.prototype.removeNamespace = function (namespace) {
 //     console.log(namespaces.toObj()); 
 //     // <-- {""    : "http://base.ns/", 
 //             "test": "http://test.ns"}
-VIE.prototype.Namespaces.prototype.toObj = function () {
+//     console.log(namespaces.toObj(true)); 
+//     // <-- {"test": "http://test.ns"}
+VIE.prototype.Namespaces.prototype.toObj = function (omitBase) {
+    if (omitBase) {
+        return jQuery.extend({}, this._namespaces);
+    }
     return jQuery.extend({'' : this._base}, this._namespaces);
 };
 

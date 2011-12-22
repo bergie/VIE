@@ -67,7 +67,7 @@ VIE.Util = {
         var delim = ":";
         for (var k in namespaces.toObj()) {
             if (uri.indexOf(namespaces.get(k)) === 1) {
-                var pattern = new RegExp("^" + "<" + namespaces.get(k));
+                var pattern = new RegExp("^" + "<?" + namespaces.get(k));
                 if (k === '') {
                     delim = '';
                 }
@@ -204,6 +204,7 @@ VIE.Util = {
         }
         var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
 
+        rdf.base(service.vie.namespaces.base());
         /* if the service contains rules to apply special transformation, they are executed here.*/
         if (service.rules) {
             var rules = jQuery.rdf.ruleset();
@@ -224,21 +225,21 @@ VIE.Util = {
             if (!entities[subject]) {
                 entities[subject] = {
                     '@subject': subject,
-                    '@context': service.vie.namespaces.toObj(),
+                    '@context': service.vie.namespaces.toObj(true),
                     '@type': []
                 };
             }
             var propertyUri = this.property.toString();
             var propertyCurie;
 
-            propertyUri = propertyUri.substring(1, propertyUri.length - 1);
             try {
-                property = jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj()});
+                propertyCurie = service.vie.namespaces.curie(propertyUri);
+                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
             } catch (e) {
-                property = propertyUri;
+                propertyCurie = propertyUri;
                 console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
             }
-            entities[subject][property] = entities[subject][property] || [];
+            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
 
             function getValue(rdfQueryLiteral){
                 if(typeof rdfQueryLiteral.value === "string"){
@@ -253,7 +254,7 @@ VIE.Util = {
                     return rdfQueryLiteral.value;
                 }
             }
-            entities[subject][property].push(getValue(this.object));
+            entities[subject][propertyCurie].push(getValue(this.object));
         });
 
         _(entities).each(function(ent){
