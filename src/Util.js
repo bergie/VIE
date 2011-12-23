@@ -381,16 +381,16 @@ VIE.Util = {
     
 // ### VIE.Util.transformationRules(service)
 // This returns a default set of rdfQuery rules that transform semantic data into the
-// VIE entity types.
+// VIE entity types.  
 // **Parameters**:  
-// *{object}* **service** An instance of a vie.service.
-// **Throws**:  
-// *nothing*
-// **Returns**:  
+// *{object}* **service** An instance of a vie.service.  
+// **Throws**: 
+// *nothing*..  
+// **Returns**: 
 // *{array}* An array of rules with 'left' and 'right' side.
     transformationRules : function (service) {
         return [
-            /* rule(s) to transform a dbpedia:Person into a VIE:Person */
+            // rule(s) to transform a dbpedia:Person into a VIE:Person
              {
                 'left' : [
                     '?subject a dbpedia:Person',
@@ -413,7 +413,7 @@ VIE.Util = {
                      };
                  }(service.vie.namespaces)
              },
-             /* rule(s) to transform a foaf:Person into a VIE:Person */
+             // rule(s) to transform a foaf:Person into a VIE:Person
              {
              'left' : [
                      '?subject a foaf:Person',
@@ -436,7 +436,7 @@ VIE.Util = {
                       };
                   }(service.vie.namespaces)
               },
-             /* rule(s) to transform a dbpedia:Place into a VIE:Place */
+             // rule(s) to transform a dbpedia:Place into a VIE:Place
              {
                  'left' : [
                      '?subject a dbpedia:Place',
@@ -459,7 +459,7 @@ VIE.Util = {
                       };
                   }(service.vie.namespaces)
               },
-             /* rule(s) to transform a dbpedia:City into a VIE:City */
+             // rule(s) to transform a dbpedia:City into a VIE:City
               {
                  'left' : [
                      '?subject a dbpedia:City',
@@ -497,3 +497,4 @@ VIE.Util = {
         ];
     }
 };
+
