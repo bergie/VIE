@@ -11,32 +11,6 @@
 // The here-listed methods are utility methods for the day-to-day 
 // VIE.js usage. All methods are within the static namespace ```VIE.Util```.
 VIE.Util = {
-    
-// ### VIE.Util.unduplicate(arr)
-// This is a method which removes duplicates from an array.
-//This methods leaves the original array untouched and returns a copy with no duplicates.  
-// **Parameters**:  
-// *{array}* **arr** The array where the duplicates should be removed from.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{array}* : A **new** array, containing unique entries of the given array. **!Attention!**:
-// The order of the returned array might differ from the input array.  
-// **Example usage**:  
-//
-//     var arr = ["a", "a", "b" , "c", "d", "c", "e", "a"];
-//     console.log(VIE.Util.unduplicate(arr).join(" "));
-//         // --> "a b c d e"
-    unduplicate : function (arr) {
-        var sorted_arr = arr.sort();
-        var results = [];
-        for (var i = 0; i < sorted_arr.length; i++) {
-            if (i === sorted_arr.length-1 || sorted_arr[i] !== sorted_arr[i+1]) {
-                results.push(sorted_arr[i]);
-            }
-        }
-        return results;
-    },
 
 // ### VIE.Util.toCurie(uri, safe, namespaces)
 // This method converts a given 
