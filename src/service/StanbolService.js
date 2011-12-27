@@ -351,7 +351,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _analyzeNode: function(url, text, success, error, options, format) {
+    _analyzeNode: function(url, text, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "POST",
@@ -361,7 +361,11 @@ VIE.prototype.StanbolConnector.prototype = {
                 Accept: format
             }
         }, function(error, response, body) {
-            success({results: JSON.parse(body)});
+            try {
+                success({results: JSON.parse(body)});
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
     },
@@ -424,7 +428,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _loadNode: function (uri, success, error, options, format) {
+    _loadNode: function (uri, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "GET",
@@ -433,7 +437,11 @@ VIE.prototype.StanbolConnector.prototype = {
                 Accept: format
             }
         }, function(error, response, body) {
-            success(JSON.parse(body));
+            try {
+                success(JSON.parse(body));
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
         
@@ -507,7 +515,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _findNode: function (uri, term, limit, offset, success, error, options, format) {
+    _findNode: function (uri, term, limit, offset, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "POST",
@@ -517,7 +525,11 @@ VIE.prototype.StanbolConnector.prototype = {
             },
             body : "name=" + term + "&limit=" + limit + "&offset=" + offset
         }, function(error, response, body) {
-            success(JSON.parse(body));
+            try {
+                success(JSON.parse(body));
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
         
