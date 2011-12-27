@@ -1,4 +1,7 @@
-// Based on https://github.com/jaubourg/ajaxHooks/blob/master/src/ajax/xdr.js written by Julian Aubourg
+// Based on [Julian Aubourg's xdr.js](https://github.com/jaubourg/ajaxHooks/blob/master/src/ajax/xdr.js)  
+// Internet Explorer 8 & 9 don't support the cross-domain request protocol known as CORS. 
+// Their solution we use is called XDomainRequest. This module is a wrapper for 
+// XDR using jQuery ajaxTransport, jQuery's way to support such cases.
 // Author: Szaby Grünwald @ Salzburg Research, 2011
 var root = this;
 (function( jQuery ) {
@@ -29,6 +32,8 @@ if ( root.XDomainRequest ) {
 					xdr.onload = function(e1, e2) {
 						callback( 200, "OK", { text: xdr.responseText }, "Content-Type: " + xdr.contentType );
 					};
+					// XDR cannot differentiate between errors, 
+					// we call every error 404. Could be changed to another one.
 					xdr.onerror = function(e) {
 					    console.error(JSON.stringify(e));
 						callback( 404, "Not Found" );

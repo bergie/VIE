@@ -7,48 +7,72 @@
 //     http://viejs.org/
 
 // ## VIE.Able
-// VIE implements ...
-// This is implemented via the <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred object</a>. 
+// VIE implements asynchronius service methods through
+// [jQuery.Deferred](http://api.jquery.com/category/deferred-object/) objects.
+// Loadable, Analysable, Savable, etc. are part of the VIE service API and 
+// are implemented with the generic VIE.Able class.
+// Example:
+//
+//      VIE.prototype.Loadable = function (options) {
+//          this.init(options,"load");
+//      };
+//      VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
+//
+// This defines 
+//
+//     someVIEService.load(options)
+//     .using(...)
+//     .execute()
+//     .success(...)
+//     .fail(...)
+// which will run the asynchronius `load` function of the service with the created Loadable
+// object.
 
-// ### VIE.Type(id, attrs)
+// ### VIE.Able()
 // This is the constructor of a VIE.Able. This should not be called
 // globally but using the inherited classes below.  
-// **Parameters**:  
+// **Parameters**: 
 // *nothing*  
-// **Throws**:  
+// **Throws**: 
 // *nothing*  
-// **Returns**:  
-// *{VIE.Able}* : A **new** VIE.Able object.  
-// **Example usage**:  
+// **Returns**: 
+// *{VIE.Able}* : A **new** VIE.Able object. 
+// Example:
 //
-//     var able = new Able();
+//      VIE.prototype.Loadable = function (options) {
+//          this.init(options,"load");
+//      };
+//      VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
 VIE.prototype.Able = function(){
 
 // ### init(options, methodName)
-// This method is called during initialization.  
+// Internal method, called during initialization.
 // **Parameters**:  
-// *{object}* **options** ...  
-// *{string}* **methodName** ...  
+// *{object}* **options** the *able* options coming from the API call
+// *{string}* **methodName** the service method called on `.execute`.
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
 // *{VIE.Able}* : The current instance.  
 // **Example usage**:  
 //
-//     var able = new vie.Able().init();
-//     able.using("stanbol");
+//      VIE.prototype.Loadable = function (options) {
+//          this.init(options,"load");
+//      };
+//      VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
     this.init = function(options, methodName) {
         this.options = options;
         this.services = options.from || options.using || options.to || [];
         this.vie = options.vie;
-        
+
         this.methodName = methodName;
-    
+
+        // Instantiate the deferred object
         this.deferred = jQuery.Deferred();
-    
+
 // In order to get more information and documentation about the passed-through
 // deferred methods and their synonyms, please see the documentation of 
-// the <a href="http://api.jquery.com/category/deferred-object/">jQuery.Deferred object</a>.
+// the [jQuery.Deferred object](http://api.jquery.com/category/deferred-object/)
         /* Public deferred-methods */
         this.resolve = this.deferred.resolve;
         this.resolveWith = this.deferred.resolveWith;
@@ -60,11 +84,11 @@ VIE.prototype.Able = function(){
         this.always = this.deferred.always;
         this.from = this.using;
         this.to = this.using;
-        
+
         return this;
     };
-    
-    
+
+
 // ### using(services)
 // This method registers services with the current able instance.  
 // **Parameters**:  
@@ -75,8 +99,8 @@ VIE.prototype.Able = function(){
 // *{VIE.Able}* : The current instance.  
 // **Example usage**:  
 //
-//     var able = new vie.Able();
-//     able.using("stanbol");
+//     var loadable = vie.load({id: "http://example.com/entity/1234"});
+//     able.using("myService");
     this.using = function(services) {
         var self = this;
         services = (_.isArray(services))? services : [ services ];
@@ -121,7 +145,8 @@ VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
 
 // ## VIE.Savable
 // A ```VIE.Savable``` is a wrapper around the deferred object
-// to **save** semantic data to a semantic web service.
+// to **save** entities by a VIE service. The RDFaService would write the data
+// in the HTML as RDFa, the StanbolService stores the data in its Entityhub, etc.
 VIE.prototype.Savable = function(options){
     this.init(options, "save");
 };
@@ -146,7 +171,7 @@ VIE.prototype.Analyzable.prototype = new VIE.prototype.Able();
 
 // ## VIE.Findable
 // A ```VIE.Findable``` is a wrapper around the deferred object
-// to **find** semantic data on a semantic web service.
+// to **find** semantic data on a semantic storage.
 VIE.prototype.Findable = function (options) {
     this.init(options, "find");
 };
