@@ -138,7 +138,9 @@ stnblService.init();
 <strong>Example usage</strong>:  </p>
 
 <pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
-stnblService.analyzable(new vie.Analyzable({element : jQuery("#foo")}));
+stnblService.analyzable(
+    new vie.Analyzable({element : jQuery("#foo")})
+);
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">analyze</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">analyzable</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
 
@@ -180,7 +182,11 @@ stnblService.analyzable(new vie.Analyzable({element : jQuery("#foo")}));
 <strong>Example usage</strong>:  </p>
 
 <pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
-stnblService.load(new vie.Findable({term : "Bischofsh", limit : 10, offset: 0}));
+stnblService.load(new vie.Findable({
+    term : "Bischofsh", 
+    limit : 10, 
+    offset: 0
+}));
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">find</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">findable</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">findable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Findable</span><span class="p">;</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Findable passed&quot;</span><span class="p">;}</span>
@@ -215,7 +221,9 @@ stnblService.load(new vie.Findable({term : "Bischofsh", limit : 10, offset: 0}))
 <strong>Example usage</strong>:  </p>
 
 <pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
-stnblService.load(new vie.Loadable({entity : "&lt;http://...&gt;"}));
+stnblService.load(new vie.Loadable({
+    entity : "&lt;http://...&gt;"
+}));
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">loadable</span><span class="p">){</span>
         <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">loadable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">;</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Loadable passed&quot;</span><span class="p">;}</span>
@@ -236,10 +244,7 @@ stnblService.load(new vie.Loadable({entity : "&lt;http://...&gt;"}));
             <span class="nx">loadable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
         <span class="p">};</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">connector</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
-    <span class="p">},</span>
-
-    <span class="cm">/* this private method extracts text from a jQuery element */</span>
-    <span class="nx">_extractText</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>this private method extracts text from a jQuery element</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">_extractText</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
             <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">&amp;&amp;</span>
             <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;TEXTAREA&#39;</span> <span class="o">||</span>
@@ -254,10 +259,10 @@ stnblService.load(new vie.Loadable({entity : "&lt;http://...&gt;"}));
             <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2>VIE.StanbolConnector(options)</h2>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h2>VIE.StanbolConnector(options)</h2>
 
-<p>The StanbolConnector is the connection between the Apache Stanbol service
-and the backend service. <br />
+<p>The StanbolConnector is the connection between the VIE Stanbol service
+and the actual ajax calls. <br />
 <strong>Parameters</strong>: <br />
 <em>{object}</em> <strong>options</strong> The options. <br />
 <strong>Throws</strong>: <br />
@@ -277,7 +282,7 @@ and the backend service. <br />
     <span class="cm">/*TODO: this.factstoreUrlPrefix = &quot;/factstore&quot;; */</span>
 <span class="p">};</span>
 
-<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolConnector</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>analyze(text, success, error, options)</h3>
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolConnector</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>analyze(text, success, error, options)</h3>
 
 <p>This method sends the given text to Apache Stanbol returns the result by the success callback. <br />
 <strong>Parameters</strong>: <br />
@@ -336,7 +341,7 @@ stnblConn.analyze("This is some text.",
         <span class="p">});</span>
     <span class="p">},</span>
 
-    <span class="nx">_analyzeNode</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_analyzeNode</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">errorCB</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
         <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
             <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
@@ -346,10 +351,14 @@ stnblConn.analyze("This is some text.",
                 <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
             <span class="p">}</span>
         <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">success</span><span class="p">({</span><span class="nx">results</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">)});</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">success</span><span class="p">({</span><span class="nx">results</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">)});</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">errorCB</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+            <span class="p">}</span>
         <span class="p">});</span>
         <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
-    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>load(uri, success, error, options)</h3>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>load(uri, success, error, options)</h3>
 
 <p>This method loads all properties from an entity and returns the result by the success callback. <br />
 <strong>Parameters</strong>: <br />
@@ -408,7 +417,7 @@ stnblConn.load("&lt;http://dbpedia.org/resource/Barack_Obama&gt;",
         <span class="p">});</span>
     <span class="p">},</span>
 
-    <span class="nx">_loadNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_loadNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">errorCB</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
         <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
             <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
@@ -417,12 +426,16 @@ stnblConn.load("&lt;http://dbpedia.org/resource/Barack_Obama&gt;",
                 <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
             <span class="p">}</span>
         <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">errorCB</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+            <span class="p">}</span>
         <span class="p">});</span>
         <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
         
         <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>find(term, limit, offset, success, error, options)</h3>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3>find(term, limit, offset, success, error, options)</h3>
 
 <p>This method finds entities given the term from the entity hub and returns the result by the success callback. <br />
 <strong>Parameters</strong>: <br />
@@ -490,7 +503,7 @@ stnblConn.find("Bishofsh", 10, 0,
         <span class="p">});</span>
     <span class="p">},</span>
 
-    <span class="nx">_findNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_findNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">errorCB</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
         <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
             <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
@@ -500,7 +513,11 @@ stnblConn.find("Bishofsh", 10, 0,
             <span class="p">},</span>
             <span class="nx">body</span> <span class="o">:</span> <span class="s2">&quot;name=&quot;</span> <span class="o">+</span> <span class="nx">term</span> <span class="o">+</span> <span class="s2">&quot;&amp;limit=&quot;</span> <span class="o">+</span> <span class="nx">limit</span> <span class="o">+</span> <span class="s2">&quot;&amp;offset=&quot;</span> <span class="o">+</span> <span class="nx">offset</span>
         <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">errorCB</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+            <span class="p">}</span>
         <span class="p">});</span>
         <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
         

@@ -267,7 +267,7 @@ instance of a <code>VIE.Attribute</code>. <br />
                             <span class="k">delete</span> <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
                         <span class="p">}</span>
                         <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">],</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">range</span><span class="p">);</span>
-                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">unduplicate</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]);</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">}</span>
