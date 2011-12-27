@@ -57,6 +57,7 @@ var root = this,
 var VIE = root.VIE = function(config) {
     this.config = (config) ? config : {};
     this.services = {};
+    this.jQuery = jQuery;
     this.entities = new this.Collection();
 
     this.Entity.prototype.entities = this.entities;
