@@ -113,7 +113,7 @@ VIE.prototype.StanbolService.prototype = {
             this.vie.namespaces.add(key, val);
         }
         
-        this.rules = jQuery.merge([], VIE.Util.transformationRules(this));
+        this.rules = jQuery.extend([], VIE.Util.transformationRules(this));
         this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
         
         this.connector = new this.vie.StanbolConnector(this.options);
