@@ -323,10 +323,11 @@ VIE.prototype.StanbolConnector.prototype = {
         var format = options.format || "application/rdf+json";
         
         var retryErrorCb = function (c, t, s, e, o) {
-            /* in case an backend of Stanbol is not responding and
+            /* in case a Stanbol backend is not responding and
              * multiple URLs have been registered
              */
             return  function () {
+                console.error("Stanbol connection error", arguments);
                 c.analyze(t, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
             };
         }(this, text, success, error, options);
