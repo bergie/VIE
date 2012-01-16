@@ -32,7 +32,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             return;
         }
 
-        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.template));
+        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.template, entity));
         var entityElement = entityView.render().el;
         if (entity.id) {
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);
@@ -62,7 +62,6 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         if (!element) {
             return;
         }
-
         var entityView = this.service._registerEntityView(entity, element);
         this.entityViews[entity.cid] = entityView;
     },
@@ -85,16 +84,20 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         });
     },
 
-    cloneElement: function(element) {
+    cloneElement: function(element, entity) {
         var newElement = jQuery(element).clone(false);
         var service = this.service;
-        if (typeof newElement.attr('about') !== 'undefined') {
+        if (newElement.attr('about') !== undefined) {
             // Direct match with container
             newElement.attr('about', '');
         }
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
         service._findPredicateElements(subject, newElement, false).each(function() {
+            var predicate = service.getElementPredicate(jQuery(this));
+            if (entity.get(predicate) && entity.get(predicate).isCollection) {
+              return true;
+            }
             service.writeElementValue(null, jQuery(this), '');
         });
         return newElement;

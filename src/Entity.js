@@ -101,6 +101,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
             }, this);
             _.each (attrs, function (value, key) {
+               if (!value) { return; }
                if (key.indexOf('@') === -1) {
                    if (typeof value === "object" &&
                        !jQuery.isArray(value) &&

@@ -141,7 +141,9 @@ VIE.prototype.StanbolService.prototype = {
 // **Example usage**:  
 //
 //     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.analyzable(new vie.Analyzable({element : jQuery("#foo")}));
+//     stnblService.analyzable(
+//         new vie.Analyzable({element : jQuery("#foo")})
+//     );
     analyze: function(analyzable) {
         var service = this;
 
@@ -184,7 +186,11 @@ VIE.prototype.StanbolService.prototype = {
 // **Example usage**:  
 //
 //     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.load(new vie.Findable({term : "Bischofsh", limit : 10, offset: 0}));
+//     stnblService.load(new vie.Findable({
+//         term : "Bischofsh", 
+//         limit : 10, 
+//         offset: 0
+//     }));
     find: function (findable) {
         var correct = findable instanceof this.vie.Findable;
         if (!correct) {throw "Invalid Findable passed";}
@@ -220,7 +226,9 @@ VIE.prototype.StanbolService.prototype = {
 // **Example usage**:  
 //
 //     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.load(new vie.Loadable({entity : "<http://...>"}));
+//     stnblService.load(new vie.Loadable({
+//         entity : "<http://...>"
+//     }));
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
@@ -243,7 +251,7 @@ VIE.prototype.StanbolService.prototype = {
         this.connector.load(entity, success, error);
     },
 
-    /* this private method extracts text from a jQuery element */
+    // this private method extracts text from a jQuery element
     _extractText: function (element) {
         if (element.get(0) &&
             element.get(0).tagName &&
@@ -262,8 +270,8 @@ VIE.prototype.StanbolService.prototype = {
 };
 
 // ## VIE.StanbolConnector(options)
-// The StanbolConnector is the connection between the Apache Stanbol service
-// and the backend service.  
+// The StanbolConnector is the connection between the VIE Stanbol service
+// and the actual ajax calls.  
 // **Parameters**:  
 // *{object}* **options** The options.  
 // **Throws**:  
@@ -343,7 +351,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _analyzeNode: function(url, text, success, error, options, format) {
+    _analyzeNode: function(url, text, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "POST",
@@ -353,7 +361,11 @@ VIE.prototype.StanbolConnector.prototype = {
                 Accept: format
             }
         }, function(error, response, body) {
-            success({results: JSON.parse(body)});
+            try {
+                success({results: JSON.parse(body)});
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
     },
@@ -416,7 +428,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _loadNode: function (uri, success, error, options, format) {
+    _loadNode: function (uri, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "GET",
@@ -425,7 +437,11 @@ VIE.prototype.StanbolConnector.prototype = {
                 Accept: format
             }
         }, function(error, response, body) {
-            success(JSON.parse(body));
+            try {
+                success(JSON.parse(body));
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
         
@@ -499,7 +515,7 @@ VIE.prototype.StanbolConnector.prototype = {
         });
     },
 
-    _findNode: function (uri, term, limit, offset, success, error, options, format) {
+    _findNode: function (uri, term, limit, offset, success, errorCB, options, format) {
         var request = require('request');
         var r = request({
             method: "POST",
@@ -509,7 +525,11 @@ VIE.prototype.StanbolConnector.prototype = {
             },
             body : "name=" + term + "&limit=" + limit + "&offset=" + offset
         }, function(error, response, body) {
-            success(JSON.parse(body));
+            try {
+                success(JSON.parse(body));
+            } catch (e) {
+                errorCB(e);
+            }
         });
         r.end();
         
