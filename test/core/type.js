@@ -209,7 +209,7 @@ test("VIE - Type Sorting", function () {
     ok(sortedArrayDesc2);
     
     var test = function (arr) {
-        for (var i = 0; i < arr.length-1; i++) {
+        for (var i = 0; i < arr.length; i++) {
             for (var j = 0; j < i-1; j++) {
                 if (v.types.get(arr[i]).subsumes(arr[j]))
                     return false;
