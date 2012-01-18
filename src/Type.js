@@ -389,6 +389,7 @@ VIE.prototype.Types = function () {
          * and prevents removing *owl:Thing*.
          */
         if (!t || t.subsumes("owl:Thing")) {
+            console.warn("You are not allowed to remove 'owl:Thing'.");
             return this;
         }
         delete this._types[t.id];

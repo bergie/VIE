@@ -130,11 +130,17 @@ test("VIE - Creation/Extension/Removal of types", function() {
     v.types.remove(veryspecialCreaturey);
     equal(v.types.list().length, 6);
     
+    //removes only that type
+    v.types.remove("SpecialCreatuery");
+    equal(v.types.list().length, 5);
+    
     //recursively removes all types
     v.types.remove(thingy);
     equal(v.types.list().length, 1);
     
-    
+    //you cannot remove owl:Thing
+    v.types.remove("owl:Thing");
+    equal(v.types.list().length, 1);
 });
 
 test("VIE - Instantiation of types", function() {

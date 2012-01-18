@@ -69,7 +69,8 @@ test("vie.js Entities API - addOrUpdate", function () {
     equal(z.entities.get("http://example.net/foo").get('dc:propertyB'), 'Some String');
 });
 
-test("vie.js Entities API - addOrUpdate", function () {
+
+test("vie.js Entities API - isof", function () {
     var z = new VIE();
     z.namespaces.add('example', 'http://example.net/foo/');
     z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
@@ -113,7 +114,102 @@ test("vie.js Entity API - setOrAdd", function () {
     equals(clapton.get('plays').length, 2);
 
     clapton.setOrAdd({'plays': 'vocals'});
-    equals(clapton.get('plays').length, 2, "Same value twice is the same value and mustn't be added twice.");
+    equals(clapton.get('plays').length, 3, "Same value twice is the same value and needs to be added twice.");
+});
+
+test("vie.js Entities API - set()", function () {
+    var z = new VIE();
+    z.namespaces.add('example', 'http://example.net/foo/');
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+    
+    var Person = z.types.add("foaf:Person").inherit(z.types.get('owl:Thing'));
+           
+    var madonna = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Madonna',
+        '@type': 'foaf:Person'
+    });
+    
+    /* literals */
+    
+    madonna.set({"name" : "Madonna"}); // set literal with object notation
+    equals(madonna.get("name"), "Madonna");
+    
+    madonna.unset("name");
+    equals(madonna.get("name"), undefined);
+    
+    madonna.set("name", "Madonna Louise Ciccone"); // set literal with simple notation
+    equals(madonna.get("name"), "Madonna Louise Ciccone");
+    madonna.unset("name");
+    
+    madonna.set("name", ["Madonna", "Madonna Louise Ciccone"]); // set mulitple literals at the same time
+    equals(madonna.get("name").length, 2);
+    madonna.unset("name");
+    
+    madonna.set("name", "Madonna");
+    madonna.set("name", "Madonna Louise Ciccone"); // overwrite existing literal
+    equals(madonna.get("name"), "Madonna Louise Ciccone");
+    madonna.unset("name");
+    
+    madonna.set("name", "Madonna");
+    madonna.set("name", ["Madonna", "Madonna Louise Ciccone"]); // overwrite existing literal
+    equals(madonna.get("name").length, 2);
+    madonna.unset("name");
+    
+    var britney = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Britney',
+        '@type': 'foaf:Person'
+    });
+    
+    madonna.set("knows", britney); // set an entity
+    ok(madonna.get("knows").isCollection);
+    equals(madonna.get("knows").size(), 1);
+    equals(madonna.get("knows").at(0).getSubject(), britney.getSubject());
+    
+    
+    var courtney = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Courtney',
+        '@type': 'foaf:Person'
+    });
+    
+    madonna.set("knows", courtney); // set another entity
+    ok(madonna.get("knows").isCollection);
+    equals(madonna.get("knows").size(), 1);
+    equals(madonna.get("knows").at(0).getSubject(), courtney.getSubject());
+    
+});
+
+test("vie.js Entities API - setOrUpdate with entities", function () {
+    var z = new VIE();
+    z.namespaces.add('example', 'http://example.net/foo/');
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+    
+    var Person = z.types.add("foaf:Person").inherit(z.types.get('owl:Thing'));
+           
+    var madonna = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Madonna',
+        '@type': 'foaf:Person'
+    });
+        
+    var britney = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Britney',
+        '@type': 'foaf:Person'
+    });
+    
+    var courtney = z.entities.addOrUpdate({
+        '@subject': 'http://example.net/Courtney',
+        '@type': 'foaf:Person'
+    });
+    
+    madonna.setOrAdd("knows", britney);
+    madonna.setOrAdd("knows", courtney);
+    
+    
+    var friends = madonna.get("knows");
+    equals(madonna.get("knows").size(), 2);
+    equals(madonna.get("knows").at(0).getSubject(), britney.getSubject());
+    equals(madonna.get("knows").at(1).getSubject(), courtney.getSubject());
+    ok(friends);
+    
 });
 
 test("vie.js Entity API - addTo", function () {

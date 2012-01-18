@@ -86,13 +86,21 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
-        set : function(attrs, options) {
+        set : function(attrs, options, opts) {
+            
             if (!attrs) {
                 return this;
+            }
+            
+            if (typeof attrs === "string") {
+                var obj = {};
+                obj[attrs] = options;
+                return this.set(obj, opts);
             }
             if (attrs.attributes) {
                 attrs = attrs.attributes;
             }
+            var self = this;
             _.each (attrs, function (value, key) {
                 var newKey = mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
@@ -103,10 +111,32 @@ VIE.prototype.Entity = function(attrs, opts) {
             _.each (attrs, function (value, key) {
                if (!value) { return; }
                if (key.indexOf('@') === -1) {
-                   if (typeof value === "object" &&
+                   if (value.isCollection) {
+                       // ignore
+                       value.each(function (child) {
+                           self.vie.entities.addOrUpdate(child);
+                       });
+                   } else if (value.isEntity) {
+                       self.vie.entities.addOrUpdate(value);
+                       var coll = new self.vie.Collection();
+                       coll.add(value);
+                       attrs[key] = coll;
+                   } else if (_.isArray(value)) {
+                       // ignore
+                   } else if (typeof value == "object") {
+                       var child = new self.vie.Entity(value, options);
+                       self.vie.entities.addOrUpdate(child);
+                       var coll = new self.vie.Collection();
+                       coll.add(value);
+                       attrs[key] = coll;
+                   } else {
+                       // ignore
+                   }
+                   /*if (typeof value === "object" &&
                        !jQuery.isArray(value) &&
                        !value.isCollection) {
-                       var child = new self.vie.Entity(value, options);
+                           //TODO: create collection!
+                       var child = (value.isEntity)? value : new self.vie.Entity(value, options);
                        self.vie.entities.addOrUpdate(child);
                        attrs[key] = child.getSubject();
                    } else if (value && value.isCollection) {
@@ -115,7 +145,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                            self.vie.entities.addOrUpdate(child);
                            //attrs[key].push(child.getSubject());
                        });
-                   }
+                   }*/
+                   
                }
             }, this);
             return Backbone.Model.prototype.set.call(this, attrs, options);
@@ -218,37 +249,103 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this;
         },
 
-        _setOrAddOne: function (attr, value) {
-            var obj;
-            attr = mapAttributeNS(attr, self.vie.namespaces);
-            var val = Backbone.Model.prototype.get.call(this, attr);
 
+        /* attr is always of type string */
+        /* value can be of type: undefined,string,int,double,object,array,VIE.Entity,VIE.Collection */
+       /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
+       
+        /* depending on the type of value and the type of val, different actions need to be made */
+        _setOrAddOne: function (attr, value) {
+            if (!attr || !value)
+                return;
+                
+            attr = mapAttributeNS(attr, self.vie.namespaces);
+            
+            if (_.isArray(value)) {
+                for (var v = 0; v < value.length; v++) {
+                    _setOrAddOne(attr, value[v]);
+                }
+                return;
+            }
+            
+            var obj = {};
+            var existing = Backbone.Model.prototype.get.call(this, attr);
+            
+            if (!existing) {
+                obj[attr] = value;
+                this.set(obj);
+            } else if (existing.isCollection) {
+                if (value.isCollection) {
+                    value.each(function (model) {
+                        existing.add(model);
+                    });
+                } else if (value.isEntity) {
+                    existing.add(value);
+                } else if (typeof value === "object") {
+                    value = new this.vie.Entity(value);
+                    existing.add(value);
+                } else {
+                    throw new Error("you cannot add a literal to a collection of entities!");
+                }
+                this.trigger('change:' + attr, this, value, {});
+                this.change({});
+            } else if (_.isArray(existing)) {
+                if (value.isCollection) {
+                    throw new Error("you cannot add a collection of entities to an array of literals!");
+                } else if (value.isEntity) {
+                    throw new Error("you cannot add an entity to an array of literals!");
+                } else if (typeof value === "object") {
+                    throw new Error("you cannot add an entity of entities to an array of literals!");
+                } else {
+                    existing.push(value);
+                    obj[attr] = existing;
+                    this.set(obj);
+                }
+            } else {
+                if (value.isCollection) {
+                    throw new Error("you cannot add a collection of entities to a literal!");
+                } else if (value.isEntity) {
+                    throw new Error("you cannot add an entity to a literal!");
+                } else if (typeof value === "object") {
+                    throw new Error("you cannot add an entity of entities to a literal!");
+                } else {
+                    /* yes, we allow multiple equal literals */
+                    var arr = [];
+                    arr.push(existing);
+                    arr.push(value);
+                    obj[attr] = arr;
+                    this.set(obj);
+                }
+            }
+            return;
+            
+            /*
             // No value yet, use the set method
-            if (!val) {
+            if (!existing) {
                 obj = {};
                 obj[attr] = value;
                 this.set(obj);
             }
             else {
-                if (!(val instanceof Array)) {
-                    val = [val];
+                if (!(existing instanceof Array)) {
+                    existing = [existing];
                 }
                 // Make sure not to set the same value twice
                 var contains = false;
-                for (var v = 0; v < val.length; v++) {
-                    if (typeof val[v] === "string") {
-                        contains |= val[v] == value;
+                for (var v = 0; v < existing.length; v++) {
+                    if (typeof existing[v] === "string") {
+                        contains |= existing[v] == value;
                     } else {
-                        contains |= val[v].id == value;
+                        contains |= existing[v].id == value;
                     }
                 }
                 if (!contains) {
-                    val.push(value);
+                    existing.push(value);
                     obj = {};
-                    obj[attr] = val;
+                    obj[attr] = existing;
                     this.set(obj);
                 }
-            }
+            }*/
         },
 
         hasType: function(type){
