@@ -49,6 +49,41 @@ test("vie.js Entities API", function () {
     equal(z.entities.at(0).has('dc:foo'), false);
     
     equal(z.entities.at(0).get('@type').id, z.types.get('owl:Thing').id);
+    
+});
+
+
+test("vie.js Entities API -  id/getSubject()", function () {
+    var z = new VIE();
+    z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
+    
+    var empty = new z.Entity();
+    ok(empty);
+    ok(empty.id);
+    ok(empty.id.substring(0, 2), "_:");
+    equal(empty.id, empty.getSubject());
+    equal(empty.get("@type").id, z.types.get("owl:Thing").id);
+
+    var e = new z.Entity({"@subject" : "owl:TestId"});
+    ok(e);
+    equal(e.id, e.getSubject());
+    equal(e.id, "<http://www.w3.org/2002/07/owl#TestId>");
+
+    var e = new z.Entity({"@subject" : "<http://www.w3.org/2002/07/owl#TestId>"});
+    ok(e);
+    equal(e.id, e.getSubject());
+    equal(e.id, "<http://www.w3.org/2002/07/owl#TestId>");
+    
+    var e = new z.Entity({"@subject" : "<TestId>"});
+    ok(e);
+    equal(e.id, e.getSubject());
+    equal(e.id, "<TestId>");
+    
+    var e = new z.Entity({"@subject" : "TestId"});
+    ok(e);
+    equal(e.id, e.getSubject());
+    equal(e.id, "<TestId>");
+    
 });
 
 test("vie.js Entities API - addOrUpdate", function () {

@@ -14,7 +14,6 @@ test("Test #1 (required): Predicate establishment with @property", function() {
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
         ok(entities);
         equal(entities.length, 1);
-
         equal(entities[0].id, '<photo1.jpg>');
         equal(entities[0].get('dc:creator'), 'Mark Birbeck');
         start();
