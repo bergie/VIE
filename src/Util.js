@@ -78,11 +78,15 @@ VIE.Util = {
 //     VIE.Util.isCurie(scurie, ns); // --> true
 //     VIE.Util.isCurie(text, ns);   // --> false
     isCurie : function (curie, namespaces) {
-        try {
-            VIE.Util.toUri(curie, namespaces);
-            return true;
-        } catch (e) {
+        if (VIE.Util.isUri(curie)) {
             return false;
+        } else {
+            try {
+                VIE.Util.toUri(curie, namespaces);
+                return true;
+            } catch (e) {
+                return false;
+            }
         }
     },
 
@@ -138,7 +142,7 @@ VIE.Util = {
 //     VIE.Util.isUri(uri);   // --> true
 //     VIE.Util.isUri(curie); // --> false
     isUri : function (something) {
-        return (typeof something === "string" && something.search(/^<.+:.+>$/) === 0);
+        return (typeof something === "string" && something.search(/^<.+>$/) === 0);
     },
     
     
