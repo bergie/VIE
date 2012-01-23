@@ -1,5 +1,8 @@
 VIE.prototype.Entity = function(attrs, opts) {
 
+    attrs = (attrs)? attrs : {};
+    opts = (opts)? opts : {};
+
     var self = this;
 
     var mapAttributeNS = function (attr, ns) {
@@ -40,7 +43,6 @@ VIE.prototype.Entity = function(attrs, opts) {
     //However, if we just overwrite `set()` and `get()`, this
     //raises a lot of side effects, so we need to expand
     //the attributes before we create the model.
-    attrs = (attrs) ? attrs : {};
     _.each (attrs, function (value, key) {
         var newKey = mapAttributeNS(key, this.namespaces);
         if (key !== newKey) {
@@ -55,6 +57,8 @@ VIE.prototype.Entity = function(attrs, opts) {
         initialize: function(attributes, options) {
             if (attributes['@subject']) {
                 this.id = this['@subject'] = this.toReference(attributes['@subject']);
+            } else {
+                this.id = this['@subject'] = attributes['@subject'] = this.cid.replace('c', '_:bnode');
             }
             return this;
         },
@@ -132,21 +136,6 @@ VIE.prototype.Entity = function(attrs, opts) {
                    } else {
                        // ignore
                    }
-                   /*if (typeof value === "object" &&
-                       !jQuery.isArray(value) &&
-                       !value.isCollection) {
-                           //TODO: create collection!
-                       var child = (value.isEntity)? value : new self.vie.Entity(value, options);
-                       self.vie.entities.addOrUpdate(child);
-                       attrs[key] = child.getSubject();
-                   } else if (value && value.isCollection) {
-                       //attrs[key] = [];
-                       value.each(function (child) {
-                           self.vie.entities.addOrUpdate(child);
-                           //attrs[key].push(child.getSubject());
-                       });
-                   }*/
-                   
                }
             }, this);
             return Backbone.Model.prototype.set.call(this, attrs, options);
@@ -174,29 +163,27 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this.fromReference(this.getSubject());
         },
 
-        isReference: function(uri){
-            var matcher = new RegExp("^\\<([^\\>]*)\\>$");
-            if (matcher.exec(uri)) {
-                return true;
-            }
-            return false;
-        },
-
         toReference: function(uri){
-            if (typeof uri !== "string") {
-                return uri;
+            var ns = this.vie.namespaces;
+            var ret = uri;
+            if (uri.substring(0, 2) === "_:") {
+                ret = uri;
             }
-            if (this.isReference(uri)) {
-                return uri;
+            else if (ns.isCurie(uri)) {
+                ret = ns.uri(uri);
+                if (ret === "<" + ns.base() + uri + ">") {
+                    /* no base namespace extension with IDs */
+                    ret = '<' + uri + '>';
+                }
+            } else if (!ns.isUri(uri)) {
+                ret = '<' + uri + '>';
             }
-            return '<' + uri + '>';
+            return ret;
         },
 
         fromReference: function(uri){
-            if (typeof uri !== "string") {
-                return uri;
-            }
-            if (!this.isReference(uri)) {
+            var ns = this.vie.namespaces;
+            if (!ns.isUri(uri)) {
                 return uri;
             }
             return uri.substring(1, uri.length - 1);
@@ -263,7 +250,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (_.isArray(value)) {
                 for (var v = 0; v < value.length; v++) {
-                    _setOrAddOne(attr, value[v]);
+                    this._setOrAddOne(attr, value[v]);
                 }
                 return;
             }
@@ -318,34 +305,6 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
             }
             return;
-            
-            /*
-            // No value yet, use the set method
-            if (!existing) {
-                obj = {};
-                obj[attr] = value;
-                this.set(obj);
-            }
-            else {
-                if (!(existing instanceof Array)) {
-                    existing = [existing];
-                }
-                // Make sure not to set the same value twice
-                var contains = false;
-                for (var v = 0; v < existing.length; v++) {
-                    if (typeof existing[v] === "string") {
-                        contains |= existing[v] == value;
-                    } else {
-                        contains |= existing[v].id == value;
-                    }
-                }
-                if (!contains) {
-                    existing.push(value);
-                    obj = {};
-                    obj[attr] = existing;
-                    this.set(obj);
-                }
-            }*/
         },
 
         hasType: function(type){

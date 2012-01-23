@@ -230,7 +230,6 @@ VIE.prototype.RdfaService.prototype = {
                 return true;
             }
             if (jQuery(this).attr('typeof') !== service.attributeExistenceComparator) {
-                subject = VIE.Util.blankNodeID();
                 return true;
             }
             // We also handle baseURL outside browser context by manually

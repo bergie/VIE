@@ -145,26 +145,6 @@ VIE.Util = {
         return (typeof something === "string" && something.search(/^<.+>$/) === 0);
     },
     
-    
-// ### VIE.Util.blankNodeID()
-// This method generates a new blank id for an entity.  
-// **Parameters**:  
-// *nothing*  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{string}* : A string, representing a unique blank id with the prefix ```'_:bnode'```.  
-// **Example usage**: 
-//
-//     VIE.Util.blankNodeID(); // --> _:bnode38e
-//     VIE.Util.blankNodeID(); // --> _:bnode38f
-    _blankNodeSeed : new Date().getTime() % 1000,
-    
-    blankNodeID : function () {
-      VIE.Util._blankNodeSeed += 1;
-      return '_:bnode' + VIE.Util._blankNodeSeed.toString(16);
-    },
-
 // ### VIE.Util.rdf2Entities(service, results)
 // This method converts *rdf/json* data from an external service
 // into VIE.Entities.  
