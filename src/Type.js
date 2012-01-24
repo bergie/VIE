@@ -388,6 +388,9 @@ VIE.prototype.Types = function () {
         /* test whether the type actually exists in VIE
          * and prevents removing *owl:Thing*.
          */
+        if (!t) {
+            return this;
+        }
         if (!t || t.subsumes("owl:Thing")) {
             console.warn("You are not allowed to remove 'owl:Thing'.");
             return this;
