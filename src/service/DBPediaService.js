@@ -118,8 +118,12 @@ VIE.prototype.DBPediaService.prototype = {
             var success = function (results) {
                 results = (typeof results === "string")? JSON.parse(results) : results;
                 _.defer(function(){
-                    var entities = VIE.Util.rdf2Entities(service, results);
-                    loadable.resolve(entities);
+                    try {
+                        var entities = VIE.Util.rdf2Entities(service, results);
+                        loadable.resolve(entities);
+                    } catch (e) {
+                        loadable.reject(e);
+                    }
                 });
             };
             var error = function (e) {
