@@ -25,16 +25,18 @@ if (VIE.prototype.Attributes) {
 // *{string|array}* **range** A string or an array of strings of the target range of 
 // the attribute.  
 // *{string}* **domain** The domain of the attribute.  
+// *{number}* **minCount** The minimal number this attribute can occur. (needs to be >= 0)  
+// *{number}* **maxCount** The maximal number this attribute can occur. (needs to be >= minCount)  
 // **Throws**:  
 // *{Error}* if one of the given paramenters is missing.  
 // **Returns**:  
 // *{VIE.Attribute}* : A **new** VIE.Attribute object.  
 // **Example usage**:  
 //
-//     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+//     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person", 0, 10);
 //      // Creates an attribute to describe a *knows*-relationship
-//      // between persons.
-VIE.prototype.Attribute = function (id, range, domain) {
+//      // between persons. Each person can only have 
+VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount) {
     if (id === undefined || typeof id !== 'string') {
         throw new Error("The attribute constructor needs an 'id' of type string! E.g., 'Person'");
     }
@@ -46,6 +48,21 @@ VIE.prototype.Attribute = function (id, range, domain) {
     }
     
     this._domain = domain;
+    
+// ### id
+// This field stores the id of the attribute's instance.  
+// **Parameters**:  
+// nothing
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{string}* : A URI, representing the id of the attribute.  
+// **Example usage**:  
+//
+//     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+//     console.log(knowsAttr.id);
+//     // --> <http://viejs.org/ns/knows>
+    this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
     
 // ### range
 // This field stores the ranges of the attribute's instance.  
@@ -61,22 +78,38 @@ VIE.prototype.Attribute = function (id, range, domain) {
 //     console.log(knowsAttr.range);
 //      // --> ["Person"]
     this.range = (_.isArray(range))? range : [ range ];
-     
-// ### id
-// This field stores the id of the attribute's instance.  
+    
+// ### min
+// This field stores the minimal amount this attribute can occur in the type's instance. The number
+// needs to be greater or equal to zero.  
 // **Parameters**:  
 // nothing
 // **Throws**:  
 // nothing  
 // **Returns**:  
-// *{string}* : A URI, representing the id of the attribute.  
+// *{int}* : The minimal amount this attribute can occur.  
 // **Example usage**:  
 //
-//     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
-//     console.log(knowsAttr.id);
-//     // --> <http://viejs.org/ns/knows>
-    this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
-
+//     console.log(person.min);
+//      // --> 0
+    minCount = minCount ? minCount : 0;
+    this.min = (minCount > 0) ? minCount : 0;
+    
+// ### max
+// This field stores the maximal amount this attribute can occur in the type's instance.
+// This number cannot be smaller than min  
+// **Parameters**:  
+// nothing
+// **Throws**:  
+// nothing  
+// **Returns**:  
+// *{int}* : The maximal amount this attribute can occur.  
+// **Example usage**:  
+//
+//     console.log(person.max);
+//      // --> 1.7976931348623157e+308
+    maxCount = maxCount ? maxCount : Number.MAX_VALUE
+    this.max = (maxCount >= this.min)? maxCount : this.min;
 // ### applies(range)
 // This method checks, whether the current attribute applies in the given range.
 // If ```range``` is a string and cannot be transformed into a ```VIE.Type```, 
@@ -156,6 +189,10 @@ VIE.prototype.Attributes = function (domain, attrs) {
 // **Parameters**:  
 // *{string|VIE.Attribute}* **id** The string representation of an attribute, or a proper
 // instance of a ```VIE.Attribute```.  
+// *{string|array}* **range** An array representing the target range of the attribute.  
+// *{number}* **mmin** The minimal amount this attribute can appear.  
+// instance of a ```VIE.Attribute```.  
+// *{number}* **max** The maximal amount this attribute can appear.  
 // **Throws**:  
 // *{Error}* If an atribute with the given id is already registered.  
 // *{Error}* If the ```id``` parameter is not a string, nor a ```VIE.Type``` instance.  
@@ -163,17 +200,17 @@ VIE.prototype.Attributes = function (domain, attrs) {
 // *{VIE.Attribute}* : The generated or passed attribute.  
 // **Example usage**:  
 //
-//     personAttrs.add("name", "Text");
-    this.add = function (id, range) {
+//     personAttrs.add("name", "Text", 0, 1);
+    this.add = function (id, range, min, max) {
         if (this.get(id)) {
             throw new Error("Attribute '" + id + "' already registered for domain " + this.domain.id + "!");
         } 
         else {
             if (typeof id === "string") {
-                var a = new this.vie.Attribute(id, range, this.domain);
+                var a = new this.vie.Attribute(id, range, this.domain, min, max);
                 this._local[a.id] = a;
                 return a;
-            } else if (id instanceof this.vie.Type) {
+            } else if (id instanceof this.vie.Attribute) {
                 id.domain = this.domain;
                 id.vie = this.vie;
                 this._local[id.id] = id;
@@ -265,14 +302,20 @@ VIE.prototype.Attributes = function (domain, attrs) {
                     }
                     else {
                         if (!merge[id]) {
-                            merge[id] = [];
+                            merge[id] = {range : [], mins : [], maxs: []};
                         }
                         if (id in add) {
-                            merge[id] = jQuery.merge(merge[id], add[id].range);
+                            merge[id]["range"] = jQuery.merge(merge[id]["range"], add[id].range);
+                            merge[id]["mins"] = jQuery.merge(merge[id]["mins"], [ add[id].min ]);
+                            merge[id]["maxs"] = jQuery.merge(merge[id]["maxs"], [ add[id].max ]);
                             delete add[id];
                         }
-                        merge[id] = jQuery.merge(merge[id], attrs[x].range);
-                        merge[id] = _.uniq(merge[id]);
+                        merge[id]["range"] = jQuery.merge(merge[id]["range"], attrs[x].range);
+                        merge[id]["mins"] = jQuery.merge(merge[id]["mins"], [ attrs[x].min ]);
+                        merge[id]["maxs"] = jQuery.merge(merge[id]["maxs"], [ attrs[x].max ]);
+                        merge[id]["range"] = _.uniq(merge[id]["range"]);
+                        merge[id]["mins"] = _.uniq(merge[id]["mins"]);
+                        merge[id]["maxs"] = _.uniq(merge[id]["maxs"]);
                     }
                 }
             }
@@ -283,17 +326,20 @@ VIE.prototype.Attributes = function (domain, attrs) {
         
         /* merges inherited attributes */
         for (var id in merge) {
-            var merged = merge[id];
+            var mranges = merge[id]["range"];
+            var mins = merge[id]["mins"];
+            var maxs = merge[id]["maxs"];
             var ranges = [];
-            for (var r = 0, mlen = merged.length; r < mlen; r++) {
-                var p = this.vie.types.get(merged[r]);
+            //merging ranges
+            for (var r = 0, mlen = mranges.length; r < mlen; r++) {
+                var p = this.vie.types.get(mranges[r]);
                 var isAncestorOf = false;
                 if (p) {
                     for (var x = 0; x < mlen; x++) {
                         if (x === r) {
                             continue;
                         }
-                        var c = this.vie.types.get(merged[x]);
+                        var c = this.vie.types.get(mranges[x]);
                         if (c && c.isof(p)) {
                             isAncestorOf = true;
                             break;
@@ -301,10 +347,18 @@ VIE.prototype.Attributes = function (domain, attrs) {
                     }
                 }
                 if (!isAncestorOf) {
-                    ranges.push(merged[r]);
+                    ranges.push(mranges[r]);
                 }
             }
-            attributes[id] = new this.vie.Attribute(id, ranges, this);
+            
+            var maxMin = _.max(mins);
+            var minMax = _.min(maxs);
+            
+            if (maxMin <= minMax && minMax >= 0 && maxMin >= 0) {
+                attributes[id] = new this.vie.Attribute(id, ranges, this, maxMin, minMax);
+            } else {
+                throw new Error("This inheritance is not allowed because of an invalid minCount/maxCount pair!");
+            }
         }
 
         this._attributes = attributes;
@@ -336,6 +390,6 @@ VIE.prototype.Attributes = function (domain, attrs) {
     attrs = _.isArray(attrs) ? attrs : [ attrs ];
     
     for (var a = 0, len = attrs.length; a < len; a++) {
-        this.add(attrs[a].id, attrs[a].range);
+        this.add(attrs[a].id, attrs[a].range, attrs[a].min, attrs[a].max);
     }
 };
