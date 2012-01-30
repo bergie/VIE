@@ -120,7 +120,7 @@ VIE.prototype.DBPediaService.prototype = {
                 _.defer(function(){
                     try {
                         var entities = VIE.Util.rdf2Entities(service, results);
-                        loadable.resolve(entities);
+                        loadable.resolve(entities[0]); // only return the entity itself
                     } catch (e) {
                         loadable.reject(e);
                     }

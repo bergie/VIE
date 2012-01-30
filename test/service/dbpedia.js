@@ -23,7 +23,7 @@ test("VIE.js DBPediaService - Load", function () {
     .execute()
     .done(function(x) {
         ok(x, "Something returned");
-        ok(jQuery.isArray(x));
+        ok(x.isEntity);
         start();
     })
     .fail(function(f){
