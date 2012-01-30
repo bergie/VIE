@@ -28,7 +28,6 @@ VIE.prototype.RdfaService = function(options) {
         namespaces : {},
         subjectSelector : "[about],[typeof],[src],html",
         predicateSelector : "[property],[rel]",
-        timeout : 60000, /* 60 seconds timeout */
         /* default rules that are shipped with this service */
         rules : []
     };
@@ -40,12 +39,6 @@ VIE.prototype.RdfaService = function(options) {
     this.vie = null; /* will be set via VIE.use(); */
     /* overwrite options.name if you want to set another name */
     this.name = this.options.name;
-    
-    /* basic setup for the ajax connection */
-    jQuery.ajaxSetup({
-        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
-        timeout: this.options.timeout
-    });
 };
 
 VIE.prototype.RdfaService.prototype = {
