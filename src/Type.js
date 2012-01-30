@@ -436,7 +436,7 @@ VIE.prototype.Types = function () {
 // This method sorts an array of types in their order, given by the
 // inheritance. This returns a copy and leaves the original array untouched.  
 // **Parameters**:  
-// *{array}* **types** The array of ```VIE.Type``` instances to be sorted.  
+// *{array|VIE.Type}* **types** The array of ```VIE.Type``` instances or ids of types to be sorted.  
 // *{boolean}* **desc** If 'desc' is given and 'true', the array will be sorted 
 // in descendant order.  
 // *nothing*  
@@ -451,19 +451,26 @@ VIE.prototype.Types = function () {
 //     types.sort(types.list(), true);
     this.sort = function (types, desc) {
         var self = this;
-        var copy = jQuery.merge([], (jQuery.isArray(types))? types : [ types ]);
+        types = (jQuery.isArray(types))? types : [ types ];
         desc = (desc)? true : false;
         
-        for (var x = 0; x < copy.length; x++) {
-            var a = copy.shift();
-            var idx = 0;
-            for (var y = 0; y < copy.length; y++) {
-                var b = self.vie.types.get(copy[y]);                
-                if (b.subsumes(a)) {
-                    idx = y;
+        if (types.length === 0) return [];
+        var copy = [ types[0] ];
+        
+        
+        for (var x = 1, tlen = types.length; x < tlen; x++) {
+            var insert = types[x];
+            var insType = self.get(insert);
+            if (insType) {
+                for (var y = 0; y < copy.length; y++) {
+                    if (insType.subsumes(copy[y])) {
+                        copy.splice(y,0,insert);
+                        break;
+                    } else if (y === copy.length - 1) {
+                        copy.push(insert);
+                    }
                 }
             }
-            copy.splice(idx+1,0,a);
         }
         
         if (!desc) {
