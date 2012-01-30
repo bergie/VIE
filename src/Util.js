@@ -363,6 +363,30 @@ VIE.Util = {
         /* set the namespace to either the old value or the provided baseNS value */
         vie.namespaces.base(baseNSBefore);
     },
+
+// ### VIE.Util.xsdDateTime(date)
+// This transforms a ```Date``` instance into an xsd:DateTime format.  
+// **Parameters**:  
+// *{```Date```}* **date** An instance of a javascript ```Date```.  
+// **Throws**: 
+// *nothing*..  
+// **Returns**: 
+// *{string}* A string representation of the dateTime in the xsd:dateTime format.
+    xsdDateTime : function(date) {
+        function pad(n) {
+            var s = n.toString();
+            return s.length < 2 ? '0'+s : s;
+        };
+
+        var yyyy = date.getFullYear();
+        var mm1  = pad(date.getMonth()+1);
+        var dd   = pad(date.getDate());
+        var hh   = pad(date.getHours());
+        var mm2  = pad(date.getMinutes());
+        var ss   = pad(date.getSeconds());
+
+        return yyyy +'-' +mm1 +'-' +dd +'T' +hh +':' +mm2 +':' +ss;
+    },
     
 // ### VIE.Util.transformationRules(service)
 // This returns a default set of rdfQuery rules that transform semantic data into the

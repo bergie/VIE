@@ -119,8 +119,11 @@ VIE.prototype.DBPediaService.prototype = {
                 results = (typeof results === "string")? JSON.parse(results) : results;
                 _.defer(function(){
                     try {
-                        var entities = VIE.Util.rdf2Entities(service, results);
-                        loadable.resolve(entities[0]); // only return the entity itself
+                        var entity = VIE.Util.rdf2Entities(service, results);
+                        entity = (_.isArray(entity))? entity[0] : entity;
+                        entity.set("DBPediaServiceLoad", VIE.Util.xsdDateTime(new Date()));
+                        
+                        loadable.resolve(entity);
                     } catch (e) {
                         loadable.reject(e);
                     }
