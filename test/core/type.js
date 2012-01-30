@@ -228,6 +228,12 @@ test("VIE - Type Sorting", function () {
     ok(test(sortedArrayAsc2.reverse()));
     ok(test(sortedArrayDesc1));
     ok(test(sortedArrayDesc2));
+    
+    ok(v.types.sort([]));
+    equals(v.types.sort([]).length, [].length);
+    
+    equals(v.types.sort(["TestType1"]).length, 1);
+    equals(v.types.sort(["TestType1"])[0], "TestType1");
 
     
 });
