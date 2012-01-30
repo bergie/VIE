@@ -31,6 +31,7 @@ VIE.prototype.StanbolService = function(options) {
         name : 'stanbol',
         /* you can pass an array of URLs which are then tried sequentially */
         url: ["http://dev.iks-project.eu/stanbolfull"],
+        timeout : 60000, /* 60 seconds timeout */
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
             semdeskf : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
@@ -86,9 +87,8 @@ VIE.prototype.StanbolService = function(options) {
     /* basic setup for the ajax connection */
     jQuery.ajaxSetup({
         converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
-        timeout: 60000 /* 60 seconds timeout */
+        timeout: this.options.timeout
     });
-
 };
 
 VIE.prototype.StanbolService.prototype = {

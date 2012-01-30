@@ -1,17 +1,78 @@
-VIE.prototype.RdfaService = function(options) {
-    if (!options) {
-        options = {};
-    }
-    this.vie = null; /* will be set via VIE.use(); */
-    this.name = 'rdfa';
-    this.subjectSelector = options.subjectSelector ? options.subjectSelector : "[about],[typeof],[src],html";
-    this.predicateSelector = options.predicateSelector ? options.predicateSelector : "[property],[rel]";
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 
-    this.attributeExistenceComparator = options.attributeExistenceComparator;
-    this.views = [];
+// ## VIE - RdfaService service
+// The RdfaService service allows ...
+
+(function(){
+
+// ## VIE.RdfaService(options)
+// This is the constructor to instantiate a new service.  
+// **Parameters**:  
+// *{object}* **options** Optional set of fields, ```namespaces```, ```rules```, ```url```, or ```name```.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.RdfaService}* : A **new** VIE.RdfaService instance.  
+// **Example usage**:  
+//
+//     var rdfaService = new vie.RdfaService({<some-configuration>});
+VIE.prototype.RdfaService = function(options) {
+    var defaults = {
+        name : 'rdfa',
+        namespaces : {},
+        subjectSelector : "[about],[typeof],[src],html",
+        predicateSelector : "[property],[rel]",
+        timeout : 60000, /* 60 seconds timeout */
+        /* default rules that are shipped with this service */
+        rules : []
+    };
+    /* the options are merged with the default options */
+    this.options = jQuery.extend(true, defaults, options ? options : {});
+
+    this.views = [],
+
+    this.vie = null; /* will be set via VIE.use(); */
+    /* overwrite options.name if you want to set another name */
+    this.name = this.options.name;
+    
+    /* basic setup for the ajax connection */
+    jQuery.ajaxSetup({
+        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+        timeout: this.options.timeout
+    });
 };
 
 VIE.prototype.RdfaService.prototype = {
+    
+// ### init()
+// This method initializes certain properties of the service and is called
+// via ```VIE.use()```.  
+// **Parameters**:  
+// *nothing*  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.RdfaService}* : The VIE.RdfaService instance itself.  
+// **Example usage**:  
+//
+//     var rdfaService = new vie.RdfaService({<some-configuration>});
+//     rdfaService.init();
+    init: function(){
+
+        for (var key in this.options.namespaces) {
+            var val = this.options.namespaces[key];
+            this.vie.namespaces.add(key, val);
+        }
+        
+        this.rules = jQuery.merge([], VIE.Util.transformationRules(this));
+        this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
+    },
     
     analyze: function(analyzable) {
         // in a certain way, analyze is the same as load
@@ -45,7 +106,7 @@ VIE.prototype.RdfaService.prototype = {
             this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
         }
         var entities = [];
-        var entityElements = jQuery(this.subjectSelector, element).add(jQuery(element).filter(this.subjectSelector)).each(function() {
+        var entityElements = jQuery(this.options.subjectSelector, element).add(jQuery(element).filter(this.options.subjectSelector)).each(function() {
             var entity = service._readEntity(jQuery(this));
             if (entity) {
                 entities.push(entity);
@@ -199,7 +260,7 @@ VIE.prototype.RdfaService.prototype = {
     
     _getElementType : function (element) {
         var type;
-        if (jQuery(element).attr('typeof') !== this.attributeExistenceComparator) {
+        if (jQuery(element).attr('typeof') !== this.options.attributeExistenceComparator) {
             type = jQuery(element).attr('typeof');
             if (type.indexOf("://") !== -1) {
                 return "<" + type + ">";
@@ -219,17 +280,17 @@ VIE.prototype.RdfaService.prototype = {
         }
         var subject = undefined;
         var matched = null;
-        jQuery(element).closest(this.subjectSelector).each(function() {
+        jQuery(element).closest(this.options.subjectSelector).each(function() {
             matched = this;
-            if (jQuery(this).attr('about') !== service.attributeExistenceComparator) {
+            if (jQuery(this).attr('about') !== service.options.attributeExistenceComparator) {
                 subject = jQuery(this).attr('about');
                 return true;
             }
-            if (jQuery(this).attr('src') !== service.attributeExistenceComparator) {
+            if (jQuery(this).attr('src') !== service.options.attributeExistenceComparator) {
                 subject = jQuery(this).attr('src');
                 return true;
             }
-            if (jQuery(this).attr('typeof') !== service.attributeExistenceComparator) {
+            if (jQuery(this).attr('typeof') !== service.options.attributeExistenceComparator) {
                 return true;
             }
             // We also handle baseURL outside browser context by manually
@@ -280,7 +341,7 @@ VIE.prototype.RdfaService.prototype = {
     
     getElementBySubject : function(subject, element) {
         var service = this;
-        return jQuery(element).find(this.subjectSelector).add(jQuery(element).filter(this.subjectSelector)).filter(function() {
+        return jQuery(element).find(this.options.subjectSelector).add(jQuery(element).filter(this.options.subjectSelector)).filter(function() {
             if (service.getElementSubject(jQuery(this)) !== subject) {
                 return false;
             }
@@ -292,7 +353,7 @@ VIE.prototype.RdfaService.prototype = {
     getElementByPredicate : function(predicate, element) {
         var service = this;
         var subject = this.getElementSubject(element);
-        return jQuery(element).find(this.predicateSelector).add(jQuery(element).filter(this.predicateSelector)).filter(function() {
+        return jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).filter(function() {
             var foundPredicate = service.getElementPredicate(jQuery(this));
             if (service.vie.namespaces.curie(foundPredicate) !== service.vie.namespaces.curie(predicate)) {
                 return false;
@@ -338,7 +399,7 @@ VIE.prototype.RdfaService.prototype = {
     
     _findPredicateElements : function(subject, element, allowNestedPredicates) {
         var service = this;
-        return jQuery(element).find(this.predicateSelector).add(jQuery(element).filter(this.predicateSelector)).filter(function() {
+        return jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).filter(function() {
             if (service.getElementSubject(this) !== subject) {
                 return false;
             }
@@ -382,7 +443,7 @@ VIE.prototype.RdfaService.prototype = {
         if (element.attr('rel')) {
             var value = [];
             var service = this;
-            jQuery(element).children(this.subjectSelector).each(function() {
+            jQuery(element).children(this.options.subjectSelector).each(function() {
                 value.push(service.getElementSubject(this));
             });
             return value;
@@ -454,3 +515,5 @@ VIE.prototype.RdfaService.prototype = {
     }
 
 };
+
+})();
