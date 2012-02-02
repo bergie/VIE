@@ -187,7 +187,7 @@ VIE.prototype.RdfaService.prototype = {
     _getViewForElement : function(element, collectionView) {
         var viewInstance;
         jQuery.each(this.views, function() {
-            if (this.el.get(0) === element.get(0)) {
+            if (this.$el.get(0) === element.get(0)) {
                 if (collectionView && !this.template) {
                     return true;
                 }
