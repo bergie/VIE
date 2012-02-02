@@ -33,13 +33,13 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
 
         var entityView = this.service._registerEntityView(entity, this.cloneElement(this.template, entity));
-        var entityElement = entityView.render().$el;
+        var entityElement = jQuery(entityView.render().el);
         if (entity.id) {
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);
         }
 
         // TODO: Ordering
-        this.$el.append(entityElement);
+        jQuery(this.el).append(entityElement);
 
         // Ensure we catch all inferred predicates. We add these via JSONLD
         // so the references get properly Collectionized.
@@ -72,7 +72,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
 
         this.trigger('remove', this.entityViews[entity.cid]);
-        this.entityViews[entity.cid].$el.remove();
+        jQuery(this.entityViews[entity.cid].el).remove();
         delete(this.entityViews[entity.cid]);
     },
 
