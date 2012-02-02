@@ -255,6 +255,10 @@ VIE.prototype.Entity = function(attrs, opts) {
                 return;
             }
             
+            if (attr === "@type" && value instanceof self.vie.Type) {
+            	value = value.id
+            }
+            
             var obj = {};
             var existing = Backbone.Model.prototype.get.call(this, attr);
             
@@ -280,7 +284,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                 if (value.isCollection) {
                     throw new Error("you cannot add a collection of entities to an array of literals!");
                 } else if (value.isEntity) {
-                    throw new Error("you cannot add an entity to an array of literals!");
+                	this._setOrAddOne(attr, value.getSubject());
+                    /*throw new Error("you cannot add an entity to an array of literals!");*/
                 } else if (typeof value === "object") {
                     throw new Error("you cannot add an entity of entities to an array of literals!");
                 } else {
@@ -292,7 +297,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                 if (value.isCollection) {
                     throw new Error("you cannot add a collection of entities to a literal!");
                 } else if (value.isEntity) {
-                    throw new Error("you cannot add an entity to a literal!");
+                	this._setOrAddOne(attr, value.getSubject());
+                    /*throw new Error("you cannot add an entity to a literal!");*/
                 } else if (typeof value === "object") {
                     throw new Error("you cannot add an entity of entities to a literal!");
                 } else {
