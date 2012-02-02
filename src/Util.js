@@ -398,7 +398,7 @@ VIE.Util = {
 // **Returns**: 
 // *{array}* An array of rules with 'left' and 'right' side.
     transformationRules : function (service) {
-        return [
+        var res = [
             // rule(s) to transform a dbpedia:Person into a VIE:Person
              {
                 'left' : [
@@ -504,6 +504,7 @@ VIE.Util = {
                   }(service.vie.namespaces)
               },
         ];
+        return res;
     }
 };
 

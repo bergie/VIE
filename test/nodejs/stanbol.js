@@ -23,5 +23,10 @@ exports['test annotations'] = function(test) {
         }).
         then(function() {
             test.done();
+        }).
+        fail(function(e){
+            console.error(e);
+            test.ok(false, "request failed");
+            test.done();
         });
 };
