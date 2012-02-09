@@ -89,7 +89,9 @@ VIE.prototype.DBPediaService.prototype = {
     },
 
 // ### load(loadable)
-// This method loads the entity that is stored within the loadable into VIE.  
+// This method loads the entity that is stored within the loadable into VIE.
+// You can also query for multiple queries by setting ```entities``` with
+// an array of entities.  
 // **Parameters**:  
 // *{VIE.Loadable}* **lodable** The loadable.  
 // **Throws**:  
@@ -98,8 +100,11 @@ VIE.prototype.DBPediaService.prototype = {
 // *{VIE.DBPediaService}* : The VIE.DBPediaService instance itself.  
 // **Example usage**:  
 //
-//     var dbpService = new vie.DBPediaService({<some-configuration>});
-//     dbpService.load(new vie.Loadable({entity : "<http://...>"}));
+//  var dbpService = new vie.DBPediaService({<some-configuration>});
+//  dbpService.load(new vie.Loadable({entity : "<http://...>"}));
+//    OR
+//  var dbpService = new vie.DBPediaService({<some-configuration>});
+//  dbpService.load(new vie.Loadable({entities : ["<http://...>", "<http://...>"]}));
     load: function(loadable){
         var service = this;
         
@@ -107,32 +112,41 @@ VIE.prototype.DBPediaService.prototype = {
         if (!correct) {
             throw new Error("Invalid Loadable passed");
         }
-
-        var entity = loadable.options.entity;
-        if (!entity) {
-            loadable.reject([]);
-        }
-        else {
-            entity = (typeof entity === "string")? entity : entity.id;
-            
-            var success = function (results) {
-                results = (typeof results === "string")? JSON.parse(results) : results;
-                _.defer(function(){
-                    try {
-                        var entity = VIE.Util.rdf2Entities(service, results);
-                        entity = (_.isArray(entity))? entity[0] : entity;
-                        entity.set("DBPediaServiceLoad", VIE.Util.xsdDateTime(new Date()));
-                        
-                        loadable.resolve(entity);
-                    } catch (e) {
-                        loadable.reject(e);
+        
+        var success = function (results) {
+            results = (typeof results === "string")? JSON.parse(results) : results;
+            _.defer(function() {
+                try {
+                    var entities = VIE.Util.rdf2Entities(service, results);
+                    entities = (_.isArray(entities))? entities : [ entities ];
+                    for (var e = 0; e < entities.length; e++) {
+                    	entities[e].set("DBPediaServiceLoad", VIE.Util.xsdDateTime(new Date()));
                     }
-                });
-            };
-            var error = function (e) {
-                loadable.reject(e);
-            };
-            this.connector.load(entity, success, error);
+                    entities = (entities.length === 1)? entities[0] : entities;
+                    loadable.resolve(entities);
+                } catch (e) {
+                    loadable.reject(e);
+                }
+            });
+        };
+        
+        var error = function (e) {
+            loadable.reject(e);
+        };
+        
+        var entities = (loadable.options.entity)? loadable.options.entity : loadable.options.entities;
+        
+        if (!entities) {
+            loadable.reject([]);
+        } else {
+        	entities = (_.isArray(entities))? entities : [ entities ];
+        	var tmpEntities = [];
+        	for (var e = 0; e < entities.length; e++) {
+        		var tmpEnt = (typeof entities[e] === "string")? entities[e] : entities[e].id;
+        		tmpEntities.push(tmpEnt);
+        	}
+                        
+            this.connector.load(tmpEntities, success, error);
         }
         return this;
     }
@@ -177,13 +191,27 @@ VIE.prototype.DBPediaConnector.prototype = {
     load: function (uri, success, error, options) {
         if (!options) { options = {}; }
         
-        uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
-        
         var url = this.baseUrl + 
         "&format=" + encodeURIComponent("application/rdf+json") + 
-        "&query=" +
-        encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
+        "&query=";
         
+        if (_.isArray(uri)) {
+        	var construct = "";
+        	var where = "";
+        	for (var u = 0; u < uri.length; u++) {
+        		var subject = (/^<.+>$/.test(uri[u]))? uri[u] : '<' + uri[u] + '>';
+        		if (u > 0) {
+        			construct += " .";
+        			where += " UNION ";
+        		}
+        		construct += " " + subject + " ?prop" + u + " ?val" + u;
+        		where     += " { " + subject + " ?prop" + u + " ?val" + u + " }";
+        	}
+        	url += encodeURIComponent("CONSTRUCT {" + construct + " } WHERE {" + where + " }");
+        } else {
+	        uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
+	        url += encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
+        }
         var format = options.format || "application/rdf+json";
 
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
