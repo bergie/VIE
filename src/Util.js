@@ -160,78 +160,83 @@ VIE.Util = {
             /* fallback if no rdfQuery has been loaded */
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
-        var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
-
-        rdf.base(service.vie.namespaces.base());
-        /* if the service contains rules to apply special transformation, they are executed here.*/
-        if (service.rules) {
-            var rules = jQuery.rdf.ruleset();
-            for (var prefix in service.vie.namespaces.toObj()) {
-                if (prefix !== "") {
-                    rules.prefix(prefix, service.vie.namespaces.get(prefix));
-                }
-            }
-            for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
-                var rule = service.rules[i];
-                rules.add(rule['left'], rule['right']);
-            }
-            rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
+        try {
+	        var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
+	
+	        rdf.base(service.vie.namespaces.base());
+	        /* if the service contains rules to apply special transformation, they are executed here.*/
+	        if (service.rules) {
+	            var rules = jQuery.rdf.ruleset();
+	            for (var prefix in service.vie.namespaces.toObj()) {
+	                if (prefix !== "") {
+	                    rules.prefix(prefix, service.vie.namespaces.get(prefix));
+	                }
+	            }
+	            for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
+	                var rule = service.rules[i];
+	                rules.add(rule['left'], rule['right']);
+	            }
+	            rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
+	        }
+	        var entities = {};
+	        rdf.where('?subject ?property ?object').each(function() {
+	            var subject = this.subject.toString();
+	            if (!entities[subject]) {
+	                entities[subject] = {
+	                    '@subject': subject,
+	                    '@context': service.vie.namespaces.toObj(true),
+	                    '@type': []
+	                };
+	            }
+	            var propertyUri = this.property.toString();
+	            var propertyCurie;
+	
+	            try {
+	                propertyCurie = service.vie.namespaces.curie(propertyUri);
+	                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
+	            } catch (e) {
+	                propertyCurie = propertyUri;
+	                console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
+	            }
+	            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
+	
+	            function getValue(rdfQueryLiteral){
+	                if(typeof rdfQueryLiteral.value === "string"){
+	                    if (rdfQueryLiteral.lang)
+	                        return rdfQueryLiteral.toString();
+	                    else
+	                        return rdfQueryLiteral.value;
+	                    return rdfQueryLiteral.value.toString();
+	                } else if (rdfQueryLiteral.type === "uri"){
+	                    return rdfQueryLiteral.toString();
+	                } else {
+	                    return rdfQueryLiteral.value;
+	                }
+	            }
+	            entities[subject][propertyCurie].push(getValue(this.object));
+	        });
+	
+	        _(entities).each(function(ent){
+	            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+	            delete ent["rdf:type"];
+	            _(ent).each(function(value, property){
+	                if(value.length === 1){
+	                    ent[property] = value[0];
+	                }
+	            });
+	        });
+	
+	        var vieEntities = [];
+	        jQuery.each(entities, function() {
+	            var entityInstance = new service.vie.Entity(this);
+	            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+	            vieEntities.push(entityInstance);
+	        });
+	        return vieEntities;
+        } catch (e) {
+        	console.warn("Something went wrong while parsing the returned results!", e);
+        	return [];
         }
-        var entities = {};
-        rdf.where('?subject ?property ?object').each(function() {
-            var subject = this.subject.toString();
-            if (!entities[subject]) {
-                entities[subject] = {
-                    '@subject': subject,
-                    '@context': service.vie.namespaces.toObj(true),
-                    '@type': []
-                };
-            }
-            var propertyUri = this.property.toString();
-            var propertyCurie;
-
-            try {
-                propertyCurie = service.vie.namespaces.curie(propertyUri);
-                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
-            } catch (e) {
-                propertyCurie = propertyUri;
-                console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
-            }
-            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
-
-            function getValue(rdfQueryLiteral){
-                if(typeof rdfQueryLiteral.value === "string"){
-                    if (rdfQueryLiteral.lang)
-                        return rdfQueryLiteral.toString();
-                    else
-                        return rdfQueryLiteral.value;
-                    return rdfQueryLiteral.value.toString();
-                } else if (rdfQueryLiteral.type === "uri"){
-                    return rdfQueryLiteral.toString();
-                } else {
-                    return rdfQueryLiteral.value;
-                }
-            }
-            entities[subject][propertyCurie].push(getValue(this.object));
-        });
-
-        _(entities).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
-            delete ent["rdf:type"];
-            _(ent).each(function(value, property){
-                if(value.length === 1){
-                    ent[property] = value[0];
-                }
-            });
-        });
-
-        var vieEntities = [];
-        jQuery.each(entities, function() {
-            var entityInstance = new service.vie.Entity(this);
-            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
-            vieEntities.push(entityInstance);
-        });
-        return vieEntities;
     },
     
 // ### VIE.Util._rdf2EntitiesNoRdfQuery(service, results)
