@@ -282,13 +282,14 @@ VIE.prototype.StanbolService.prototype = {
 //
 //     var stnblConn = new vie.StanbolConnector({<some-configuration>});
 VIE.prototype.StanbolConnector = function (options) {
+    options = (options)? options : {};
     this.options = options;
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
-    this.enhancerUrlPrefix = "/engines";
-    this.entityhubUrlPrefix = "/entityhub";
-    /*TODO: this.ontonetUrlPrefix = "/ontonet"; */
-    /*TODO: this.rulesUrlPrefix = "/rules"; */
-    /*TODO: this.factstoreUrlPrefix = "/factstore"; */
+    this.enhancerUrlPostfix = (options.enhancerUrlPostfix)? options.enhancerUrlPostfix : "/enhancer";
+    this.entityhubUrlPostfix = (options.entityhubUrlPostfix)? options.entityhubUrlPostfix : "/entityhub";
+    /*TODO: this.ontonetUrlPostfix = "/ontonet"; */
+    /*TODO: this.rulesUrlPostfix = "/rules"; */
+    /*TODO: this.factstoreUrlPostfix = "/factstore"; */
 };
 
 VIE.prototype.StanbolConnector.prototype = {
@@ -318,7 +319,7 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var enhancerUrl = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        enhancerUrl += this.enhancerUrlPrefix;
+        enhancerUrl += this.enhancerUrlPostfix;
         
         var format = options.format || "application/rdf+json";
         
@@ -397,7 +398,7 @@ VIE.prototype.StanbolConnector.prototype = {
         
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
+        url += this.entityhubUrlPostfix + "/sites/entity?id=" + escape(uri);
         
         var format = options.format || "application/rdf+json";
         
@@ -478,7 +479,7 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPrefix + "/sites/find";
+        url += this.entityhubUrlPostfix + "/sites/find";
         
         var format = options.format || "application/rdf+json";
         
