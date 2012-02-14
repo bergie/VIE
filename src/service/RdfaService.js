@@ -69,32 +69,14 @@ VIE.prototype.RdfaService.prototype = {
     
     analyze: function(analyzable) {
         // in a certain way, analyze is the same as load
-        var service = this;
-
-        var correct = analyzable instanceof this.vie.Analyzable;
-        if (!correct) {throw "Invalid Analyzable passed";}
-        
-        var loadable = new this.vie.Loadable({element : analyzable.options.element});        
-        loadable.deferred = analyzable.deferred;
-        loadable.resolve = analyzable.deferred.resolve;
-        loadable.resolveWith = analyzable.deferred.resolveWith;
-        loadable.reject = analyzable.deferred.reject;
-        loadable.rejectWith = analyzable.deferred.rejectWith;
-        loadable.success = analyzable.done = analyzable.deferred.done;
-        loadable.fail = analyzable.deferred.fail;
-        loadable.then = analyzable.deferred.then;
-        loadable.always = analyzable.deferred.always;
-        loadable.from = analyzable.using;
-        loadable.to = analyzable.using;
-
-        return this.load(loadable);
+        return this.load(analyzable);
     },
         
     load : function(loadable) {
         var service = this;
-        var correct = loadable instanceof this.vie.Loadable;
+        var correct = loadable instanceof this.vie.Loadable || loadable instanceof this.vie.Analyzable;
         if (!correct) {
-            throw "Invalid Loadable passed";
+            throw new Error("Invalid Loadable/Analyzable passed");
         }
 
         var element;
