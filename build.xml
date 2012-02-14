@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="vie.js" basedir="." default="all">
 
-    <property name="VERSION" value="2.0.0alpha1"/>
+    <property name="VERSION" value="2.0.0"/>
 
     <property name="DOCS_ROOT" value="./docs" />
     <property name="DOCS_DIR" value="${DOCS_ROOT}/${VERSION}" description="API documentation"/>
@@ -13,7 +13,14 @@
     <property name="TMP_DIR" value="./tmp"/>
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
-
+	
+	<target name="timestamp">
+		<tstamp>
+			<format property="current.time"
+				pattern="yyyyMMddHHmmss" />
+		</tstamp>
+	</target>
+	
     <target name="doc" depends="distAll" description="Generates documentation for vie.js with Docco ">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
@@ -67,7 +74,7 @@
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' ${DOCS_DIR}" />
+	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}_${current.time}' ${DOCS_DIR}" />
 		</exec>
 		<echo message="Pushing..."/>
     	<exec executable="sh" dir=".">
@@ -106,7 +113,7 @@
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}' ${TEST_DIR}" />
+	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${TEST_DIR}" />
 		</exec>
 		<echo message="Pushing..."/>
     	<exec executable="sh" dir=".">
@@ -127,7 +134,7 @@
         <delete dir="${DOCS_DIR}"/>
     </target>
 
-	<target name="init" depends="clean">
+	<target name="init" depends="clean, timestamp">
         <mkdir dir="${DIST_DIR}" />
         <mkdir dir="${DOCS_DIR}" />
     </target>
@@ -139,7 +146,7 @@
 	<target name="distAll" depends="init, combineAll, minimiseAll" />
 
     <target name="zip" depends="dist">
-        <zip destfile="${DIST_DIR}/vie-${VERSION}.zip">
+        <zip destfile="${DIST_DIR}/vie-${VERSION}_${current.time}.zip">
             <zipfileset dir="docs/" prefix="docs"/>
             <zipfileset dir="service" prefix="service"/>
             <zipfileset dir="dist/" includes="*.js"/>
@@ -148,7 +155,7 @@
 
     <target name="combine" description="combines core/*.js files into one file">
         <echo message="Building vie.js Distribution" />
-        <concat destfile="${DIST_DIR}/vie-${VERSION}.debug.js">
+        <concat destfile="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js">
             <fileset dir="${SRC_DIR}" includes="VIE.js"/>
             <fileset dir="${SRC_DIR}" includes="Able.js"/>
             <fileset dir="${SRC_DIR}" includes="Util.js"/>
@@ -164,14 +171,14 @@
             <!-- Internet Explorer specific jQuery Ajax transport handler -->
             <fileset dir="${SRC_DIR}" includes="xdr.js"/>
         </concat>
-        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="^" replace="(function(){" />
-        <replaceregexp file="${DIST_DIR}/vie-${VERSION}.debug.js" match="$" replace="})();" />
-        <copy file="${DIST_DIR}/vie-${VERSION}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
+        <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" match="^" replace="(function(){" />
+        <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" match="$" replace="})();" />
+        <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 
 	<target name="combineAll" description="combines js libs and core/*.js files into one file">
 	        <echo message="Building vie.js Distribution" />
-	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}.debug.js">
+	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
 	        	<fileset dir="${LIB_DIR}/jquery/1.7" includes="jquery-1.7.1.min.js"/>
 	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="underscore.min.js"/>
 	        	<fileset dir="${LIB_DIR}/backboneJS" includes="backbone.min.js"/>
@@ -190,29 +197,29 @@
 	            <!-- Internet Explorer specific jQuery Ajax transport handler -->
 	            <fileset dir="${SRC_DIR}" includes="xdr.js"/>
 	        </concat>
-	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" match="^" replace="(function(){" />
-	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" match="$" replace="})();" />
-	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" tofile="${DIST_DIR}/vie-latest-ALL.debug.js" overwrite="true" />
+	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" match="^" replace="(function(){" />
+	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" match="$" replace="})();" />
+	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest-ALL.debug.js" overwrite="true" />
 	    </target>
 	
     <target name="minimise">
         <echo message="Minimising vie.js" />
 
         <antcall target="minimiseJSFile">
-            <param name="inputFile" value="${DIST_DIR}/vie-${VERSION}.debug.js" />
-            <param name="outputFile" value="${DIST_DIR}/vie-${VERSION}.js" />
+            <param name="inputFile" value="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" />
+            <param name="outputFile" value="${DIST_DIR}/vie-${VERSION}_${current.time}.js" />
         </antcall>
-        <copy file="${DIST_DIR}/vie-${VERSION}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
+        <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
     </target>
 	
 	<target name="minimiseAll">
 	        <echo message="Minimising ALL vie.js" />
 
 	        <antcall target="minimiseJSFile">
-	            <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}.debug.js" />
-	            <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}.js" />
+	            <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" />
+	            <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" />
 	        </antcall>
-	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}.js" tofile="${DIST_DIR}/vie-latest-ALL.js" overwrite="true" />
+	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest-ALL.js" overwrite="true" />
 	    </target>
 
     <target name="minimiseJSFile">
