@@ -486,7 +486,7 @@ VIE.Util = {
                           return [
                           jQuery.rdf.triple(this.subject.toString(),
                               'a',
-                              '<' + ns.base() + 'Place>', {
+                              '<' + ns.base() + 'City>', {
                                   namespaces: ns.toObj()
                               }),
                           jQuery.rdf.triple(this.subject.toString(),
