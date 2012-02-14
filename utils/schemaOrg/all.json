@@ -1,10 +1,3 @@
-// File:   schema.json
-// Author: <a href="mailto:sebastian.germesin@dfki.de">Sebastian Germesin</a>
-// Downloaded from: http://schema.rdfs.org/all.json - 29.08.2011
-//
-
-
-var SchemaOrg = this.SchemaOrg =
 {
   "datatypes": {
     "Boolean": {
@@ -175,6 +168,18 @@ var SchemaOrg = this.SchemaOrg =
         "URL"
       ]
     }, 
+    "accountablePerson": {
+      "comment": "Specifies the Person that is legally accountable for the CreativeWork.", 
+      "comment_plain": "Specifies the Person that is legally accountable for the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "accountablePerson", 
+      "label": "Accountable Person", 
+      "ranges": [
+        "Person"
+      ]
+    }, 
     "actors": {
       "comment": "A cast member of the movie, TV series, season, or episode, or video.", 
       "comment_plain": "A cast member of the movie, TV series, season, or episode, or video.", 
@@ -187,6 +192,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Actors", 
       "ranges": [
         "Person"
+      ]
+    }, 
+    "additionalName": {
+      "comment": "An additional name for a Person, can be used for a middle name.", 
+      "comment_plain": "An additional name for a Person, can be used for a middle name.", 
+      "domains": [
+        "Person"
+      ], 
+      "id": "additionalName", 
+      "label": "Additional Name", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "address": {
@@ -279,6 +296,18 @@ var SchemaOrg = this.SchemaOrg =
         "MusicAlbum"
       ]
     }, 
+    "alternativeHeadline": {
+      "comment": "A secondary title of the CreativeWork.", 
+      "comment_plain": "A secondary title of the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "alternativeHeadline", 
+      "label": "Alternative Headline", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "alumni": {
       "comment": "Alumni of educational organization.", 
       "comment_plain": "Alumni of educational organization.", 
@@ -325,6 +354,30 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Article Section", 
       "ranges": [
         "Text"
+      ]
+    }, 
+    "associatedArticle": {
+      "comment": "A NewsArticle associated with the Media Object.", 
+      "comment_plain": "A NewsArticle associated with the Media Object.", 
+      "domains": [
+        "MediaObject"
+      ], 
+      "id": "associatedArticle", 
+      "label": "Associated Article", 
+      "ranges": [
+        "NewsArticle"
+      ]
+    }, 
+    "associatedMedia": {
+      "comment": "The media objects that encode this creative work. This property is a synonym for encodings.", 
+      "comment_plain": "The media objects that encode this creative work. This property is a synonym for encodings.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "associatedMedia", 
+      "label": "Associated Media", 
+      "ranges": [
+        "MediaObject"
       ]
     }, 
     "attendees": {
@@ -386,6 +439,30 @@ var SchemaOrg = this.SchemaOrg =
       ], 
       "id": "awards", 
       "label": "Awards", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "baseSalary": {
+      "comment": "The base salary of the job.", 
+      "comment_plain": "The base salary of the job.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "baseSalary", 
+      "label": "Base Salary", 
+      "ranges": [
+        "Number"
+      ]
+    }, 
+    "benefits": {
+      "comment": "Description of benefits associated with the job.", 
+      "comment_plain": "Description of benefits associated with the job.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "benefits", 
+      "label": "Benefits", 
       "ranges": [
         "Text"
       ]
@@ -461,6 +538,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Book Format", 
       "ranges": [
         "BookFormatType"
+      ]
+    }, 
+    "box": {
+      "comment": "A polygon is the area enclosed by a point-to-point path for which the starting and ending points are the same. A polygon is expressed as a series of four or more spacedelimited points where the first and final points are identical.", 
+      "comment_plain": "A polygon is the area enclosed by a point-to-point path for which the starting and ending points are the same. A polygon is expressed as a series of four or more spacedelimited points where the first and final points are identical.", 
+      "domains": [
+        "GeoShape"
+      ], 
+      "id": "box", 
+      "label": "Box", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "branchOf": {
@@ -573,6 +662,18 @@ var SchemaOrg = this.SchemaOrg =
         "Mass"
       ]
     }, 
+    "circle": {
+      "comment": "A circle is the circular region of a specified radius centered at a specified latitude and longitude. A circle is expressed as a pair followed by a radius in meters.", 
+      "comment_plain": "A circle is the circular region of a specified radius centered at a specified latitude and longitude. A circle is expressed as a pair followed by a radius in meters.", 
+      "domains": [
+        "GeoShape"
+      ], 
+      "id": "circle", 
+      "label": "Circle", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "colleagues": {
       "comment": "A colleague of the person.", 
       "comment_plain": "A colleague of the person.", 
@@ -583,6 +684,42 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Colleagues", 
       "ranges": [
         "Person"
+      ]
+    }, 
+    "comment": {
+      "comment": "Comments, typically from users, on this CreativeWork.", 
+      "comment_plain": "Comments, typically from users, on this CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "comment", 
+      "label": "Comment", 
+      "ranges": [
+        "UserComments"
+      ]
+    }, 
+    "commentText": {
+      "comment": "The text of the UserComment.", 
+      "comment_plain": "The text of the UserComment.", 
+      "domains": [
+        "UserComments"
+      ], 
+      "id": "commentText", 
+      "label": "Comment Text", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "commentTime": {
+      "comment": "The time at which the UserComment was made.", 
+      "comment_plain": "The time at which the UserComment was made.", 
+      "domains": [
+        "UserComments"
+      ], 
+      "id": "commentTime", 
+      "label": "Comment Time", 
+      "ranges": [
+        "Date"
       ]
     }, 
     "contactPoints": {
@@ -670,6 +807,19 @@ var SchemaOrg = this.SchemaOrg =
         "URL"
       ]
     }, 
+    "contributor": {
+      "comment": "A secondary contributor to the CreativeWork.", 
+      "comment_plain": "A secondary contributor to the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "contributor", 
+      "label": "Contributor", 
+      "ranges": [
+        "Person", 
+        "Organization"
+      ]
+    }, 
     "cookTime": {
       "comment": "The time it takes to actually cook the dish, in <a href=\"http://en.wikipedia.org/wiki/ISO_8601\" target=\"new\">ISO 8601 duration format</a>.", 
       "comment_plain": "The time it takes to actually cook the dish, in ISO 8601 duration format.", 
@@ -694,6 +844,45 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "copyrightHolder": {
+      "comment": "The party holding the legal copyright to the CreativeWork.", 
+      "comment_plain": "The party holding the legal copyright to the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "copyrightHolder", 
+      "label": "Copyright Holder", 
+      "ranges": [
+        "Person", 
+        "Organization"
+      ]
+    }, 
+    "copyrightYear": {
+      "comment": "The year during which the claimed copyright for the CreativeWork was first asserted.", 
+      "comment_plain": "The year during which the claimed copyright for the CreativeWork was first asserted.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "copyrightYear", 
+      "label": "Copyright Year", 
+      "ranges": [
+        "Number"
+      ]
+    }, 
+    "creator": {
+      "comment": "The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.", 
+      "comment_plain": "The creator/author of this CreativeWork or UserComments. This is the same as the Author property for CreativeWork.", 
+      "domains": [
+        "UserComments", 
+        "CreativeWork"
+      ], 
+      "id": "creator", 
+      "label": "Creator", 
+      "ranges": [
+        "Person", 
+        "Organization"
+      ]
+    }, 
     "currenciesAccepted": {
       "comment": "The currency accepted (in <a href=\"http://en.wikipedia.org/wiki/ISO_4217\" target=\"new\">ISO 4217 currency format</a>).", 
       "comment_plain": "The currency accepted (in ISO 4217 currency format).", 
@@ -706,6 +895,42 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "dateCreated": {
+      "comment": "The date on which the CreativeWork was created.", 
+      "comment_plain": "The date on which the CreativeWork was created.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "dateCreated", 
+      "label": "Date Created", 
+      "ranges": [
+        "Date"
+      ]
+    }, 
+    "dateModified": {
+      "comment": "The date on which the CreativeWork was most recently modified.", 
+      "comment_plain": "The date on which the CreativeWork was most recently modified.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "dateModified", 
+      "label": "Date Modified", 
+      "ranges": [
+        "Date"
+      ]
+    }, 
+    "datePosted": {
+      "comment": "Publication date for the job posting.", 
+      "comment_plain": "Publication date for the job posting.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "datePosted", 
+      "label": "Date Posted", 
+      "ranges": [
+        "Date"
+      ]
+    }, 
     "datePublished": {
       "comment": "Date of first broadcast/publication.", 
       "comment_plain": "Date of first broadcast/publication.", 
@@ -716,6 +941,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Date Published", 
       "ranges": [
         "Date"
+      ]
+    }, 
+    "dateline": {
+      "comment": "The location where the NewsArticle was produced.", 
+      "comment_plain": "The location where the NewsArticle was produced.", 
+      "domains": [
+        "NewsArticle"
+      ], 
+      "id": "dateline", 
+      "label": "Dateline", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "deathDate": {
@@ -756,6 +993,30 @@ var SchemaOrg = this.SchemaOrg =
         "Person"
       ]
     }, 
+    "discusses": {
+      "comment": "Specifies the CreativeWork associated with the UserComment.", 
+      "comment_plain": "Specifies the CreativeWork associated with the UserComment.", 
+      "domains": [
+        "UserComments"
+      ], 
+      "id": "discusses", 
+      "label": "Discusses", 
+      "ranges": [
+        "CreativeWork"
+      ]
+    }, 
+    "discussionUrl": {
+      "comment": "A link to the page containing the comments of the CreativeWork.", 
+      "comment_plain": "A link to the page containing the comments of the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "discussionUrl", 
+      "label": "Discussion Url", 
+      "ranges": [
+        "URL"
+      ]
+    }, 
     "duration": {
       "comment": "The duration of the item (movie, audio recording, event, etc.) in <a href=\"http://en.wikipedia.org/wiki/ISO_8601\" target=\"new\">ISO 8601 date format</a>.", 
       "comment_plain": "The duration of the item (movie, audio recording, event, etc.) in ISO 8601 date format.", 
@@ -772,8 +1033,8 @@ var SchemaOrg = this.SchemaOrg =
       ]
     }, 
     "editor": {
-      "comment": "Editor for this content.", 
-      "comment_plain": "Editor for this content.", 
+      "comment": "Specifies the Person who edited the CreativeWork.", 
+      "comment_plain": "Specifies the Person who edited the CreativeWork.", 
       "domains": [
         "CreativeWork"
       ], 
@@ -783,17 +1044,30 @@ var SchemaOrg = this.SchemaOrg =
         "Person"
       ]
     }, 
+    "educationRequirements": {
+      "comment": "Educational background needed for the position.", 
+      "comment_plain": "Educational background needed for the position.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "educationRequirements", 
+      "label": "Education Requirements", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "elevation": {
       "comment": "The elevation of a location.", 
       "comment_plain": "The elevation of a location.", 
       "domains": [
+        "GeoShape", 
         "GeoCoordinates"
       ], 
       "id": "elevation", 
       "label": "Elevation", 
       "ranges": [
-        "Number", 
-        "Text"
+        "Text", 
+        "Number"
       ]
     }, 
     "email": {
@@ -832,6 +1106,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Employees", 
       "ranges": [
         "Person"
+      ]
+    }, 
+    "employmentType": {
+      "comment": "Type of employment (e.g. full-time, part-time, contract, temporary, seasonal, internship).", 
+      "comment_plain": "Type of employment (e.g. full-time, part-time, contract, temporary, seasonal, internship).", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "employmentType", 
+      "label": "Employment Type", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "encodesCreativeWork": {
@@ -934,6 +1220,18 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "experienceRequirements": {
+      "comment": "Description of skills and experience needed for the position.", 
+      "comment_plain": "Description of skills and experience needed for the position.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "experienceRequirements", 
+      "label": "Experience Requirements", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "expires": {
       "comment": "Date the content expires and is no longer useful or available. Useful for videos.", 
       "comment_plain": "Date the content expires and is no longer useful or available. Useful for videos.", 
@@ -944,6 +1242,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Expires", 
       "ranges": [
         "Date"
+      ]
+    }, 
+    "familyName": {
+      "comment": "Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the Name property.", 
+      "comment_plain": "Family name. In the U.S., the last name of an Person. This can be used along with givenName instead of the Name property.", 
+      "domains": [
+        "Person"
+      ], 
+      "id": "familyName", 
+      "label": "Family Name", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "fatContent": {
@@ -1054,7 +1364,20 @@ var SchemaOrg = this.SchemaOrg =
       "id": "geo", 
       "label": "Geo", 
       "ranges": [
-        "GeoCoordinates"
+        "GeoCoordinates", 
+        "GeoShape"
+      ]
+    }, 
+    "givenName": {
+      "comment": "Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the Name property.", 
+      "comment_plain": "Given name. In the U.S., the first name of a Person. This can be used along with familyName instead of the Name property.", 
+      "domains": [
+        "Person"
+      ], 
+      "id": "givenName", 
+      "label": "Given Name", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "headline": {
@@ -1094,6 +1417,18 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "hiringOrganization": {
+      "comment": "Organization offering the job position.", 
+      "comment_plain": "Organization offering the job position.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "hiringOrganization", 
+      "label": "Hiring Organization", 
+      "ranges": [
+        "Organization"
+      ]
+    }, 
     "homeLocation": {
       "comment": "A contact location for a person's residence.", 
       "comment_plain": "A contact location for a person's residence.", 
@@ -1105,6 +1440,30 @@ var SchemaOrg = this.SchemaOrg =
       "ranges": [
         "Place", 
         "ContactPoint"
+      ]
+    }, 
+    "honorificPrefix": {
+      "comment": "An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.", 
+      "comment_plain": "An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.", 
+      "domains": [
+        "Person"
+      ], 
+      "id": "honorificPrefix", 
+      "label": "Honorific Prefix", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "honorificSuffix": {
+      "comment": "An honorific suffix preceding a Person's name such as M.D. /PhD/MSCSW.", 
+      "comment_plain": "An honorific suffix preceding a Person's name such as M.D. /PhD/MSCSW.", 
+      "domains": [
+        "Person"
+      ], 
+      "id": "honorificSuffix", 
+      "label": "Honorific Suffix", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "illustrator": {
@@ -1165,6 +1524,30 @@ var SchemaOrg = this.SchemaOrg =
       "label": "In Playlist", 
       "ranges": [
         "MusicPlaylist"
+      ]
+    }, 
+    "incentives": {
+      "comment": "Description of bonus and commission compensation aspects of the job.", 
+      "comment_plain": "Description of bonus and commission compensation aspects of the job.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "incentives", 
+      "label": "Incentives", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "industry": {
+      "comment": "The industry associated with the job position.", 
+      "comment_plain": "The industry associated with the job position.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "industry", 
+      "label": "Industry", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "ingredients": {
@@ -1254,6 +1637,18 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "itemListOrder": {
+      "comment": "Type of ordering (e.g. Ascending, Descending, Unordered).", 
+      "comment_plain": "Type of ordering (e.g. Ascending, Descending, Unordered).", 
+      "domains": [
+        "ItemList"
+      ], 
+      "id": "itemListOrder", 
+      "label": "Item List Order", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "itemOffered": {
       "comment": "The item being sold.", 
       "comment_plain": "The item being sold.", 
@@ -1277,6 +1672,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Item Reviewed", 
       "ranges": [
         "Thing"
+      ]
+    }, 
+    "jobLocation": {
+      "comment": "A (typically single) geographic location associated with the job position.", 
+      "comment_plain": "A (typically single) geographic location associated with the job position.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "jobLocation", 
+      "label": "Job Location", 
+      "ranges": [
+        "Place"
       ]
     }, 
     "jobTitle": {
@@ -1325,6 +1732,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Latitude", 
       "ranges": [
         "Number", 
+        "Text"
+      ]
+    }, 
+    "line": {
+      "comment": "A line is a point-to-point path consisting of two or more points. A line is expressed as a series of two or more point objects separated by space.", 
+      "comment_plain": "A line is a point-to-point path consisting of two or more points. A line is expressed as a series of two or more point objects separated by space.", 
+      "domains": [
+        "GeoShape"
+      ], 
+      "id": "line", 
+      "label": "Line", 
+      "ranges": [
         "Text"
       ]
     }, 
@@ -1429,6 +1848,18 @@ var SchemaOrg = this.SchemaOrg =
         "Organization"
       ]
     }, 
+    "mentions": {
+      "comment": "Indicates that the CreativeWork contains a reference to, but is not necessarily about a concept.", 
+      "comment_plain": "Indicates that the CreativeWork contains a reference to, but is not necessarily about a concept.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "mentions", 
+      "label": "Mentions", 
+      "ranges": [
+        "Thing"
+      ]
+    }, 
     "menu": {
       "comment": "Either the actual menu or a URL of the menu.", 
       "comment_plain": "Either the actual menu or a URL of the menu.", 
@@ -1467,6 +1898,18 @@ var SchemaOrg = this.SchemaOrg =
       "ranges": [
         "Person", 
         "MusicGroup"
+      ]
+    }, 
+    "musicGroupMember": {
+      "comment": "A member of the music group\u2014for example, John, Paul, George, or Ringo.", 
+      "comment_plain": "A member of the music group\u2014for example, John, Paul, George, or Ringo.", 
+      "domains": [
+        "MusicGroup"
+      ], 
+      "id": "musicGroupMember", 
+      "label": "Music Group Member", 
+      "ranges": [
+        "Person"
       ]
     }, 
     "name": {
@@ -1540,6 +1983,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Nutrition", 
       "ranges": [
         "NutritionInformation"
+      ]
+    }, 
+    "occupationalCategory": {
+      "comment": "Category or categories describing the job. Use BLS O*NET-SOC taxonomy: http://www.onetcenter.org/taxonomy.html. Ideally includes textual label and formal code, with the property repeated for each applicable value.", 
+      "comment_plain": "Category or categories describing the job. Use BLS O*NET-SOC taxonomy: http://www.onetcenter.org/taxonomy.html. Ideally includes textual label and formal code, with the property repeated for each applicable value.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "occupationalCategory", 
+      "label": "Occupational Category", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "offerCount": {
@@ -1680,6 +2135,18 @@ var SchemaOrg = this.SchemaOrg =
         "Text"
       ]
     }, 
+    "polygon": {
+      "comment": "A polygon is the area enclosed by a point-to-point path for which the starting and ending points are the same. A polygon is expressed as a series of four or more spacedelimited points where the first and final points are identical.", 
+      "comment_plain": "A polygon is the area enclosed by a point-to-point path for which the starting and ending points are the same. A polygon is expressed as a series of four or more spacedelimited points where the first and final points are identical.", 
+      "domains": [
+        "GeoShape"
+      ], 
+      "id": "polygon", 
+      "label": "Polygon", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "postOfficeBoxNumber": {
       "comment": "The post offce box number for PO box addresses.", 
       "comment_plain": "The post offce box number for PO box addresses.", 
@@ -1777,6 +2244,54 @@ var SchemaOrg = this.SchemaOrg =
         "ImageObject"
       ]
     }, 
+    "printColumn": {
+      "comment": "The number of the column in which the NewsArticle appears in the print edition.", 
+      "comment_plain": "The number of the column in which the NewsArticle appears in the print edition.", 
+      "domains": [
+        "NewsArticle"
+      ], 
+      "id": "printColumn", 
+      "label": "Print Column", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "printEdition": {
+      "comment": "The edition of the print product in which the NewsArticle appears.", 
+      "comment_plain": "The edition of the print product in which the NewsArticle appears.", 
+      "domains": [
+        "NewsArticle"
+      ], 
+      "id": "printEdition", 
+      "label": "Print Edition", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "printPage": {
+      "comment": "If this NewsArticle appears in print, this field indicates the name of the page on which the article is found. Please note that this field is intended for the exact page name (e.g. A5, B18).", 
+      "comment_plain": "If this NewsArticle appears in print, this field indicates the name of the page on which the article is found. Please note that this field is intended for the exact page name (e.g. A5, B18).", 
+      "domains": [
+        "NewsArticle"
+      ], 
+      "id": "printPage", 
+      "label": "Print Page", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "printSection": {
+      "comment": "If this NewsArticle appears in print, this field indicates the print section in which the article appeared.", 
+      "comment_plain": "If this NewsArticle appears in print, this field indicates the print section in which the article appeared.", 
+      "domains": [
+        "NewsArticle"
+      ], 
+      "id": "printSection", 
+      "label": "Print Section", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "producer": {
       "comment": "The producer of the movie, TV series, season, or episode, or video.", 
       "comment_plain": "The producer of the movie, TV series, season, or episode, or video.", 
@@ -1830,6 +2345,19 @@ var SchemaOrg = this.SchemaOrg =
         "Mass"
       ]
     }, 
+    "provider": {
+      "comment": "Specifies the Person or Organization that distributed the CreativeWork.", 
+      "comment_plain": "Specifies the Person or Organization that distributed the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "provider", 
+      "label": "Provider", 
+      "ranges": [
+        "Person", 
+        "Organization"
+      ]
+    }, 
     "publisher": {
       "comment": "The publisher of the creative work.", 
       "comment_plain": "The publisher of the creative work.", 
@@ -1840,6 +2368,30 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Publisher", 
       "ranges": [
         "Organization"
+      ]
+    }, 
+    "publishingPrinciples": {
+      "comment": "Link to page describing the editorial principles of the organization primarily responsible for the creation of the CreativeWork.", 
+      "comment_plain": "Link to page describing the editorial principles of the organization primarily responsible for the creation of the CreativeWork.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "publishingPrinciples", 
+      "label": "Publishing Principles", 
+      "ranges": [
+        "URL"
+      ]
+    }, 
+    "qualifications": {
+      "comment": "Specific qualifications required for this role.", 
+      "comment_plain": "Specific qualifications required for this role.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "qualifications", 
+      "label": "Qualifications", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "ratingCount": {
@@ -1938,6 +2490,18 @@ var SchemaOrg = this.SchemaOrg =
         "Person"
       ]
     }, 
+    "replyToUrl": {
+      "comment": "The URL at which a reply may be posted to the specified UserComment.", 
+      "comment_plain": "The URL at which a reply may be posted to the specified UserComment.", 
+      "domains": [
+        "UserComments"
+      ], 
+      "id": "replyToUrl", 
+      "label": "Reply to Url", 
+      "ranges": [
+        "URL"
+      ]
+    }, 
     "representativeOfPage": {
       "comment": "Indicates whether this image is representative of the content of the page.", 
       "comment_plain": "Indicates whether this image is representative of the content of the page.", 
@@ -1960,6 +2524,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Requires Subscription", 
       "ranges": [
         "Boolean"
+      ]
+    }, 
+    "responsibilities": {
+      "comment": "Responsibilities associated with this role.", 
+      "comment_plain": "Responsibilities associated with this role.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "responsibilities", 
+      "label": "Responsibilities", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "reviewBody": {
@@ -2012,6 +2588,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Reviews", 
       "ranges": [
         "Review"
+      ]
+    }, 
+    "salaryCurrency": {
+      "comment": "The currency (coded using ISO 4217, http://en.wikipedia.org/wiki/ISO_4217 used for the main salary information in this job posting.", 
+      "comment_plain": "The currency (coded using ISO 4217, http://en.wikipedia.org/wiki/ISO_4217 used for the main salary information in this job posting.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "salaryCurrency", 
+      "label": "Salary Currency", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "saturatedFatContent": {
@@ -2110,6 +2698,18 @@ var SchemaOrg = this.SchemaOrg =
         "URL"
       ]
     }, 
+    "skills": {
+      "comment": "Skills required to fulfill this role.", 
+      "comment_plain": "Skills required to fulfill this role.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "skills", 
+      "label": "Skills", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "sodiumContent": {
       "comment": "The number of milligrams of sodium.", 
       "comment_plain": "The number of milligrams of sodium.", 
@@ -2120,6 +2720,30 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Sodium Content", 
       "ranges": [
         "Mass"
+      ]
+    }, 
+    "sourceOrganization": {
+      "comment": "The Organization on whose behalf the creator was working.", 
+      "comment_plain": "The Organization on whose behalf the creator was working.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "sourceOrganization", 
+      "label": "Source Organization", 
+      "ranges": [
+        "Organization"
+      ]
+    }, 
+    "specialCommitments": {
+      "comment": "Any special commitments associated with this job posting. Valid entries include VeteranCommit, MilitarySpouseCommit, etc.", 
+      "comment_plain": "Any special commitments associated with this job posting. Valid entries include VeteranCommit, MilitarySpouseCommit, etc.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "specialCommitments", 
+      "label": "Special Commitments", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "spouse": {
@@ -2224,6 +2848,42 @@ var SchemaOrg = this.SchemaOrg =
         "ImageObject"
       ]
     }, 
+    "thumbnailUrl": {
+      "comment": "A thumbnail image relevant to the Thing.", 
+      "comment_plain": "A thumbnail image relevant to the Thing.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "thumbnailUrl", 
+      "label": "Thumbnail Url", 
+      "ranges": [
+        "URL"
+      ]
+    }, 
+    "tickerSymbol": {
+      "comment": "The exchange traded instrument associated with a Corporation object. The tickerSymbol is expressed as an exchange and an instrument name separated by a space character. For the exchange component of the tickerSymbol attribute, we reccommend using the controlled vocaulary of Market Identifier Codes (MIC) specified in ISO15022.", 
+      "comment_plain": "The exchange traded instrument associated with a Corporation object. The tickerSymbol is expressed as an exchange and an instrument name separated by a space character. For the exchange component of the tickerSymbol attribute, we reccommend using the controlled vocaulary of Market Identifier Codes (MIC) specified in ISO15022.", 
+      "domains": [
+        "Corporation"
+      ], 
+      "id": "tickerSymbol", 
+      "label": "Ticker Symbol", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
+    "title": {
+      "comment": "The title of the job.", 
+      "comment_plain": "The title of the job.", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "title", 
+      "label": "Title", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "totalTime": {
       "comment": "The total time it takes to prepare and cook the recipe, in <a href=\"http://en.wikipedia.org/wiki/ISO_8601\" target=\"new\">ISO 8601 duration format</a>.", 
       "comment_plain": "The total time it takes to prepare and cook the recipe, in ISO 8601 duration format.", 
@@ -2276,6 +2936,19 @@ var SchemaOrg = this.SchemaOrg =
         "Mass"
       ]
     }, 
+    "transcript": {
+      "comment": "If this MediaObject is an AudioObject or VideoObject, the transcript of that object.", 
+      "comment_plain": "If this MediaObject is an AudioObject or VideoObject, the transcript of that object.", 
+      "domains": [
+        "AudioObject", 
+        "VideoObject"
+      ], 
+      "id": "transcript", 
+      "label": "Transcript", 
+      "ranges": [
+        "Text"
+      ]
+    }, 
     "unsaturatedFatContent": {
       "comment": "The number of grams of unsaturated fat.", 
       "comment_plain": "The number of grams of unsaturated fat.", 
@@ -2310,6 +2983,18 @@ var SchemaOrg = this.SchemaOrg =
       "label": "URL", 
       "ranges": [
         "URL"
+      ]
+    }, 
+    "version": {
+      "comment": "The version of the CreativeWork embodied by a specified resource.", 
+      "comment_plain": "The version of the CreativeWork embodied by a specified resource.", 
+      "domains": [
+        "CreativeWork"
+      ], 
+      "id": "version", 
+      "label": "Version", 
+      "ranges": [
+        "Number"
       ]
     }, 
     "video": {
@@ -2358,6 +3043,30 @@ var SchemaOrg = this.SchemaOrg =
       "label": "Width", 
       "ranges": [
         "Distance"
+      ]
+    }, 
+    "wordCount": {
+      "comment": "The number of words in the text of the Article.", 
+      "comment_plain": "The number of words in the text of the Article.", 
+      "domains": [
+        "Article"
+      ], 
+      "id": "wordCount", 
+      "label": "Word Count", 
+      "ranges": [
+        "Integer"
+      ]
+    }, 
+    "workHours": {
+      "comment": "The typical working hours for this job (e.g. 1st shift, night shift, 8am-5pm).", 
+      "comment_plain": "The typical working hours for this job (e.g. 1st shift, night shift, 8am-5pm).", 
+      "domains": [
+        "JobPosting"
+      ], 
+      "id": "workHours", 
+      "label": "Work Hours", 
+      "ranges": [
+        "Text"
       ]
     }, 
     "workLocation": {
@@ -2416,13 +3125,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -2431,9 +3151,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -2911,13 +3637,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -2926,16 +3663,24 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "articleBody", 
-        "articleSection"
+        "articleSection", 
+        "wordCount"
       ], 
       "specific_properties": [
         "articleBody", 
-        "articleSection"
+        "articleSection", 
+        "wordCount"
       ], 
       "subtypes": [
         "BlogPosting", 
@@ -3010,13 +3755,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -3025,10 +3781,17 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -3042,9 +3805,12 @@ var SchemaOrg = this.SchemaOrg =
         "regionsAllowed", 
         "requiresSubscription", 
         "uploadDate", 
-        "width"
+        "width", 
+        "transcript"
       ], 
-      "specific_properties": [], 
+      "specific_properties": [
+        "transcript"
+      ], 
       "subtypes": [], 
       "supertypes": [
         "MediaObject"
@@ -3775,13 +4541,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -3790,9 +4567,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "blogPosts"
       ], 
@@ -3821,13 +4604,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -3836,12 +4630,19 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "articleBody", 
-        "articleSection"
+        "articleSection", 
+        "wordCount"
       ], 
       "specific_properties": [], 
       "subtypes": [], 
@@ -3908,13 +4709,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -3923,9 +4735,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "bookEdition", 
         "bookFormat", 
@@ -4509,13 +5327,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -4524,9 +5353,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -4851,13 +5686,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -4866,9 +5712,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -5065,13 +5917,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -5080,9 +5943,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -5239,9 +6108,12 @@ var SchemaOrg = this.SchemaOrg =
         "location", 
         "members", 
         "reviews", 
-        "telephone"
+        "telephone", 
+        "tickerSymbol"
       ], 
-      "specific_properties": [], 
+      "specific_properties": [
+        "tickerSymbol"
+      ], 
       "subtypes": [], 
       "supertypes": [
         "Organization"
@@ -5332,13 +6204,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -5347,20 +6230,37 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -5369,9 +6269,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "subtypes": [
@@ -6923,6 +7829,40 @@ var SchemaOrg = this.SchemaOrg =
       ], 
       "url": "http://schema.org/GeoCoordinates"
     }, 
+    "GeoShape": {
+      "ancestors": [
+        "Thing", 
+        "Intangible", 
+        "StructuredValue"
+      ], 
+      "comment": "The geographic shape of a place.", 
+      "comment_plain": "The geographic shape of a place.", 
+      "id": "GeoShape", 
+      "label": "Geo Shape", 
+      "properties": [
+        "description", 
+        "image", 
+        "name", 
+        "url", 
+        "box", 
+        "circle", 
+        "elevation", 
+        "line", 
+        "polygon"
+      ], 
+      "specific_properties": [
+        "box", 
+        "circle", 
+        "elevation", 
+        "line", 
+        "polygon"
+      ], 
+      "subtypes": [], 
+      "supertypes": [
+        "StructuredValue"
+      ], 
+      "url": "http://schema.org/GeoShape"
+    }, 
     "GolfCourse": {
       "ancestors": [
         "Thing", 
@@ -7865,13 +8805,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -7880,9 +8831,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -7913,13 +8870,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -7928,10 +8896,17 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -8027,6 +9002,7 @@ var SchemaOrg = this.SchemaOrg =
       "specific_properties": [], 
       "subtypes": [
         "Enumeration", 
+        "JobPosting", 
         "Language", 
         "Offer", 
         "Quantity", 
@@ -8130,13 +9106,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -8145,14 +9132,22 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
-        "itemListElement"
+        "itemListElement", 
+        "itemListOrder"
       ], 
       "specific_properties": [
-        "itemListElement"
+        "itemListElement", 
+        "itemListOrder"
       ], 
       "subtypes": [], 
       "supertypes": [
@@ -8176,13 +9171,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -8191,9 +9197,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -8254,6 +9266,65 @@ var SchemaOrg = this.SchemaOrg =
         "Store"
       ], 
       "url": "http://schema.org/JewelryStore"
+    }, 
+    "JobPosting": {
+      "ancestors": [
+        "Thing", 
+        "Intangible"
+      ], 
+      "comment": "A listing that describes a job opening in a certain organization.", 
+      "comment_plain": "A listing that describes a job opening in a certain organization.", 
+      "id": "JobPosting", 
+      "label": "Job Posting", 
+      "properties": [
+        "description", 
+        "image", 
+        "name", 
+        "url", 
+        "baseSalary", 
+        "benefits", 
+        "datePosted", 
+        "educationRequirements", 
+        "employmentType", 
+        "experienceRequirements", 
+        "hiringOrganization", 
+        "incentives", 
+        "industry", 
+        "jobLocation", 
+        "occupationalCategory", 
+        "qualifications", 
+        "responsibilities", 
+        "salaryCurrency", 
+        "skills", 
+        "specialCommitments", 
+        "title", 
+        "workHours"
+      ], 
+      "specific_properties": [
+        "baseSalary", 
+        "benefits", 
+        "datePosted", 
+        "educationRequirements", 
+        "employmentType", 
+        "experienceRequirements", 
+        "hiringOrganization", 
+        "incentives", 
+        "industry", 
+        "jobLocation", 
+        "occupationalCategory", 
+        "qualifications", 
+        "responsibilities", 
+        "salaryCurrency", 
+        "skills", 
+        "specialCommitments", 
+        "title", 
+        "workHours"
+      ], 
+      "subtypes": [], 
+      "supertypes": [
+        "Intangible"
+      ], 
+      "url": "http://schema.org/JobPosting"
     }, 
     "LakeBodyOfWater": {
       "ancestors": [
@@ -8737,13 +9808,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -8752,9 +9834,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -8802,13 +9890,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -8817,10 +9916,17 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -8837,6 +9943,7 @@ var SchemaOrg = this.SchemaOrg =
         "width"
       ], 
       "specific_properties": [
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -9322,13 +10429,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -9337,9 +10455,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "actors", 
         "director", 
@@ -9557,13 +10681,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -9572,9 +10707,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "numTracks", 
         "tracks", 
@@ -9650,10 +10791,12 @@ var SchemaOrg = this.SchemaOrg =
         "reviews", 
         "telephone", 
         "albums", 
+        "musicGroupMember", 
         "tracks"
       ], 
       "specific_properties": [
         "albums", 
+        "musicGroupMember", 
         "tracks"
       ], 
       "subtypes": [], 
@@ -9677,13 +10820,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -9692,9 +10846,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "numTracks", 
         "tracks"
@@ -9726,13 +10886,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -9741,9 +10912,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "byArtist", 
         "duration", 
@@ -9860,13 +11037,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -9875,10 +11063,17 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -10000,13 +11195,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -10015,14 +11221,32 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "articleBody", 
-        "articleSection"
+        "articleSection", 
+        "wordCount", 
+        "dateline", 
+        "printColumn", 
+        "printEdition", 
+        "printPage", 
+        "printSection"
       ], 
-      "specific_properties": [], 
+      "specific_properties": [
+        "dateline", 
+        "printColumn", 
+        "printEdition", 
+        "printPage", 
+        "printSection"
+      ], 
       "subtypes": [], 
       "supertypes": [
         "Article"
@@ -10492,13 +11716,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -10507,9 +11742,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -10724,6 +11965,7 @@ var SchemaOrg = this.SchemaOrg =
         "image", 
         "name", 
         "url", 
+        "additionalName", 
         "address", 
         "affiliation", 
         "alumniOf", 
@@ -10734,10 +11976,14 @@ var SchemaOrg = this.SchemaOrg =
         "contactPoints", 
         "deathDate", 
         "email", 
+        "familyName", 
         "faxNumber", 
         "follows", 
         "gender", 
+        "givenName", 
         "homeLocation", 
+        "honorificPrefix", 
+        "honorificSuffix", 
         "interactionCount", 
         "jobTitle", 
         "knows", 
@@ -10753,6 +11999,7 @@ var SchemaOrg = this.SchemaOrg =
         "worksFor"
       ], 
       "specific_properties": [
+        "additionalName", 
         "address", 
         "affiliation", 
         "alumniOf", 
@@ -10763,10 +12010,14 @@ var SchemaOrg = this.SchemaOrg =
         "contactPoints", 
         "deathDate", 
         "email", 
+        "familyName", 
         "faxNumber", 
         "follows", 
         "gender", 
+        "givenName", 
         "homeLocation", 
+        "honorificPrefix", 
+        "honorificSuffix", 
         "interactionCount", 
         "jobTitle", 
         "knows", 
@@ -10896,13 +12147,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -10911,9 +12173,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -11464,13 +12732,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -11479,9 +12758,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -11743,13 +13028,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -11758,9 +13054,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "cookTime", 
         "cookingMethod", 
@@ -11974,13 +13276,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -11989,9 +13302,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "itemReviewed", 
         "reviewBody", 
@@ -12138,13 +13457,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -12153,12 +13483,19 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "articleBody", 
-        "articleSection"
+        "articleSection", 
+        "wordCount"
       ], 
       "specific_properties": [], 
       "subtypes": [], 
@@ -12220,13 +13557,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -12235,9 +13583,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -12298,13 +13652,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -12313,9 +13678,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -12519,13 +13890,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -12534,9 +13916,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -13018,6 +14406,7 @@ var SchemaOrg = this.SchemaOrg =
       "subtypes": [
         "ContactPoint", 
         "GeoCoordinates", 
+        "GeoShape", 
         "NutritionInformation"
       ], 
       "supertypes": [
@@ -13111,13 +14500,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -13126,9 +14526,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "actors", 
         "director", 
@@ -13172,13 +14578,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -13187,9 +14604,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "endDate", 
         "episodes", 
@@ -13229,13 +14652,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -13244,9 +14678,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "actors", 
         "director", 
@@ -13295,13 +14735,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -13310,9 +14761,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -13936,9 +15393,20 @@ var SchemaOrg = this.SchemaOrg =
         "performers", 
         "startDate", 
         "subEvents", 
-        "superEvent"
+        "superEvent", 
+        "commentText", 
+        "commentTime", 
+        "creator", 
+        "discusses", 
+        "replyToUrl"
       ], 
-      "specific_properties": [], 
+      "specific_properties": [
+        "commentText", 
+        "commentTime", 
+        "creator", 
+        "discusses", 
+        "replyToUrl"
+      ], 
       "subtypes": [], 
       "supertypes": [
         "UserInteraction"
@@ -14242,13 +15710,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14257,9 +15736,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -14290,13 +15775,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14305,10 +15801,17 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
+        "associatedArticle", 
         "bitrate", 
         "contentSize", 
         "contentURL", 
@@ -14326,6 +15829,7 @@ var SchemaOrg = this.SchemaOrg =
         "caption", 
         "productionCompany", 
         "thumbnail", 
+        "transcript", 
         "videoFrameSize", 
         "videoQuality"
       ], 
@@ -14333,6 +15837,7 @@ var SchemaOrg = this.SchemaOrg =
         "caption", 
         "productionCompany", 
         "thumbnail", 
+        "transcript", 
         "videoFrameSize", 
         "videoQuality"
       ], 
@@ -14423,13 +15928,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14438,9 +15954,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -14466,13 +15988,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14481,9 +16014,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -14509,13 +16048,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14524,9 +16074,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -14552,13 +16108,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14567,9 +16134,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -14629,13 +16202,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14644,9 +16228,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video", 
         "breadcrumb", 
         "isPartOf", 
@@ -14690,13 +16280,24 @@ var SchemaOrg = this.SchemaOrg =
         "name", 
         "url", 
         "about", 
+        "accountablePerson", 
         "aggregateRating", 
+        "alternativeHeadline", 
+        "associatedMedia", 
         "audio", 
         "author", 
         "awards", 
+        "comment", 
         "contentLocation", 
         "contentRating", 
+        "contributor", 
+        "copyrightHolder", 
+        "copyrightYear", 
+        "creator", 
+        "dateCreated", 
+        "dateModified", 
         "datePublished", 
+        "discussionUrl", 
         "editor", 
         "encodings", 
         "genre", 
@@ -14705,9 +16306,15 @@ var SchemaOrg = this.SchemaOrg =
         "interactionCount", 
         "isFamilyFriendly", 
         "keywords", 
+        "mentions", 
         "offers", 
+        "provider", 
         "publisher", 
+        "publishingPrinciples", 
         "reviews", 
+        "sourceOrganization", 
+        "thumbnailUrl", 
+        "version", 
         "video"
       ], 
       "specific_properties": [], 
@@ -14856,5 +16463,6 @@ var SchemaOrg = this.SchemaOrg =
       ], 
       "url": "http://schema.org/Zoo"
     }
-  }
-};
+  }, 
+  "valid": "2012-02-14"
+}
