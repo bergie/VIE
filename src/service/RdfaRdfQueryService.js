@@ -31,11 +31,31 @@ VIE.prototype.RdfaRdfQueryService.prototype = {
     },
 	    
     analyze: function(analyzable) {
-        analyzable.reject("Not yet implemented");
+        // in a certain way, analyze is the same as load
+        return this.load(analyzable);
     },
         
     load : function(loadable) {
-        loadable.reject("Not yet implemented");
+        var service = this;
+        var correct = loadable instanceof this.vie.Loadable || loadable instanceof this.vie.Analyzable;
+        if (!correct) {
+            throw new Error("Invalid Loadable/Analyzable passed");
+        }
+        
+        var element = loadable.options.element ? loadable.options.element : jQuery(document);
+        try {
+            var rdf = jQuery(element).find("[about],[typeof]").rdfa();
+            
+            jQuery.each(jQuery(element).xmlns(), function(prefix, ns){
+                service.vie.namespaces.addOrReplace(prefix, ns.toString());
+            });
+            
+            var entities = VIE.Util.rdf2Entities(this, rdf);
+            
+            loadable.resolve(entities);
+        } catch (e) {
+            loadable.reject(e);
+        }
     },
 
     save : function(savable) {
