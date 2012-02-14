@@ -73,8 +73,21 @@ VIE.prototype.RdfaService.prototype = {
 
         var correct = analyzable instanceof this.vie.Analyzable;
         if (!correct) {throw "Invalid Analyzable passed";}
+        
+        var loadable = new this.vie.Loadable({element : analyzable.options.element});        
+        loadable.deferred = analyzable.deferred;
+        loadable.resolve = analyzable.deferred.resolve;
+        loadable.resolveWith = analyzable.deferred.resolveWith;
+        loadable.reject = analyzable.deferred.reject;
+        loadable.rejectWith = analyzable.deferred.rejectWith;
+        loadable.success = analyzable.done = analyzable.deferred.done;
+        loadable.fail = analyzable.deferred.fail;
+        loadable.then = analyzable.deferred.then;
+        loadable.always = analyzable.deferred.always;
+        loadable.from = analyzable.using;
+        loadable.to = analyzable.using;
 
-        return this.load(new this.vie.Loadable({element : analyzable.options.element}));
+        return this.load(loadable);
     },
         
     load : function(loadable) {
