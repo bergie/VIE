@@ -1,11 +1,11 @@
 jQuery(document).ready(function() {
-    jQuery('#features').accordion({
+    jQuery('.features').accordion({
         collapsible: true,
         active: false
     });
     jQuery('#moreinfo').tabs();
 
-    jQuery('#features > div').each(function() {
+    jQuery('.features > div').each(function() {
         var feature = jQuery(this).attr('id');
         if (!feature) {
             return true;

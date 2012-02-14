@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html
+    version="XHTML+RDFa 1.0"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xml:lang="en">
+    <head>
+        <title>VIE browser tests</title>
+        <script type="text/javascript" src="../lib/jquery/1.7/jquery-1.7.1.min.js"></script>
+
+        <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="qunit.js"></script>
+        <script type="text/javascript">
+            QUnit.config.testTimeout = 30000; // 30 seconds
+        </script>
+        
+        <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
+        <script type="text/javascript" src="../lib/underscoreJS/underscore.js"></script>
+        <script type="text/javascript" src="../lib/backboneJS/backbone.js"></script>
+
+        
+        <!-- FALLBACKS -->
+        
+        <script type="text/javascript">
+            if (window.jQuery === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></' + 'script>');
+            }
+            if (window.JSON === undefined ) { 
+                document.write('<' + 'script src="../lib/json/json2.js">/script>"></' + 'script>');
+            }
+        </script>
+        <script type="text/javascript">
+            if (jQuery.rdf === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/jquery.rdfquery.debug.js"></' + 'script>');
+            }
+            if (window._ === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/underscore.min.js"></' + 'script>');
+            }
+        </script>
+        <script type="text/javascript">
+            if (window.Backbone === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/backbone.min.js"></' + 'script>');
+            }
+        </script>
+        <script type="text/javascript">
+            if (window.JSON === undefined ) { 
+                document.write('<' + 'script src="https://raw.github.com/douglascrockford/JSON-js/master/json2.js"></' + 'script>');
+            }
+        </script>
+        
+        <!-- vie.js itself -->
+        <script type="text/javascript" src="../dist/vie-latest.debug.js"></script>
+        <script type="text/javascript">
+            if (window.VIE === undefined) {
+                // we are in the gh-pages branch and have another location of the library!
+                document.write('<' + 'script type="text/javascript" src="../js/vie-2.0.0alpha1.js"></' + 'script>');
+            }
+        </script>
+
+        <!-- load test scripts -->
+        <!-- CORE -->
+        <script type="text/javascript" src="core/vie.js"></script>
+        <script type="text/javascript" src="core/type.js"></script>
+        <script type="text/javascript" src="core/attribute.js"></script>
+        <script type="text/javascript" src="core/namespaces.js"></script>
+        <script type="text/javascript" src="core/classic.js"></script>
+
+        <!-- SERVICES -->
+        <script type="text/javascript" src="service/rdfa.js"></script>
+        <script type="text/javascript" src="service/stanbol.js"></script>
+        <script type="text/javascript" src="service/dbpedia.js"></script>
+
+        <!-- STANDARDS -->
+        <script type="text/javascript" src="standard/rdfa11-testharness.js"></script>
+
+        <!-- MISC -->
+        <script type="text/javascript" src="core/schema.js"></script>
+
+        <!-- Performance testing -->
+        <!--<script type="text/javascript" src="../utils/jslitmus/JSLitmus.js"></script>
+        <script type="text/javascript" src="speed.js"></script>-->
+
+    </head>
+    <body xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:dbp="http://dbpedia.org/property/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:iks="http://iks-project.eu/ontology/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mgd="http://www.midgard-project.org/midgard2/9.03/">
+        <h1 id="qunit-header">Unit tests for vie.js - using QUnit</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture">
+            <div class="rdfa-simple">
+                <div about="http://dbpedia.org/resource/Albert_Einstein">
+                    <span property="foaf:name">Albert Einstein</span>
+                    <span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span>
+                    <div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany"></div>
+                    <span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span>
+                </div>
+            </div>
+            <div class="rdfa-updating">
+                <div about="http://dbpedia.org/resource/Albert_Einstein">
+                    <span property="foaf:name">Albert Einstein</span>
+                    <span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span>
+                    <div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany"></div>
+                    <span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span>
+                </div>
+            </div>
+            <div class="rdfa-nested">
+                <div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                    <h1 property="dcterms:title">
+                        <span>News item title</span>
+                    </h1>
+                </div>
+            </div>
+            <div class="rdfa-property-content">
+                <div about="http://twitter.com/bergie">
+                    <span property="foaf:name">Henri Bergius</span>
+                    <span property="iks:online" content="0"></span>
+                </div>
+            </div>
+            <div class="rdfa-wikipedia">
+                <p about="http://www.example.com/books/wikinomics">
+                In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business. The book is due to be published in <span property="dc:date" content="2006-10-01">October 2006</span>.
+                </p>
+            </div>
+            <div class="rdfa-image-entitization">
+                <div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item">
+                    <h1 property="dcterms:title"><span>News item title</span></h1>
+                    <span rel="mgd:icon"><img typeof="mgd:photo" src="http://example.net/image.jpg" /></span>
+                 </div>
+             </div>
+             <div class="rdfa11-1">
+                 <p>This photo was taken by <span class="author" about="photo1.jpg" property="dc:creator">Mark Birbeck</span>.</p>'
+             </div>
+        </div>
+
+        <!--<h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>
+        <div id="jslitmus_container" style="margin: 20px 10px;"></div>-->
+    </body>
+</html>

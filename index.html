@@ -9,7 +9,7 @@
         <script src="js/vendor/underscore.min.js"></script>
         <script src="js/vendor/backbone.min.js"></script>
         <script src="js/vendor/jquery.rdfquery.min.js"></script>
-        <script src="js/vie-2.0.0alpha1.js"></script>
+        <script src="js/vie-2.0.0_20120214153134.debug.js"></script>
         <script src="js/vie-examples.js"></script>
     </head>
     <body xmlns:doap="http://usefulinc.com/ns/doap#" about="http://viejs.org/#vie" typeof="doap:Project">
@@ -26,78 +26,7 @@
 
                 <p>VIE can do quite a bit to make applications smarter. If you're looking for simple in-page editing, check out the VIE-powered <a href="http://createjs.org/">Create UI</a>. Otherwise, open the examples below:</p>
 
-                <div id="features">
-                    <h3><a href="#">Make annotated content editable</a></h3>
-                    <div id="editable">
-                        <div class="examplecontent">
-                            <p>Remember to buy:</p>
-                            <ul about="#shoppinglist" rel="hasItem">
-                                <li about="#milk">
-                                    <span property="name">Milk</span>
-                                </li>
-                                <li about="#bread">
-                                    <span property="name">Bread</span>
-                                </li>
-                                <li about="#yogurt">
-                                    <span property="name">Yogurt</span>
-                                </li>
-                             </ul>
-                        </div>
-                        <p>Now make the list above editable:</p>
-                        <div class="exampleholder">
-                          <textarea>
-var changedEntities = [];
-var saveButton = null;
-
-var v = new VIE();
-v.use(new v.RdfaService);
-v.entities.bind('add', function(entity) {
-  jQuery('[about="' + entity.getSubjectUri() + '"] [property]').each(function() {
-    if (v.services.rdfa.getElementSubject(this) !== entity.id) {
-      return;
-    }
-    var editableElement = jQuery(this);
-    var property = v.services.rdfa.getElementPredicate(this);
-    editableElement.attr('contenteditable', true);
-    editableElement.effect('highlight', {color: '#67cc08'}, 3000);
-    editableElement.bind('keyup click change', function() {
-      var content = editableElement.html();
-      if (content !== entity.get(property)) {
-        var changedProps = {};
-        changedProps[property] = content;
-        entity.set(changedProps);
-      }
-    });
-  });
-
-  entity.bind('change', function() {
-    if (changedEntities.indexOf(entity) === -1) {
-      changedEntities.push(entity);
-    }
-    if (saveButton) {
-      return;
-    }
-
-    saveButton = jQuery('<button>Save</button>');
-    saveButton.hide();
-    saveButton.click(function() {
-      alert('We would save ' + changedEntities.length + ' changed entities');
-      _.each(changedEntities, function(entity) {
-        //entity.save();
-      });
-      changedEntities = [];
-      saveButton.remove();
-      saveButton = null;
-    });
-    jQuery('#editable .examplecontent').append(saveButton);
-    saveButton.show('blind');
-  });
-});
-  v.load({element: '#editable'}).using('rdfa').execute();
-                            </textarea>
-                            <button>Run</button> 
-                         </div>
-                    </div>
+                <div class="features">
                     <h3><a href="#">Get enhancements for element content</a></h3>
                     <div id="analyze">
                         <p>Given the following contents:</p>
@@ -109,10 +38,9 @@ Until September 2008, European policy measures were limited to a small number of
                             <textarea>
 var v = new VIE();
 v.use(
-  new v.StanbolService({
-    url: "http://dev.iks-project.eu/stanbolfull",
-    proxyDisabled: true
-  })
+    new v.StanbolService({
+        url: "http://dev.iks-project.eu/stanbolfull"
+    })
 );
 v.analyze({
   element: jQuery('#analyze blockquote')
@@ -231,6 +159,46 @@ vie
                 </div>
             </article>
 
+            <article>
+                <h2>Code snippets ...</h2>
+
+                <p>VIE is designed to ease your work to build semantically enriched interaction with entities. Here are several snippets that show how to use it.</p>
+
+                <div class="features">
+                    <h3><a href="#">Load the full ontology from http://schema.org into VIE.</a></h3>
+                    <div id="schemaOrg">
+                        <div class="exampleholder">
+                            <textarea>
+var vie = new VIE();
+vie.loadSchema("http://schema.rdfs.org/all.json", 
+{
+    baseNS : "http://schema.org",
+    success: function () {
+        jQuery('#schemaOrg .resultsholder').append('<div class="msg">Successfully loaded the schema ontology!</di>');
+        jQuery('#schemaOrg .resultsholder').append('<div class="msg">We now have ' + this.types.list().length + ' classes loaded!</di>');
+        var Place = this.types.get("Place");
+        var City = this.types.get("City");
+        var Person = this.types.get("Person");
+        jQuery('#schemaOrg .resultsholder')
+            .append('<div class="msg">BTW (1): A schema:City is <b>' + 
+                ((City.isof(Place))? ' ' : 'not ') + 
+                '</b>of type schema:Place, but <b>' + 
+                ((City.isof(Person))? ' ' : 'not ') + 
+                '</b>of schema:Person!</div>');
+        jQuery('#schemaOrg .resultsholder')
+            .append('<div class="msg">BTW (2): A schema:City has <b>' + City.attributes.list().length + ' attributes, including all inherited!</div>');
+    },
+    error: function () {
+        jQuery('#schemaOrg .resultsholder').append('<div class="msg">Something went wrong with loading the ontology!</di>');
+    }
+});
+                        </textarea>
+                        <button>Run</button>
+                    </div>
+                    <div class="resultsholder"></div>
+                </div>
+
+            </article>
             <div id="moreinfo">
                 <ul class="nav">
                     <li><a href="#widgets">Widgets</a></li>
@@ -244,20 +212,23 @@ vie
                     <p>There are several user interface widgets built on top of VIE. You can easily drop these widgets into your web application to gain immediate benefit of semantic interaction:</p>
                     <ul>
                         <li><a href="http://createjs.org/">Create</a> &mdash; inline content editing tool</li>
-                        <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; automatic content annotation tool</li>
+                        <li><a href="http://neogermi.github.com/VIEwidgets/widgets/image_search/">Image Search</a> &mdash; semantic search for images</li>
+                        <li><a href="http://neogermi.github.com/VIEwidgets/widgets/auto_tagger/">Auto Tagger</a> &mdash; automatic tagging of content</li>
+                        <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a> &mdash; semi-automatic content annotation tool</li>
                     </ul>
                 </article>
                 <article id="documentation">
                     <h2>Tutorials</h2>
                     <ul>
-                        <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
+                        <li><a href="http://blog.iks-project.eu/vie-towards-v2-0-update/">Towards IKS v2.0</a></li>
                         <li><a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">Semantic UI Development with VIE</a></li>
+                        <li><a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">VIE 2.0 introduction</a></li>
                     </ul>
 
                     <h2>API documentation</h2>
                     <ul>
+                        <li><a href="docs/2.0.0/VIE.html">VIE 2.0.0</a></li>
                         <li><a href="docs/1.0.0/">VIE 1.0.0</a></li>
-                        <li><a href="docs/2.0.0alpha1/VIE.html">VIE 2.0.0alpha1</a></li>
                     </ul>
                 </article>
                 <article id="integrating">
