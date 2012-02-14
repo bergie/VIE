@@ -119,7 +119,7 @@ test("Test RDFa image entitization", function() {
         equal(icons.at(0).id, '<http://example.net/image.jpg>');
         
         equal(jQuery('img', html).length, 1);
-
+        
         // Remove it and replace with another image
         icons.remove(icons.at(0));
         equal(jQuery('img', html).length, 0);

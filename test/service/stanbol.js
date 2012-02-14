@@ -12,7 +12,8 @@ test("VIE.js StanbolService - Analyze", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     } 
-    var elem = $('<p>This is a small test, where Steve Jobs sings a song.</p>');
+    // Sending a an example with double quotation marks.
+    var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
@@ -21,7 +22,7 @@ test("VIE.js StanbolService - Analyze", function () {
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
         ok(entities);
-        ok(entities.length > 0);
+        ok(entities.length > 0, "At least one entity returned");
         ok(entities instanceof Array);
         var allEntities = true;
         for(var i=0; i<entities.length; i++){

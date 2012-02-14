@@ -37,8 +37,8 @@ test("Initialization", function() {
             equal(hospital.attributes.get('geo').range.length, 2);
             equal(hospital.attributes.get('geo').range[0], "GeoCoordinates");
             equal(hospital.attributes.get('location').range.length, 2);
-            equal(hospital.attributes.get('location').range[0], "Place");
-            equal(hospital.attributes.get('location').range[1], "PostalAddress");
+            equal(hospital.attributes.get('location').range[0], "PostalAddress");
+            equal(hospital.attributes.get('location').range[1], "Place");
             
             raises(function () {
                 hospital.attributes.remove("description");

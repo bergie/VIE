@@ -130,11 +130,17 @@ test("VIE - Creation/Extension/Removal of types", function() {
     v.types.remove(veryspecialCreaturey);
     equal(v.types.list().length, 6);
     
+    //removes only that type
+    v.types.remove("SpecialCreatuery");
+    equal(v.types.list().length, 5);
+    
     //recursively removes all types
     v.types.remove(thingy);
     equal(v.types.list().length, 1);
     
-    
+    //you cannot remove owl:Thing
+    v.types.remove("owl:Thing");
+    equal(v.types.list().length, 1);
 });
 
 test("VIE - Instantiation of types", function() {
@@ -209,7 +215,7 @@ test("VIE - Type Sorting", function () {
     ok(sortedArrayDesc2);
     
     var test = function (arr) {
-        for (var i = 0; i < arr.length-1; i++) {
+        for (var i = 0; i < arr.length; i++) {
             for (var j = 0; j < i-1; j++) {
                 if (v.types.get(arr[i]).subsumes(arr[j]))
                     return false;
@@ -222,6 +228,12 @@ test("VIE - Type Sorting", function () {
     ok(test(sortedArrayAsc2.reverse()));
     ok(test(sortedArrayDesc1));
     ok(test(sortedArrayDesc2));
+    
+    ok(v.types.sort([]));
+    equals(v.types.sort([]).length, [].length);
+    
+    equals(v.types.sort(["TestType1"]).length, 1);
+    equals(v.types.sort(["TestType1"])[0], "TestType1");
 
     
 });

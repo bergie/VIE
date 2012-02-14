@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
         <script type="text/javascript" src="qunit.js"></script>
         <script type="text/javascript">
-            //QUnit.config.testTimeout(60000); // 60 seconds
+            QUnit.config.testTimeout = 30000; // 30 seconds
         </script>
         
         <script type="text/javascript" src="../lib/rdfquery/latest/jquery.rdfquery.debug.js"></script>
@@ -32,7 +32,7 @@
         <script type="text/javascript">
             if (jQuery.rdf === undefined) {
                 // we are in the gh-pages branch and have another location of the library!
-                document.write('<' + 'script type="text/javascript" src="../js/vendor/jquery.rdfquery.min.js"></' + 'script>');
+                document.write('<' + 'script type="text/javascript" src="../js/vendor/jquery.rdfquery.debug.js"></' + 'script>');
             }
             if (window._ === undefined) {
                 // we are in the gh-pages branch and have another location of the library!
@@ -70,7 +70,6 @@
 
         <!-- SERVICES -->
         <script type="text/javascript" src="service/rdfa.js"></script>
-        <!-- TODO: buggy tests and lib <script type="text/javascript" src="service/rdfardfquery.js"></script>-->
         <script type="text/javascript" src="service/stanbol.js"></script>
         <script type="text/javascript" src="service/dbpedia.js"></script>
 
