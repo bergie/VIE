@@ -559,4 +559,5 @@ VIE.Util = {
 			additionalRules.push(tripple);
 		}
 		return additionalRules;
+    }
 };
