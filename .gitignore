@@ -1,4 +1,8 @@
-node_modules
 CNAME
+demo
 .project
 dist
+docs
+target
+node_modules
+npm-debug.log
