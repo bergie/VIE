@@ -1,0 +1,647 @@
+<!DOCTYPE html>  <html> <head>   <title>vie.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               vie.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://wiki.iks-project.eu/index.php/VIE
+</code></pre>
+
+<p><a href="http://wiki.iks-project.eu/index.php/VIE">VIE</a> enables you to make
+ <a href="http://en.wikipedia.org/wiki/RDFa">RDFa</a> -annotated content on your
+ web pages editable.</p>
+
+<p>For example, if your page contains the following mark-up:</p>
+
+<pre><code>&lt;p xmlns:dc="http://purl.org/dc/elements/1.1/"
+   about="http://www.example.com/books/wikinomics"&gt;
+  In his latest book
+  &lt;cite property="dc:title"&gt;Wikinomics&lt;/cite&gt;,
+  &lt;span property="dc:creator"&gt;Don Tapscott&lt;/span&gt;
+  explains deep changes in technology,
+  demographics and business.
+  The book is due to be published in
+  &lt;span property="dc:date" content="2006-10-01"&gt;October 2006&lt;/span&gt;.
+&lt;/p&gt;
+</code></pre>
+
+<p>Then with VIE you can get a proper Backbone Model object for that. First
+scan your page for RDFa entities:</p>
+
+<pre><code>VIE.RDFaEntities.getInstances();
+</code></pre>
+
+<p>And then just access the entity by subject:</p>
+
+<pre><code>var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+alert(myBook.get('dc:title')); // "Wikinomics"
+</code></pre>
+
+<p>Properties of the entity may also be modified, and these changes will 
+also happen on the page itself:</p>
+
+<pre><code>myBook.set({'dc:title':'Wikinomics, Second Edition'});
+</code></pre>
+
+<p>You can also access the entities via the <code>VIE.EntityManager.allEntities</code> array.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>Initial setup</h2>
+
+<p>The VIE library is fully contained inside a <code>VIE</code> namespace. The 
+namespace is available in both CommonJS and the browser.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">VIE</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">VIE</span> <span class="o">=</span> <span class="nx">exports</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">VIE</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">VIE</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Handle dependencies</h3>
+
+<p>VIE tries to load its dependencies automatically. 
+Please note that this autoloading functionality only works on the server.
+On browser Backbone needs to be included manually.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Require <a href="http://documentcloud.github.com/underscore/">underscore.js</a> 
+using CommonJS require if it isn't yet loaded.</p>
+
+<p>On node.js underscore.js can be installed via:</p>
+
+<pre><code>npm install underscore
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">_</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">require</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">))</span> <span class="p">{</span> <span class="nx">_</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;underscore&#39;</span><span class="p">).</span><span class="nx">_</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s1">&#39;VIE requires underscore.js to be available&#39;</span><span class="p">;</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Require <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> 
+using CommonJS require if it isn't yet loaded.</p>
+
+<p>On node.js Backbone.js can be installed via:</p>
+
+<pre><code>npm install backbone
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">Backbone</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Backbone</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">require</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">))</span> <span class="p">{</span> <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Backbone</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s1">&#39;VIE requires Backbone.js to be available&#39;</span><span class="p">;</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Require <a href="http://jquery.com/">jQuery</a> using CommonJS require if it 
+isn't yet loaded.</p>
+
+<p>On node.js jQuery can be installed via:</p>
+
+<pre><code>npm install jquery
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">jQuery</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">require</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">))</span> <span class="p">{</span> <span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;jquery&#39;</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s1">&#39;VIE requires jQuery to be available&#39;</span><span class="p">;</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h2>VIE.EntityManager</h2>
+
+<p>VIE.EntityManager keeps track of all RDFa entities loaded via VIE. This
+means that entities matched by a common subject can be treated as singletons.</p>
+
+<p>It is possible to access all loaded entities via the 
+<code>VIE.EntityManager.allEntities</code> array.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">Entities</span><span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">allEntities</span><span class="o">:</span> <span class="p">[],</span>
+
+        <span class="nx">Types</span><span class="o">:</span> <span class="p">{},</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h3>VIE.EntityManager.getBySubject</h3>
+
+<p>It is possible to get an entity that has been loaded from the page
+via the <code>getBySubject</code> method. If the entity cannot be found this method
+will return <code>null</code>.</p>
+
+<p>The entities accessed this way are singletons, so multiple calls to same
+subject will all return the same <code>VIE.RDFEntity</code> instance.</p>
+
+<p>Example:</p>
+
+<pre><code>var myBook = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">getBySubject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">Entities</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">Entities</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>VIE.EntityManager.getByJSONLD</h3>
+
+<p>Another way to get or load entities is by passing EntityManager a valid
+JSON-LD object.</p>
+
+<p>This can be either called with a JavaScript object representing JSON-LD,
+or with a JSON-LD string.</p>
+
+<p>Example:</p>
+
+<pre><code>var json = '{"@": "&lt;http://www.example.com/books/wikinomics&gt;","dc:title": "Wikinomics","dc:creator": "Don Tapscott","dc:date": "2006-10-01"}';
+var objectInstance = VIE.EntityManager.getByJSONLD(json);
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">getByJSONLD</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entityInstance</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">properties</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span> <span class="o">!==</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">try</span> <span class="p">{</span>
+                    <span class="nx">jsonld</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">parseJSON</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">);</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="nx">properties</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">_JSONtoProperties</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>The entities accessed this way are singletons, so multiple calls 
+to same subject (<code>@</code> in JSON-LD) will all return the same <br />
+<code>VIE.RDFEntity</code> instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entityInstance</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">getBySubject</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">entityInstance</span><span class="p">)</span> <span class="p">{</span>  
+                    <span class="nx">entityInstance</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">properties</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="nx">entityInstance</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFEntity</span><span class="p">(</span><span class="nx">properties</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Namespace prefixes are handled by the <code>#</code> property of JSON-LD.
+We map this to the <code>namespaces</code> property of our <code>VIE.RDFEntity</code> 
+instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entityInstance</span><span class="p">.</span><span class="nx">namespaces</span> <span class="o">=</span> <span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">];</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Types are handled by the <code>a</code> property of JSON-LD. We map this
+to the <code>type</code> property of our <code>VIE.RDFEntity</code> instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span><span class="p">.</span><span class="nx">a</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entityInstance</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">jsonld</span><span class="p">.</span><span class="nx">a</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Subjects are handled by the <code>@</code> property of JSON-LD. We map this
+to the <code>id</code> property of our <code>VIE.RDFEntity</code> instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entityInstance</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">jsonld</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">];</span>
+                <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">Entities</span><span class="p">[</span><span class="nx">entityInstance</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">entityInstance</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>All new entities must be added to the <code>allEntities</code> list.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">allEntities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">);</span>
+
+            <span class="k">return</span> <span class="nx">entityInstance</span><span class="p">;</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Helper for cleaning up JSON-LD so that it can be used as properties
+of a Backbone Model</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_JSONtoProperties</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">properties</span><span class="p">;</span>
+            <span class="nx">properties</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">({},</span> <span class="nx">jsonld</span><span class="p">);</span>
+            <span class="k">delete</span> <span class="nx">properties</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">];</span>
+            <span class="k">delete</span> <span class="nx">properties</span><span class="p">.</span><span class="nx">a</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="nx">properties</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">];</span>
+            <span class="k">return</span> <span class="nx">properties</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h2>VIE.RDFEntity</h2>
+
+<p>VIE.RDFEntity defines a common <a href="http://documentcloud.github.com/backbone/#Model">Backbone Model</a> 
+for RDF entities handled in VIE.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFEntity</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">namespaces</span><span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>VIE's entities have a method for generating <a href="http://json-ld.org/">JSON-LD</a>
+representations of themselves. JSON-LD is a lightweight format for handling
+Linked Data (RDF) information.</p>
+
+<p>Using the book example from above, we could call:</p>
+
+<pre><code>myBook.toJSONLD();
+</code></pre>
+
+<p>And we would get a JSON object looking like the following:</p>
+
+<pre><code>{
+    '@': '&lt;http://www.example.com/books/wikinomics&gt;',
+    'dc:title': 'Wikinomics',
+    'dc:creator': 'Don Tapscott',
+    'dc:date': '2006-10-01' 
+}
+</code></pre>
+
+<p>Calling <code>JSON.stringify()</code> for this object would produce:</p>
+
+<pre><code>{
+    "@": "&lt;http://www.example.com/books/wikinomics&gt;",
+    "dc:title": "Wikinomics",
+    "dc:creator": "Don Tapscott",
+    "dc:date": "2006-10-01"
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">toJSONLD</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">instance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">instanceLD</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="kd">var</span> <span class="nx">property</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">id</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">instanceLD</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">instanceLD</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">cid</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;_:bnode&#39;</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">instanceLD</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">instanceLD</span><span class="p">.</span><span class="nx">a</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">type</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="nx">property</span> <span class="k">in</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">attributes</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">property</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">([</span><span class="s1">&#39;id&#39;</span><span class="p">].</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">property</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">instanceLD</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">instanceLD</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h2>VIE.RDFaEntities</h2>
+
+<p>VIE.RDFaEntities provide mapping between RDFa on a page and Backbone Views.
+When you load RDFa entities from a page, new <code>VIE.RDFEntity</code> objects will
+be instantiated for them, and the DOM element the RDFa comes from will
+be registered as a <code>VIE.RDFaView</code> instance.</p>
+
+<p>If you're working with RDFa -annotated content and want to access it as
+Backbone Models, then VIE.RDFaEntities is the main access point.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaEntities</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>RDFaEntities manages a list of Views so that every view instance will be
+a singleton.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">Views</span><span class="o">:</span> <span class="p">[],</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <h3>VIE.RDFaEntities.getInstance</h3>
+
+<p>The <code>getInstance</code> method can be used for retrieving a single Backbone
+Model for a given RDFa -annotated DOM element. It accepts 
+<a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+and returns a <code>VIE.RDFEntity</code> instance matching the content. If no valid
+RDFa entities can be found from the element, then it returns <code>null</code>.</p>
+
+<p>Example:</p>
+
+<pre><code>var myBook = VIE.RDFaEntities.getInstance('p[about]');
+alert(myBook.get('dc:title')); // "Wikinomics"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">getInstance</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">entityInstance</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">viewInstance</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">jsonld</span><span class="p">;</span>
+
+            <span class="nx">jsonld</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">readEntity</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jsonld</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="nx">entityInstance</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">getByJSONLD</span><span class="p">(</span><span class="nx">jsonld</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Check whether we already have a View instantiated for the DOM element</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaEntities</span><span class="p">.</span><span class="nx">Views</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">===</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>If no matching View was found, create a view for the RDFa</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">viewInstance</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaView</span><span class="p">({</span>
+                    <span class="nx">model</span><span class="o">:</span> <span class="nx">entityInstance</span><span class="p">,</span> 
+                    <span class="nx">el</span><span class="o">:</span> <span class="nx">element</span><span class="p">,</span>
+                    <span class="nx">tagName</span><span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">nodeName</span>
+                <span class="p">});</span>
+                <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaEntities</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">viewInstance</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="nx">entityInstance</span><span class="p">;</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <h3>VIE.RDFaEntities.getInstances</h3>
+
+<p>Get a list of Backbone Model instances for all RDFa-marked content in 
+an element. The method accepts <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+as argument. If no selector is given, then the whole HTML document will
+be searched.</p>
+
+<p>Example:</p>
+
+<pre><code>var allInstances = VIE.RDFaEntities.getInstances();
+alert(allInstances[0].get('dc:title')); // "Wikinomics"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">getInstances</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="kd">var</span> <span class="nx">entity</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">element</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="nx">jQuery</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">,</span> <span class="nx">element</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">)).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">entity</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaEntities</span><span class="p">.</span><span class="nx">getInstance</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">entities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+
+            <span class="k">return</span> <span class="nx">entities</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h2>VIE.RDFaView</h2>
+
+<p>VIE.RDFaView defines a common <a href="http://documentcloud.github.com/backbone/#View">Backbone View</a> 
+for all RDFa -annotated elements on a page that have been loaded as
+<code>VIE.RDFEntity</code> objects.</p>
+
+<p>In normal operation, the RDFaView objects are automatically handled by
+<code>VIE.RDFaEntities</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>We ensure view gets updated when properties of the Entity change.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Rendering a view means writing the properties of the Entity back to
+the element containing our RDFa annotations.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">writeEntity</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSONLD</span><span class="p">());</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h2>VIE.RDFa</h2>
+
+<p>RDFa reading and writing utilities. VIE.RDFa acts as a mapping tool between
+<a href="http://json-ld.org/">JSON-LD</a> -encoded RDF triples and RDFa -annotated content
+on a page.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">Namespaces</span><span class="o">:</span> <span class="p">{},</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>By default we look for RDF subjects based on elements that have a
+<code>about</code>, <code>typeof</code> or <code>src</code> attribute. In addition, the full HTML page
+is regarded as a valid subject.</p>
+
+<p>For more specialized scenarios this can be overridden:</p>
+
+<pre><code>VIE.RDFa.subjectSelector = '[about]';
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">subjectSelector</span><span class="o">:</span> <span class="s1">&#39;[about],[typeof],[src],html&#39;</span><span class="p">,</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>By default we look for RDF predicates based on elements that have a
+<code>property</code> or <code>rel</code> attribute.</p>
+
+<p>For more specialized scenarios this can be overridden:</p>
+
+<pre><code>VIE.RDFa.predicateSelector = '[property]';
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">predicateSelector</span><span class="o">:</span> <span class="s1">&#39;[property],[rel]&#39;</span><span class="p">,</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <h3>VIE.RDFa.getSubject</h3>
+
+<p>Get the RDF subject for an element. The method accepts 
+<a href="http://api.jquery.com/category/selectors/">jQuery selectors</a> as
+arguments. If no argument is given, then the <em>base URL</em> of the
+page is used.</p>
+
+<p>Returns the subject as a string if one can be found, and if the
+given element has no valid subjects returns <code>undefined</code>.</p>
+
+<p>Example:</p>
+
+<pre><code>var subject = VIE.RDFa.getSubject('p[about]');
+alert(subject); // http://www.example.com/books/wikinomics
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">getSubject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">document</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">===</span> <span class="nb">document</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nb">document</span><span class="p">.</span><span class="nx">baseURI</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">subject</span><span class="p">;</span>
+            <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;typeof&#39;</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nx">subject</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>We also handle baseURL outside browser context by manually
+looking for the <code>&lt;base&gt;</code> element inside HTML head.</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s1">&#39;HTML&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;base&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">);</span>
+                    <span class="p">});</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+
+            <span class="k">return</span> <span class="nx">subject</span><span class="p">;</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <h3>VIE.RDFa.readEntity</h3>
+
+<p>Get a JSON-LD object for an RDFa-marked entity in 
+an element. The method accepts <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+as argument. If the element contains no RDFa entities, the this method
+returns <code>null</code>.</p>
+
+<p>Example:</p>
+
+<pre><code>var jsonld = VIE.RDFa.readEntity('p[about]');
+</code></pre>
+
+<p>Would return a JSON-LD object looking like the following:</p>
+
+<pre><code>{
+    '@': '&lt;http://www.example.com/books/wikinomics&gt;',
+    'dc:title': 'Wikinomics',
+    'dc:creator': 'Don Tapscott',
+    'dc:date': '2006-10-01' 
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">readEntity</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entity</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">subject</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">namespaces</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="kd">var</span> <span class="nx">namespace</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">type</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">propertyName</span><span class="p">;</span>
+
+            <span class="nx">subject</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">getSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+
+            <span class="nx">entity</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_getElementProperties</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">isEmptyObject</span><span class="p">(</span><span class="nx">entity</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>We also try to resolve namespaces used in the RDFa entity. If they
+can be found, we will write them to the <code>#</code> property of the object.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">for</span> <span class="p">(</span><span class="nx">propertyName</span> <span class="k">in</span> <span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">propertyName</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">propertyParts</span> <span class="o">=</span> <span class="nx">propertyName</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">propertyParts</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">namespace</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_resolveNamespace</span><span class="p">(</span><span class="nx">propertyParts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">element</span><span class="p">);</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">namespaces</span><span class="p">[</span><span class="nx">propertyParts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">namespace</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">isEmptyObject</span><span class="p">(</span><span class="nx">namespaces</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">namespaces</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>If the RDF type is defined, that will be set to the <a href="http://json-ld.org/spec/latest/#specifying-the-type"><code>a</code> property</a>
+of the JSON-LD object.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">type</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_getElementValue</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="s1">&#39;typeof&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entity</span><span class="p">.</span><span class="nx">a</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">subject</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;@&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">entity</span><span class="p">;</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <h3>VIE.RDFa.readEntities</h3>
+
+<p>Get a list of JSON-LD objects for RDFa-marked entities in 
+an element. The method accepts <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+as argument.  If no selector is given, then the whole HTML document will
+be searched.</p>
+
+<p>Example:</p>
+
+<pre><code>var jsonldEntities = VIE.RDFa.readEntities();
+JSON.stringify(jsonldEntities[0]);
+</code></pre>
+
+<p>Would produce something like:</p>
+
+<pre><code>{
+    "@": "&lt;http://www.example.com/books/wikinomics&gt;",
+    "dc:title": "Wikinomics",
+    "dc:creator": "Don Tapscott",
+    "dc:date": "2006-10-01"
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">readEntities</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="kd">var</span> <span class="nx">entity</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">element</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="nx">jQuery</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">,</span> <span class="nx">element</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">)).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">entity</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">readEntity</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">entities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+
+            <span class="k">return</span> <span class="nx">entities</span><span class="p">;</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <h3>VIE.RDFa.writeEntity</h3>
+
+<p>Write the contents of a JSON-LD object into the given DOM element. This
+method accepts <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+as arguments.</p>
+
+<p>Only properties matching RDFa-annotated predicates found found from
+the selected DOM element will be written.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">writeEntity</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">jsonld</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">findPredicateElements</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">getSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">),</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">propertyElement</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                <span class="kd">var</span> <span class="nx">propertyName</span> <span class="o">=</span> <span class="nx">propertyElement</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">);</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jsonld</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>Before writing to DOM we check that the value has actually changed.</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_readPropertyValue</span><span class="p">(</span><span class="nx">propertyElement</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">jsonld</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">])</span> <span class="p">{</span>
+                    <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_writePropertyValue</span><span class="p">(</span><span class="nx">propertyElement</span><span class="p">,</span> <span class="nx">jsonld</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">},</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-38">&#182;</a>               </div>               <h3>VIE.RDFa.findPredicateElements</h3>
+
+<p>Find RDFa-annotated predicates for a given subject inside the DOM. This
+method accepts <a href="http://api.jquery.com/category/selectors/">jQuery selectors</a>
+as arguments.</p>
+
+<p>The method returns a list of matching DOM elements.</p>
+
+<p>Only predicates matching the given subject will be returned.
+You can also tell whether to allow nested predicates to be returned, 
+which is useful for example when instantiating WYSIWYG editors for 
+editable properties, as most editors do not like getting nested.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">findPredicateElements</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">allowNestedPredicates</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">)).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">getSubject</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">allowNestedPredicates</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;[property]&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">});</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-39">&#182;</a>               </div>               <p>Get value of a DOM element defining a RDFa predicate.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_readPropertyValue</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-40">&#182;</a>               </div>               <p>The <code>content</code> attribute can be used for providing machine-readable
+values for elements where the HTML presentation differs from the
+actual value.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">content</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">content</span><span class="p">;</span>
+            <span class="p">}</span>
+            </pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-41">&#182;</a>               </div>               <p>The <code>resource</code> attribute can be used to link a predicate to another
+RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">resource</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">resource</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+            <span class="p">}</span>
+            </pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-42">&#182;</a>               </div>               <p><code>href</code> attribute also links to another RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">href</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">href</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">href</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-43">&#182;</a>               </div>               <p>If the predicate is a relation, we look for identified child objects
+and provide their identifiers as the values. To protect from scope
+creep, we only support direct descentants of the element where the
+<code>rel</code> attribute was set.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">))</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="p">[];</span>
+                <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">children</span><span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">getSubject</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">subject</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">value</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">subject</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+                <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-44">&#182;</a>               </div>               <p>If none of the checks above matched we return the HTML contents of
+the element as the literal value.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">();</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-45">&#182;</a>               </div>               <p>Write a value to a DOM element defining a RDFa predicate.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_writePropertyValue</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-46">&#182;</a>               </div>               <p>For now we don't deal with multivalued properties when writing
+contents.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+   </pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-47">&#182;</a>               </div>               <p>The <code>content</code> attribute can be used for providing machine-readable
+values for elements where the HTML presentation differs from the
+actual value.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">content</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            </pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-48">&#182;</a>               </div>               <p>The <code>resource</code> attribute can be used to link a predicate to another
+RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="kd">var</span> <span class="nx">resource</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-49">&#182;</a>               </div>               <p>Property has inline value. Change the HTML contents of the property
+element to match the new value.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-50">&#182;</a>               </div>               <p>Namespace resolution, find namespace declarations from inside
+a DOM element.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_resolveNamespace</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">];</span>
+            <span class="p">}</span>
+            
+            <span class="nx">jQuery</span><span class="p">(</span><span class="s1">&#39;[xmlns\\:&#39;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;xmlns:&#39;</span> <span class="o">+</span> <span class="nx">prefix</span><span class="p">);</span>
+            <span class="p">});</span>
+
+            <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">];</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-51">&#182;</a>               </div>               <p>Get the value of an attribute from the element or from one of its children</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_getElementValue</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">propertyName</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nx">propertyName</span><span class="p">)</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nx">propertyName</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">&#39;[&#39;</span> <span class="o">+</span> <span class="nx">propertyName</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="nx">propertyName</span><span class="p">);</span>
+        <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-52">&#182;</a>               </div>               <p>Get JSON-LD properties from a DOM element.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_getElementProperties</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">containerProperties</span> <span class="o">=</span> <span class="p">{};</span>
+
+            <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">findPredicateElements</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">propertyName</span><span class="p">;</span>
+                <span class="kd">var</span> <span class="nx">propertyValue</span><span class="p">;</span>
+                <span class="kd">var</span> <span class="nx">objectProperty</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+                <span class="nx">propertyName</span> <span class="o">=</span> <span class="nx">objectProperty</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">propertyName</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">propertyName</span> <span class="o">=</span> <span class="nx">objectProperty</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">);</span>
+                <span class="p">}</span>
+
+                <span class="nx">propertyValue</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">_readPropertyValue</span><span class="p">(</span><span class="nx">objectProperty</span><span class="p">);</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="k">return</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">propertyValue</span><span class="p">);</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-53">&#182;</a>               </div>               <p>Multivalued properties, are converted to an Array</p>             </td>             <td class="code">               <div class="highlight"><pre>                    <span class="kd">var</span> <span class="nx">previousValue</span> <span class="o">=</span> <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">];</span>
+                    <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span>
+
+                    <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">previousValue</span><span class="p">);</span>
+                    <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">propertyValue</span><span class="p">);</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="nx">containerProperties</span><span class="p">[</span><span class="nx">propertyName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">propertyValue</span><span class="p">;</span>
+            <span class="p">});</span>
+
+            <span class="k">return</span> <span class="nx">containerProperties</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-54">&#182;</a>               </div>               <h2>VIE.cleanup()</h2>
+
+<p>By default VIE keeps track of all RDF entities, RDFa views and namespaces
+handled. If you want to clear all of these (for example in unit tests),
+then call:</p>
+
+<pre><code>VIE.cleanup();
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">VIE</span><span class="p">.</span><span class="nx">cleanup</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">Entities</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">allEntities</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">VIE</span><span class="p">.</span><span class="nx">EntityManager</span><span class="p">.</span><span class="nx">Types</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFaEntities</span><span class="p">.</span><span class="nx">Views</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">VIE</span><span class="p">.</span><span class="nx">RDFa</span><span class="p">.</span><span class="nx">Namespaces</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">};</span>
+
+<span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

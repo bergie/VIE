@@ -1,0 +1,425 @@
+<!DOCTYPE html>  <html> <head>   <title>RdfaService.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Able.html">                 Able.js               </a>                                           <a class="source" href="Attribute.html">                 Attribute.js               </a>                                           <a class="source" href="Classic.html">                 Classic.js               </a>                                           <a class="source" href="Collection.html">                 Collection.js               </a>                                           <a class="source" href="CollectionView.html">                 CollectionView.js               </a>                                           <a class="source" href="DBPediaService.html">                 DBPediaService.js               </a>                                           <a class="source" href="Entity.html">                 Entity.js               </a>                                           <a class="source" href="EntityView.html">                 EntityView.js               </a>                                           <a class="source" href="Namespace.html">                 Namespace.js               </a>                                           <a class="source" href="RdfaRdfQueryService.html">                 RdfaRdfQueryService.js               </a>                                           <a class="source" href="RdfaService.html">                 RdfaService.js               </a>                                           <a class="source" href="StanbolService.html">                 StanbolService.js               </a>                                           <a class="source" href="Type.html">                 Type.js               </a>                                           <a class="source" href="Util.html">                 Util.js               </a>                                           <a class="source" href="VIE.html">                 VIE.js               </a>                                           <a class="source" href="xdr.html">                 xdr.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               RdfaService.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">RdfaService</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="cm">/* will be set via VIE.use(); */</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;rdfa&#39;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">subjectSelector</span> <span class="o">?</span> <span class="nx">options</span><span class="p">.</span><span class="nx">subjectSelector</span> <span class="o">:</span> <span class="s2">&quot;[about],[typeof],[src],html&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">predicateSelector</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">predicateSelector</span> <span class="o">?</span> <span class="nx">options</span><span class="p">.</span><span class="nx">predicateSelector</span> <span class="o">:</span> <span class="s2">&quot;[property],[rel]&quot;</span><span class="p">;</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">views</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">RdfaService</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    
+    <span class="nx">analyze</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">analyzable</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>in a certain way, analyze is the same as load</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">analyzable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Analyzable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Analyzable passed&quot;</span><span class="p">;}</span>
+
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">({</span><span class="nx">element</span> <span class="o">:</span> <span class="nx">analyzable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span><span class="p">}));</span>
+    <span class="p">},</span>
+        
+    <span class="nx">load</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">loadable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">loadable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="s2">&quot;Invalid Loadable passed&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">element</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">document</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span> 
+                <span class="k">return</span> <span class="nx">loadable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]);</span>
+            <span class="p">}</span>
+            <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">element</span> <span class="o">=</span> <span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="kd">var</span> <span class="nx">ns</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">xmlns</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">prefix</span> <span class="k">in</span> <span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">addOrReplace</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">ns</span><span class="p">[</span><span class="nx">prefix</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="kd">var</span> <span class="nx">entityElements</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">,</span> <span class="nx">element</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">)).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entity</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">_readEntity</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">entities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="nx">loadable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">entities</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="nx">save</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">savable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">savable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Savable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="s2">&quot;Invalid Savable passed&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">savable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>FIXME: we could find element based on subject</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">throw</span> <span class="s2">&quot;Unable to write entity to RDFa, no element given&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">savable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="s2">&quot;Unable to write to RDFa, no entity given&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="k">this</span><span class="p">.</span><span class="nx">_writeEntity</span><span class="p">(</span><span class="nx">savable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">savable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span><span class="p">);</span>
+        <span class="nx">savable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_readEntity</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getElementType</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">predicate</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">valueCollection</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">entity</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_readEntityPredicates</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">isEmptyObject</span><span class="p">(</span><span class="nx">entity</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">predicate</span> <span class="k">in</span> <span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">value</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">valueCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Collection</span><span class="p">();</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">valueItem</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">linkedEntity</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">({</span><span class="s1">&#39;@subject&#39;</span><span class="o">:</span> <span class="nx">valueItem</span><span class="p">});</span>
+                <span class="nx">valueCollection</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">linkedEntity</span><span class="p">);</span>
+            <span class="p">});</span>
+            <span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]</span> <span class="o">=</span> <span class="nx">valueCollection</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;@subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Entity</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
+        <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">updateOptions</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_registerEntityView</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">,</span> <span class="nx">element</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">entityInstance</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_writeEntity</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_findPredicateElements</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">),</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">predicateElement</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">getElementPredicate</span><span class="p">(</span><span class="nx">predicateElement</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">entity</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">predicate</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+    
+            <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">predicate</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span><span class="p">.</span><span class="nx">isCollection</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Handled by CollectionViews separately</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">===</span> <span class="nx">service</span><span class="p">.</span><span class="nx">readElementValue</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">predicateElement</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">service</span><span class="p">.</span><span class="nx">writeElementValue</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">predicateElement</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_getViewForElement</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">collectionView</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">viewInstance</span><span class="p">;</span>
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">===</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">collectionView</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_registerEntityView</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">element</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getViewForElement</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">viewInstance</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">Entity</span><span class="p">({</span>
+            <span class="nx">model</span><span class="o">:</span> <span class="nx">entity</span><span class="p">,</span>
+            <span class="nx">el</span><span class="o">:</span> <span class="nx">element</span><span class="p">,</span>
+            <span class="nx">tagName</span><span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">nodeName</span><span class="p">,</span>
+            <span class="nx">vie</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">,</span>
+            <span class="nx">service</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">viewInstance</span><span class="p">);</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Find collection elements and create collection views for them</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">predicate</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">attributeValue</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">fromReference</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">predicate</span><span class="p">));</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">attributeValue</span><span class="p">.</span><span class="nx">isCollection</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementByPredicate</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">element</span><span class="p">),</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">service</span><span class="p">.</span><span class="nx">_registerCollectionView</span><span class="p">(</span><span class="nx">attributeValue</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="nx">entity</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_registerCollectionView</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">collection</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_getViewForElement</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">viewInstance</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
+        <span class="p">}</span>
+    
+        <span class="kd">var</span> <span class="nx">entityTemplate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">&#39;:first-child&#39;</span><span class="p">);</span>
+    
+        <span class="nx">viewInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+            <span class="nx">owner</span><span class="o">:</span> <span class="nx">entity</span><span class="p">,</span>
+            <span class="nx">collection</span><span class="o">:</span> <span class="nx">collection</span><span class="p">,</span>
+            <span class="nx">model</span><span class="o">:</span> <span class="nx">collection</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span>
+            <span class="nx">el</span><span class="o">:</span> <span class="nx">element</span><span class="p">,</span>
+            <span class="nx">template</span><span class="o">:</span> <span class="nx">entityTemplate</span><span class="p">,</span>
+            <span class="nx">service</span><span class="o">:</span> <span class="k">this</span><span class="p">,</span>
+            <span class="nx">tagName</span><span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">nodeName</span>
+        <span class="p">});</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">viewInstance</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">viewInstance</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_getElementType</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;typeof&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">type</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;typeof&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;://&quot;</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">type</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">type</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">getElementSubject</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">document</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="nx">element</span> <span class="o">===</span> <span class="nb">document</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nb">document</span><span class="p">.</span><span class="nx">baseURI</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">matched</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">matched</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">service</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">service</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;typeof&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">service</span><span class="p">.</span><span class="nx">attributeExistenceComparator</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">subject</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">blankNodeID</span><span class="p">();</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>We also handle baseURL outside browser context by manually
+looking for the <code>&lt;base&gt;</code> element inside HTML head.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s1">&#39;HTML&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">jQuery</span><span class="p">(</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">subject</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">matched</span> <span class="o">===</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Workaround for https://github.com/assaf/zombie/issues/235</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="k">return</span> <span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">parent</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="p">}</span>
+                
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">subject</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">subject</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">subject</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;_:&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">subject</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">subject</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">subject</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">subject</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">setElementSubject</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="nx">subject</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">,</span> <span class="nx">subject</span><span class="p">);</span>
+    <span class="p">},</span>
+    
+    <span class="nx">getElementPredicate</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">predicate</span><span class="p">;</span>
+        <span class="nx">element</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">predicate</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">predicate</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">getElementBySubject</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">)).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">))</span> <span class="o">!==</span> <span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+     
+            <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    
+    <span class="nx">getElementByPredicate</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">)).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">foundPredicate</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">getElementPredicate</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">curie</span><span class="p">(</span><span class="nx">foundPredicate</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">curie</span><span class="p">(</span><span class="nx">predicate</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+    
+            <span class="k">if</span> <span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+     
+            <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_readEntityPredicates</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">entityPredicates</span> <span class="o">=</span> <span class="p">{};</span>
+    
+        <span class="k">this</span><span class="p">.</span><span class="nx">_findPredicateElements</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">predicateElement</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">predicate</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">getElementPredicate</span><span class="p">(</span><span class="nx">predicateElement</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">predicate</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">readElementValue</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">predicateElement</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">emptyValues</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+   
+            <span class="nx">entityPredicates</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+        <span class="p">});</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">!==</span> <span class="s1">&#39;HTML&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">parent</span><span class="p">(</span><span class="s1">&#39;[rev]&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">relation</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rev&#39;</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">relation</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="nx">entityPredicates</span><span class="p">[</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rev&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="k">this</span><span class="p">);</span> 
+            <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">entityPredicates</span><span class="p">;</span>
+    <span class="p">},</span>
+    
+    <span class="nx">_findPredicateElements</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">allowNestedPredicates</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">predicateSelector</span><span class="p">)).</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">allowNestedPredicates</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">parents</span><span class="p">(</span><span class="s1">&#39;[property]&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+    
+            <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    
+    <span class="nx">readElementValue</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">element</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>The <code>content</code> attribute can be used for providing machine-readable
+values for elements where the HTML presentation differs from the
+actual value.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">content</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">content</span><span class="p">;</span>
+        <span class="p">}</span>
+                </pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>The <code>resource</code> attribute can be used to link a predicate to another
+RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">resource</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">resource</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">];</span>
+        <span class="p">}</span>
+                </pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p><code>href</code> attribute also links to another RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">href</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">href</span> <span class="o">&amp;&amp;</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">predicate</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">href</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">];</span>
+        <span class="p">}</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>If the predicate is a relation, we look for identified child objects
+and provide their identifiers as the values. To protect from scope
+creep, we only support direct descentants of the element where the
+<code>rel</code> attribute was set.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            <span class="nx">jQuery</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">children</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subjectSelector</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">value</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+            <span class="p">});</span>
+            <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+        <span class="p">}</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>If none of the checks above matched we return the HTML contents of
+the element as the literal value.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">();</span>
+    <span class="p">},</span>
+    
+    <span class="nx">writeElementValue</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">predicate</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>TODO: this is a hack, please fix!</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>The <code>content</code> attribute can be used for providing machine-readable
+values for elements where the HTML presentation differs from the
+actual value.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">content</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+                </pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>The <code>resource</code> attribute can be used to link a predicate to another
+RDF resource.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">resource</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">resource</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;resource&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+        <span class="p">}</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Property has inline value. Change the HTML contents of the property
+element to match the new value.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">},</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>mostyl copied from http://code.google.com/p/rdfquery/source/browse/trunk/jquery.xmlns.js</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">xmlns</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">elem</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">$elem</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">elem</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">document</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span> 
+                <span class="k">return</span> <span class="p">{};</span>
+            <span class="p">}</span>
+            <span class="nx">$elem</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">$elem</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nx">elem</span><span class="p">);</span>
+        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Collect namespace definitions from the element and its parents</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">$elem</span> <span class="o">=</span> <span class="nx">$elem</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">$elem</span><span class="p">.</span><span class="nx">parents</span><span class="p">());</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+
+        <span class="nx">$elem</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">attributes</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">e</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">attr</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="sr">/^xmlns(:(.+))?$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">attr</span><span class="p">.</span><span class="nx">nodeName</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="sr">/^xmlns(:(.+))?$/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">attr</span><span class="p">.</span><span class="nx">nodeName</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+                        <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span> <span class="o">||</span> <span class="nx">value</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">obj</span><span class="p">[</span><span class="nx">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">nodeValue</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

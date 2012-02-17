@@ -1,0 +1,516 @@
+<!DOCTYPE html>  <html> <head>   <title>StanbolService.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Able.html">                 Able.js               </a>                                           <a class="source" href="Attribute.html">                 Attribute.js               </a>                                           <a class="source" href="Classic.html">                 Classic.js               </a>                                           <a class="source" href="Collection.html">                 Collection.js               </a>                                           <a class="source" href="CollectionView.html">                 CollectionView.js               </a>                                           <a class="source" href="DBPediaService.html">                 DBPediaService.js               </a>                                           <a class="source" href="Entity.html">                 Entity.js               </a>                                           <a class="source" href="EntityView.html">                 EntityView.js               </a>                                           <a class="source" href="Namespace.html">                 Namespace.js               </a>                                           <a class="source" href="RdfaRdfQueryService.html">                 RdfaRdfQueryService.js               </a>                                           <a class="source" href="RdfaService.html">                 RdfaService.js               </a>                                           <a class="source" href="StanbolService.html">                 StanbolService.js               </a>                                           <a class="source" href="Type.html">                 Type.js               </a>                                           <a class="source" href="Util.html">                 Util.js               </a>                                           <a class="source" href="VIE.html">                 VIE.js               </a>                                           <a class="source" href="xdr.html">                 xdr.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               StanbolService.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>VIE - StanbolService service</h2>
+
+<p>The StanbolService service allows a VIE developer to directly query
+the <a href="http://incubator.apache.org/stanbol/">Apache Stanbol</a> entityhub for entities and their properties. 
+Furthermore, it gives access to the enhance facilities of
+Stanbol to analyze content and semantically enrich it.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(){</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2>VIE.StanbolService(options)</h2>
+
+<p>This is the constructor to instantiate a new service to collect
+properties of an entity from <a href="http://incubator.apache.org/stanbol/">Apache Stanbol</a>. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>options</strong> Optional set of fields, <code>namespaces</code>, <code>rules</code>, <code>url</code>, or <code>name</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolService}</em> : A <strong>new</strong> VIE.StanbolService instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolService</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="cm">/* the default name of this service */</span>
+        <span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;stanbol&#39;</span><span class="p">,</span>
+        <span class="cm">/* you can pass an array of URLs which are then tried sequentially */</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;http://dev.iks-project.eu/stanbolfull&quot;</span><span class="p">],</span>
+        <span class="nx">namespaces</span> <span class="o">:</span> <span class="p">{</span>
+            <span class="nx">semdeski</span> <span class="o">:</span> <span class="s2">&quot;http://www.semanticdesktop.org/ontologies/2007/01/19/nie#&quot;</span><span class="p">,</span>
+            <span class="nx">semdeskf</span> <span class="o">:</span> <span class="s2">&quot;http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#&quot;</span><span class="p">,</span>
+            <span class="nx">skos</span><span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2004/02/skos/core#&quot;</span><span class="p">,</span>
+            <span class="nx">foaf</span><span class="o">:</span> <span class="s2">&quot;http://xmlns.com/foaf/0.1/&quot;</span><span class="p">,</span>
+            <span class="nx">opengis</span><span class="o">:</span> <span class="s2">&quot;http://www.opengis.net/gml/&quot;</span><span class="p">,</span>
+            <span class="nx">dbpedia</span><span class="o">:</span> <span class="s2">&quot;http://dbpedia.org/ontology/&quot;</span><span class="p">,</span>
+            <span class="nx">dbprop</span><span class="o">:</span> <span class="s2">&quot;http://dbpedia.org/property/&quot;</span><span class="p">,</span>
+            <span class="nx">owl</span> <span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2002/07/owl#&quot;</span><span class="p">,</span>
+            <span class="nx">geonames</span> <span class="o">:</span> <span class="s2">&quot;http://www.geonames.org/ontology#&quot;</span><span class="p">,</span>
+            <span class="nx">enhancer</span> <span class="o">:</span> <span class="s2">&quot;http://fise.iks-project.eu/ontology/&quot;</span><span class="p">,</span>
+            <span class="nx">entityhub</span><span class="o">:</span> <span class="s2">&quot;http://www.iks-project.eu/ontology/rick/model/&quot;</span><span class="p">,</span>
+            <span class="nx">entityhub2</span><span class="o">:</span> <span class="s2">&quot;http://www.iks-project.eu/ontology/rick/query/&quot;</span><span class="p">,</span>
+            <span class="nx">rdf</span><span class="o">:</span> <span class="s2">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;</span><span class="p">,</span>
+            <span class="nx">rdfs</span><span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2000/01/rdf-schema#&quot;</span><span class="p">,</span>
+            <span class="nx">dcterms</span>  <span class="o">:</span> <span class="s1">&#39;http://purl.org/dc/terms/&#39;</span><span class="p">,</span>
+            <span class="nx">schema</span><span class="o">:</span> <span class="s1">&#39;http://schema.org/&#39;</span><span class="p">,</span>
+            <span class="nx">geo</span><span class="o">:</span> <span class="s1">&#39;http://www.w3.org/2003/01/geo/wgs84_pos#&#39;</span>
+        <span class="p">},</span>
+        <span class="cm">/* default rules that are shipped with this service */</span>
+        <span class="nx">rules</span> <span class="o">:</span> <span class="p">[</span>
+            <span class="cm">/* rule to add backwards-relations to the triples</span>
+<span class="cm">             * this makes querying for entities a lot easier!</span>
+<span class="cm">             */</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;left&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                    <span class="s1">&#39;?subject a &lt;http://fise.iks-project.eu/ontology/EntityAnnotation&gt;&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?subject enhancer:entity-type ?type&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?subject enhancer:confidence ?confidence&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?subject enhancer:entity-reference ?entity&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?subject dcterms:relation ?relation&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?relation a &lt;http://fise.iks-project.eu/ontology/TextAnnotation&gt;&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?relation enhancer:selected-text ?selected-text&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?relation enhancer:selection-context ?selection-context&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?relation enhancer:start ?start&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?relation enhancer:end ?end&#39;</span>
+                <span class="p">],</span>
+                <span class="s1">&#39;right&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                    <span class="s1">&#39;?entity a ?type&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?entity enhancer:hasTextAnnotation ?relation&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?entity enhancer:hasEntityAnnotation ?subject&#39;</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">};</span>
+    <span class="cm">/* the options are merged with the default options */</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span> <span class="o">?</span> <span class="nx">options</span> <span class="o">:</span> <span class="p">{});</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="cm">/* will be set via VIE.use(); */</span>
+    <span class="cm">/* overwrite options.name if you want to set another name */</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    
+    <span class="cm">/* basic setup for the ajax connection */</span>
+    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajaxSetup</span><span class="p">({</span>
+        <span class="nx">converters</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;text application/rdf+json&quot;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">s</span><span class="p">){</span><span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">s</span><span class="p">);}},</span>
+        <span class="nx">timeout</span><span class="o">:</span> <span class="mi">60000</span> <span class="cm">/* 60 seconds timeout */</span>
+    <span class="p">});</span>
+
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolService</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>init()</h3>
+
+<p>This method initializes certain properties of the service and is called
+via <code>VIE.use()</code>. <br />
+<strong>Parameters</strong>: <br />
+<em>nothing</em> <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolService}</em> : The VIE.StanbolService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
+stnblService.init();
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="k">this</span><span class="p">.</span><span class="nx">rules</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">([],</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">transformationRules</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">rules</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">rules</span><span class="p">,</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">rules</span><span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">rules</span> <span class="o">:</span> <span class="p">[]);</span>
+        
+        <span class="k">this</span><span class="p">.</span><span class="nx">connector</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">StanbolConnector</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">);</span>
+
+        <span class="cm">/* adding these entity types to VIE helps later the querying */</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">addOrOverwrite</span><span class="p">(</span><span class="s1">&#39;enhancer:EntityAnnotation&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="cm">/*TODO: add attributes */</span>
+        <span class="p">]).</span><span class="nx">inherit</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">addOrOverwrite</span><span class="p">(</span><span class="s1">&#39;enhancer:TextAnnotation&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="cm">/*TODO: add attributes */</span>
+        <span class="p">]).</span><span class="nx">inherit</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">addOrOverwrite</span><span class="p">(</span><span class="s1">&#39;enhancer:Enhancement&#39;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="cm">/*TODO: add attributes */</span>
+        <span class="p">]).</span><span class="nx">inherit</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>analyze(analyzable)</h3>
+
+<p>This method extracts text from the jQuery element and sends it to Apache Stanbol for analysis. <br />
+<strong>Parameters</strong>: <br />
+<em>{VIE.Analyzable}</em> <strong>analyzable</strong> The analyzable. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if an invalid VIE.Findable is passed. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolService}</em> : The VIE.StanbolService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
+stnblService.analyzable(new vie.Analyzable({element : jQuery("#foo")}));
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">analyze</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">analyzable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">analyzable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Analyzable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Analyzable passed&quot;</span><span class="p">;}</span>
+
+        <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">analyzable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span> <span class="o">?</span> <span class="nx">analyzable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">element</span> <span class="o">:</span> <span class="nx">jQuery</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span>
+
+        <span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">_extractText</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">text</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* query enhancer with extracted text */</span>
+            <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">_</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                    <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">rdf2Entities</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+                    <span class="nx">analyzable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">entities</span><span class="p">);</span>
+                <span class="p">});</span>
+            <span class="p">};</span>
+            <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">analyzable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+            <span class="p">};</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">connector</span><span class="p">.</span><span class="nx">analyze</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;No text found in element.&quot;</span><span class="p">);</span>
+            <span class="nx">analyzable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]);</span>
+        <span class="p">}</span>
+
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>find(findable)</h3>
+
+<p>This method finds entities given the term from the entity hub. <br />
+<strong>Parameters</strong>: <br />
+<em>{VIE.Findable}</em> <strong>findable</strong> The findable. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if an invalid VIE.Findable is passed. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolService}</em> : The VIE.StanbolService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
+stnblService.load(new vie.Findable({term : "Bischofsh", limit : 10, offset: 0}));
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">find</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">findable</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">findable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Findable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Findable passed&quot;</span><span class="p">;}</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="cm">/* The term to find, * as wildcard allowed */</span>
+        <span class="kd">var</span> <span class="nx">term</span> <span class="o">=</span> <span class="nx">escape</span><span class="p">(</span><span class="nx">findable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">term</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">term</span><span class="p">){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;StanbolConnector: No term to look for!&quot;</span><span class="p">);</span>
+            <span class="nx">findable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]);</span>
+        <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">limit</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">findable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">limit</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">20</span> <span class="o">:</span> <span class="nx">findable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">limit</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">findable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">offset</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">findable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">offset</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">rdf2Entities</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+                <span class="nx">findable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">entities</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">findable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+        <span class="p">};</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">connector</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3>load(loadable)</h3>
+
+<p>This method loads the entity that is stored within the loadable into VIE. <br />
+<strong>Parameters</strong>: <br />
+<em>{VIE.Loadable}</em> <strong>lodable</strong> The loadable. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if an invalid VIE.Loadable is passed. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolService}</em> : The VIE.StanbolService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblService = new vie.StanbolService({&lt;some-configuration&gt;});
+stnblService.load(new vie.Loadable({entity : "&lt;http://...&gt;"}));
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">loadable</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">loadable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span><span class="k">throw</span> <span class="s2">&quot;Invalid Loadable passed&quot;</span><span class="p">;}</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+        <span class="kd">var</span> <span class="nx">entity</span> <span class="o">=</span> <span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entity</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">entity</span><span class="p">){</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;StanbolConnector: No entity to look for!&quot;</span><span class="p">);</span>
+            <span class="nx">loadable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]);</span>
+        <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">rdf2Entities</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+                <span class="nx">loadable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">entities</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">};</span>
+        <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">loadable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+        <span class="p">};</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">connector</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="cm">/* this private method extracts text from a jQuery element */</span>
+    <span class="nx">_extractText</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">&amp;&amp;</span>
+            <span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;TEXTAREA&#39;</span> <span class="o">||</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">tagName</span> <span class="o">==</span> <span class="s1">&#39;INPUT&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">val</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">element</span>
+                <span class="p">.</span><span class="nx">text</span><span class="p">()</span>    <span class="cm">/* get the text of element */</span>
+                <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\s+/g</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="cm">/* collapse multiple whitespaces */</span>
+                <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\0\b\n\r\f\t/g</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span> <span class="cm">/* remove non-letter symbols */</span>
+            <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2>VIE.StanbolConnector(options)</h2>
+
+<p>The StanbolConnector is the connection between the Apache Stanbol service
+and the backend service. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>options</strong> The options. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolConnector}</em> : The <strong>new</strong> VIE.StanbolConnector instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblConn = new vie.StanbolConnector({&lt;some-configuration&gt;});
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolConnector</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">url</span><span class="p">))</span><span class="o">?</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">options</span><span class="p">.</span><span class="nx">url</span> <span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">enhancerUrlPrefix</span> <span class="o">=</span> <span class="s2">&quot;/engines&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">entityhubUrlPrefix</span> <span class="o">=</span> <span class="s2">&quot;/entityhub&quot;</span><span class="p">;</span>
+    <span class="cm">/*TODO: this.ontonetUrlPrefix = &quot;/ontonet&quot;; */</span>
+    <span class="cm">/*TODO: this.rulesUrlPrefix = &quot;/rules&quot;; */</span>
+    <span class="cm">/*TODO: this.factstoreUrlPrefix = &quot;/factstore&quot;; */</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">StanbolConnector</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>analyze(text, success, error, options)</h3>
+
+<p>This method sends the given text to Apache Stanbol returns the result by the success callback. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>text</strong> The text to be analyzed. <br />
+<em>{function}</em> <strong>success</strong> The success callback. <br />
+<em>{function}</em> <strong>error</strong> The error callback. <br />
+<em>{object}</em> <strong>options</strong> Options, like the <code>format</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolConnector}</em> : The VIE.StanbolConnector instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblConn = new vie.StanbolConnector(opts);
+stnblConn.analyze("This is some text.",
+            function (res) { ... },
+            function (err) { ... });
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">analyze</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">urlIndex</span> <span class="o">:</span> <span class="mi">0</span><span class="p">};</span> <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span> <span class="o">&gt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Could not connect to the given Stanbol endpoints! Please check for their setup!&quot;</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">enhancerUrl</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">[</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\/$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+        <span class="nx">enhancerUrl</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">enhancerUrlPrefix</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">format</span> <span class="o">||</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">retryErrorCb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* in case an backend of Stanbol is not responding and</span>
+<span class="cm">             * multiple URLs have been registered</span>
+<span class="cm">             */</span>
+            <span class="k">return</span>  <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                <span class="nx">c</span><span class="p">.</span><span class="nx">analyze</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="p">{</span><span class="nx">urlIndex</span> <span class="o">:</span> <span class="nx">o</span><span class="p">.</span><span class="nx">urlIndex</span><span class="o">+</span><span class="mi">1</span><span class="p">}));</span>
+            <span class="p">};</span>
+        <span class="p">}(</span><span class="k">this</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">process</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* We&#39;re on Node.js, don&#39;t use jQuery.ajax */</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_analyzeNode</span><span class="p">(</span><span class="nx">enhancerUrl</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">retryErrorCb</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">){</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="nx">error</span><span class="o">:</span> <span class="nx">retryErrorCb</span><span class="p">,</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">enhancerUrl</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">text</span><span class="p">,</span>
+            <span class="nx">dataType</span><span class="o">:</span> <span class="nx">format</span><span class="p">,</span>
+            <span class="nx">contentType</span><span class="o">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
+            <span class="nx">accepts</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;application/rdf+json&quot;</span><span class="o">:</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">}</span>
+
+        <span class="p">});</span>
+    <span class="p">},</span>
+
+    <span class="nx">_analyzeNode</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">text</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
+            <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">uri</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+            <span class="nx">body</span><span class="o">:</span> <span class="nx">text</span><span class="p">,</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
+            <span class="p">}</span>
+        <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">success</span><span class="p">({</span><span class="nx">results</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">)});</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">errorCB</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>load(uri, success, error, options)</h3>
+
+<p>This method loads all properties from an entity and returns the result by the success callback. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>uri</strong> The URI of the entity to be loaded. <br />
+<em>{function}</em> <strong>success</strong> The success callback. <br />
+<em>{function}</em> <strong>error</strong> The error callback. <br />
+<em>{object}</em> <strong>options</strong> Options, like the <code>format</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolConnector}</em> : The VIE.StanbolConnector instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblConn = new vie.StanbolConnector(opts);
+stnblConn.load("&lt;http://dbpedia.org/resource/Barack_Obama&gt;",
+            function (res) { ... },
+            function (err) { ... });
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">urlIndex</span> <span class="o">:</span> <span class="mi">0</span><span class="p">};</span> <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span> <span class="o">&gt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Could not connect to the given Stanbol endpoints! Please check for their setup!&quot;</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nx">uri</span> <span class="o">=</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^&lt;/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&gt;$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">[</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\/$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+        <span class="nx">url</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">entityhubUrlPrefix</span> <span class="o">+</span> <span class="s2">&quot;/sites/entity?id=&quot;</span> <span class="o">+</span> <span class="nx">escape</span><span class="p">(</span><span class="nx">uri</span><span class="p">);</span>
+        
+        <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">format</span> <span class="o">||</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">retryErrorCb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">u</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* in case an backend of Stanbol is not responding and</span>
+<span class="cm">             * multiple URLs have been registered</span>
+<span class="cm">             */</span>
+            <span class="k">return</span>  <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                <span class="nx">c</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="p">{</span><span class="nx">urlIndex</span> <span class="o">:</span> <span class="nx">o</span><span class="p">.</span><span class="nx">urlIndex</span><span class="o">+</span><span class="mi">1</span><span class="p">}));</span>
+            <span class="p">};</span>
+        <span class="p">}(</span><span class="k">this</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">process</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* We&#39;re on Node.js, don&#39;t use jQuery.ajax */</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_loadNode</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">retryErrorCb</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">){</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="nx">error</span><span class="o">:</span> <span class="nx">retryErrorCb</span><span class="p">,</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nx">dataType</span><span class="o">:</span> <span class="nx">format</span><span class="p">,</span>
+            <span class="nx">contentType</span><span class="o">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
+            <span class="nx">accepts</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;application/rdf+json&quot;</span><span class="o">:</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+
+    <span class="nx">_loadNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
+            <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="nx">uri</span><span class="o">:</span> <span class="nx">uri</span><span class="p">,</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
+            <span class="p">}</span>
+        <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+        <span class="p">});</span>
+        <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+        
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>find(term, limit, offset, success, error, options)</h3>
+
+<p>This method finds entities given the term from the entity hub and returns the result by the success callback. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>term</strong> The term to be searched for. 
+<em>{int}</em> <strong>limit</strong> The limit of results to be returned. 
+<em>{int}</em> <strong>offset</strong> The offset to be search for. <br />
+<em>{function}</em> <strong>success</strong> The success callback. <br />
+<em>{function}</em> <strong>error</strong> The error callback. <br />
+<em>{object}</em> <strong>options</strong> Options, like the <code>format</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.StanbolConnector}</em> : The VIE.StanbolConnector instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var stnblConn = new vie.StanbolConnector(opts);
+stnblConn.find("Bishofsh", 10, 0,
+            function (res) { ... },
+            function (err) { ... });
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">find</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* curl -X POST -d &quot;name=Bishofsh&amp;limit=10&amp;offset=0&quot; http://localhost:8080/entityhub/sites/find */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">urlIndex</span> <span class="o">:</span> <span class="mi">0</span><span class="p">};</span> <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span> <span class="o">&gt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Could not connect to the given Stanbol endpoints! Please check for their setup!&quot;</span><span class="p">);</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span><span class="p">[</span><span class="nx">options</span><span class="p">.</span><span class="nx">urlIndex</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\/$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+        <span class="nx">url</span> <span class="o">+=</span> <span class="k">this</span><span class="p">.</span><span class="nx">entityhubUrlPrefix</span> <span class="o">+</span> <span class="s2">&quot;/sites/find&quot;</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">format</span> <span class="o">||</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">offset</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">limit</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">retryErrorCb</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">of</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* in case an backend of Stanbol is not responding and</span>
+<span class="cm">             * multiple URLs have been registered</span>
+<span class="cm">             */</span>
+            <span class="k">return</span>  <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                <span class="nx">c</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">of</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="p">{</span><span class="nx">urlIndex</span> <span class="o">:</span> <span class="nx">o</span><span class="p">.</span><span class="nx">urlIndex</span><span class="o">+</span><span class="mi">1</span><span class="p">}));</span>
+            <span class="p">};</span>
+        <span class="p">}(</span><span class="k">this</span><span class="p">,</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">process</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* We&#39;re on Node.js, don&#39;t use jQuery.ajax */</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_findNode</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">retryErrorCb</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">){</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="nx">error</span><span class="o">:</span> <span class="nx">retryErrorCb</span><span class="p">,</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="s2">&quot;name=&quot;</span> <span class="o">+</span> <span class="nx">term</span> <span class="o">+</span> <span class="s2">&quot;&amp;limit=&quot;</span> <span class="o">+</span> <span class="nx">limit</span> <span class="o">+</span> <span class="s2">&quot;&amp;offset=&quot;</span> <span class="o">+</span> <span class="nx">offset</span><span class="p">,</span>
+            <span class="nx">dataType</span><span class="o">:</span> <span class="nx">format</span><span class="p">,</span>
+            <span class="nx">accepts</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;application/rdf+json&quot;</span><span class="o">:</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+
+    <span class="nx">_findNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">term</span><span class="p">,</span> <span class="nx">limit</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
+            <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">uri</span><span class="o">:</span> <span class="nx">uri</span><span class="p">,</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
+            <span class="p">},</span>
+            <span class="nx">body</span> <span class="o">:</span> <span class="s2">&quot;name=&quot;</span> <span class="o">+</span> <span class="nx">term</span> <span class="o">+</span> <span class="s2">&quot;&amp;limit=&quot;</span> <span class="o">+</span> <span class="nx">limit</span> <span class="o">+</span> <span class="s2">&quot;&amp;offset=&quot;</span> <span class="o">+</span> <span class="nx">offset</span>
+        <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+        <span class="p">});</span>
+        <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+        
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="p">})();</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

@@ -1,0 +1,434 @@
+<!DOCTYPE html>  <html> <head>   <title>Namespace.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Able.html">                 Able.js               </a>                                           <a class="source" href="Attribute.html">                 Attribute.js               </a>                                           <a class="source" href="Classic.html">                 Classic.js               </a>                                           <a class="source" href="Collection.html">                 Collection.js               </a>                                           <a class="source" href="CollectionView.html">                 CollectionView.js               </a>                                           <a class="source" href="DBPediaService.html">                 DBPediaService.js               </a>                                           <a class="source" href="Entity.html">                 Entity.js               </a>                                           <a class="source" href="EntityView.html">                 EntityView.js               </a>                                           <a class="source" href="Namespace.html">                 Namespace.js               </a>                                           <a class="source" href="RdfaRdfQueryService.html">                 RdfaRdfQueryService.js               </a>                                           <a class="source" href="RdfaService.html">                 RdfaService.js               </a>                                           <a class="source" href="StanbolService.html">                 StanbolService.js               </a>                                           <a class="source" href="Type.html">                 Type.js               </a>                                           <a class="source" href="Util.html">                 Util.js               </a>                                           <a class="source" href="VIE.html">                 VIE.js               </a>                                           <a class="source" href="xdr.html">                 xdr.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               Namespace.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: VIE.Namespaces is already defined. &quot;</span> <span class="o">+</span> 
+        <span class="s2">&quot;Please check your VIE installation!&quot;</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>VIE Namespaces</h2>
+
+<p>In general, a namespace is a container that provides context for the identifiers.
+Within VIE, namespaces are used to distinguish different ontolgies or vocabularies
+of identifiers, types and attributes. However, because of their verbosity, namespaces
+tend to make their usage pretty circuitous. The <code>VIE.Namespaces(...)</code> class provides VIE
+with methods to maintain abbreviations (akak <strong>prefixes</strong>) for namespaces in order to
+alleviate their usage. By default, every VIE instance is equipped with a main instance
+of the namespaces in <code>myVIE.namespaces</code>. Furthermore, VIE uses a <strong>base namespace</strong>, 
+which is used if no prefix is given (has an empty prefix).
+In the upcoming sections, we will explain the
+methods to add, access and remove prefixes.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2>VIE.Namespaces(base, namespaces)</h2>
+
+<p>This is the constructor of a VIE.Namespaces. The constructor initially 
+needs a <em>base namespace</em> and can optionally be initialised with an 
+associative array of prefixes and namespaces. The base namespace is used in a way
+that every non-prefixed, non-expanded attribute or type is assumed to be of that 
+namespace. This helps, e.g., in an environment where only one namespace is given. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>base</strong> The base namespace. <br />
+<em>{object}</em> <strong>namespaces</strong> Initial namespaces to bootstrap the namespaces. (optional) <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if the base namespace is missing. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : A <strong>new</strong> VIE.Attribute object. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var ns = new myVIE.Namespaces("http://viejs.org/ns/", 
+      {
+       "foaf": "http://xmlns.com/foaf/0.1/"
+      });
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">base</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">base</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Please provide a base namespace!&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_base</span> <span class="o">=</span> <span class="nx">base</span><span class="p">;</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span> <span class="o">=</span> <span class="p">(</span><span class="nx">namespaces</span><span class="p">)</span><span class="o">?</span> <span class="nx">namespaces</span> <span class="o">:</span> <span class="p">{};</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span> <span class="o">!==</span> <span class="s2">&quot;object&quot;</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;If you want to initialise VIE namespace prefixes, &quot;</span> <span class="o">+</span> 
+            <span class="s2">&quot;please provide a proper object!&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3>base(ns)</h3>
+
+<p>This is a <strong>getter</strong> and <strong>setter</strong> for the base
+namespace. If called like <code>base();</code> it
+returns the actual base namespace as a string. If provided
+with a string, e.g., <code>base("http://viejs.org/ns/");</code>
+it sets the current base namespace and retuns the namespace object
+for the purpose of chaining. If provided with anything except a string,
+it throws an Error. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>ns</strong> The namespace to be set. (optional) <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if the namespace is not of type string. <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> : The current base namespace. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+console.log(namespaces.base()); // &lt;-- "http://base.ns/"
+namespaces.base("http://viejs.org/ns/");
+console.log(namespaces.base()); // &lt;-- "http://viejs.org/ns/"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">base</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_base</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">ns</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* remove another mapping */</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">removeNamespace</span><span class="p">(</span><span class="nx">ns</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_base</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_base</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Please provide a valid namespace!&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3>add(prefix, namespace)</h3>
+
+<p>This method adds new prefix mappings to the
+current instance. If a prefix or a namespace is already
+present (in order to avoid ambiguities), an Error is thrown. 
+<code>prefix</code> can also be an object in which case, the method 
+is called sequentially on all elements. <br />
+<strong>Parameters</strong>: <br />
+<em>{string|object}</em> <strong>prefix</strong> The prefix to be set. If it is an object, the
+method will be applied to all key,value pairs sequentially. <br />
+<em>{string}</em> <strong>namespace</strong> The namespace to be set. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If a prefix or a namespace is already
+present (in order to avoid ambiguities). <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The current namespaces instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.add("", "http://...");
+// is always equal to
+namespaces.base("http://..."); // &lt;-- setter of base namespace
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">prefix</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k1</span> <span class="k">in</span> <span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">k1</span><span class="p">,</span> <span class="nx">prefix</span><span class="p">[</span><span class="nx">k1</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">base</span><span class="p">(</span><span class="nx">namespace</span><span class="p">);</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="cm">/* checking if we overwrite existing mappings */</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">namespace</span> <span class="o">!==</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: Trying to register namespace prefix mapping (&quot;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nx">namespace</span> <span class="o">+</span> <span class="s2">&quot;)!&quot;</span> <span class="o">+</span>
+              <span class="s2">&quot;There is already a mapping existing: &#39;(&quot;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&#39;!&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">k1</span><span class="p">,</span><span class="nx">v1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">v1</span> <span class="o">===</span> <span class="nx">namespace</span> <span class="o">&amp;&amp;</span> <span class="nx">k1</span> <span class="o">!==</span> <span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: Trying to register namespace prefix mapping (&quot;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nx">namespace</span> <span class="o">+</span> <span class="s2">&quot;)!&quot;</span> <span class="o">+</span>
+                      <span class="s2">&quot;There is already a mapping existing: &#39;(&quot;</span> <span class="o">+</span> <span class="nx">k1</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nx">namespace</span> <span class="o">+</span> <span class="s2">&quot;)&#39;!&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="cm">/* if not, just add them */</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="nx">namespace</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<span class="p">};</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>addOrReplace(prefix, namespace)</h3>
+
+<p>This method adds new prefix mappings to the
+current instance. This will overwrite existing mappings. <br />
+<strong>Parameters</strong>: <br />
+<em>{string|object}</em> <strong>prefix</strong> The prefix to be set. If it is an object, the
+method will be applied to all key,value pairs sequentially. <br />
+<em>{string}</em> <strong>namespace</strong> The namespace to be set. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The current namespaces instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("", "http://...");
+// is always equal to
+namespaces.base("http://..."); // &lt;-- setter of base namespace
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">addOrReplace</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">prefix</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k1</span> <span class="k">in</span> <span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">addOrReplace</span><span class="p">(</span><span class="nx">k1</span><span class="p">,</span> <span class="nx">prefix</span><span class="p">[</span><span class="nx">k1</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">prefix</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">removeNamespace</span><span class="p">(</span><span class="nx">namespace</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3>get(prefix)</h3>
+
+<p>This method retrieves a namespaces, given a prefix. If the
+prefix is the empty string, the base namespace is returned. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>prefix</strong> The prefix to be retrieved. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{string|undefined}</em> : The namespace or <code>undefined</code> if no namespace could be found. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("test", "http://test.ns");
+console.log(namespaces.get("test")); // &lt;-- "http://test.ns"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">base</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">];</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h3>getPrefix(namespace)</h3>
+
+<p>This method retrieves a prefix, given a namespace. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>namespace</strong> The namespace to be retrieved. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{string|undefined}</em> : The prefix or <code>undefined</code> if no prefix could be found. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("test", "http://test.ns");
+console.log(namespaces.getPrefix("http://test.ns")); // &lt;-- "test"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getPrefix</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">k1</span><span class="p">,</span><span class="nx">v1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">v1</span> <span class="o">===</span> <span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">prefix</span> <span class="o">=</span> <span class="nx">k1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">prefix</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>contains(prefix)</h3>
+
+<p>This method checks, whether a prefix is stored in the instance. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>prefix</strong> The prefix to be checked. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> : <code>true</code> if the prefix could be found, <code>false</code> otherwise. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("test", "http://test.ns");
+console.log(namespaces.contains("test")); // &lt;-- true
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">contains</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">prefix</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>containsNamespace(namespace)</h3>
+
+<p>This method checks, whether a namespace is stored in the instance. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>namespace</strong> The namespace to be checked. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> : <code>true</code> if the namespace could be found, <code>false</code> otherwise. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("test", "http://test.ns");
+console.log(namespaces.containsNamespace("http://test.ns")); // &lt;-- true
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">containsNamespace</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">getPrefix</span><span class="p">(</span><span class="nx">namespace</span><span class="p">)</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>update(prefix, namespace)</h3>
+
+<p>This method overwrites the namespace that is stored under the 
+prefix <code>prefix</code> with the new namespace <code>namespace</code>. 
+If a namespace is already bound to another prefix, an Error is thrown.
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>prefix</strong> The prefix. <br />
+<em>{string}</em> <strong>namespace</strong> The namespace. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If a namespace is already bound to another prefix. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The namespace instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>...
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">prefix</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3>updateNamespace(prefix, namespace)</h3>
+
+<p>This method overwrites the prefix that is bound to the 
+namespace <code>namespace</code> with the new prefix <code>prefix</code>. If another namespace is
+already registered with the given <code>prefix</code>, an Error is thrown. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>prefix</strong> The prefix. <br />
+<em>{string}</em> <strong>namespace</strong> The namespace. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The namespace instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.add("test", "http://test.ns");
+namespaces.updateNamespace("test2", "http://test.ns");
+namespaces.get("test2"); // &lt;-- "http://test.ns"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">updateNamespace</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">removeNamespace</span><span class="p">(</span><span class="nx">prefix</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h3>remove(prefix)</h3>
+
+<p>This method removes the namespace that is stored under the prefix <code>prefix</code>. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>prefix</strong> The prefix to be removed. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The namespace instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.add("test", "http://test.ns");
+namespaces.get("test"); // &lt;-- "http://test.ns"
+namespaces.remove("test");
+namespaces.get("test"); // &lt;-- undefined
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h3>removeNamespace(namespace)</h3>
+
+<p>This method removes removes the namespace <code>namespace</code> from the instance. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>namespace</strong> The namespace to be removed. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Namespaces}</em> : The namespace instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.add("test", "http://test.ns");
+namespaces.get("test"); // &lt;-- "http://test.ns"
+namespaces.removeNamespace("http://test.ns");
+namespaces.get("test"); // &lt;-- undefined
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">removeNamespace</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">namespace</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getPrefix</span><span class="p">(</span><span class="nx">namespace</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">[</span><span class="nx">prefix</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h3>toObj()</h3>
+
+<p>This method serializes the namespace instance into an associative
+array representation. The base namespace is given an empty
+string as key. <br />
+<strong>Parameters</strong>: <br />
+<em>nothing</em> <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{object}</em> : A serialization of the namespaces as an object. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.add("test", "http://test.ns");
+console.log(namespaces.toObj()); 
+// &lt;-- {""    : "http://base.ns/", 
+        "test": "http://test.ns"}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toObj</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="s1">&#39;&#39;</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_base</span><span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">_namespaces</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h3>curie(uri, safe)</h3>
+
+<p>This method converts a given 
+URI into a CURIE (or SCURIE), based on the given <code>VIE.Namespaces</code> object.
+If the given uri is already a URI, it is left untouched and directly returned.
+If no prefix could be found, an <code>Error</code> is thrown. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>uri</strong> The URI to be transformed. <br />
+<em>{boolean}</em> <strong>safe</strong> A flag whether to generate CURIEs or SCURIEs. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If no prefix could be found in the passed namespaces. <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> The CURIE or SCURIE. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var uri = "&lt;http://dbpedia.org/ontology/Person&gt;";
+ns.curie(uri, false); // --&gt; dbp:Person
+ns.curie(uri, true); // --&gt; [dbp:Person]
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">curie</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">safe</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">toCurie</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">safe</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <h3>isCurie(curie)</h3>
+
+<p>This method checks, whether 
+the given string is a CURIE and returns <code>true</code> if so and <code>false</code>otherwise. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>curie</strong> The CURIE (or SCURIE) to be checked. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> <code>true</code> if the given curie is a CURIE or SCURIE and <code>false</code> otherwise. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var uri = "&lt;http://dbpedia.org/ontology/Person&gt;";
+var curie = "dbp:Person";
+var scurie = "[dbp:Person]";
+var text = "This is some text.";
+ns.isCurie(uri);    // --&gt; false
+ns.isCurie(curie);  // --&gt; true
+ns.isCurie(scurie); // --&gt; true
+ns.isCurie(text);   // --&gt; false
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">isCurie</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">something</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">isCurie</span><span class="p">(</span><span class="nx">something</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+<span class="p">};</span>
+    </pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h3>uri(curie)</h3>
+
+<p>This method converts a 
+given CURIE (or save CURIE) into a URI, based on the given <code>VIE.Namespaces</code> object. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>curie</strong> The CURIE to be transformed. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If no URI could be assembled. <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> : A string, representing the URI. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var curie = "dbp:Person";
+var scurie = "[dbp:Person]";
+ns.uri(curie); 
+     --&gt; &lt;http://dbpedia.org/ontology/Person&gt;
+ns.uri(scurie);
+     --&gt; &lt;http://dbpedia.org/ontology/Person&gt;
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">uri</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">curie</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">toUri</span><span class="p">(</span><span class="nx">curie</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <h3>isUri(something)</h3>
+
+<p>This method checks, whether the given string is a URI. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>something</strong> : The string to be checked. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> : <code>true</code> if the string is a URI, <code>false</code> otherwise. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var namespaces = new vie.Namespaces("http://base.ns/");
+namespaces.addOrReplace("test", "http://test.ns");
+var uri = "&lt;http://test.ns/Person&gt;";
+var curie = "test:Person";
+namespaces.isUri(uri);   // --&gt; true
+namespaces.isUri(curie); // --&gt; false
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">isUri</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">isUri</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

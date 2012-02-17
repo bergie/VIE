@@ -1,0 +1,143 @@
+body {
+    background-color: #555753;
+    color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+}
+
+header {
+    display: block;
+    background-color: #ffffff;
+    color: #000000;
+    height: 150px;
+    width: 100%;
+    margin-bottom: 2em;
+}
+
+header img {
+    position: absolute;
+    top: 40px;
+    left: 20%;
+}
+
+header h1 {
+    font-family: "Georgia", serif;
+    font-variant: small-caps;
+    position: absolute;
+    top: 32px;
+    left: 30%;
+}
+
+.content {
+    padding-left: 20%;
+    padding-right: 20%;
+}
+
+article h1, h2, h3 {
+    font-family: "Georgia", serif;
+    font-variant: small-caps;
+    margin-bottom: 0px;
+    padding-bottom: 0.5em;
+}
+
+article h1 {
+    font-size: 24pt;
+}
+
+article h2 {
+    font-size: 20pt;
+}
+
+article img.logo {
+    display: block;
+    text-align: center;
+}
+
+article p {
+    text-indent: 2em;
+    margin-top: 0px;
+    margin-bottom: 0.5em;
+}
+
+#features h3 {
+    margin-bottom: 0.5em;
+    padding-bottom: 0px;
+    border-bottom: 1px solid transparent;
+    width: 60%;
+}
+
+#features h3.ui-state-active,
+#features h3:hover {
+    border-bottom: 1px solid #ffffff;
+}
+
+article .exampleholder {
+    position: relative;
+}
+
+article .resultsholder {
+    height: 5em;
+    widthe: 88%;
+    overflow-y: auto;
+}
+
+article .resultsholder a {
+    margin-right: 1em; 
+}
+
+article textarea {
+    display: inline;
+    width: 88%;
+    height: 14em;
+    background-color: #eeeeec;
+    color: #000000;
+    border: none;
+}
+
+article .exampleholder button {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 80px;
+    width: 10%;
+    background-color: #73d216;
+    border: none;
+    border-radius: 6px;
+}
+
+#moreinfo {
+    margin-top: 5em;
+}
+
+#moreinfo ul.nav {
+    margin: 0px;
+    padding: 0px;
+}
+
+#moreinfo ul.nav li {
+    display: inline;
+    list-style: none;
+    margin-right: 2em;
+}
+
+#moreinfo ul.nav li.ui-state-active,
+#moreinfo ul.nav li:hover {
+    border-bottom: 1px solid #ffffff;
+}
+
+#moreinfo .ui-tabs-hide {
+    display: none;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer {
+    padding-left: 20%;
+    padding-right: 20%;
+    display: block;
+    margin-top: 5em;
+}

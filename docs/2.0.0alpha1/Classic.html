@@ -1,0 +1,85 @@
+<!DOCTYPE html>  <html> <head>   <title>Classic.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Able.html">                 Able.js               </a>                                           <a class="source" href="Attribute.html">                 Attribute.js               </a>                                           <a class="source" href="Classic.html">                 Classic.js               </a>                                           <a class="source" href="Collection.html">                 Collection.js               </a>                                           <a class="source" href="CollectionView.html">                 CollectionView.js               </a>                                           <a class="source" href="DBPediaService.html">                 DBPediaService.js               </a>                                           <a class="source" href="Entity.html">                 Entity.js               </a>                                           <a class="source" href="EntityView.html">                 EntityView.js               </a>                                           <a class="source" href="Namespace.html">                 Namespace.js               </a>                                           <a class="source" href="RdfaRdfQueryService.html">                 RdfaRdfQueryService.js               </a>                                           <a class="source" href="RdfaService.html">                 RdfaService.js               </a>                                           <a class="source" href="StanbolService.html">                 StanbolService.js               </a>                                           <a class="source" href="Type.html">                 Type.js               </a>                                           <a class="source" href="Util.html">                 Util.js               </a>                                           <a class="source" href="VIE.html">                 VIE.js               </a>                                           <a class="source" href="xdr.html">                 xdr.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               Classic.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>Classic VIE API bindings to new VIE</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicRDFa</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vie</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicRDFa</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">readEntities</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">jsonEntities</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">RDFaEntities</span><span class="p">.</span><span class="nx">getInstances</span><span class="p">(</span><span class="nx">selector</span><span class="p">);</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">entities</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">jsonEntities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entity</span><span class="p">.</span><span class="nx">toJSONLD</span><span class="p">());</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">jsonEntities</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="nx">findPredicateElements</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">allowNestedPredicates</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">services</span><span class="p">.</span><span class="nx">rdfa</span><span class="p">.</span><span class="nx">_findPredicateElements</span><span class="p">(</span><span class="nx">subject</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">allowNestedPredicates</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="nx">getPredicate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">services</span><span class="p">.</span><span class="nx">rdfa</span><span class="p">.</span><span class="nx">getElementPredicate</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="nx">getSubject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">services</span><span class="p">.</span><span class="nx">rdfa</span><span class="p">.</span><span class="nx">getElementSubject</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicRDFaEntities</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vie</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicRDFaEntities</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">getInstances</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">services</span><span class="p">.</span><span class="nx">rdfa</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">RdfaService</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">foundEntities</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">loaded</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">load</span><span class="p">({</span><span class="nx">element</span><span class="o">:</span> <span class="nx">selector</span><span class="p">}).</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;rdfa&#39;</span><span class="p">).</span><span class="nx">execute</span><span class="p">().</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">entities</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">foundEntities</span> <span class="o">=</span> <span class="nx">entities</span><span class="p">;</span>
+            <span class="nx">loaded</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">});</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="nx">loaded</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">foundEntities</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="nx">getInstance</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">instances</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getInstances</span><span class="p">(</span><span class="nx">selector</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">instances</span> <span class="o">&amp;&amp;</span> <span class="nx">instances</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">instances</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicEntityManager</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">vie</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">entities</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">ClassicEntityManager</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">getBySubject</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subject</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">subject</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="nx">getByJSONLD</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">json</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">json</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">parseJSON</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+    <span class="p">},</span>
+
+    <span class="nx">initializeCollection</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

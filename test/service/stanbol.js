@@ -41,7 +41,6 @@ test("VIE.js StanbolService - Analyze", function () {
     });
 });
 
-
 test("VIE.js StanbolService - Analyze with Enhancement Chain", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
