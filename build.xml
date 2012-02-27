@@ -210,8 +210,9 @@
             <param name="outputFile" value="${DIST_DIR}/vie-${VERSION}_${current.time}.js" />
         </antcall>
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
+        <replaceregexp file="${DIST_DIR}/vie-latest.js" match="^" replace="/*VIE may be freely distributed under the MIT license.*/" />
     </target>
-	
+
 	<target name="minimiseAll">
 	        <echo message="Minimising ALL vie.js" />
 
