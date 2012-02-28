@@ -269,16 +269,13 @@ VIE.prototype.Entity = function(attrs, opts) {
                 	for (var v = 0; v < value.size(); v++) {
                 		this._setOrAddOne(attr, value.at(v).getSubject(), options);
                 	}
-                    /*throw new Error("you cannot add a collection of entities to an array of literals!");*/
                 } else if (value.isEntity) {
                 	this._setOrAddOne(attr, value.getSubject(), options);
-                    /*throw new Error("you cannot add an entity to an array of literals!");*/
                 } else if (typeof value === "object") {
                 	value = new this.vie.Entity(value);
                 	this._setOrAddOne(attr, value, options);
-                	/*throw new Error("you cannot add an entity of entities to an array of literals!");*/
                 } else {
-                    /* yes, we allow multiple equal literals */
+                    /* yes, we (have to) allow multiple equal values */
                     existing.push(value);
                     obj[attr] = existing;
                     this.set(obj);
