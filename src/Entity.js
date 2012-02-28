@@ -214,7 +214,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                 if (typeof arg1 === "object") {
                     // calling entity.setOrAdd({"rdfs:type": "example:Musician", ...})
                     _(arg1).each(function(val, key){
-                        entity._setOrAddOne(key, val, option);
+                        entity._setOrAddOne(key, val, arg2);
                     });
                 }
             return this;
@@ -222,11 +222,11 @@ VIE.prototype.Entity = function(attrs, opts) {
 
 
         /* attr is always of type string */
-        /* value can be of type: undefined,string,int,double,object,array,VIE.Entity,VIE.Collection */
+        /* value can be of type: string,int,double,object,VIE.Entity,VIE.Collection */
        /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
        
         /* depending on the type of value and the type of val, different actions need to be made */
-        _setOrAddOne: function (attr, value, option) {
+        _setOrAddOne: function (attr, value, options) {
             if (!attr || !value)
                 return;
                 
@@ -234,7 +234,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (_.isArray(value)) {
                 for (var v = 0; v < value.length; v++) {
-                    this._setOrAddOne(attr, value[v], option);
+                    this._setOrAddOne(attr, value[v], options);
                 }
                 return;
             }
@@ -248,7 +248,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (!existing) {
                 obj[attr] = value;
-                this.set(obj, option);
+                this.set(obj, options);
             } else if (existing.isCollection) {
                 if (value.isCollection) {
                     value.each(function (model) {
@@ -266,35 +266,30 @@ VIE.prototype.Entity = function(attrs, opts) {
                 this.change({});
             } else if (_.isArray(existing)) {
                 if (value.isCollection) {
-                    throw new Error("you cannot add a collection of entities to an array of literals!");
+                	for (var v = 0; v < value.size(); v++) {
+                		this._setOrAddOne(attr, value.at(v).getSubject(), options);
+                	}
+                    /*throw new Error("you cannot add a collection of entities to an array of literals!");*/
                 } else if (value.isEntity) {
-                	this._setOrAddOne(attr, value.getSubject());
+                	this._setOrAddOne(attr, value.getSubject(), options);
                     /*throw new Error("you cannot add an entity to an array of literals!");*/
                 } else if (typeof value === "object") {
-                    throw new Error("you cannot add an entity of entities to an array of literals!");
+                	value = new this.vie.Entity(value);
+                	this._setOrAddOne(attr, value, options);
+                	/*throw new Error("you cannot add an entity of entities to an array of literals!");*/
                 } else {
+                    /* yes, we allow multiple equal literals */
                     existing.push(value);
                     obj[attr] = existing;
                     this.set(obj);
                 }
             } else {
-                if (value.isCollection) {
-                    throw new Error("you cannot add a collection of entities to a literal!");
-                } else if (value.isEntity) {
-                	this._setOrAddOne(attr, value.getSubject());
-                    /*throw new Error("you cannot add an entity to a literal!");*/
-                } else if (typeof value === "object") {
-                    throw new Error("you cannot add an entity of entities to a literal!");
-                } else {
-                    /* yes, we allow multiple equal literals */
-                    var arr = [];
-                    arr.push(existing);
-                    arr.push(value);
-                    obj[attr] = arr;
-                    this.set(obj);
-                }
+                var arr = [ existing ];
+                arr.push(value);
+                obj[attr] = arr;
+                this.set(obj, options);
+                return this._setOrAddOne(attr, value, options);
             }
-            return;
         },
 
         hasType: function(type){
