@@ -5,22 +5,6 @@ VIE.prototype.Entity = function(attrs, opts) {
 
     var self = this;
 
-    var mapAttributeNS = function (attr, ns) {
-        var a = attr;
-        if (ns.isUri (attr) || attr.indexOf('@') === 0) {
-            //ignore
-        } else if (ns.isCurie(attr)) {
-            a = ns.uri(attr);
-        } else if (!ns.isUri(attr)) {
-            if (attr.indexOf(":") === -1) {
-                a = '<' + ns.base() + attr + '>';
-            } else {
-                a = '<' + attr + '>';
-            }
-        }
-        return a;
-    };
-
     if (attrs['@type'] !== undefined) {
         attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
         attrs['@type'] = _.map(attrs['@type'], function(val){
@@ -44,7 +28,7 @@ VIE.prototype.Entity = function(attrs, opts) {
     //raises a lot of side effects, so we need to expand
     //the attributes before we create the model.
     _.each (attrs, function (value, key) {
-        var newKey = mapAttributeNS(key, this.namespaces);
+        var newKey = VIE.Util.mapAttributeNS(key, this.namespaces);
         if (key !== newKey) {
             delete attrs[key];
             attrs[newKey] = value;
@@ -64,7 +48,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         get: function (attr) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
             value = (_.isArray(value))? value : [ value ];
 
@@ -86,7 +70,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         has: function(attr) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
@@ -106,7 +90,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             var self = this;
             _.each (attrs, function (value, key) {
-                var newKey = mapAttributeNS(key, self.vie.namespaces);
+                var newKey = VIE.Util.mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
                     delete attrs[key];
                     attrs[newKey] = value;
@@ -142,7 +126,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         unset: function (attr, opts) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
@@ -246,7 +230,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             if (!attr || !value)
                 return;
                 
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             
             if (_.isArray(value)) {
                 for (var v = 0; v < value.length; v++) {
@@ -256,7 +240,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             
             if (attr === "@type" && value instanceof self.vie.Type) {
-            	value = value.id
+            	value = value.id;
             }
             
             var obj = {};

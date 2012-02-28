@@ -144,6 +144,36 @@ VIE.Util = {
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+>$/) === 0);
     },
+
+// ### VIE.Util.mapAttributeNS(attr, ns)
+// This method maps an attribute of an entity into namespaces if they have CURIEs.  
+// **Parameters**:  
+// *{string}* **attr** : The attribute to be transformed.  
+// *{VIE.Namespaces}* **ns** : The namespaces.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{string}* : The transformed attribute's name.  
+// **Example usage**: 
+//
+//      var attr = "name";
+//      var ns = myVIE.namespaces;
+//      VIE.Util.mapAttributeNS(attr, ns); // '<' + ns.base() + attr + '>';
+    mapAttributeNS : function (attr, ns) {
+        var a = attr;
+        if (ns.isUri (attr) || attr.indexOf('@') === 0) {
+            //ignore
+        } else if (ns.isCurie(attr)) {
+            a = ns.uri(attr);
+        } else if (!ns.isUri(attr)) {
+            if (attr.indexOf(":") === -1) {
+                a = '<' + ns.base() + attr + '>';
+            } else {
+                a = '<' + attr + '>';
+            }
+        }
+        return a;
+    },
     
 // ### VIE.Util.rdf2Entities(service, results)
 // This method converts *rdf/json* data from an external service
