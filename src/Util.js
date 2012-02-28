@@ -422,6 +422,44 @@ VIE.Util = {
 
         return yyyy +'-' +mm1 +'-' +dd +'T' +hh +':' +mm2 +':' +ss;
     },
+
+// ### VIE.Util.extractLanguageString(entity, attrs, langs)
+// This method extracts a literal string from an entity, searching through the given attributes and languages.  
+// **Parameters**:  
+// *{```VIE.Entity```}* **entity** An instance of a VIE.Entity.  
+// *{```array|string```}* **attrs** Either a string or an array of possible attributes.  
+// *{```array|string```}* **langs** Either a string or an array of possible languages.  
+// **Throws**: 
+// *nothing*..  
+// **Returns**: 
+// *{string|undefined}* The string that was found at the attribute with the wanted language, undefined if nothing could be found.
+// **Example usage**: 
+//
+//          var attrs = ["name", "rdfs:label"];
+//          var langs = ["en", "de"];
+//          VIE.Util.extractLanguageString(someEntity, attrs, langs); // "Barack Obama";
+    extractLanguageString : function(entity, attrs, langs) {
+        if (entity && typeof entity !== "string") {
+        	attrs = (_.isArray(attrs))? attrs : [ attrs ];
+        	langs = (_.isArray(langs))? langs : [ langs ];
+        	for (var p = 0; p < attrs.length; p++) {
+	            for (var l = 0; l < langs.length; l++) {
+	                var attr = attrs[p];
+	                if (entity.has(attr)) {
+	                    var name = entity.get(attr);
+	                    name = (_.isArray(name))? name : [ name ];
+                        for ( var i = 0; i < name.length; i++) {
+                            if (name[i].indexOf('@' + langs[l]) > -1) {
+                                name = name[i];
+                                return name.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
+                            }
+                        }
+	                }
+	            }
+        	}
+        }
+        return undefined;
+    },
     
 // ### VIE.Util.transformationRules(service)
 // This returns a default set of rdfQuery rules that transform semantic data into the
