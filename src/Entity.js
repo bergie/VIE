@@ -204,17 +204,17 @@ VIE.prototype.Entity = function(attrs, opts) {
             return instanceLD;
         },
 
-        setOrAdd: function (arg1, arg2) {
+        setOrAdd: function (arg1, arg2, option) {
             var entity = this;
             if (typeof arg1 === "string" && arg2) {
                 // calling entity.setOrAdd("rdfs:type", "example:Musician")
-                entity._setOrAddOne(arg1, arg2);
+                entity._setOrAddOne(arg1, arg2, option);
             }
             else
                 if (typeof arg1 === "object") {
                     // calling entity.setOrAdd({"rdfs:type": "example:Musician", ...})
                     _(arg1).each(function(val, key){
-                        entity._setOrAddOne(key, val);
+                        entity._setOrAddOne(key, val, option);
                     });
                 }
             return this;
@@ -226,7 +226,7 @@ VIE.prototype.Entity = function(attrs, opts) {
        /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
        
         /* depending on the type of value and the type of val, different actions need to be made */
-        _setOrAddOne: function (attr, value) {
+        _setOrAddOne: function (attr, value, option) {
             if (!attr || !value)
                 return;
                 
@@ -234,7 +234,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (_.isArray(value)) {
                 for (var v = 0; v < value.length; v++) {
-                    this._setOrAddOne(attr, value[v]);
+                    this._setOrAddOne(attr, value[v], option);
                 }
                 return;
             }
@@ -248,7 +248,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (!existing) {
                 obj[attr] = value;
-                this.set(obj);
+                this.set(obj, option);
             } else if (existing.isCollection) {
                 if (value.isCollection) {
                     value.each(function (model) {
