@@ -134,7 +134,7 @@ VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) 
 
 Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward. Contributions that include their own unit tests appreciated! 
 
-Development discussions happen on the `#iks` channel on Freenode. See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
+Development discussions happen on the [VIE mailing list](http://groups.google.com/group/viejs) and the `#iks` channel on Freenode. See also [VIE on Ohloh](http://www.ohloh.net/p/vie).
 
 ### Code organization
 
