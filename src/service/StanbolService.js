@@ -320,7 +320,8 @@ VIE.prototype.StanbolConnector = function (options) {
         	urlPostfix : "/sparql"
         },
         contenthub : {
-        	urlPostfix : "/contenthub"
+        	urlPostfix : "/contenthub",
+        	index : "contenthub"
         },
         ontonet : {
         	urlPostfix : "/ontonet"
@@ -919,7 +920,88 @@ VIE.prototype.StanbolConnector.prototype = {
           });
           r.end();
       },
+// ### sparql(query, success, error, options)
+// TODO.  
+// **Parameters**:  
+// TODO
+// *{function}* **success** The success callback.  
+// *{function}* **error** The error callback.  
+// *{object}* **options** Options, unused here.   
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
+    ldpath: function(ldpath, context, success, error, options) {
+    	options = (options)? options :  {};
+        var connector = this;
+        
+        context = (_.isArray(context))? context : [ context ]
+        
+        var contextStr = "";
+    	for (var c = 0; c < context.length; c++) {
+    		contextStr += "&context=" + context[c];
+    	}
+     	
+     	connector._iterate({
+         	method : connector._ldpath,
+         	methodNode : connector._ldpathNode,
+         	success : success,
+         	error : error,
+         	url : function (idx, opts) {
+         		var site = (opts.site)? opts.site : this.options.entityhub.site;
+                site = (site)? "/" + site : "s";
+                
+                var isLocal = opts.local;
+                
+                var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
+                if (!isLocal)
+                	u += "/site" + site;
+                u += "/ldpath";
+             
+     		    return u;
+         	},
+         	args : {
+         		ldpath : ldpath,
+         		context : contextStr,
+        		format : options.format || "application/rdf+json",
+         		options : options
+         	},
+         	urlIndex : 0
+         });
+     },
+     
+     _ldpath : function (url, args, success, error) {
+    	jQuery.ajax({
+             success: success,
+             error: error,
+             url: url,
+             type: "POST",
+             data : "ldpath=" + args.ldpath + args.context,
+             contentType : "application/x-www-form-urlencoded",
+             dataType: args.format,
+             accepts: {"application/rdf+json": "application/rdf+json"}
+         });
+     },
 
+     _ldpathNode: function(url, args, success, error) {
+         var request = require('request');
+         var r = request({
+             method: "POST",
+             uri: url,
+             body : "ldpath=" + args.ldpath + context,
+             headers: {
+                 Accept: args.format
+             }
+         }, function(err, response, body) {
+             try {
+                 success({results: JSON.parse(body)});
+             } catch (e) {
+                 error(e);
+             }
+         });
+         r.end();
+     },
+         
 // ### uploadContent(content, success, error, options)
 // TODO.  
 // **Parameters**:  
@@ -944,7 +1026,7 @@ VIE.prototype.StanbolConnector.prototype = {
                  var u = this.options.url[idx].replace(/\/$/, '');
                  u += this.options.contenthub.urlPostfix.replace(/\/$/, '');
                  if (opts.contentId) {
-                	 u += "/content/" + escape(opts.contentId);
+                	 u += "/store/" + escape(opts.contentId);
                  }
                
        		     return u;
@@ -962,7 +1044,7 @@ VIE.prototype.StanbolConnector.prototype = {
                success: success,
                error: error,
                url: url,
-               type: "PUT",
+               type: "POST",
                data : args.content,
                contentType : "text/plain",
                dataType: "application/rdf+xml"
@@ -972,7 +1054,7 @@ VIE.prototype.StanbolConnector.prototype = {
        _uploadContentNode: function(url, args, success, error) {
            var request = require('request');
            var r = request({
-               method: "PUT",
+               method: "POST",
                uri: url,
                body : args.content,
                headers: {
