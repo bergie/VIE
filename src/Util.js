@@ -191,9 +191,10 @@ VIE.Util = {
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
         try {
-	        var rdf = (results instanceof jQuery.rdf)? results : jQuery.rdf().load(results, {});
+	        var rdf = (results instanceof jQuery.rdf)? 
+	        		results.base(service.vie.namespaces.base()) : 
+	        			jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
 	
-	        rdf.base(service.vie.namespaces.base());
 	        /* if the service contains rules to apply special transformation, they are executed here.*/
 	        if (service.rules) {
 	            var rules = jQuery.rdf.ruleset();
