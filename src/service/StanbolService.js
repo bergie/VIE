@@ -1025,9 +1025,11 @@ VIE.prototype.StanbolConnector.prototype = {
            	url : function (idx, opts) {
                  var u = this.options.url[idx].replace(/\/$/, '');
                  u += this.options.contenthub.urlPostfix.replace(/\/$/, '');
-                 if (opts.contentId) {
-                	 u += "/store/" + escape(opts.contentId);
-                 }
+                 
+                 var index = (opts.index)? opts.index : this.options.contenthub.index;
+                 
+                 //TODO: u += "/" + index.replace(/\/$/, '');
+                 u += "/store";
                
        		     return u;
            	},

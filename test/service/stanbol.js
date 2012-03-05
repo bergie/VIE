@@ -24,12 +24,12 @@ module("vie.js - Apache Stanbol Service");
 // !!!  /entityhub/ldpath
 // ???  /sparql
 // ???  /contenthub/contenthub/ldpath
-// ???  /contenthub/contenthub/store
-// ???  /contenthub/contenthub/store/raw/<contentId>
-// ???  /contenthub/contenthub/store/metadata/<contentId>
-// ???  /contenthub/<coreId>/store
-// ???  /contenthub/<coreId>/store/raw/<contentId>
-// ???  /contenthub/<coreId>/store/metadata/<contentId>
+// !!!  /contenthub/contenthub/store
+//   /contenthub/contenthub/store/raw/<contentId>
+//   /contenthub/contenthub/store/metadata/<contentId>
+// !!!  /contenthub/<coreId>/store
+//   /contenthub/<coreId>/store/raw/<contentId>
+//   /contenthub/<coreId>/store/metadata/<contentId>
 // ???  /contenthub/content/<contentId>
 //   /factstore/facts
 //   /factstore/query
@@ -361,34 +361,7 @@ test("VIE.js StanbolService - Load", function () {
     });
 });
 
-/* TODO
-test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (given ID)", function () {
-    if (navigator.userAgent === 'Zombie') {
-       return;
-    }
-    var content = 'This is a small test, where Steve Jobs sings the song "We want to live forever!" song.';
-
-    var z = new VIE();
-    ok (z.StanbolService);
-    equal(typeof z.StanbolService, "function");
-    var stanbol = new z.StanbolService({url : stanbolRootUrl});
-    z.use(stanbol);
-    
-    stop();
-    stanbol.connector.uploadContent(content, function (response) {
-    	debugger;
-    	start();
-    }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
-    	start();
-    }, {
-    	contentId : "http://vie-test-entity.eu/" + new Date().getTime()
-    });
-});
-
-
-test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (no ID provided)", function () {
+test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhancements", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
@@ -410,7 +383,6 @@ test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (no
     	start();
     });
 });
-*/
 
 test("VIE.js StanbolService - ContentHub: Lookup", function () {
     if (navigator.userAgent === 'Zombie') {
