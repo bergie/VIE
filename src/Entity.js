@@ -127,6 +127,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                        attrs[key] = coll;
                    } else if (_.isArray(value)) {
                        // ignore
+                   } else if (value["@value"]) {
+                       // literal -> ignore
                    } else if (typeof value == "object") {
                        var child = new self.vie.Entity(value, options);
                        self.vie.entities.addOrUpdate(child);
