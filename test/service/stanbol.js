@@ -3,49 +3,48 @@ module("vie.js - Apache Stanbol Service");
 /* All known endpoints of Stanbol */
 
 /* The ones marked with a "!!!" are implemented by the StanbolConnector */
+/* The ones marked with a "???" are implemented but still broken */
 
-// !!!  /enhancer
 // !!!  /enhancer/chain/default
 // !!!  /enhancer/chain/<chainId>
-//   /entityhub
-//   /entityhub/sites
 // !!!  /entityhub/sites/referenced
 // !!!  /entityhub/sites/entity
 // !!!  /entityhub/sites/find
 //   /entityhub/sites/query
-//   /entityhub/sites/ldpath
-//   /entityhub/site/<siteId>
+// !!!  /entityhub/sites/ldpath
 // !!!  /entityhub/site/<siteId>/entity 
 // !!!  /entityhub/site/<siteId>/find
 //   /entityhub/site/<siteId>/query
-//   /entityhub/site/<siteId>/ldpath
-// !  /entityhub/entity
+// !!!  /entityhub/site/<siteId>/ldpath
+//   /entityhub/entity
 //   /entityhub/mapping
 // !!!  /entityhub/find
 //   /entityhub/query
-//   /entityhub/lookup
-//   /entityhub/ldpath
-//   /sparql
-// !!!  /contenthub
-// !!!  /contenthub/content/<contentId>
-//   /factstore
+// !!!  /entityhub/lookup
+// !!!  /entityhub/ldpath
+// ???  /sparql
+// ???  /contenthub/contenthub/ldpath
+// !!!  /contenthub/contenthub/store
+//   /contenthub/contenthub/store/raw/<contentId>
+//   /contenthub/contenthub/store/metadata/<contentId>
+// !!!  /contenthub/<coreId>/store
+//   /contenthub/<coreId>/store/raw/<contentId>
+//   /contenthub/<coreId>/store/metadata/<contentId>
+// ???  /contenthub/content/<contentId>
 //   /factstore/facts
 //   /factstore/query
-//   /ontonet
 //   /ontonet/ontology
 //   /ontonet/ontology/<scopeName>
 //   /ontonet/ontology/<scopeName>/<ontologyId>
 //   /ontonet/ontology/User
 //   /ontonet/session/
 //   /ontonet/session/<sessionId>
-//   /rules
 //   /rules/rule/
 //   /rules/rule/<ruleId>
 //   /rules/recipe/
 //   /rules/recipe/<recipeId>
 //   /rules/refactor/
 //   /rules/refactor/apply
-//   /cmsadapter
 //   /cmsadapter/map
 //   /cmsadapter/session
 //   /cmsadapter/contenthubfeed
@@ -362,34 +361,7 @@ test("VIE.js StanbolService - Load", function () {
     });
 });
 
-/* TODO
-test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (given ID)", function () {
-    if (navigator.userAgent === 'Zombie') {
-       return;
-    }
-    var content = 'This is a small test, where Steve Jobs sings the song "We want to live forever!" song.';
-
-    var z = new VIE();
-    ok (z.StanbolService);
-    equal(typeof z.StanbolService, "function");
-    var stanbol = new z.StanbolService({url : stanbolRootUrl});
-    z.use(stanbol);
-    
-    stop();
-    stanbol.connector.uploadContent(content, function (response) {
-    	debugger;
-    	start();
-    }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
-    	start();
-    }, {
-    	contentId : "http://vie-test-entity.eu/" + new Date().getTime()
-    });
-});
-
-
-test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (no ID provided)", function () {
+test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhancements", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
@@ -411,7 +383,6 @@ test("VIE.js StanbolService - ContentHub: Upload / Retrieval of enhancements (no
     	start();
     });
 });
-*/
 
 test("VIE.js StanbolService - ContentHub: Lookup", function () {
     if (navigator.userAgent === 'Zombie') {
@@ -449,6 +420,42 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     	debugger;
     	ok(false, "No response has been returned!");
     	start();
+    });
+});
+
+test("VIE.js StanbolService - ContentHub: LDPath", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    }
+    
+    var context = 'http://dbpedia.org/resource/Paris';
+    var ldpath = "@prefix dct : <http://purl.org/dc/terms/> ;\n" + 
+                 "@prefix geo : <http://www.w3.org/2003/01/geo/wgs84_pos#> ;\n" + 
+                 "name = rdfs:label[@en] :: xsd:string;\n" + 
+                 "labels = rdfs:label :: xsd:string;\n" + 
+                 "comment = rdfs:comment[@en] :: xsd:string;\n" + 
+                 "categories = dc:subject :: xsd:anyURI;\n" + 
+                 "homepage = foaf:homepage :: xsd:anyURI;\n" + 
+                 "location = fn:concat(\"[\",geo:lat,\",\",geo:long,\"]\") :: xsd:string;\n";
+    
+    var z = new VIE();
+    z.namespaces.add("cc", "http://creativecommons.org/ns#");
+    ok (z.StanbolService);
+    equal(typeof z.StanbolService, "function");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+    
+    stop();
+    stanbol.connector.ldpath(ldpath, context, function (response) {
+    	var entities = VIE.Util.rdf2Entities(stanbol, response);
+    	ok(entities.length > 0);
+    	start();
+    }, function (err) {
+    	debugger;
+    	ok(false, "No response has been returned!");
+    	start();
+    }, {
+    	create : true
     });
 });
 
