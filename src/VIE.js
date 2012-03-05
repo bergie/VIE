@@ -343,9 +343,9 @@ VIE.prototype.find = function(options) {
 //     var vie = new VIE();
 //     vie.loadSchema("http://schema.rdfs.org/all.json", 
 //        {
-//          baseNS : "http://schema.org/",
-//          succes : function () {console.log("success");},
-//          error  : function (msg) {console.warn(msg);}
+//          baseNS  : "http://schema.org/",
+//          success : function () {console.log("success");},
+//          error   : function (msg) {console.warn(msg);}
 //        });
 VIE.prototype.loadSchema = function(url, options) {
     options = (!options)? {} : options;

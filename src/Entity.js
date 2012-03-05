@@ -5,22 +5,6 @@ VIE.prototype.Entity = function(attrs, opts) {
 
     var self = this;
 
-    var mapAttributeNS = function (attr, ns) {
-        var a = attr;
-        if (ns.isUri (attr) || attr.indexOf('@') === 0) {
-            //ignore
-        } else if (ns.isCurie(attr)) {
-            a = ns.uri(attr);
-        } else if (!ns.isUri(attr)) {
-            if (attr.indexOf(":") === -1) {
-                a = '<' + ns.base() + attr + '>';
-            } else {
-                a = '<' + attr + '>';
-            }
-        }
-        return a;
-    };
-
     if (attrs['@type'] !== undefined) {
         attrs['@type'] = (_.isArray(attrs['@type']))? attrs['@type'] : [ attrs['@type'] ];
         attrs['@type'] = _.map(attrs['@type'], function(val){
@@ -44,7 +28,7 @@ VIE.prototype.Entity = function(attrs, opts) {
     //raises a lot of side effects, so we need to expand
     //the attributes before we create the model.
     _.each (attrs, function (value, key) {
-        var newKey = mapAttributeNS(key, this.namespaces);
+        var newKey = VIE.Util.mapAttributeNS(key, this.namespaces);
         if (key !== newKey) {
             delete attrs[key];
             attrs[newKey] = value;
@@ -64,7 +48,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         get: function (attr) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
             value = (_.isArray(value))? value : [ value ];
 
@@ -86,7 +70,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         has: function(attr) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
@@ -106,7 +90,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             var self = this;
             _.each (attrs, function (value, key) {
-                var newKey = mapAttributeNS(key, self.vie.namespaces);
+                var newKey = VIE.Util.mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
                     delete attrs[key];
                     attrs[newKey] = value;
@@ -142,7 +126,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         unset: function (attr, opts) {
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
@@ -220,17 +204,17 @@ VIE.prototype.Entity = function(attrs, opts) {
             return instanceLD;
         },
 
-        setOrAdd: function (arg1, arg2) {
+        setOrAdd: function (arg1, arg2, option) {
             var entity = this;
             if (typeof arg1 === "string" && arg2) {
                 // calling entity.setOrAdd("rdfs:type", "example:Musician")
-                entity._setOrAddOne(arg1, arg2);
+                entity._setOrAddOne(arg1, arg2, option);
             }
             else
                 if (typeof arg1 === "object") {
                     // calling entity.setOrAdd({"rdfs:type": "example:Musician", ...})
                     _(arg1).each(function(val, key){
-                        entity._setOrAddOne(key, val);
+                        entity._setOrAddOne(key, val, arg2);
                     });
                 }
             return this;
@@ -238,25 +222,25 @@ VIE.prototype.Entity = function(attrs, opts) {
 
 
         /* attr is always of type string */
-        /* value can be of type: undefined,string,int,double,object,array,VIE.Entity,VIE.Collection */
+        /* value can be of type: string,int,double,object,VIE.Entity,VIE.Collection */
        /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
        
         /* depending on the type of value and the type of val, different actions need to be made */
-        _setOrAddOne: function (attr, value) {
+        _setOrAddOne: function (attr, value, options) {
             if (!attr || !value)
                 return;
                 
-            attr = mapAttributeNS(attr, self.vie.namespaces);
+            attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             
             if (_.isArray(value)) {
                 for (var v = 0; v < value.length; v++) {
-                    this._setOrAddOne(attr, value[v]);
+                    this._setOrAddOne(attr, value[v], options);
                 }
                 return;
             }
             
             if (attr === "@type" && value instanceof self.vie.Type) {
-            	value = value.id
+            	value = value.id;
             }
             
             var obj = {};
@@ -264,7 +248,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             
             if (!existing) {
                 obj[attr] = value;
-                this.set(obj);
+                this.set(obj, options);
             } else if (existing.isCollection) {
                 if (value.isCollection) {
                     value.each(function (model) {
@@ -282,35 +266,27 @@ VIE.prototype.Entity = function(attrs, opts) {
                 this.change({});
             } else if (_.isArray(existing)) {
                 if (value.isCollection) {
-                    throw new Error("you cannot add a collection of entities to an array of literals!");
+                	for (var v = 0; v < value.size(); v++) {
+                		this._setOrAddOne(attr, value.at(v).getSubject(), options);
+                	}
                 } else if (value.isEntity) {
-                	this._setOrAddOne(attr, value.getSubject());
-                    /*throw new Error("you cannot add an entity to an array of literals!");*/
+                	this._setOrAddOne(attr, value.getSubject(), options);
                 } else if (typeof value === "object") {
-                    throw new Error("you cannot add an entity of entities to an array of literals!");
+                	value = new this.vie.Entity(value);
+                	this._setOrAddOne(attr, value, options);
                 } else {
+                    /* yes, we (have to) allow multiple equal values */
                     existing.push(value);
                     obj[attr] = existing;
                     this.set(obj);
                 }
             } else {
-                if (value.isCollection) {
-                    throw new Error("you cannot add a collection of entities to a literal!");
-                } else if (value.isEntity) {
-                	this._setOrAddOne(attr, value.getSubject());
-                    /*throw new Error("you cannot add an entity to a literal!");*/
-                } else if (typeof value === "object") {
-                    throw new Error("you cannot add an entity of entities to a literal!");
-                } else {
-                    /* yes, we allow multiple equal literals */
-                    var arr = [];
-                    arr.push(existing);
-                    arr.push(value);
-                    obj[attr] = arr;
-                    this.set(obj);
-                }
+                var arr = [ existing ];
+                arr.push(value);
+                obj[attr] = arr;
+                this.set(obj, options);
+                return this._setOrAddOne(attr, value, options);
             }
-            return;
         },
 
         hasType: function(type){

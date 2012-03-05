@@ -144,6 +144,36 @@ VIE.Util = {
     isUri : function (something) {
         return (typeof something === "string" && something.search(/^<.+>$/) === 0);
     },
+
+// ### VIE.Util.mapAttributeNS(attr, ns)
+// This method maps an attribute of an entity into namespaces if they have CURIEs.  
+// **Parameters**:  
+// *{string}* **attr** : The attribute to be transformed.  
+// *{VIE.Namespaces}* **ns** : The namespaces.  
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{string}* : The transformed attribute's name.  
+// **Example usage**: 
+//
+//      var attr = "name";
+//      var ns = myVIE.namespaces;
+//      VIE.Util.mapAttributeNS(attr, ns); // '<' + ns.base() + attr + '>';
+    mapAttributeNS : function (attr, ns) {
+        var a = attr;
+        if (ns.isUri (attr) || attr.indexOf('@') === 0) {
+            //ignore
+        } else if (ns.isCurie(attr)) {
+            a = ns.uri(attr);
+        } else if (!ns.isUri(attr)) {
+            if (attr.indexOf(":") === -1) {
+                a = '<' + ns.base() + attr + '>';
+            } else {
+                a = '<' + attr + '>';
+            }
+        }
+        return a;
+    },
     
 // ### VIE.Util.rdf2Entities(service, results)
 // This method converts *rdf/json* data from an external service
@@ -391,6 +421,44 @@ VIE.Util = {
         var ss   = pad(date.getSeconds());
 
         return yyyy +'-' +mm1 +'-' +dd +'T' +hh +':' +mm2 +':' +ss;
+    },
+
+// ### VIE.Util.extractLanguageString(entity, attrs, langs)
+// This method extracts a literal string from an entity, searching through the given attributes and languages.  
+// **Parameters**:  
+// *{```VIE.Entity```}* **entity** An instance of a VIE.Entity.  
+// *{```array|string```}* **attrs** Either a string or an array of possible attributes.  
+// *{```array|string```}* **langs** Either a string or an array of possible languages.  
+// **Throws**: 
+// *nothing*..  
+// **Returns**: 
+// *{string|undefined}* The string that was found at the attribute with the wanted language, undefined if nothing could be found.
+// **Example usage**: 
+//
+//          var attrs = ["name", "rdfs:label"];
+//          var langs = ["en", "de"];
+//          VIE.Util.extractLanguageString(someEntity, attrs, langs); // "Barack Obama";
+    extractLanguageString : function(entity, attrs, langs) {
+        if (entity && typeof entity !== "string") {
+        	attrs = (_.isArray(attrs))? attrs : [ attrs ];
+        	langs = (_.isArray(langs))? langs : [ langs ];
+        	for (var p = 0; p < attrs.length; p++) {
+	            for (var l = 0; l < langs.length; l++) {
+	                var attr = attrs[p];
+	                if (entity.has(attr)) {
+	                    var name = entity.get(attr);
+	                    name = (_.isArray(name))? name : [ name ];
+                        for ( var i = 0; i < name.length; i++) {
+                            if (name[i].indexOf('@' + langs[l]) > -1) {
+                                name = name[i];
+                                return name.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
+                            }
+                        }
+	                }
+	            }
+        	}
+        }
+        return undefined;
     },
     
 // ### VIE.Util.transformationRules(service)

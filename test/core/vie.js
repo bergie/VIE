@@ -146,10 +146,10 @@ test("vie.js Entity API - setOrAdd", function () {
 
     clapton.setOrAdd({'plays': 'vocals'});
     ok(clapton.get('plays') instanceof Array, "Multiple values are stored as Arrays");
-    equals(clapton.get('plays').length, 2);
+    equals(clapton.get('plays').length, 3);
 
     clapton.setOrAdd({'plays': 'vocals'});
-    equals(clapton.get('plays').length, 3, "Same value twice is the same value and needs to be added twice.");
+    equals(clapton.get('plays').length, 4, "Same value twice is the same value and needs to be added twice.");
 });
 
 test("vie.js Entities API - set()", function () {

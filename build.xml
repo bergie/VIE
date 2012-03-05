@@ -21,7 +21,7 @@
 		</tstamp>
 	</target>
 	
-    <target name="doc" depends="distAll" description="Generates documentation for vie.js with Docco ">
+    <target name="doc" depends="dist" description="Generates documentation for vie.js with Docco ">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
         <echo message="get it from: http://jashkenas.github.com/docco/"/>
@@ -88,7 +88,7 @@
 		</exec>
     </target>
 	
-	<target name="test_copy" depends="distAll" description="Copies browser-tests into gh-pages branch ">
+	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
 		<echo message="Move tests temporarily"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
@@ -141,9 +141,7 @@
 
     <target name="all" depends="dist"/>
 
-    <target name="dist" depends="init, combine, minimise" />
-	
-	<target name="distAll" depends="init, combineAll, minimiseAll" />
+    <target name="dist" depends="init, combine, minimise, combineAll, minimiseAll" />
 
     <target name="zip" depends="dist">
         <zip destfile="${DIST_DIR}/vie-${VERSION}_${current.time}.zip">
@@ -156,6 +154,15 @@
     <target name="combine" description="combines core/*.js files into one file">
         <echo message="Building vie.js Distribution" />
         <concat destfile="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js">
+            <string>/*
+
+</string>
+            <fileset dir="." includes="LICENSE"/>
+            <string>*/
+
+</string>
+            <string>(function(){
+</string>
             <fileset dir="${SRC_DIR}" includes="VIE.js"/>
             <fileset dir="${SRC_DIR}" includes="Able.js"/>
             <fileset dir="${SRC_DIR}" includes="Util.js"/>
@@ -170,36 +177,51 @@
             <fileset dir="${SRC_DIR}/view" includes="*.js"/>
             <!-- Internet Explorer specific jQuery Ajax transport handler -->
             <fileset dir="${SRC_DIR}" includes="xdr.js"/>
+            <string>
+})();
+</string>
         </concat>
-        <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" match="^" replace="(function(){" />
-        <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" match="$" replace="})();" />
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 
 	<target name="combineAll" description="combines js libs and core/*.js files into one file">
 	        <echo message="Building vie.js Distribution" />
 	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
+                 <string>/*
+
+</string>
+	        	<fileset dir="${LIB_DIR}/jquery" includes="LICENSE"/>
+                <string>*/
+
+</string>
 	        	<fileset dir="${LIB_DIR}/jquery/1.7" includes="jquery-1.7.1.min.js"/>
-	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="underscore.min.js"/>
-	        	<fileset dir="${LIB_DIR}/backboneJS" includes="backbone.min.js"/>
-	        	<fileset dir="${SRC_DIR}" includes="VIE.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Able.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Util.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Entity.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Collection.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Type.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
-	            <fileset dir="${SRC_DIR}" includes="Namespace.js"/>
-	            <!-- VIE 1.0 API compat -->
-	            <fileset dir="${SRC_DIR}" includes="Classic.js"/>
-	            <fileset dir="${SRC_DIR}/service" includes="*.js"/>
-	            <fileset dir="${SRC_DIR}/view" includes="*.js"/>
-	            <!-- Internet Explorer specific jQuery Ajax transport handler -->
-	            <fileset dir="${SRC_DIR}" includes="xdr.js"/>
+                <string>/*
+
+</string>
+	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="LICENSE"/>
+                <string>*/
+
+</string>
+	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="underscore.js"/>
+                <string>/*
+
+</string>
+	        	<fileset dir="${LIB_DIR}/backboneJS" includes="LICENSE"/>
+                <string>*/
+
+</string>
+	        	<fileset dir="${LIB_DIR}/backboneJS" includes="backbone.js"/>
+                <string>/*
+
+</string>
+	        	<fileset dir="${LIB_DIR}/json" includes="README"/>
+                <string>*/
+
+</string>
+	        	<fileset dir="${LIB_DIR}/json" includes="json2.js"/>
+	        	<fileset dir="${DIST_DIR}" includes="vie-latest.debug.js"/>
 	        </concat>
-	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" match="^" replace="(function(){" />
-	        <replaceregexp file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" match="$" replace="})();" />
-	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest-ALL.debug.js" overwrite="true" />
+	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-ALL-latest.debug.js" overwrite="true" />
 	    </target>
 	
     <target name="minimise">
@@ -214,14 +236,15 @@
     </target>
 
 	<target name="minimiseAll">
-	        <echo message="Minimising ALL vie.js" />
+	    <echo message="Minimising ALL vie.js" />
 
-	        <antcall target="minimiseJSFile">
-	            <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" />
-	            <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" />
-	        </antcall>
-	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest-ALL.js" overwrite="true" />
-	    </target>
+	    <antcall target="minimiseJSFile">
+	        <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" />
+	        <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" />
+	    </antcall>
+	    <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-ALL-latest.js" overwrite="true" />
+        <replaceregexp file="${DIST_DIR}/vie-latest.js" match="^" replace="/*VIE may be freely distributed under the MIT license.*/" />
+	</target>
 
     <target name="minimiseJSFile">
         <java jar="${YUI}" fork="true" failonerror="true">
