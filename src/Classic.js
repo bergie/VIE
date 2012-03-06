@@ -1,3 +1,11 @@
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
+
 // Classic VIE API bindings to new VIE
 VIE.prototype.ClassicRDFa = function(vie) {
     this.vie = vie;

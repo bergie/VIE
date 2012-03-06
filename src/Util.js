@@ -202,8 +202,16 @@ VIE.Util = {
 	
 	            function getValue(rdfQueryLiteral){
 	                if(typeof rdfQueryLiteral.value === "string"){
-	                    if (rdfQueryLiteral.lang)
-	                        return rdfQueryLiteral.toString();
+	                    if (rdfQueryLiteral.lang){
+	                        var literal = {
+	                            toString: function(){
+	                                return this["@value"];
+	                            },
+	                            "@value": rdfQueryLiteral.value.replace(/^"|"$/g, ''),
+	                            "@lang": rdfQueryLiteral.lang
+	                        };
+	                        return literal;
+	                    }
 	                    else
 	                        return rdfQueryLiteral.value;
 	                    return rdfQueryLiteral.value.toString();

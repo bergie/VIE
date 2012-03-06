@@ -1,3 +1,10 @@
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 VIE.prototype.Entity = function(attrs, opts) {
 
     attrs = (attrs)? attrs : {};
@@ -127,6 +134,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                        attrs[key] = coll;
                    } else if (_.isArray(value)) {
                        // ignore
+                   } else if (value["@value"]) {
+                       // literal -> ignore
                    } else if (typeof value == "object") {
                        var child = new self.vie.Entity(value, options);
                        self.vie.entities.addOrUpdate(child);
