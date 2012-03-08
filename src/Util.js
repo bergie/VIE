@@ -208,7 +208,7 @@ VIE.Util = {
 	                                return this["@value"];
 	                            },
 	                            "@value": rdfQueryLiteral.value.replace(/^"|"$/g, ''),
-	                            "@lang": rdfQueryLiteral.lang
+	                            "@language": rdfQueryLiteral.lang
 	                        };
 	                        return literal;
 	                    }
