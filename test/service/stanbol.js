@@ -16,14 +16,14 @@ module("vie.js - Apache Stanbol Service");
 // !!!  /entityhub/site/<siteId>/find
 //   /entityhub/site/<siteId>/query
 // !!!  /entityhub/site/<siteId>/ldpath
-//   /entityhub/entity
+//   /entityhub/entity (GET, PUT, POST, DELETE)
 //   /entityhub/mapping
 // !!!  /entityhub/find
 //   /entityhub/query
 // !!!  /entityhub/lookup
 // !!!  /entityhub/ldpath
 // ???  /sparql
-// ???  /contenthub/contenthub/ldpath
+//   /contenthub/contenthub/ldpath
 // !!!  /contenthub/contenthub/store
 //   /contenthub/contenthub/store/raw/<contentId>
 //   /contenthub/contenthub/store/metadata/<contentId>
@@ -31,8 +31,8 @@ module("vie.js - Apache Stanbol Service");
 //   /contenthub/<coreId>/store/raw/<contentId>
 //   /contenthub/<coreId>/store/metadata/<contentId>
 // ???  /contenthub/content/<contentId>
-//   /factstore/facts
-//   /factstore/query
+// !!!  /factstore/facts
+// !!!  /factstore/query
 //   /ontonet/ontology
 //   /ontonet/ontology/<scopeName>
 //   /ontonet/ontology/<scopeName>/<ontologyId>
@@ -361,6 +361,7 @@ test("VIE.js StanbolService - Load", function () {
     });
 });
 
+/* TODO: Cross origin problems
 test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhancements", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
@@ -383,6 +384,8 @@ test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhan
     	start();
     });
 });
+
+*/
 
 test("VIE.js StanbolService - ContentHub: Lookup", function () {
     if (navigator.userAgent === 'Zombie') {
@@ -423,7 +426,7 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     });
 });
 
-test("VIE.js StanbolService - ContentHub: LDPath", function () {
+test("VIE.js StanbolService - LDPath", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
@@ -446,16 +449,193 @@ test("VIE.js StanbolService - ContentHub: LDPath", function () {
     z.use(stanbol);
     
     stop();
+    // on all sites
     stanbol.connector.ldpath(ldpath, context, function (response) {
     	var entities = VIE.Util.rdf2Entities(stanbol, response);
     	ok(entities.length > 0);
     	start();
     }, function (err) {
-    	debugger;
+    	ok(false, "No response has been returned!");
+    	start();
+    });
+    
+    stop();
+    // on on specific site
+    stanbol.connector.ldpath(ldpath, context, function (response) {
+    	var entities = VIE.Util.rdf2Entities(stanbol, response);
+    	ok(entities.length > 0);
+    	start();
+    }, function (err) {
     	ok(false, "No response has been returned!");
     	start();
     }, {
-    	create : true
+    	site: "dbpedia"
+    });
+    
+    stop();
+    // on local entities
+    stanbol.connector.ldpath(ldpath, context, function (response) {
+    	var entities = VIE.Util.rdf2Entities(stanbol, response);
+    	ok(entities.length > 0);
+    	start();
+    }, function (err) {
+    	ok(false, "No response has been returned!");
+    	start();
+    }, {
+    	local : true
+    });
+});
+
+test("VIE.js StanbolService - Create a New Fact Schema", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    }
+    
+    var employeeOfFact = {
+       "@context" : {
+    	 "iks"     : "http://iks-project.eu/ont/",
+    	  "@types"  : {
+    	    "person"       : "iks:person",
+    	    "organization" : "iks:organization"
+        }
+      }
+    };
+    
+    var employeeOfFactURL = "http://iks-project.eu/ont/employeeOf" + (new Date().getTime());
+       
+    var z = new VIE();
+    z.namespaces.add("cc", "http://creativecommons.org/ns#");
+    ok (z.StanbolService);
+    equal(typeof z.StanbolService, "function");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+    
+    stop();
+    // on all sites
+    stanbol.connector.createFactSchema(employeeOfFactURL, employeeOfFact, function (response) {
+    	debugger;
+    	start();
+    }, function (err) {
+    	ok(false, "No response has been returned!");
+    	start();
+    });
+});
+
+test("VIE.js StanbolService - Create a New Fact", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    }
+    
+    var fact = {
+    		 "@context" : {
+    			   "iks" : "http://iks-project.eu/ont/",
+    			   "upb" : "http://upb.de/persons/"
+    			 },
+    			 "@profile"     : "iks:employeeOf",
+    			 "person"       : { "@iri" : "upb:bnagel" },
+    			 "organization" : { "@iri" : "http://uni-paderborn.de"}
+    			};
+    
+    var z = new VIE();
+    ok (z.StanbolService);
+    equal(typeof z.StanbolService, "function");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+    
+    stop();
+    stanbol.connector.createFact(fact, function (response) {
+    	debugger;
+    	start();
+    }, function (err) {
+    	ok(false, "No response has been returned!");
+    	start();
+    });
+    
+    var moreFactsOfSameType = {
+    		 "@context" : {
+    			   "iks" : "http://iks-project.eu/ont/",
+    			   "upb" : "http://upb.de/persons/"
+    			 },
+    			 "@profile"     : "iks:employeeOf",
+    			 "@subject" : [
+    			   { "person"       : { "@iri" : "upb:bnagel" },
+    			     "organization" : { "@iri" : "http://uni-paderborn.de" }
+    			   },
+    			   { "person"       : { "@iri" : "upb:fchrist" },
+    			     "organization" : { "@iri" : "http://uni-paderborn.de" }
+    			   }
+    			 ]
+    			};
+    
+    stop();
+    stanbol.connector.createFact(moreFactsOfSameType, function (response) {
+    	debugger;
+    	start();
+    }, function (err) {
+    	ok(false, "No response has been returned!");
+    	start();
+    });
+    
+    var moreFactsOfDifferentType = {
+    		 "@context" : {
+    			   "iks" : "http://iks-project.eu/ont/",
+    			   "upb" : "http://upb.de/persons/"
+    			 },
+    			 "@subject" : [
+    			   { "@profile"     : "iks:employeeOf",
+    			     "person"       : { "@iri" : "upb:bnagel" },
+    			     "organization" : { "@iri" : "http://uni-paderborn.de" }
+    			   },
+    			   { "@profile"     : "iks:friendOf",
+    			     "person"       : { "@iri" : "upb:bnagel" },
+    			     "friend"       : { "@iri" : "upb:fchrist" }
+    			   }
+    			 ]
+    			};
+   
+   stop();
+   stanbol.connector.createFact(moreFactsOfDifferentType, function (response) {
+   	debugger;
+   	start();
+   }, function (err) {
+   	ok(false, "No response has been returned!");
+   	start();
+   });
+});
+
+test("VIE.js StanbolService - Query for Facts of a Certain Type", function () {
+    if (navigator.userAgent === 'Zombie') {
+       return;
+    }
+    
+    var query = {
+    		 "@context" : {
+    			   "iks" : "http://iks-project.eu/ont/"
+    			 },
+    			 "select" : [ "person" ],
+    			 "from"   : "iks:employeeOf",
+    			 "where"  : [
+    			   {
+    			     "="  : {
+    			       "organization" : { "@iri" : "http://uni-paderborn.de" }
+    			     }
+    			   }
+    			 ]
+    			};
+    
+    var z = new VIE();
+    ok (z.StanbolService);
+    equal(typeof z.StanbolService, "function");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+    
+    stop();
+    stanbol.connector.queryFact(query, function (response) {
+    	debugger;
+    	start();
+    }, function (err) {
+    	ok(false, "No response has been returned!");
+    	start();
     });
 });
 

@@ -312,9 +312,10 @@ VIE.prototype.StanbolConnector = function (options) {
         },
         entityhub : {
         	/* if set to undefined, the Referenced Site Manager @ /entityhub/sites is used. */
-        	/* if set to, e.g., dbpedia, eferenced Site @ /entityhub/site/dbpedia is used. */
+        	/* if set to, e.g., dbpedia, referenced Site @ /entityhub/site/dbpedia is used. */
         	site : undefined,
-        	urlPostfix : "/entityhub"
+        	urlPostfix : "/entityhub",
+        	local : false
         },
         sparql : {
         	urlPostfix : "/sparql"
@@ -732,53 +733,6 @@ VIE.prototype.StanbolConnector.prototype = {
          r.end();
      },
     
-    
-    remove: function(uri, success, error, options) {
-    	options = (options)? options :  {};
-        if (!options.urlIndex) { options.urlIndex = 0; }
-        if (options.urlIndex >= this.options.url.length) {
-            error("Could not connect to the given Stanbol endpoints! Please check for their setup!");
-            return;
-        }
-        
-        uri = uri.replace(/^</, '').replace(/>$/, '');
-        
-        var site = (options.site)? options.site : this.options.entityhub.site;
-        site = (site)? "/" + site : "s";
-        
-        var url = this.options.url[options.urlIndex].replace(/\/$/, '');
-        url += this.options.entityhub.urlPostfix + "/site" + site + "/entity?id=" + escape(uri);
-
-        var format = options.format || "application/rdf+json";
-        var type = options.type || "application/x-www-form-urlencoded";
-        
-        var retryErrorCb = function (c, u, s, e, o) {
-            /* in case an backend of Stanbol is not responding and
-             * multiple URLs have been registered
-             */
-            return  function () {
-                c.remove(u, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
-            };
-        }(this, uri, success, error, options);
-        
-        if (typeof exports !== "undefined" && typeof process !== "undefined") {
-            /* We're on Node.js, don't use jQuery.ajax */
-            return this._removeNode(url, success, retryErrorCb, options, format);
-        }
-
-        /*DELETE /entityhub/entity?id={uri}*/
-        jQuery.ajax({
-            success: success,
-            error: retryErrorCb,
-            type: "GET",
-            url: url,
-            data: null,
-            dataType: format,
-            contentType: type,
-            accepts: {"application/rdf+json": "application/rdf+json"}
-        });
-    },
-    
  // ### referenced(success, error, options)
  // This method returns a list of all referenced sites that the entityhub comprises.  
  // **Parameters**:  
@@ -920,7 +874,8 @@ VIE.prototype.StanbolConnector.prototype = {
           });
           r.end();
       },
-// ### sparql(query, success, error, options)
+      
+// ### ldpath(query, success, error, options)
 // TODO.  
 // **Parameters**:  
 // TODO
@@ -1071,7 +1026,192 @@ VIE.prototype.StanbolConnector.prototype = {
                }
            });
            r.end();
-       }
+       },
+
+//### createFactSchema(url, schema, success, error, options)
+//TODO.  
+//**Parameters**:  
+//TODO
+//*{function}* **success** The success callback.  
+//*{function}* **error** The error callback.  
+//*{object}* **options** Options, unused here.   
+//**Throws**:  
+//*nothing*  
+//**Returns**:  
+//*{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
+	  createFactSchema: function(url, schema, success, error, options) {
+		   	 options = (options)? options :  {};
+		     var connector = this;
+		     
+		     options.url = url;
+	    	
+	    	 connector._iterate({
+	        	method : connector._createFactSchema,
+	        	methodNode : connector._createFactSchemaNode,
+	        	success : success,
+	        	error : error,
+	        	url : function (idx, opts) {
+	              var u = this.options.url[idx].replace(/\/$/, '');
+	              u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+	              
+	              u += "/facts/" + escape(opts.url);
+	            
+	    		  return u;
+	        	},
+	        	args : {
+	        		url : url,
+	        		schema : schema,
+	        		options : options
+	        	},
+	        	urlIndex : 0
+	        });
+	    },
+	    
+	    _createFactSchema : function (url, args, success, error) {
+	    	   jQuery.ajax({
+	            success: success,
+	            error: error,
+	            url: url,
+	            type: "PUT",
+	            data : args.schema,
+	            contentType : "application/json",
+	            dataType: "application/json"
+	        });
+	    },
+	
+	    _createFactSchemaNode: function(url, args, success, error) {
+	        var request = require('request');
+	        var r = request({
+	            method: "PUT",
+	            uri: url,
+	            body : args.schema,
+	            headers: {
+	                Accept: "application/json",
+	                "Content-Type" : "application/json"
+	            }
+	        }, function(err, response, body) {
+	            try {
+	                success({results: JSON.parse(body)});
+	            } catch (e) {
+	                error(e);
+	            }
+	        });
+	        r.end();
+	    },
+	    
+	    createFact: function(fact, success, error, options) {
+		   	 options = (options)? options :  {};
+		     var connector = this;
+		     
+		   	 connector._iterate({
+		       	method : connector._createFact,
+		       	methodNode : connector._createFactNode,
+		       	success : success,
+		       	error : error,
+		       	url : function (idx, opts) {
+		             var u = this.options.url[idx].replace(/\/$/, '');
+		             u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+		             
+		             u += "/facts";
+		           
+		   		  return u;
+		       	},
+		       	args : {
+		       		fact : fact,
+		       		options : options
+		       	},
+		       	urlIndex : 0
+		       });
+	   },
+	   
+	   _createFact : function (url, args, success, error) {
+	   	   jQuery.ajax({
+	           success: success,
+	           error: error,
+	           url: url,
+	           type: "POST",
+	           data : args.fact,
+	           contentType : "application/json",
+	           dataType: "application/json"
+	       });
+	   },
+	
+	   _createFactNode: function(url, args, success, error) {
+	       var request = require('request');
+	       var r = request({
+	           method: "POST",
+	           uri: url,
+	           body : args.fact,
+	           headers: {
+	               Accept: "application/json",
+	               "Content-Type" : "application/json"
+	           }
+	       }, function(err, response, body) {
+	           try {
+	               success({results: JSON.parse(body)});
+	           } catch (e) {
+	               error(e);
+	           }
+	       });
+	       r.end();
+	   },
+	   
+	    queryFact: function(query, success, error, options) {
+		   	 options = (options)? options :  {};
+		     var connector = this;
+		     
+		   	 connector._iterate({
+		       	method : connector._queryFact,
+		       	methodNode : connector._queryFactNode,
+		       	success : success,
+		       	error : error,
+		       	url : function (idx, opts) {
+		             var u = this.options.url[idx].replace(/\/$/, '');
+		             u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+		             
+		             u += "/query";
+		           
+		   		  return u;
+		       	},
+		       	args : {
+		       		query : query,
+		       		options : options
+		       	},
+		       	urlIndex : 0
+		       });
+	   },
+	   
+	   _queryFact : function (url, args, success, error) {
+	   	   jQuery.ajax({
+	           success: success,
+	           error: error,
+	           url: url,
+	           type: "POST",
+	           data : args.query,
+	           contentType : "application/json",
+	           dataType: "application/json"
+	       });
+	   },
+	
+	   _queryFactNode: function(url, args, success, error) {
+	       var request = require('request');
+	       var r = request({
+	           method: "POST",
+	           uri: url,
+	           body : args.query,
+	           headers: {
+	               Accept: "application/json",
+	               "Content-Type" : "application/json"
+	           }
+	       }, function(err, response, body) {
+	           try {
+	               success({results: JSON.parse(body)});
+	           } catch (e) {
+	               error(e);
+	           }
+	       });
+	       r.end();
+	   }
 };
 })();
 

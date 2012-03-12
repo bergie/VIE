@@ -445,11 +445,20 @@ VIE.Util = {
         	langs = (_.isArray(langs))? langs : [ langs ];
         	for (var p = 0; p < attrs.length; p++) {
 	            for (var l = 0; l < langs.length; l++) {
+	            	var lang = langs[l];
 	                var attr = attrs[p];
 	                if (entity.has(attr)) {
 	                    var name = entity.get(attr);
 	                    name = (_.isArray(name))? name : [ name ];
                         for ( var i = 0; i < name.length; i++) {
+                        	var n = name[i];
+                        	if (n.isEntity) {
+                        		n = VIE.Util.extractLanguageString(n, attrs, lang);
+                        	} else if (typeof n === "string") {
+                        		n = n;
+                        	} else {
+                        		n = "";
+                        	}
                             if (name[i].indexOf('@' + langs[l]) > -1) {
                                 name = name[i];
                                 return name.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
