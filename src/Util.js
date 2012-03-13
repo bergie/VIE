@@ -459,13 +459,30 @@ VIE.Util = {
                         	} else {
                         		n = "";
                         	}
-                            if (name[i].indexOf('@' + langs[l]) > -1) {
-                                name = name[i];
-                                return name.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
+                            if (n && n.indexOf('@' + lang) > -1) {
+                                return n.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
                             }
                         }
 	                }
 	            }
+        	}
+        	/* let's do this again in case we haven't found a name but are dealing with
+        	broken data where no language is given */
+        	for (var p = 0; p < attrs.length; p++) {
+                var attr = attrs[p];
+                if (entity.has(attr)) {
+                    var name = entity.get(attr);
+                    name = (_.isArray(name))? name : [ name ];
+                    for ( var i = 0; i < name.length; i++) {
+                    	var n = name[i];
+                    	if (n.isEntity) {
+                    		n = VIE.Util.extractLanguageString(n, attrs, []);
+                    	}
+                        if (n && (typeof n === "string") && n.indexOf('@') === -1) {
+                            return n.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
+                        }
+                    }
+                }
         	}
         }
         return undefined;
