@@ -189,7 +189,9 @@ VIE.prototype.StanbolService.prototype = {
 //     stnblService.load(new vie.Findable({
 //         term : "Bischofsh", 
 //         limit : 10, 
-//         offset: 0
+//         offset: 0,
+//         field: "skos:prefLabel", // used for the term lookup, default: "rdfs:label"
+//         properties: ["skos:prefLabel", "rdfs:label"] // are going to be loaded with the result entities
 //     }));
     find: function (findable) {
         var correct = findable instanceof this.vie.Findable;
@@ -212,7 +214,21 @@ VIE.prototype.StanbolService.prototype = {
         var error = function (e) {
             findable.reject(e);
         };
-        this.connector.find(term, limit, offset, success, error);
+
+        var vie = this.vie;
+        if(findable.options.properties){
+            var properties = findable.options.properties;
+            findable.options.ldPath = _(properties)
+            .map(function(property){
+                return vie.namespaces.uri(property) + ";"
+            })
+            .join("");
+        }
+        if(findable.options.field){
+            var field = findable.options.field;
+                findable.options.field = vie.namespaces.uri(field);
+        }
+        this.connector.find(term, limit, offset, success, error, findable.options);
     },
 
 // ### load(loadable)
@@ -287,6 +303,7 @@ VIE.prototype.StanbolConnector = function (options) {
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
     this.enhancerUrlPostfix = (options.enhancerUrlPostfix)? options.enhancerUrlPostfix : "/enhancer";
     this.entityhubUrlPostfix = (options.entityhubUrlPostfix)? options.entityhubUrlPostfix : "/entityhub";
+    this.entityhubSite = options.entityhubSite;
     /*TODO: this.ontonetUrlPostfix = "/ontonet"; */
     /*TODO: this.rulesUrlPostfix = "/rules"; */
     /*TODO: this.factstoreUrlPostfix = "/factstore"; */
@@ -398,7 +415,9 @@ VIE.prototype.StanbolConnector.prototype = {
         
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPostfix + "/sites/entity?id=" + escape(uri);
+        url += this.entityhubUrlPostfix + 
+            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites/entity") + 
+            "?id=" + escape(uri);
         
         var format = options.format || "application/rdf+json";
         
@@ -471,7 +490,8 @@ VIE.prototype.StanbolConnector.prototype = {
 //                 function (err) { ... });
     find: function (term, limit, offset, success, error, options) {
         /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
-        if (!options) { options = { urlIndex : 0}; }
+        if (!options) { options = {}; }
+        if (typeof options.urlIndex != "number") { options.urlIndex = 0; }
         
         if (options.urlIndex >= this.baseUrl.length) {
             error("Could not connect to the given Stanbol endpoints! Please check for their setup!");
@@ -479,10 +499,12 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPostfix + "/sites/find";
+        url += this.entityhubUrlPostfix + 
+            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites") +
+            "/find";
         
         var format = options.format || "application/rdf+json";
-        
+        var field = options.field || "rdfs:label";
         if (offset == null) {
             offset = 0;
         }
@@ -511,8 +533,12 @@ VIE.prototype.StanbolConnector.prototype = {
             error: retryErrorCb,
             type: "POST",
             url: url,
-            data: "name=" + term + "&limit=" + limit + "&offset=" + offset,
-            dataType: format,
+            data: "name=" + term + 
+                "&limit=" + limit + 
+                "&offset=" + offset + 
+                "&field=" + field + 
+                "&ldpath=" + options.ldPath
+            , dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
