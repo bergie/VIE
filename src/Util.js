@@ -246,6 +246,97 @@ VIE.Util = {
         	return [];
         }
     },
+
+    /*
+    VIE.Util.getPreferredLangForPreferredProperty(entity, preferredFields, preferredLanguages)
+    looks for specific ranking fields and languages. It calculates all possibilities and gives them
+    a score. It returns the value with the best score.
+    */
+    getPreferredLangForPreferredProperty: function(entity, preferredFields, preferredLanguages) {
+      var l, labelArr, lang, p, property, resArr, valueArr, _len, _len2,
+        _this = this;
+      resArr = [];
+      /* Try to find a label in the preferred language
+      */
+      for (l = 0, _len = preferredLanguages.length; l < _len; l++) {
+        lang = preferredLanguages[l];
+        for (p = 0, _len2 = preferredFields.length; p < _len2; p++) {
+          property = preferredFields[p];
+          labelArr = null;
+          /* property can be a string e.g. "skos:prefLabel"
+          */
+          if (typeof property === "string" && entity.get(property)) {
+            labelArr = _.flatten([entity.get(property)]);
+            _(labelArr).each(function(label) {
+              /* 
+              The score is a natural number with 0 for the 
+              best candidate with the first preferred language
+              and first preferred property
+              */
+              var labelLang, score, value;
+              score = p;
+              labelLang = label["@language"];
+              /*
+                                      legacy code for compatibility with uotdated stanbol, 
+                                      to be removed after may 2012
+              */
+              if (typeof label === "string" && (label.indexOf("@") === label.length - 3 || label.indexOf("@") === label.length - 5)) {
+                labelLang = label.replace(/(^\"*|\"*@)..(..)?$/g, "");
+              }
+              /* end of legacy code
+              */
+              if (labelLang) {
+                if (labelLang === lang) {
+                  score += l;
+                } else {
+                  score += 20;
+                }
+              } else {
+                score += 10;
+              }
+              value = label.toString();
+              /* legacy code for compatibility with uotdated stanbol, to be removed after may 2012
+              */
+              value = value.replace(/(^\"*|\"*@..$)/g, "");
+              /* end of legacy code
+              */
+              return resArr.push({
+                score: score,
+                value: value
+              });
+            });
+            /* 
+            property can be an object like 
+            {
+              property: "skos:broader", 
+              makeLabel: function(propertyValueArr) { return "..."; }
+            }
+            */
+          } else if (typeof property === "object" && entity.get(property.property)) {
+            valueArr = _.flatten([entity.get(property.property)]);
+            valueArr = _(valueArr).map(function(termUri) {
+              if (termUri.isEntity) {
+                return termUri.getSubject();
+              } else {
+                return termUri;
+              }
+            });
+            resArr.push({
+              score: p,
+              value: property.makeLabel(valueArr)
+            });
+          }
+        }
+      }
+      /*
+              take the result with the best score
+      */
+      resArr = _(resArr).sortBy(function(a) {
+        return a.score;
+      });
+      return resArr[0].value;
+    },
+
     
 // ### VIE.Util._rdf2EntitiesNoRdfQuery(service, results)
 // This is a **private** method which should
