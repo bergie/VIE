@@ -220,11 +220,15 @@ VIE.prototype.StanbolService.prototype = {
             var properties = findable.options.properties;
             findable.options.ldPath = _(properties)
             .map(function(property){
-                return vie.namespaces.uri(property) + ";"
+                if(vie.namespaces.isCurie(property)){
+                    return vie.namespaces.uri(property) + ";"
+                } else {
+                    return property;
+                }
             })
             .join("");
         }
-        if(findable.options.field){
+        if(findable.options.field && vie.namespaces.isCurie(field)){
             var field = findable.options.field;
                 findable.options.field = vie.namespaces.uri(field);
         }
@@ -416,8 +420,8 @@ VIE.prototype.StanbolConnector.prototype = {
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
         url += this.entityhubUrlPostfix + 
-            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites/entity") + 
-            "?id=" + escape(uri);
+            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites") + 
+            "/entity?id=" + escape(uri);
         
         var format = options.format || "application/rdf+json";
         
@@ -537,7 +541,7 @@ VIE.prototype.StanbolConnector.prototype = {
                 "&limit=" + limit + 
                 "&offset=" + offset + 
                 "&field=" + field + 
-                "&ldpath=" + options.ldPath
+                "&ldpath=" + (options.ldPath || "")
             , dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
