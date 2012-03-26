@@ -140,6 +140,8 @@ Development discussions happen on the [VIE mailing list](http://groups.google.co
 
 VIE source code is inside the `src` directory. Each separate unit of functionality should be handled in its own file, with the `src/VIE.js` being the entry point to the system.
 
+![VIE architecture](https://raw.github.com/bergie/VIE/master/design/architecture.png)
+
 ### Building VIE
 
 The VIE library consists of many individual pieces that we merge together in the build process. You'll need [Apache Ant](http://ant.apache.org/). Then just run:
