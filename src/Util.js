@@ -196,7 +196,7 @@ VIE.Util = {
 	                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
 	            } catch (e) {
 	                propertyCurie = propertyUri;
-	                console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
+	                // console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
 	            }
 	            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
 	
