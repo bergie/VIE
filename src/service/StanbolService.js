@@ -381,6 +381,7 @@ VIE.prototype.StanbolConnector.prototype = {
             uri: url,
             body: text,
             headers: {
+                'Content-Type': 'text/plain',
                 Accept: format
             }
         }, function(error, response, body) {
