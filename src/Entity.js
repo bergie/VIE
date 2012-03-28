@@ -200,6 +200,13 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
+        isNew: function() {
+            if (this.getSubjectUri().substr(0, 7) === '_:bnode') {
+                return true;
+            }
+            return false;
+        },
+
         // **`getSubject()`** is the getter for the entity identifier.
         getSubject: function(){
             if (typeof this.id === "undefined") {
