@@ -59,9 +59,14 @@ test("vie.js Entities API -  id/getSubject()", function () {
     
     var empty = new z.Entity();
     ok(empty);
-    ok(empty.id);
-    ok(empty.id.substring(0, 2), "_:");
-    equal(empty.id, empty.getSubject());
+
+    // id property of new entities has to be null for Backbone
+    // logic to work
+    ok(empty.isNew());
+    equal(empty.id, null);
+
+    // getSubject should still return a _:bnode
+    ok(empty.getSubject().substring(0, 2), "_:");
     equal(empty.get("@type").id, z.types.get("owl:Thing").id);
 
     var e = new z.Entity({"@subject" : "owl:TestId"});
