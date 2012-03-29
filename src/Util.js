@@ -199,7 +199,7 @@ VIE.Util = {
 	                // console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
 	            }
 	            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
-	
+
 	            function getValue(rdfQueryLiteral){
 	                if(typeof rdfQueryLiteral.value === "string"){
 	                    if (rdfQueryLiteral.lang){
@@ -334,7 +334,11 @@ VIE.Util = {
       resArr = _(resArr).sortBy(function(a) {
         return a.score;
       });
-      return resArr[0].value;
+      if(resArr.length) {
+        return resArr[0].value;
+      } else {
+        return "n/a";
+      }
     },
 
     
