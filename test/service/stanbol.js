@@ -50,7 +50,7 @@ module("vie.js - Apache Stanbol Service");
 //   /cmsadapter/contenthubfeed
 
 
-var stanbolRootUrl = ["http://134.96.189.108:1025", "http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
+var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
 test("Test stanbol connection", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -84,6 +84,10 @@ test("VIE.js StanbolService - Analyze", function () {
             }
         }
         ok(allEntities);
+        var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text")})[0];
+        var s = firstTextAnnotation.get("enhancer:selected-text").toString();
+
+        ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
         start();
     })
     .fail(function(f){

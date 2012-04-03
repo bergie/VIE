@@ -31,7 +31,7 @@ VIE.prototype.StanbolService = function(options) {
         name : 'stanbol',
         /* you can pass an array of URLs which are then tried sequentially */
         url: ["http://dev.iks-project.eu/stanbolfull"],
-        timeout : 60000, /* 60 seconds timeout */
+        timeout : 20000, /* 20 seconds timeout */
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
             semdeskf : "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#",
@@ -196,7 +196,9 @@ VIE.prototype.StanbolService.prototype = {
 //     stnblService.load(new vie.Findable({
 //         term : "Bischofsh", 
 //         limit : 10, 
-//         offset: 0
+//         offset: 0,
+//         field: "skos:prefLabel", // used for the term lookup, default: "rdfs:label"
+//         properties: ["skos:prefLabel", "rdfs:label"] // are going to be loaded with the result entities
 //     }));
     find: function (findable) {        
         var correct = findable instanceof this.vie.Findable;
@@ -220,12 +222,26 @@ VIE.prototype.StanbolService.prototype = {
             findable.reject(e);
         };
         
-        var options = {
-    		site : (findable.options.site)? findable.options.site : service.options.entityhub.site,
-    	    		local : findable.options.local
-        };
+        findable.options.site = (findable.options.site)? findable.options.site : service.options.entityhub.site;
         
-        this.connector.find(term, limit, offset, success, error, options);
+        var vie = this.vie;
+        if(findable.options.properties){
+            var properties = findable.options.properties;
+            findable.options.ldPath = _(properties)
+            .map(function(property){
+                if(vie.namespaces.isCurie(property)){
+                    return vie.namespaces.uri(property) + ";"
+                } else {
+                    return property;
+                }
+            })
+            .join("");
+        }
+        if(findable.options.field && vie.namespaces.isCurie(field)){
+            var field = findable.options.field;
+                findable.options.field = vie.namespaces.uri(field);
+        }
+        this.connector.find(term, limit, offset, success, error, findable.options);
     },
 
 // ### load(loadable)
@@ -343,6 +359,8 @@ VIE.prototype.StanbolConnector = function (options) {
     this.options.url = (_.isArray(this.options.url))? this.options.url : [ this.options.url ];
     
     this._init();
+
+    this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
 };
 
 VIE.prototype.StanbolConnector.prototype = {
@@ -466,7 +484,8 @@ VIE.prototype.StanbolConnector.prototype = {
             uri: url,
             body: args.text,
             headers: {
-                Accept: args.format
+                Accept: args.format,
+                'Content-Type': 'text/plain'
             }
         }, function(err, response, body) {
             try {
@@ -495,13 +514,12 @@ VIE.prototype.StanbolConnector.prototype = {
 //     stnblConn.load("<http://dbpedia.org/resource/Barack_Obama>",
 //                 function (res) { ... },
 //                 function (err) { ... });
-    load: function(uri, success, error, options) {
-    	options = (options)? options :  {};
+
+    load: function (uri, success, error, options) {
     	var connector = this;
+        options = (options)? options :  {};
     	
-    	uri = uri.replace(/^</, '').replace(/>$/, '');
-    	
-    	options.uri = uri;
+        options.uri = uri.replace(/^</, '').replace(/>$/, '');
         
     	connector._iterate({
         	method : connector._load,
@@ -583,6 +601,7 @@ VIE.prototype.StanbolConnector.prototype = {
     find: function(term, limit, offset, success, error, options) {
     	options = (options)? options :  {};
         /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
+
     	var connector = this;
     	
     	if (!term || term === "") {
