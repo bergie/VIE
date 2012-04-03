@@ -50,7 +50,7 @@ module("vie.js - Apache Stanbol Service");
 //   /cmsadapter/contenthubfeed
 
 
-var stanbolRootUrl = ["http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
+var stanbolRootUrl = ["http://134.96.189.108:1025", "http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
 test("Test stanbol connection", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -181,7 +181,6 @@ test("VIE.js StanbolConnector - Get all referenced sites", function () {
     });
 });
 
-/* TODO
 test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
@@ -214,7 +213,6 @@ test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
     	start();
     });
 });
-*/
 
 
 test("VIE.js StanbolService - Find", function () {
@@ -361,7 +359,6 @@ test("VIE.js StanbolService - Load", function () {
     });
 });
 
-/* TODO: Cross origin problems
 test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhancements", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
@@ -385,7 +382,6 @@ test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhan
     });
 });
 
-*/
 
 test("VIE.js StanbolService - ContentHub: Lookup", function () {
     if (navigator.userAgent === 'Zombie') {

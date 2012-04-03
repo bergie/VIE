@@ -38,7 +38,7 @@
 	 	   <arg value="-c" />
 	 	   <arg value="docco ${TMP_DIR}/*.js" />
 		</exec>
-        <delete dir="${TMP_DIR}"/>
+        <delete dir="${TMP_DIR}"/> 
         <move todir="${DOCS_DIR}">
             <fileset dir="${DOCS_ROOT}">
         	    <patternset>
