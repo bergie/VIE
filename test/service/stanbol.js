@@ -387,8 +387,7 @@ test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhan
     	debugger;
     	start();
     }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
 });
@@ -414,8 +413,7 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     	ok(entities.length > 0, "With 'create'");
     	start();
     }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     }, {
     	create : true
@@ -427,8 +425,7 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     	ok(entities.length > 0, "Without 'create'");
     	start();
     }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
 });
@@ -462,7 +459,7 @@ test("VIE.js StanbolService - LDPath", function () {
     	ok(entities.length > 0);
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
     
@@ -473,7 +470,7 @@ test("VIE.js StanbolService - LDPath", function () {
     	ok(entities.length > 0);
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     }, {
     	site: "dbpedia"
@@ -486,7 +483,7 @@ test("VIE.js StanbolService - LDPath", function () {
     	ok(entities.length > 0);
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     }, {
     	local : true
@@ -523,7 +520,7 @@ test("VIE.js StanbolService - Create a New Fact Schema", function () {
     	debugger;
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
 });
@@ -554,7 +551,7 @@ test("VIE.js StanbolService - Create a New Fact", function () {
     	debugger;
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
     
@@ -579,7 +576,7 @@ test("VIE.js StanbolService - Create a New Fact", function () {
     	debugger;
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
     
@@ -605,7 +602,7 @@ test("VIE.js StanbolService - Create a New Fact", function () {
    	debugger;
    	start();
    }, function (err) {
-   	ok(false, "No response has been returned!");
+   	ok(false, err);
    	start();
    });
 });
@@ -641,7 +638,7 @@ test("VIE.js StanbolService - Query for Facts of a Certain Type", function () {
     	debugger;
     	start();
     }, function (err) {
-    	ok(false, "No response has been returned!");
+    	ok(false, err);
     	start();
     });
 });
