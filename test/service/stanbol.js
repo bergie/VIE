@@ -209,11 +209,18 @@ test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
     z.use(stanbol);
     stop();
     stanbol.connector.sparql(query, function (response) {
-    	debugger;
+    	ok(response instanceof Document);
+    	var xmlString = (new XMLSerializer()).serializeToString(response);
+    	var myJsonObject = xml2json.parser(xmlString);
+
+    	ok(myJsonObject.sparql);
+    	ok(myJsonObject.sparql.results);
+    	ok(myJsonObject.sparql.results.result);
+    	ok(myJsonObject.sparql.results.result.length > 0);
+    	
     	start();
     }, function (err) {
-    	debugger;
-    	ok(false, "No response has been returned!");
+    	ok(false, "SPARQL endpoint returned no response!");
     	start();
     });
 });
