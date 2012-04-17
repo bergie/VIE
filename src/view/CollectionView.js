@@ -50,7 +50,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             relations[predicate] = new service.vie.Collection();
             var model = service.vie.entities.get(service.getElementSubject(this));
             if (model) {
-                relations[predicate].addOrUpdate();
+                relations[predicate].addOrUpdate(model);
             }
             entity.set(relations);
         });

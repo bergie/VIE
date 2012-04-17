@@ -41,6 +41,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             return entities;
         }
 
+        if (model === undefined) {
+            throw new Error("No model given");
+        }
+
         if (!model.isEntity) {
             model = new this.model(model);
         }
