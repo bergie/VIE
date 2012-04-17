@@ -48,7 +48,10 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             var predicate = jQuery(this).attr('rev');
             var relations = {};
             relations[predicate] = new service.vie.Collection();
-            relations[predicate].addOrUpdate(service.vie.entities.get(service.getElementSubject(this)));
+            var model = service.vie.entities.get(service.getElementSubject(this));
+            if (model) {
+                relations[predicate].addOrUpdate();
+            }
             entity.set(relations);
         });
         
