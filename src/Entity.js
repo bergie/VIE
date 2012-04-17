@@ -235,6 +235,12 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         toReference: function(uri){
+            if (_.isArray(uri)) {
+              var self = this;
+              return _.map(uri, function(part) {
+                 return self.toReference(part);
+              });
+            }
             var ns = this.vie.namespaces;
             var ret = uri;
             if (uri.substring(0, 2) === "_:") {
