@@ -28,7 +28,7 @@ VIE.prototype.ZemantaService = function(options) {
         name : 'zemanta',
         /* you can pass an array of URLs which are then tried sequentially */
         url: ["http://api.zemanta.com/services/rest/0.0/"],
-        timeout : 60000, /* 60 seconds timeout */
+        timeout : 20000, /* 20 seconds timeout */
         namespaces : {
         	zemanta: "http://s.zemanta.com/ns#"
         },
@@ -44,7 +44,8 @@ VIE.prototype.ZemantaService = function(options) {
                     '?entity zemanta:hasEntityAnnotation ?subject'
                 ]
             }
-         ]
+         ],
+         "api_key" : undefined
     };
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
@@ -70,7 +71,7 @@ VIE.prototype.ZemantaService.prototype = {
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
-// *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+// *{VIE.ZemantaService}* : The VIE.ZemantaService instance itself.  
 // **Example usage**:  
 //
 //     var service = new vie.ZemantaService({<some-configuration>});
@@ -86,9 +87,9 @@ VIE.prototype.ZemantaService.prototype = {
         this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
         
         this.connector = new this.vie.ZemantaConnector(this.options);
-        
+
         /* adding these entity types to VIE helps later the querying */
-        this.vie.types.addOrOverwrite('zemanta:EntityAnnotation', [
+        this.vie.types.addOrOverwrite('zemanta:Recognition', [
             /*TODO: add attributes */
         ]).inherit("owl:Thing");
     },
@@ -100,7 +101,7 @@ VIE.prototype.ZemantaService.prototype = {
 // **Throws**:  
 // *{Error}* if an invalid VIE.Findable is passed.  
 // **Returns**:  
-// *{VIE.ZemantaService}* : The VIE.ZemantaService instance itself.  
+// *{VIE.StanbolService}* : The VIE.ZemantaService instance itself.  
 // **Example usage**:  
 //
 //     var service = new vie.ZemantaService({<some-configuration>});
@@ -118,7 +119,6 @@ VIE.prototype.ZemantaService.prototype = {
         var text = service._extractText(element);
 
         if (text.length > 0) {
-            /* query enhancer with extracted text */
             var success = function (results) {
                 _.defer(function(){
                     var entities = VIE.Util.rdf2Entities(service, results);
@@ -128,8 +128,10 @@ VIE.prototype.ZemantaService.prototype = {
             var error = function (e) {
                 analyzable.reject(e);
             };
+            
+            var options = {};
 
-            this.connector.analyze(text, success, error);
+            this.connector.analyze(text, success, error, options);
 
         } else {
             console.warn("No text found in element.");
@@ -138,21 +140,9 @@ VIE.prototype.ZemantaService.prototype = {
 
     },
 
-    // this private method extracts text from a jQuery element
+    /* this private method extracts the outerHTML from a jQuery element */
     _extractText: function (element) {
-        if (element.get(0) &&
-            element.get(0).tagName &&
-            (element.get(0).tagName == 'TEXTAREA' ||
-            element.get(0).tagName == 'INPUT' && element.attr('type', 'text'))) {
-            return element.get(0).val();
-        }
-        else {
-            var res = element
-                .text()    /* get the text of element */
-                .replace(/\s+/g, ' ') /* collapse multiple whitespaces */
-                .replace(/\0\b\n\r\f\t/g, ''); /* remove non-letter symbols */
-            return jQuery.trim(res);
-        }
+        return jQuery(element).wrap("<div>").parent().html();
     }
 };
 
@@ -164,17 +154,86 @@ VIE.prototype.ZemantaService.prototype = {
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
-// *{VIE.ZemantaService}* : The **new** VIE.ZemantaService instance.  
+// *{VIE.ZemantaConnector}* : The **new** VIE.ZemantaConnector instance.  
 // **Example usage**:  
 //
 //     var conn = new vie.ZemantaConnector({<some-configuration>});
 VIE.prototype.ZemantaConnector = function (options) {
-    this.options = options;
+    
+    var defaults =  {
+		/* you can pass an array of URLs which are then tried sequentially */
+	    url: ["http://api.zemanta.com/services/rest/0.0/"],
+	    timeout : 20000, /* 20 seconds timeout */
+        "api_key" : undefined
+    };
+
+    /* the options are merged with the default options */
+    this.options = jQuery.extend(true, defaults, options ? options : {});
+    this.options.url = (_.isArray(this.options.url))? this.options.url : [ this.options.url ];
+    
+    this._init();
+
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
-    this.enhancerUrlPrefix = "/";
 };
 
 VIE.prototype.ZemantaConnector.prototype = {
+		
+// ### _init()
+// Basic setup of the Zemanta connector.  This is called internally by the constructor!
+// **Parameters**:  
+// *nothing*
+// **Throws**:  
+// *nothing*  
+// **Returns**:  
+// *{VIE.ZemantaConnector}* : The VIE.ZemantaConnector instance itself. 
+	_init : function () {
+		var connector = this;
+		
+	    /* basic setup for the ajax connection */
+	    jQuery.ajaxSetup({
+	        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+	        timeout: connector.options.timeout
+	    });
+	    
+	    return this;
+	},
+	
+	_iterate : function (params) {
+        if (!params) { return; }
+        
+        if (params.urlIndex >= this.options.url.length) {
+        	params.error.call(this, "Could not connect to the given Zemanta endpoints! Please check for their setup!");
+            return;
+        }
+        
+        var retryErrorCb = function (c, p) {
+            /* in case a Zemanta backend is not responding and
+             * multiple URLs have been registered
+             */
+            return function () {
+                console.log("Zemanta connection error", arguments);
+                p.urlIndex = p.urlIndex+1;
+                c._iterate(p);
+            };
+        }(this, params);
+
+        if (typeof exports !== "undefined" && typeof process !== "undefined") {
+            /* We're on Node.js, don't use jQuery.ajax */
+            return params.methodNode.call(
+            		this, 
+            		params.url.call(this, params.urlIndex, params.args.options),
+            		params.args,
+            		params.success,
+            		retryErrorCb);
+        }
+        
+        return params.method.call(
+        		this, 
+        		params.url.call(this, params.urlIndex, params.args.options),
+        		params.args,
+        		params.success,
+        		retryErrorCb);
+	},
 
 // ### analyze(text, success, error, options)
 // This method sends the given text to Zemanta returns the result by the success callback.  
@@ -182,7 +241,7 @@ VIE.prototype.ZemantaConnector.prototype = {
 // *{string}* **text** The text to be analyzed.  
 // *{function}* **success** The success callback.  
 // *{function}* **error** The error callback.  
-// *{object}* **options** Options, like the ```format```.  
+// *{object}* **options** Options, like the ```format```, or the ```chain``` to be used.  
 // **Throws**:  
 // *nothing*  
 // **Returns**:  
@@ -190,78 +249,71 @@ VIE.prototype.ZemantaConnector.prototype = {
 // **Example usage**:  
 //
 //     var conn = new vie.ZemantaConnector(opts);
-//     conn.analyze("This is some text.",
+//     conn.analyze("<p>This is some HTML text.</p>",
 //                 function (res) { ... },
 //                 function (err) { ... });
     analyze: function(text, success, error, options) {
-        if (!options) { options = { urlIndex : 0}; }
-        if (options.urlIndex >= this.baseUrl.length) {
-            error("Could not connect to the given Zemanta endpoints! Please check for their setup!");
-            return;
-        }
+    	options = (options)? options :  {};
+    	var connector = this;
         
-        var enhancerUrl = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        enhancerUrl += this.enhancerUrlPrefix;
-        
-        var format = options.format || "application/rdf+json";
-        
-        var retryErrorCb = function (c, t, s, e, o) {
-            /* in case a Zemanta backend is not responding and
-             * multiple URLs have been registered
-             */
-            return  function () {
-                console.error("Zemanta connection error", arguments);
-                c.analyze(t, s, e, _.extend(o, {urlIndex : o.urlIndex+1}));
-            };
-        }(this, text, success, error, options);
-        
-        var data = this._prepareData(text);
-
-        if (typeof exports !== "undefined" && typeof process !== "undefined") {
-            /* We're on Node.js, don't use jQuery.ajax */
-            return this._analyzeNode(enhancerUrl, data, success, retryErrorCb, options, format);
-        }
-
-        jQuery.ajax({
+    	connector._iterate({
+        	method : connector._analyze,
+        	methodNode : connector._analyzeNode,
+        	success : success,
+        	error : error,
+        	url : function (idx, opts) {
+        		var u = this.options.url[idx].replace(/\/$/, '');
+        		return u;
+        	},
+        	args : {
+    			text : text,
+        		format : options.format || "rdfxml",
+        		options : options
+        	},
+        	urlIndex : 0
+        });
+    },
+    
+    _analyze : function (url, args, success, error) {
+    	jQuery.ajax({
             success: function(a, b, c){
 	        	var responseData = c.responseText.replace(/<z:signature>.*?<\/z:signature>/, '');
 	        	success(responseData);
             },
-            error: retryErrorCb,
+            error: error,
+            url: url,
             type: "POST",
-            url: enhancerUrl,
-            data: data
+            dataType: "xml",
+            data: {
+            	method : "zemanta.suggest",
+            	text : args.text,
+            	format : args.format,
+            	api_key : this.options.api_key,
+            	return_rdf_links : args.options.return_rdf_links
+            },
+            contentType: "text/plain",
+            accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
 
-    _analyzeNode: function(url, text, success, errorCB, options, format) {
+    _analyzeNode: function(url, args, success, error) {
         var request = require('request');
         var r = request({
             method: "POST",
             uri: url,
-            body: text,
+            body: args.text,
             headers: {
-                Accept: format
+                Accept: args.format,
+                'Content-Type': 'text/plain'
             }
-        }, function(error, response, body) {
+        }, function(err, response, body) {
             try {
                 success({results: JSON.parse(body)});
             } catch (e) {
-                errorCB(e);
+                error(e);
             }
         });
         r.end();
-    },
-    
-    _prepareData : function (text) {
-        return {
-            method: 'zemanta.suggest_markup',
-            format: 'rdfxml',
-            api_key: this.options.api_key,
-            text: text,
-            return_rdf_links: 1
-            // for more options check http://developer.zemanta.com/docs/suggest/
-        };
     }
 };
 })();

@@ -7,3 +7,4 @@ docs
 target
 node_modules
 npm-debug.log
+test/service/api_keys.js

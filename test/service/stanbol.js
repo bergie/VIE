@@ -51,11 +51,59 @@ module("vie.js - Apache Stanbol Service");
 
 
 var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
-test("Test stanbol connection", function() {
+test("VIE.js StanbolService - Registration", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
     z.use(new z.StanbolService);
     ok(z.service('stanbol'));
+});
+
+test("VIE.js StanbolService - API", function() {
+    var z = new VIE();
+    z.use(new z.StanbolService);
+
+    ok(z.service('stanbol').init);
+    equals(typeof z.service('stanbol').init, "function");
+    ok(z.service('stanbol').analyze);
+    equals(typeof z.service('stanbol').analyze, "function");
+    ok(z.service('stanbol').find);
+    equals(typeof z.service('stanbol').find, "function");
+    ok(z.service('stanbol').load);
+    equals(typeof z.service('stanbol').load, "function");
+    ok(z.service('stanbol').connector);
+    ok(z.service('stanbol').connector instanceof z.StanbolConnector);
+    ok(z.service('stanbol').rules);
+    equals(typeof z.service('stanbol').rules, "object");
+});
+
+test("VIE.js StanbolConnector - API", function() {
+	var z = new VIE();
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+    
+    //API
+    ok(stanbol.connector.analyze);
+    equals(typeof stanbol.connector.analyze, "function");
+    ok(stanbol.connector.load);
+    equals(typeof stanbol.connector.load, "function");
+    ok(stanbol.connector.find);
+    equals(typeof stanbol.connector.find, "function");
+    ok(stanbol.connector.lookup);
+    equals(typeof stanbol.connector.lookup, "function");
+    ok(stanbol.connector.referenced);
+    equals(typeof stanbol.connector.referenced, "function");
+    ok(stanbol.connector.sparql);
+    equals(typeof stanbol.connector.sparql, "function");
+    ok(stanbol.connector.ldpath);
+    equals(typeof stanbol.connector.ldpath, "function");
+    ok(stanbol.connector.uploadContent);
+    equals(typeof stanbol.connector.uploadContent, "function");
+    ok(stanbol.connector.createFactSchema);
+    equals(typeof stanbol.connector.createFactSchema, "function");
+    ok(stanbol.connector.createFact);
+    equals(typeof stanbol.connector.createFact, "function");
+    ok(stanbol.connector.queryFact);
+    equals(typeof stanbol.connector.queryFact, "function");
 });
 
 test("VIE.js StanbolService - Analyze", function () {
