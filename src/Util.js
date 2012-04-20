@@ -709,5 +709,53 @@ VIE.Util = {
         ];
         return res;
     }
-};
+    
+    getAdditionalRules : function (service) {
 
+    	var mapping = {
+			Work : "CreativeWork",
+			Film : "Movie",
+			TelevisionEpisode : "TVEpisode",
+			TelevisionShow : "TVSeries", // not listed as equivalent class on dbpedia.org
+			Website : "WebPage",
+			Painting : "Painting",
+			Sculpture : "Sculpture",
+	
+			Event : "Event",
+			SportsEvent : "SportsEvent",
+			MusicFestival : "Festival",
+			FilmFestival : "Festival",
+	
+			Place : "Place",
+			Continent : "Continent",
+			Country : "Country",
+			City : "City",
+			Airport : "Airport",
+			Station : "TrainStation", // not listed as equivalent class on dbpedia.org
+			Hospital : "GovernmentBuilding",
+			Mountain : "Mountain",
+			BodyOfWater : "BodyOfWater",
+	
+			Company : "Organization",
+			Person : "Person",
+    	};
+
+		var additionalRules = new Array();
+		for ( var key in mapping) {
+			var tripple = {
+				'left' : [ '?subject a dbpedia:' + key, '?subject rdfs:label ?label' ],
+				'right' : function(ns) {
+					return function() {
+						return [ jQuery.rdf.triple(this.subject.toString(), 'a', '<' + ns.base() + mapping[key] + '>', {
+							namespaces : ns.toObj()
+						}), jQuery.rdf.triple(this.subject.toString(), '<' + ns.base() + 'name>', this.label.toString(), {
+							namespaces : ns.toObj()
+						}) ];
+					};
+				}(service.vie.namespaces)
+			};
+			additionalRules.push(tripple);
+		}
+		return additionalRules;
+    }
+};
