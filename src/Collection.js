@@ -41,6 +41,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             return entities;
         }
 
+        if (model === undefined) {
+            throw new Error("No model given");
+        }
+
         if (!model.isEntity) {
             model = new this.model(model);
         }
@@ -69,7 +73,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                         // TODO: Merge collections
                         return true;
                     }
-                    
+                    if (options.overrideAttributes) {
+                       newAttribs[attribute] = value;
+                       return true;
+                    } 
                     if (attribute === '@context') {
                         newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
                     } else {

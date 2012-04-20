@@ -216,7 +216,7 @@ VIE.prototype.RdfaService.prototype = {
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.fromReference(entity.get(predicate));
-            if (attributeValue.isCollection) {
+            if (attributeValue && attributeValue.isCollection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this), entity);
                 });

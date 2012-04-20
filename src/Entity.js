@@ -209,7 +209,21 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this.fromReference(this.getSubject());
         },
 
+        isReference: function(uri){
+            var matcher = new RegExp("^\\<([^\\>]*)\\>$");
+            if (matcher.exec(uri)) {
+                return true;
+            }
+            return false;
+        },
+
         toReference: function(uri){
+            if (_.isArray(uri)) {
+              var self = this;
+              return _.map(uri, function(part) {
+                 return self.toReference(part);
+              });
+            }
             var ns = this.vie.namespaces;
             var ret = uri;
             if (uri.substring(0, 2) === "_:") {
