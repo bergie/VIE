@@ -708,7 +708,7 @@ VIE.Util = {
               },
         ];
         return res;
-    }
+    },
     
     getAdditionalRules : function (service) {
 
