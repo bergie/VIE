@@ -138,7 +138,7 @@ var VIE = root.VIE = function(config) {
 //
 //     var vie = new VIE({classic: true});
 //     vie.RDFaEntities.getInstances();
-    if (this.config.classic !== false) {
+    if (this.config.classic === true) {
         /* Load Classic API as well */
         this.RDFa = new this.ClassicRDFa(this);
         this.RDFaEntities = new this.ClassicRDFaEntities(this);

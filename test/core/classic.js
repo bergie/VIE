@@ -10,7 +10,7 @@ test("Disabled Classic API", function () {
 });
 
 test("Enabled Classic API", function() {
-    var v = new VIE();
+    var v = new VIE({classic: true});
     ok(v);
     ok(v.EntityManager);
     ok(v.RDFa);
