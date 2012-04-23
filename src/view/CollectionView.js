@@ -96,7 +96,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
-        service._findPredicateElements(subject, newElement, false).each(function() {
+        service.findPredicateElements(subject, newElement, false).each(function() {
             var predicate = service.getElementPredicate(jQuery(this));
             if (entity.get(predicate) && entity.get(predicate).isCollection) {
               return true;
