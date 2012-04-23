@@ -2,9 +2,8 @@ module("Core");
 
 test("vie.js API", function () {
 
-	notEqual(typeof VIE, 'undefined', "No VIE object found! Please ensure that you build the project first by running 'ant'.");
-    equal(typeof VIE, 'function');
-
+	equal(typeof VIE, 'function', "Test if global VIE object is available! Please ensure that you build the project first by running 'ant'.");
+    
     var v = new VIE();
     ok(v);
     ok(v instanceof VIE);

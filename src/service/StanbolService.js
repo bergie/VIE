@@ -321,7 +321,7 @@ VIE.prototype.StanbolConnector = function (options) {
     var defaults =  {
 		/* you can pass an array of URLs which are then tried sequentially */
 	    url: ["http://dev.iks-project.eu/stanbolfull"],
-	    timeout : 60000, /* 60 seconds timeout */
+	    timeout : 20000, /* 20 seconds timeout */
         enhancer : {
         	urlPostfix : "/enhancer",
         	chain : "default"
@@ -446,8 +446,6 @@ VIE.prototype.StanbolConnector.prototype = {
     	connector._iterate({
         	method : connector._analyze,
         	methodNode : connector._analyzeNode,
-        	success : success,
-        	error : error,
         	url : function (idx, opts) {
         		var chain = (opts.chain)? opts.chain : this.options.enhancer.chain;
                 
@@ -460,6 +458,8 @@ VIE.prototype.StanbolConnector.prototype = {
         		format : options.format || "application/rdf+json",
         		options : options
         	},
+        	success : success,
+        	error : error,
         	urlIndex : 0
         });
     },

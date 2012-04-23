@@ -7,6 +7,7 @@ module("vie.js - Apache Stanbol Service");
 
 // !!!  /enhancer/chain/default
 // !!!  /enhancer/chain/<chainId>
+
 // !!!  /entityhub/sites/referenced
 // !!!  /entityhub/sites/entity
 // !!!  /entityhub/sites/find
@@ -120,8 +121,8 @@ test("VIE.js StanbolService - Analyze", function () {
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
         ok(entities);
-        ok(entities.length > 0, "At least one entity returned");
         ok(entities instanceof Array);
+        ok(entities.length > 0, "At least one entity returned");
         var allEntities = true;
         for(var i=0; i<entities.length; i++){
             var entity = entities[i];
