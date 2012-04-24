@@ -32,7 +32,8 @@
 		  </exec>
         <move todir="${DOCS_DIR}">
           <fileset dir="${DOCS_TMP}" />
-       </move>
+        </move>
+        <delete dir="${DOCS_TMP}"/>
     </target>
 	
 	<target name="doc_copy" depends="doc" description="Copies documentation into gh-pages branch ">
