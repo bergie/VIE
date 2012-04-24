@@ -209,8 +209,8 @@
             <param name="inputFile" value="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" />
             <param name="outputFile" value="${DIST_DIR}/vie-${VERSION}_${current.time}.js" />
         </antcall>
+        <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" match="^" replace="/* VIE ${VERSION} may be freely distributed under the MIT license. See http://viejs.org/ for more details. */" />
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
-        <replaceregexp file="${DIST_DIR}/vie-latest.js" match="^" replace="/*VIE may be freely distributed under the MIT license.*/" />
     </target>
 
 	<target name="minimiseAll">
