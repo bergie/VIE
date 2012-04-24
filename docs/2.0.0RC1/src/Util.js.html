@@ -1,0 +1,573 @@
+<!DOCTYPE html><html><head><title>Util.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="../docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../index.html" class="source"><span class="file_name">README</span></a><a href="../src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="../src/Attribute.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="../src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="../src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="../src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="../src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="../src/service/DBPediaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="../src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="../src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a><a href="../src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="../src/Type.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="../src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="../src/Util.js.html" class="source selected"><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="../src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="../src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="../src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="../src/VIE.js.html" class="source "><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="../src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>Util.js</h1><div class="filepath">src/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>
+</td><td class="code"><div class="highlight"><pre></pre></div></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><h2>VIE Utils</h2>
+
+<p>The here-listed methods are utility methods for the day-to-day 
+VIE.js usage. All methods are within the static namespace <code>VIE.Util</code>.</p>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span> <span class="o">=</span> <span class="p">{</span></pre></div></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><h3>VIE.Util.toCurie(uri, safe, namespaces)</h3>
+
+<p>This method converts a given 
+URI into a CURIE (or SCURIE), based on the given <code>VIE.Namespaces</code> object.
+If the given uri is already a URI, it is left untouched and directly returned.
+If no prefix could be found, an <code>Error</code> is thrown. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>uri</strong> The URI to be transformed. <br />
+<em>{boolean}</em> <strong>safe</strong> A flag whether to generate CURIEs or SCURIEs. <br />
+<em>{VIE.Namespaces}</em> <strong>namespaces</strong> The namespaces to be used for the prefixes. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If no prefix could be found in the passed namespaces. <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> The CURIE or SCURIE. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var uri = "&lt;http://dbpedia.org/ontology/Person&gt;";
+VIE.Util.toCurie(uri, false, ns); // --&gt; dbp:Person
+VIE.Util.toCurie(uri, true, ns); // --&gt; [dbp:Person]
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>  <span class="nx">toCurie</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">safe</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">isCurie</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">uri</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">delim</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="k">in</span> <span class="nx">namespaces</span><span class="p">.</span><span class="nx">toObj</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">uri</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">k</span><span class="p">))</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="s2">&quot;&lt;?&quot;</span> <span class="o">+</span> <span class="nx">namespaces</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">k</span><span class="p">));</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">k</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">delim</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="p">((</span><span class="nx">safe</span><span class="p">)</span><span class="o">?</span> <span class="s2">&quot;[&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> 
+                        <span class="nx">uri</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">pattern</span><span class="p">,</span> <span class="nx">k</span> <span class="o">+</span> <span class="nx">delim</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&gt;$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="p">((</span><span class="nx">safe</span><span class="p">)</span><span class="o">?</span> <span class="s2">&quot;]&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;No prefix found for URI &#39;&quot;</span> <span class="o">+</span> <span class="nx">uri</span> <span class="o">+</span> <span class="s2">&quot;&#39;!&quot;</span><span class="p">);</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><h3>VIE.Util.isCurie(curie, namespaces)</h3>
+
+<p>This method checks, whether 
+the given string is a CURIE and returns <code>true</code> if so and <code>false</code>otherwise. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>curie</strong> The CURIE (or SCURIE) to be checked. <br />
+<em>{VIE.Namespaces}</em> <strong>namespaces</strong> The namespaces to be used for the prefixes. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> <code>true</code> if the given curie is a CURIE or SCURIE and <code>false</code> otherwise. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var uri = "&lt;http://dbpedia.org/ontology/Person&gt;";
+var curie = "dbp:Person";
+var scurie = "[dbp:Person]";
+var text = "This is some text.";
+VIE.Util.isCurie(uri, ns);    // --&gt; false
+VIE.Util.isCurie(curie, ns);  // --&gt; true
+VIE.Util.isCurie(scurie, ns); // --&gt; true
+VIE.Util.isCurie(text, ns);   // --&gt; false
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">isCurie</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">curie</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">isUri</span><span class="p">(</span><span class="nx">curie</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">toUri</span><span class="p">(</span><span class="nx">curie</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><h3>VIE.Util.toUri(curie, namespaces)</h3>
+
+<p>This method converts a 
+given CURIE (or save CURIE) into a URI, based on the given <code>VIE.Namespaces</code> object. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>curie</strong> The CURIE to be transformed. <br />
+<em>{VIE.Namespaces}</em> <strong>namespaces</strong> The namespaces object <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If no URI could be assembled. <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> : A string, representing the URI. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var ns = new myVIE.Namespaces(
+      "http://viejs.org/ns/", 
+      { "dbp": "http://dbpedia.org/ontology/" }
+);
+var curie = "dbp:Person";
+var scurie = "[dbp:Person]";
+VIE.Util.toUri(curie, ns); 
+     --&gt; &lt;http://dbpedia.org/ontology/Person&gt;
+VIE.Util.toUri(scurie, ns);
+     --&gt; &lt;http://dbpedia.org/ontology/Person&gt;
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">toUri</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">curie</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">delim</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">prefix</span> <span class="k">in</span> <span class="nx">namespaces</span><span class="p">.</span><span class="nx">toObj</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">curie</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">curie</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="s2">&quot;\\[{0,1}&quot;</span> <span class="o">+</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="nx">delim</span><span class="p">);</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">curie</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">pattern</span><span class="p">,</span> <span class="nx">namespaces</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">prefix</span><span class="p">)).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\]{0,1}$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span></pre></div></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>check for the default namespace</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">curie</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">delim</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="nx">namespaces</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="nx">curie</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;No prefix found for CURIE &#39;&quot;</span> <span class="o">+</span> <span class="nx">curie</span> <span class="o">+</span> <span class="s2">&quot;&#39;!&quot;</span><span class="p">);</span>
+    <span class="p">},</span>
+    </pre></div></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><h3>VIE.Util.isUri(something)</h3>
+
+<p>This method checks, whether the given string is a URI. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>something</strong> : The string to be checked. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> : <code>true</code> if the string is a URI, <code>false</code> otherwise. <br />
+<strong>Example usage</strong>: </p>
+
+<pre><code>var uri = "&lt;http://dbpedia.org/ontology/Person&gt;";
+var curie = "dbp:Person";
+VIE.Util.isUri(uri);   // --&gt; true
+VIE.Util.isUri(curie); // --&gt; false
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">isUri</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">something</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">something</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">something</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/^&lt;.+&gt;$/</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">},</span>
+    </pre></div></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><h3>VIE.Util.rdf2Entities(service, results)</h3>
+
+<p>This method converts <em>rdf/json</em> data from an external service
+into VIE.Entities. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>service</strong> The service that retrieved the data. <br />
+<em>{object}</em> <strong>results</strong> The data to be transformed. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{[VIE.Entity]}</em> : An array, containing VIE.Entity instances which have been transformed from the given data.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">rdf2Entities</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span> <span class="o">!==</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span></pre></div></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>fallback if no rdfQuery has been loaded</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>            <span class="k">return</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">_rdf2EntitiesNoRdfQuery</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">try</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">rdf</span> <span class="o">=</span> <span class="p">(</span><span class="nx">results</span> <span class="k">instanceof</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">)</span><span class="o">?</span> <span class="nx">results</span> <span class="o">:</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">().</span><span class="nx">load</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="p">{});</span>
+  
+          <span class="nx">rdf</span><span class="p">.</span><span class="nx">base</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">base</span><span class="p">());</span></pre></div></td></tr><tr id="section-10"><td class="docs"><div class="pilwrap"><a href="#section-10" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>if the service contains rules to apply special transformation, they are executed here.</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">rules</span><span class="p">)</span> <span class="p">{</span>
+              <span class="kd">var</span> <span class="nx">rules</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">ruleset</span><span class="p">();</span>
+              <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">prefix</span> <span class="k">in</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">toObj</span><span class="p">())</span> <span class="p">{</span>
+                  <span class="k">if</span> <span class="p">(</span><span class="nx">prefix</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
+                      <span class="nx">rules</span><span class="p">.</span><span class="nx">prefix</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">prefix</span><span class="p">));</span>
+                  <span class="p">}</span>
+              <span class="p">}</span>
+              <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">service</span><span class="p">.</span><span class="nx">rules</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="k">if</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">rules</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
+                  <span class="kd">var</span> <span class="nx">rule</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">rules</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+                  <span class="nx">rules</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">rule</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">],</span> <span class="nx">rule</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]);</span>
+              <span class="p">}</span>
+              <span class="nx">rdf</span> <span class="o">=</span> <span class="nx">rdf</span><span class="p">.</span><span class="nx">reason</span><span class="p">(</span><span class="nx">rules</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="cm">/* execute the rules only 10 times to avoid looping */</span>
+          <span class="p">}</span>
+          <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">{};</span>
+          <span class="nx">rdf</span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;?subject ?property ?object&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+              <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+              <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">entities</span><span class="p">[</span><span class="nx">subject</span><span class="p">])</span> <span class="p">{</span>
+                  <span class="nx">entities</span><span class="p">[</span><span class="nx">subject</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                      <span class="s1">&#39;@subject&#39;</span><span class="o">:</span> <span class="nx">subject</span><span class="p">,</span>
+                      <span class="s1">&#39;@context&#39;</span><span class="o">:</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">toObj</span><span class="p">(</span><span class="kc">true</span><span class="p">),</span>
+                      <span class="s1">&#39;@type&#39;</span><span class="o">:</span> <span class="p">[]</span>
+                  <span class="p">};</span>
+              <span class="p">}</span>
+              <span class="kd">var</span> <span class="nx">propertyUri</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">property</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+              <span class="kd">var</span> <span class="nx">propertyCurie</span><span class="p">;</span>
+  
+              <span class="k">try</span> <span class="p">{</span>
+                  <span class="nx">propertyCurie</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">curie</span><span class="p">(</span><span class="nx">propertyUri</span><span class="p">);</span></pre></div></td></tr><tr id="section-11"><td class="docs"><div class="pilwrap"><a href="#section-11" class="pilcrow">&#182;</a></div><p>jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});</p>
+</td><td class="code"><div class="highlight"><pre>              <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">propertyCurie</span> <span class="o">=</span> <span class="nx">propertyUri</span><span class="p">;</span></pre></div></td></tr><tr id="section-12"><td class="docs"><div class="pilwrap"><a href="#section-12" class="pilcrow">&#182;</a></div><p>console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());</p>
+</td><td class="code"><div class="highlight"><pre>              <span class="p">}</span>
+              <span class="nx">entities</span><span class="p">[</span><span class="nx">subject</span><span class="p">][</span><span class="nx">propertyCurie</span><span class="p">]</span> <span class="o">=</span> <span class="nx">entities</span><span class="p">[</span><span class="nx">subject</span><span class="p">][</span><span class="nx">propertyCurie</span><span class="p">]</span> <span class="o">||</span> <span class="p">[];</span>
+
+              <span class="kd">function</span> <span class="nx">getValue</span><span class="p">(</span><span class="nx">rdfQueryLiteral</span><span class="p">){</span>
+                  <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">){</span>
+                      <span class="k">if</span> <span class="p">(</span><span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">lang</span><span class="p">){</span>
+                          <span class="kd">var</span> <span class="nx">literal</span> <span class="o">=</span> <span class="p">{</span>
+                              <span class="nx">toString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+                                  <span class="k">return</span> <span class="k">this</span><span class="p">[</span><span class="s2">&quot;@value&quot;</span><span class="p">];</span>
+                              <span class="p">},</span>
+                              <span class="s2">&quot;@value&quot;</span><span class="o">:</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^&quot;|&quot;$/g</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                              <span class="s2">&quot;@language&quot;</span><span class="o">:</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">lang</span>
+                          <span class="p">};</span>
+                          <span class="k">return</span> <span class="nx">literal</span><span class="p">;</span>
+                      <span class="p">}</span>
+                      <span class="k">else</span>
+                          <span class="k">return</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+                      <span class="k">return</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+                  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;uri&quot;</span><span class="p">){</span>
+                      <span class="k">return</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+                  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                      <span class="k">return</span> <span class="nx">rdfQueryLiteral</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+                  <span class="p">}</span>
+              <span class="p">}</span>
+              <span class="nx">entities</span><span class="p">[</span><span class="nx">subject</span><span class="p">][</span><span class="nx">propertyCurie</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">getValue</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">object</span><span class="p">));</span>
+          <span class="p">});</span>
+  
+          <span class="nx">_</span><span class="p">(</span><span class="nx">entities</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">ent</span><span class="p">){</span>
+              <span class="nx">ent</span><span class="p">[</span><span class="s2">&quot;@type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">ent</span><span class="p">[</span><span class="s2">&quot;@type&quot;</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span><span class="nx">ent</span><span class="p">[</span><span class="s2">&quot;rdf:type&quot;</span><span class="p">]);</span>
+              <span class="k">delete</span> <span class="nx">ent</span><span class="p">[</span><span class="s2">&quot;rdf:type&quot;</span><span class="p">];</span>
+              <span class="nx">_</span><span class="p">(</span><span class="nx">ent</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">property</span><span class="p">){</span>
+                  <span class="k">if</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">){</span>
+                      <span class="nx">ent</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+                  <span class="p">}</span>
+              <span class="p">});</span>
+          <span class="p">});</span>
+  
+          <span class="kd">var</span> <span class="nx">vieEntities</span> <span class="o">=</span> <span class="p">[];</span>
+          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">entities</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+              <span class="kd">var</span> <span class="nx">entityInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Entity</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+              <span class="nx">entityInstance</span> <span class="o">=</span> <span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">addOrUpdate</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">);</span>
+              <span class="nx">vieEntities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entityInstance</span><span class="p">);</span>
+          <span class="p">});</span>
+          <span class="k">return</span> <span class="nx">vieEntities</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;Something went wrong while parsing the returned results!&quot;</span><span class="p">,</span> <span class="nx">e</span><span class="p">);</span>
+          <span class="k">return</span> <span class="p">[];</span>
+        <span class="p">}</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-13"><td class="docs"><div class="pilwrap"><a href="#section-13" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>VIE.Util.getPreferredLangForPreferredProperty(entity, preferredFields, preferredLanguages)<br />    looks for specific ranking fields and languages. It calculates all possibilities and gives them<br />    a score. It returns the value with the best score.</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">getPreferredLangForPreferredProperty</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">entity</span><span class="p">,</span> <span class="nx">preferredFields</span><span class="p">,</span> <span class="nx">preferredLanguages</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">labelArr</span><span class="p">,</span> <span class="nx">lang</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">property</span><span class="p">,</span> <span class="nx">resArr</span><span class="p">,</span> <span class="nx">valueArr</span><span class="p">,</span> <span class="nx">_len</span><span class="p">,</span> <span class="nx">_len2</span><span class="p">,</span>
+        <span class="nx">_this</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+      <span class="nx">resArr</span> <span class="o">=</span> <span class="p">[];</span></pre></div></td></tr><tr id="section-14"><td class="docs"><div class="pilwrap"><a href="#section-14" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Try to find a label in the preferred language</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>      <span class="k">for</span> <span class="p">(</span><span class="nx">l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">_len</span> <span class="o">=</span> <span class="nx">preferredLanguages</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">l</span> <span class="o">&lt;</span> <span class="nx">_len</span><span class="p">;</span> <span class="nx">l</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">lang</span> <span class="o">=</span> <span class="nx">preferredLanguages</span><span class="p">[</span><span class="nx">l</span><span class="p">];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">_len2</span> <span class="o">=</span> <span class="nx">preferredFields</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">p</span> <span class="o">&lt;</span> <span class="nx">_len2</span><span class="p">;</span> <span class="nx">p</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">property</span> <span class="o">=</span> <span class="nx">preferredFields</span><span class="p">[</span><span class="nx">p</span><span class="p">];</span>
+          <span class="nx">labelArr</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span></pre></div></td></tr><tr id="section-15"><td class="docs"><div class="pilwrap"><a href="#section-15" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>property can be a string e.g. "skos:prefLabel"</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>          <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">property</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">property</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">labelArr</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">flatten</span><span class="p">([</span><span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">property</span><span class="p">)]);</span>
+            <span class="nx">_</span><span class="p">(</span><span class="nx">labelArr</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span></pre></div></td></tr><tr id="section-16"><td class="docs"><div class="pilwrap"><a href="#section-16" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>The score is a natural number with 0 for the <br />              best candidate with the first preferred language<br />              and first preferred property</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>              <span class="kd">var</span> <span class="nx">labelLang</span><span class="p">,</span> <span class="nx">score</span><span class="p">,</span> <span class="nx">value</span><span class="p">;</span>
+              <span class="nx">score</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span>
+              <span class="nx">labelLang</span> <span class="o">=</span> <span class="nx">label</span><span class="p">[</span><span class="s2">&quot;@language&quot;</span><span class="p">];</span></pre></div></td></tr><tr id="section-17"><td class="docs"><div class="pilwrap"><a href="#section-17" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>legacy code for compatibility with uotdated stanbol, <br />                                      to be removed after may 2012</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>              <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">label</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">label</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">label</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">||</span> <span class="nx">label</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">label</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">5</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">labelLang</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(^\&quot;*|\&quot;*@)..(..)?$/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
+              <span class="p">}</span></pre></div></td></tr><tr id="section-18"><td class="docs"><div class="pilwrap"><a href="#section-18" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>end of legacy code</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>              <span class="k">if</span> <span class="p">(</span><span class="nx">labelLang</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">labelLang</span> <span class="o">===</span> <span class="nx">lang</span><span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">score</span> <span class="o">+=</span> <span class="nx">l</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                  <span class="nx">score</span> <span class="o">+=</span> <span class="mi">20</span><span class="p">;</span>
+                <span class="p">}</span>
+              <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">score</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+              <span class="p">}</span>
+              <span class="nx">value</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span></pre></div></td></tr><tr id="section-19"><td class="docs"><div class="pilwrap"><a href="#section-19" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>legacy code for compatibility with uotdated stanbol, to be removed after may 2012</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>              <span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(^\&quot;*|\&quot;*@..$)/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span></pre></div></td></tr><tr id="section-20"><td class="docs"><div class="pilwrap"><a href="#section-20" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>end of legacy code</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>              <span class="k">return</span> <span class="nx">resArr</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+                <span class="nx">score</span><span class="o">:</span> <span class="nx">score</span><span class="p">,</span>
+                <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span>
+              <span class="p">});</span>
+            <span class="p">});</span></pre></div></td></tr><tr id="section-21"><td class="docs"><div class="pilwrap"><a href="#section-21" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>property can be an object like <br />            {<br />              property: "skos:broader", <br />              makeLabel: function(propertyValueArr) { return "..."; }<br />            }</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>          <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">property</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">property</span><span class="p">.</span><span class="nx">property</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">valueArr</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">flatten</span><span class="p">([</span><span class="nx">entity</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">property</span><span class="p">.</span><span class="nx">property</span><span class="p">)]);</span>
+            <span class="nx">valueArr</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">valueArr</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">termUri</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">if</span> <span class="p">(</span><span class="nx">termUri</span><span class="p">.</span><span class="nx">isEntity</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">termUri</span><span class="p">.</span><span class="nx">getSubject</span><span class="p">();</span>
+              <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">termUri</span><span class="p">;</span>
+              <span class="p">}</span>
+            <span class="p">});</span>
+            <span class="nx">resArr</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+              <span class="nx">score</span><span class="o">:</span> <span class="nx">p</span><span class="p">,</span>
+              <span class="nx">value</span><span class="o">:</span> <span class="nx">property</span><span class="p">.</span><span class="nx">makeLabel</span><span class="p">(</span><span class="nx">valueArr</span><span class="p">)</span>
+            <span class="p">});</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span></pre></div></td></tr><tr id="section-22"><td class="docs"><div class="pilwrap"><a href="#section-22" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>take the result with the best score</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>      <span class="nx">resArr</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">resArr</span><span class="p">).</span><span class="nx">sortBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">score</span><span class="p">;</span>
+      <span class="p">});</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">resArr</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">resArr</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;n/a&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+
+    </pre></div></td></tr><tr id="section-23"><td class="docs"><div class="pilwrap"><a href="#section-23" class="pilcrow">&#182;</a></div><h3>VIE.Util._rdf2EntitiesNoRdfQuery(service, results)</h3>
+
+<p>This is a <strong>private</strong> method which should
+only be accessed through <code>VIE.Util._rdf2Entities()</code> and is a helper method in case there is no
+rdfQuery loaded (<em>not recommended</em>). <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>service</strong> The service that retrieved the data. <br />
+<em>{object}</em> <strong>results</strong> The data to be transformed. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{[VIE.Entity]}</em> : An array, containing VIE.Entity instances which have been transformed from the given data.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">_rdf2EntitiesNoRdfQuery</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">jsonLD</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">entity</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="nx">entity</span><span class="p">[</span><span class="s1">&#39;@subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">triples</span><span class="p">,</span> <span class="nx">predicate</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">predicate</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">predicate</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+                <span class="nx">_</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">triples</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">triple</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">triple</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;uri&#39;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">triple</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">triple</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]];</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">triple</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+                        <span class="k">return</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="nx">entity</span><span class="p">[</span><span class="nx">predicate</span><span class="p">]</span> <span class="o">=</span> <span class="nx">triple</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+            <span class="nx">jsonLD</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entity</span><span class="p">);</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">jsonLD</span><span class="p">;</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-24"><td class="docs"><div class="pilwrap"><a href="#section-24" class="pilcrow">&#182;</a></div><h3>VIE.Util.loadSchemaOrg(vie, SchemaOrg, baseNS)</h3>
+
+<p>This method is a wrapper around
+the <a href="http://schema.org/">schema.org</a> ontology. It adds all the
+given types and properties as <code>VIE.Type</code> instances to the given VIE instance.
+If the paramenter <strong>baseNS</strong> is set, the method automatically sets the namespace
+to the provided one. If it is not set, it will keep the base namespace of VIE untouched. <br />
+<strong>Parameters</strong>: <br />
+<em>{VIE}</em> <strong>vie</strong> The instance of <code>VIE</code>. <br />
+<em>{object}</em> <strong>SchemaOrg</strong> The data imported from schema.org. <br />
+<em>{string|undefined}</em> <strong>baseNS</strong> If set, this will become the new baseNamespace within the given <code>VIE</code> instance. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If the parameter was not given. <br />
+<strong>Returns</strong>: <br />
+<em>nothing</em></p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">loadSchemaOrg</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">SchemaOrg</span><span class="p">,</span> <span class="nx">baseNS</span><span class="p">)</span> <span class="p">{</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">SchemaOrg</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Please load the schema.json file.&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">&quot;&lt;http://schema.org/Thing&gt;&quot;</span><span class="p">);</span>
+        
+        <span class="kd">var</span> <span class="nx">baseNSBefore</span> <span class="o">=</span> <span class="p">(</span><span class="nx">baseNS</span><span class="p">)</span><span class="o">?</span> <span class="nx">baseNS</span> <span class="o">:</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">base</span><span class="p">();</span>
+        <span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">base</span><span class="p">(</span><span class="nx">baseNS</span><span class="p">);</span>
+        
+        <span class="kd">var</span> <span class="nx">datatypeMapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DataType&#39;</span><span class="o">:</span> <span class="s1">&#39;xsd:anyType&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Boolean&#39;</span> <span class="o">:</span> <span class="s1">&#39;xsd:boolean&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Date&#39;</span>    <span class="o">:</span> <span class="s1">&#39;xsd:date&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Float&#39;</span>   <span class="o">:</span> <span class="s1">&#39;xsd:float&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Integer&#39;</span> <span class="o">:</span> <span class="s1">&#39;xsd:integer&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Number&#39;</span>  <span class="o">:</span> <span class="s1">&#39;xsd:anySimpleType&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Text&#39;</span>    <span class="o">:</span> <span class="s1">&#39;xsd:string&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;URL&#39;</span>     <span class="o">:</span> <span class="s1">&#39;xsd:anyURI&#39;</span>
+        <span class="p">};</span>
+        
+        <span class="kd">var</span> <span class="nx">dataTypeHelper</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ancestors</span><span class="p">,</span> <span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span> <span class="o">:</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span> <span class="o">:</span> <span class="nx">datatypeMapping</span><span class="p">[</span><span class="nx">id</span><span class="p">]}]);</span>
+            
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ancestors</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">supertype</span> <span class="o">=</span> <span class="p">(</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]))</span><span class="o">?</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="o">:</span>
+                    <span class="nx">dataTypeHelper</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;datatypes&quot;</span><span class="p">][</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]].</span><span class="nx">supertypes</span><span class="p">,</span> <span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+                <span class="nx">type</span><span class="p">.</span><span class="nx">inherit</span><span class="p">(</span><span class="nx">supertype</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="p">};</span>
+        
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">dt</span> <span class="k">in</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;datatypes&quot;</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">dt</span><span class="p">))</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">ancestors</span> <span class="o">=</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;datatypes&quot;</span><span class="p">][</span><span class="nx">dt</span><span class="p">].</span><span class="nx">supertypes</span><span class="p">;</span>
+                <span class="nx">dataTypeHelper</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">ancestors</span><span class="p">,</span> <span class="nx">dt</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">typeProps</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">props</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="kd">var</span> <span class="nx">specProps</span> <span class="o">=</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">][</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;specific_properties&quot;</span><span class="p">];</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">p</span> <span class="o">&lt;</span> <span class="nx">specProps</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">p</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">pId</span> <span class="o">=</span> <span class="nx">specProps</span><span class="p">[</span><span class="nx">p</span><span class="p">];</span>
+                <span class="kd">var</span> <span class="nx">range</span> <span class="o">=</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">][</span><span class="nx">pId</span><span class="p">][</span><span class="s2">&quot;ranges&quot;</span><span class="p">];</span>
+                <span class="nx">props</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+                    <span class="s1">&#39;id&#39;</span>    <span class="o">:</span> <span class="nx">pId</span><span class="p">,</span>
+                    <span class="s1">&#39;range&#39;</span> <span class="o">:</span> <span class="nx">range</span>
+                <span class="p">});</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">props</span><span class="p">;</span>
+        <span class="p">};</span>
+        
+        <span class="kd">var</span> <span class="nx">typeHelper</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ancestors</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">props</span><span class="p">);</span>
+           
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ancestors</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">supertype</span> <span class="o">=</span> <span class="p">(</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]))</span><span class="o">?</span> <span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="o">:</span>
+                    <span class="nx">typeHelper</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">][</span><span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]].</span><span class="nx">supertypes</span><span class="p">,</span> <span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">typeProps</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">ancestors</span><span class="p">[</span><span class="nx">i</span><span class="p">]));</span>
+                <span class="nx">type</span><span class="p">.</span><span class="nx">inherit</span><span class="p">(</span><span class="nx">supertype</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="o">===</span> <span class="s2">&quot;Thing&quot;</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">type</span><span class="p">.</span><span class="nx">isof</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">type</span><span class="p">.</span><span class="nx">inherit</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="p">};</span>
+        
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">t</span> <span class="k">in</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">t</span><span class="p">))</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">ancestors</span> <span class="o">=</span> <span class="nx">SchemaOrg</span><span class="p">[</span><span class="s2">&quot;types&quot;</span><span class="p">][</span><span class="nx">t</span><span class="p">].</span><span class="nx">supertypes</span><span class="p">;</span>
+                <span class="nx">typeHelper</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">ancestors</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">typeProps</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">vie</span><span class="p">,</span> <span class="nx">t</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">}</span></pre></div></td></tr><tr id="section-25"><td class="docs"><div class="pilwrap"><a href="#section-25" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>set the namespace to either the old value or the provided baseNS value</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">base</span><span class="p">(</span><span class="nx">baseNSBefore</span><span class="p">);</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-26"><td class="docs"><div class="pilwrap"><a href="#section-26" class="pilcrow">&#182;</a></div><h3>VIE.Util.xsdDateTime(date)</h3>
+
+<p>This transforms a <code>Date</code> instance into an xsd:DateTime format. <br />
+<strong>Parameters</strong>: <br />
+<em>{<code>Date</code>}</em> <strong>date</strong> An instance of a javascript <code>Date</code>. <br />
+<strong>Throws</strong>: 
+<em>nothing</em>.. <br />
+<strong>Returns</strong>: 
+<em>{string}</em> A string representation of the dateTime in the xsd:dateTime format.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">xsdDateTime</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">function</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+            <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">?</span> <span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="nx">s</span> <span class="o">:</span> <span class="nx">s</span><span class="p">;</span>
+        <span class="p">};</span>
+
+        <span class="kd">var</span> <span class="nx">yyyy</span> <span class="o">=</span> <span class="nx">date</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">();</span>
+        <span class="kd">var</span> <span class="nx">mm1</span>  <span class="o">=</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">dd</span>   <span class="o">=</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getDate</span><span class="p">());</span>
+        <span class="kd">var</span> <span class="nx">hh</span>   <span class="o">=</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getHours</span><span class="p">());</span>
+        <span class="kd">var</span> <span class="nx">mm2</span>  <span class="o">=</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getMinutes</span><span class="p">());</span>
+        <span class="kd">var</span> <span class="nx">ss</span>   <span class="o">=</span> <span class="nx">pad</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getSeconds</span><span class="p">());</span>
+
+        <span class="k">return</span> <span class="nx">yyyy</span> <span class="o">+</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span><span class="nx">mm1</span> <span class="o">+</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span><span class="nx">dd</span> <span class="o">+</span><span class="s1">&#39;T&#39;</span> <span class="o">+</span><span class="nx">hh</span> <span class="o">+</span><span class="s1">&#39;:&#39;</span> <span class="o">+</span><span class="nx">mm2</span> <span class="o">+</span><span class="s1">&#39;:&#39;</span> <span class="o">+</span><span class="nx">ss</span><span class="p">;</span>
+    <span class="p">},</span>
+    </pre></div></td></tr><tr id="section-27"><td class="docs"><div class="pilwrap"><a href="#section-27" class="pilcrow">&#182;</a></div><h3>VIE.Util.transformationRules(service)</h3>
+
+<p>This returns a default set of rdfQuery rules that transform semantic data into the
+VIE entity types. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>service</strong> An instance of a vie.service. <br />
+<strong>Throws</strong>: 
+<em>nothing</em>.. <br />
+<strong>Returns</strong>: 
+<em>{array}</em> An array of rules with 'left' and 'right' side.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">transformationRules</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">service</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="p">[</span></pre></div></td></tr><tr id="section-28"><td class="docs"><div class="pilwrap"><a href="#section-28" class="pilcrow">&#182;</a></div><p>rule(s) to transform a dbpedia:Person into a VIE:Person</p>
+</td><td class="code"><div class="highlight"><pre>             <span class="p">{</span>
+                <span class="s1">&#39;left&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                    <span class="s1">&#39;?subject a dbpedia:Person&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;?subject rdfs:label ?label&#39;</span>
+                 <span class="p">],</span>
+                 <span class="s1">&#39;right&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ns</span><span class="p">){</span>
+                     <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+                         <span class="k">return</span> <span class="p">[</span>
+                             <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                 <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;Person&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+                                     <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                                 <span class="p">}),</span>
+                             <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                 <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;name&gt;&#39;</span><span class="p">,</span>
+                                 <span class="k">this</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span> <span class="p">{</span>
+                                     <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                                 <span class="p">})</span>
+                             <span class="p">];</span>
+                     <span class="p">};</span>
+                 <span class="p">}(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span>
+             <span class="p">},</span></pre></div></td></tr><tr id="section-29"><td class="docs"><div class="pilwrap"><a href="#section-29" class="pilcrow">&#182;</a></div><p>rule(s) to transform a foaf:Person into a VIE:Person</p>
+</td><td class="code"><div class="highlight"><pre>             <span class="p">{</span>
+             <span class="s1">&#39;left&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                     <span class="s1">&#39;?subject a foaf:Person&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;?subject rdfs:label ?label&#39;</span>
+                  <span class="p">],</span>
+                  <span class="s1">&#39;right&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ns</span><span class="p">){</span>
+                      <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+                          <span class="k">return</span> <span class="p">[</span>
+                              <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;Person&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+                                      <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                                  <span class="p">}),</span>
+                              <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;name&gt;&#39;</span><span class="p">,</span>
+                                  <span class="k">this</span><span class="p">.</span><span class="nx">label</span><span class="p">,</span> <span class="p">{</span>
+                                      <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                                  <span class="p">})</span>
+                              <span class="p">];</span>
+                      <span class="p">};</span>
+                  <span class="p">}(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span>
+              <span class="p">},</span></pre></div></td></tr><tr id="section-30"><td class="docs"><div class="pilwrap"><a href="#section-30" class="pilcrow">&#182;</a></div><p>rule(s) to transform a dbpedia:Place into a VIE:Place</p>
+</td><td class="code"><div class="highlight"><pre>             <span class="p">{</span>
+                 <span class="s1">&#39;left&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                     <span class="s1">&#39;?subject a dbpedia:Place&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;?subject rdfs:label ?label&#39;</span>
+                  <span class="p">],</span>
+                  <span class="s1">&#39;right&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+                      <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                          <span class="k">return</span> <span class="p">[</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                              <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;Place&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">}),</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;name&gt;&#39;</span><span class="p">,</span>
+                              <span class="k">this</span><span class="p">.</span><span class="nx">label</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">})</span>
+                          <span class="p">];</span>
+                      <span class="p">};</span>
+                  <span class="p">}(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span>
+              <span class="p">},</span></pre></div></td></tr><tr id="section-31"><td class="docs"><div class="pilwrap"><a href="#section-31" class="pilcrow">&#182;</a></div><p>rule(s) to transform a dbpedia:City into a VIE:City</p>
+</td><td class="code"><div class="highlight"><pre>              <span class="p">{</span>
+                 <span class="s1">&#39;left&#39;</span> <span class="o">:</span> <span class="p">[</span>
+                     <span class="s1">&#39;?subject a dbpedia:City&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;?subject rdfs:label ?label&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;?subject dbpedia:abstract ?abs&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;?subject dbpedia:country ?country&#39;</span>
+                  <span class="p">],</span>
+                  <span class="s1">&#39;right&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span>
+                      <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                          <span class="k">return</span> <span class="p">[</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                              <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;City&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">}),</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;name&gt;&#39;</span><span class="p">,</span>
+                              <span class="k">this</span><span class="p">.</span><span class="nx">label</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">}),</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;description&gt;&#39;</span><span class="p">,</span>
+                              <span class="k">this</span><span class="p">.</span><span class="nx">abs</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">}),</span>
+                          <span class="nx">jQuery</span><span class="p">.</span><span class="nx">rdf</span><span class="p">.</span><span class="nx">triple</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">subject</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span>
+                                  <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;containedIn&gt;&#39;</span><span class="p">,</span>
+                              <span class="k">this</span><span class="p">.</span><span class="nx">country</span><span class="p">.</span><span class="nx">toString</span><span class="p">(),</span> <span class="p">{</span>
+                                  <span class="nx">namespaces</span><span class="o">:</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">toObj</span><span class="p">()</span>
+                              <span class="p">})</span>
+                          <span class="p">];</span>
+                      <span class="p">};</span>
+                  <span class="p">}(</span><span class="nx">service</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span>
+              <span class="p">},</span>
+        <span class="p">];</span>
+        <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+</pre></div></td></tr></tbody></table><div id="generated">generated Tue Apr 24 2012 12:37:34 GMT+0200 (CEST)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>
