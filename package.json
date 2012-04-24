@@ -2,9 +2,9 @@
   "name"          : "vie",
   "version"       : "2.0.0RC1",
   "description"   : "Editable RDFa with Backbone.js and JSON-LD",
-  "url"           : "http://wiki.iks-project.eu/index.php/VIE",
+  "url"           : "http://viejs.org",
   "keywords"      : ["util", "rdfa", "model", "template", "server", "client", "browser"],
-  "author"        : "Henri Bergius",
+  "author"        : "Henri Bergius <henri.bergius@iki.fi>",
   "contributors"  : [
     "Rene Kapusta",
     "Christopher Hlubek",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "nodeunit"  : ">=0.6.0",
-    "docco"     : ">=0.3.0",
+    "docco-husky"     : ">=0.3.0",
     "zombie"    : ">=0.12.0",
     "express"   : "2.5.x"
   },
@@ -32,5 +32,9 @@
   "main"          : "dist/vie-latest.js",
   "scripts":    {
     "test": "./node_modules/nodeunit/bin/nodeunit test/nodejs"
+  },
+  "docco_husky": {
+    "output_dir": "docs_tmp",
+    "project_name": "VIE"
   }
 }

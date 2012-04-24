@@ -5,6 +5,7 @@
 
     <property name="DOCS_ROOT" value="./docs" />
     <property name="DOCS_DIR" value="${DOCS_ROOT}/${VERSION}" description="API documentation"/>
+    <property name="DOCS_TMP" value="./docs_tmp" />
     <property name="DIST_DIR" value="./dist"/>
     <property name="DEMOS_DIR" value="./demos"/>
     <property name="LIB_DIR" value="./lib"/>
@@ -21,31 +22,16 @@
 		</tstamp>
 	</target>
 	
-    <target name="doc" depends="distAll" description="Generates documentation for vie.js with Docco ">
+    <target name="doc" depends="init" description="Generates documentation for vie.js with Docco-Husky">
         <echo message="Generating Documentation"/>
-        <echo message="Attention: 'Docco' is needed for that. Make sure it is on your PATH or"/>
-        <echo message="get it from: http://jashkenas.github.com/docco/"/>
-    	<delete dir="${TMP_DIR}" quiet="true"/>
-        <mkdir dir="${TMP_DIR}" />
-    	<copy todir="${TMP_DIR}" flatten="true">
-	        <fileset dir="${SRC_DIR}">
-	    	    <patternset>
-	                <include name="**/*.js" />
-	        	</patternset>
-	        </fileset>
-	    </copy>
+        <echo message="Attention: 'Docco-Husky' is needed for that. Make sure it is on your PATH or"/>
+        <echo message="get it from: https://github.com/mbrevoort/docco-husky"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="docco ${TMP_DIR}/*.js" />
-		</exec>
-        <delete dir="${TMP_DIR}"/>
+       <arg value="docco-husky src/" />
+		  </exec>
         <move todir="${DOCS_DIR}">
-            <fileset dir="${DOCS_ROOT}">
-        	    <patternset>
-	                <include name="*.html" />
-	                <include name="*.css" />
-            	</patternset>
-            </fileset>
+          <fileset dir="${DOCS_TMP}" />
        </move>
     </target>
 	
