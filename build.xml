@@ -56,12 +56,12 @@
 		<echo message="Adding..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git add docs/*" />
+       <arg value="git add ${DOCS_DIR}" />
 		</exec>
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}_${current.time}' ${DOCS_DIR}" />
+	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' ${DOCS_DIR}" />
 		</exec>
 		<echo message="Pushing..."/>
     	<exec executable="sh" dir=".">
