@@ -138,7 +138,7 @@ var VIE = root.VIE = function(config) {
 //
 //     var vie = new VIE({classic: true});
 //     vie.RDFaEntities.getInstances();
-    if (this.config.classic !== false) {
+    if (this.config.classic === true) {
         /* Load Classic API as well */
         this.RDFa = new this.ClassicRDFa(this);
         this.RDFaEntities = new this.ClassicRDFaEntities(this);
@@ -385,7 +385,7 @@ VIE.prototype.loadSchema = function(url, options) {
 //
 // In browser environments the dependencies have to be included
 // before including VIE itself.
-if(typeof exports === 'object') {
+if (typeof exports === 'object') {
     exports.VIE = VIE;
 
     if (!jQuery) {
@@ -393,6 +393,7 @@ if(typeof exports === 'object') {
     }
     if (!Backbone) {
         Backbone = require('backbone');
+        Backbone.setDomLibrary(jQuery);
     }
     if (!_) {
         _ = require('underscore')._;
@@ -775,14 +776,22 @@ VIE.Util = {
 	                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
 	            } catch (e) {
 	                propertyCurie = propertyUri;
-	                console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
+	                // console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
 	            }
 	            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
-	
+
 	            function getValue(rdfQueryLiteral){
 	                if(typeof rdfQueryLiteral.value === "string"){
-	                    if (rdfQueryLiteral.lang)
-	                        return rdfQueryLiteral.toString();
+	                    if (rdfQueryLiteral.lang){
+	                        var literal = {
+	                            toString: function(){
+	                                return this["@value"];
+	                            },
+	                            "@value": rdfQueryLiteral.value.replace(/^"|"$/g, ''),
+	                            "@language": rdfQueryLiteral.lang
+	                        };
+	                        return literal;
+	                    }
 	                    else
 	                        return rdfQueryLiteral.value;
 	                    return rdfQueryLiteral.value.toString();
@@ -817,6 +826,101 @@ VIE.Util = {
         	return [];
         }
     },
+
+    /*
+    VIE.Util.getPreferredLangForPreferredProperty(entity, preferredFields, preferredLanguages)
+    looks for specific ranking fields and languages. It calculates all possibilities and gives them
+    a score. It returns the value with the best score.
+    */
+    getPreferredLangForPreferredProperty: function(entity, preferredFields, preferredLanguages) {
+      var l, labelArr, lang, p, property, resArr, valueArr, _len, _len2,
+        _this = this;
+      resArr = [];
+      /* Try to find a label in the preferred language
+      */
+      for (l = 0, _len = preferredLanguages.length; l < _len; l++) {
+        lang = preferredLanguages[l];
+        for (p = 0, _len2 = preferredFields.length; p < _len2; p++) {
+          property = preferredFields[p];
+          labelArr = null;
+          /* property can be a string e.g. "skos:prefLabel"
+          */
+          if (typeof property === "string" && entity.get(property)) {
+            labelArr = _.flatten([entity.get(property)]);
+            _(labelArr).each(function(label) {
+              /* 
+              The score is a natural number with 0 for the 
+              best candidate with the first preferred language
+              and first preferred property
+              */
+              var labelLang, score, value;
+              score = p;
+              labelLang = label["@language"];
+              /*
+                                      legacy code for compatibility with uotdated stanbol, 
+                                      to be removed after may 2012
+              */
+              if (typeof label === "string" && (label.indexOf("@") === label.length - 3 || label.indexOf("@") === label.length - 5)) {
+                labelLang = label.replace(/(^\"*|\"*@)..(..)?$/g, "");
+              }
+              /* end of legacy code
+              */
+              if (labelLang) {
+                if (labelLang === lang) {
+                  score += l;
+                } else {
+                  score += 20;
+                }
+              } else {
+                score += 10;
+              }
+              value = label.toString();
+              /* legacy code for compatibility with uotdated stanbol, to be removed after may 2012
+              */
+              value = value.replace(/(^\"*|\"*@..$)/g, "");
+              /* end of legacy code
+              */
+              return resArr.push({
+                score: score,
+                value: value
+              });
+            });
+            /* 
+            property can be an object like 
+            {
+              property: "skos:broader", 
+              makeLabel: function(propertyValueArr) { return "..."; }
+            }
+            */
+          } else if (typeof property === "object" && entity.get(property.property)) {
+            valueArr = _.flatten([entity.get(property.property)]);
+            valueArr = _(valueArr).map(function(termUri) {
+              if (termUri.isEntity) {
+                return termUri.getSubject();
+              } else {
+                return termUri;
+              }
+            });
+            resArr.push({
+              score: p,
+              value: property.makeLabel(valueArr)
+            });
+          }
+        }
+      }
+      /*
+              take the result with the best score
+      */
+      resArr = _(resArr).sortBy(function(a) {
+        return a.score;
+      });
+      if(resArr.length) {
+        return resArr[0].value;
+      } else {
+        return "n/a";
+      }
+    },
+
     
 // ### VIE.Util._rdf2EntitiesNoRdfQuery(service, results)
 // This is a **private** method which should
@@ -1092,6 +1196,32 @@ VIE.Util = {
     }
 };
 
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
+
+// ## VIE Entities
+// 
+// In VIE there are two low-level model types for storing data.
+// **Collections** and **Entities**. Considering `var v = new VIE();` a VIE instance,
+// `v.entities` is a Collection with `VIE Entity` objects in it. 
+// VIE internally uses JSON-LD to store entities.
+//
+// Each Entity has a few special attributes starting with an `@`. VIE has an API
+// for correctly using these attributes, so in order to stay compatible with later 
+// versions of the library, possibly using a later version of JSON-LD, use the API
+// to interact with your entities.
+// 
+// * `@subject` stands for the identifier of the entity. Use `e.getSubject()` 
+// * `@type` stores the explicit entity types. VIE internally handles Type hierarchy,
+// which basically enables to define subtypes and supertypes. Every entity has 
+// the type 'owl:Thing'. Read more about Types in <a href="Type.html">VIE.Type</a>.
+// * `@context` stores namespace definitions used in the entity. Read more about 
+// Namespaces in <a href="Namespace.html">VIE Namespaces</a>.
 VIE.prototype.Entity = function(attrs, opts) {
 
     attrs = (attrs)? attrs : {};
@@ -1099,10 +1229,11 @@ VIE.prototype.Entity = function(attrs, opts) {
 
     var self = this;
 
+    // internal method for transforming short uris to long uris.
     var mapAttributeNS = function (attr, ns) {
         var a = attr;
         if (ns.isUri (attr) || attr.indexOf('@') === 0) {
-            //ignore
+            // ignore attributes starting with @
         } else if (ns.isCurie(attr)) {
             a = ns.uri(attr);
         } else if (!ns.isUri(attr)) {
@@ -1157,6 +1288,11 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this;
         },
 
+        // ### Getter, Has, Setter
+        // #### `.get(attr)`
+        // To be able to communicate to a VIE Entity you can use a simple get(property)
+        // command as in `entity.get('rdfs:label')` which will give you one or more literals.
+        // If the property points to a collection, its entities can be browsed further.
         get: function (attr) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             var value = Backbone.Model.prototype.get.call(this, attr);
@@ -1179,26 +1315,40 @@ VIE.prototype.Entity = function(attrs, opts) {
             return value;
         },
 
+        // #### `.has(attr)`
+        // Sometimes you'd like to determine if a specific attribute is set 
+        // in an entity. For this reason you can call for example `person.has('friend')`
+        // to determine if a person entity has friends.
         has: function(attr) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
+        // #### `.set(attrName, value, opts)`, 
+        // The `options` parameter always refers to a `Backbone.Model.set` `options` object.
+        //
+        // **`.set(attributes, options)`** is the most universal way of calling the
+        // `.set` method. In this case the `attributes` object is a map of all 
+        // attributes to be changed.
         set : function(attrs, options, opts) {
-            
             if (!attrs) {
                 return this;
             }
-            
+
+            // Use **`.set(attrName, value, options)`** for setting or changing exactly one 
+            // entity attribute.
             if (typeof attrs === "string") {
                 var obj = {};
                 obj[attrs] = options;
                 return this.set(obj, opts);
             }
+            // **`.set(entity)`**: In case you'd pass a VIE entity, 
+            // the passed entities attributes are being set for the entity.
             if (attrs.attributes) {
                 attrs = attrs.attributes;
             }
             var self = this;
+            // resolve shortened URIs like rdfs:label..
             _.each (attrs, function (value, key) {
                 var newKey = mapAttributeNS(key, self.vie.namespaces);
                 if (key !== newKey) {
@@ -1206,6 +1356,8 @@ VIE.prototype.Entity = function(attrs, opts) {
                     attrs[newKey] = value;
                 }
             }, this);
+            // Finally iterate through the *attributes* to be set and prepare 
+            // them for the Backbone.Model.set method.
             _.each (attrs, function (value, key) {
                if (!value) { return; }
                if (key.indexOf('@') === -1) {
@@ -1220,10 +1372,15 @@ VIE.prototype.Entity = function(attrs, opts) {
                        coll.add(value);
                        attrs[key] = coll;
                    } else if (_.isArray(value)) {
-                       // ignore
+                       // The value is an array, ignore
+                   } else if (value["@value"]) {
+                       // The value is a literal object, ignore
                    } else if (typeof value == "object") {
+                       // The value is another VIE Entity
                        var child = new self.vie.Entity(value, options);
+                       // which is being stored in `v.entities`
                        self.vie.entities.addOrUpdate(child);
+                       // and set as VIE Collection attribute on the original entity 
                        var coll = new self.vie.Collection();
                        coll.add(value);
                        attrs[key] = coll;
@@ -1235,11 +1392,20 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.set.call(this, attrs, options);
         },
 
+        // **`.unset(attr, opts)` ** removes an attribute from the entity.
         unset: function (attr, opts) {
             attr = mapAttributeNS(attr, self.vie.namespaces);
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
+        isNew: function() {
+            if (this.getSubjectUri().substr(0, 7) === '_:bnode') {
+                return true;
+            }
+            return false;
+        },
+
+        // **`getSubject()`** is the getter for the entity identifier.
         getSubject: function(){
             if (typeof this.id === "undefined") {
                 this.id = this.attributes[this.idAttribute];
@@ -1253,11 +1419,26 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this.cid.replace('c', '_:bnode');
         },
 
+        // TODO describe
         getSubjectUri: function(){
             return this.fromReference(this.getSubject());
         },
 
+        isReference: function(uri){
+            var matcher = new RegExp("^\\<([^\\>]*)\\>$");
+            if (matcher.exec(uri)) {
+                return true;
+            }
+            return false;
+        },
+
         toReference: function(uri){
+            if (_.isArray(uri)) {
+              var self = this;
+              return _.map(uri, function(part) {
+                 return self.toReference(part);
+              });
+            }
             var ns = this.vie.namespaces;
             var ret = uri;
             if (uri.substring(0, 2) === "_:") {
@@ -1314,6 +1495,12 @@ VIE.prototype.Entity = function(attrs, opts) {
             return instanceLD;
         },
 
+        // **`.setOrAdd(arg1, arg2)`** similar to `.set(..)`, `.setOrAdd(..)` can 
+        // be used for setting one or more attributes of an entity, but in
+        // this case it's a collection of values, not just one. That means, if the
+        // entity already has the attribute set, make the value to a VIE Collection
+        // and use the collection as value. The collection can contain entities 
+        // or literals, but not both at the same time.
         setOrAdd: function (arg1, arg2) {
             var entity = this;
             if (typeof arg1 === "string" && arg2) {
@@ -1336,6 +1523,7 @@ VIE.prototype.Entity = function(attrs, opts) {
        /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
        
         /* depending on the type of value and the type of val, different actions need to be made */
+        // TODO describe in more detail
         _setOrAddOne: function (attr, value) {
             if (!attr || !value)
                 return;
@@ -1407,11 +1595,13 @@ VIE.prototype.Entity = function(attrs, opts) {
             return;
         },
 
+        // **`.hasType(type)`** determines if the entity has the explicit `type` set.
         hasType: function(type){
             type = self.vie.types.get(type);
             return this.hasPropertyValue("@type", type);
         },
 
+        // TODO describe
         hasPropertyValue: function(property, value) {
             var t = this.get(property);
             if (!(value instanceof Object)) {
@@ -1425,6 +1615,9 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
         },
 
+        // **`.isof(type)`** determines if the entity is of `type` by explicit or implicit 
+        // declaration. E.g. if Employee is a subtype of Person and e Entity has
+        // explicitly set type Employee, e.isof(Person) will evaluate to true.
         isof: function (type) {
             var types = this.get('@type');
             
@@ -1448,7 +1641,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
             return false;
         },
-        
+        // TODO describe
         addTo : function (collection, update) {
             var self = this;
             if (collection instanceof self.vie.Collection) {
@@ -1469,6 +1662,13 @@ VIE.prototype.Entity = function(attrs, opts) {
 
     return new Model(attrs, opts);
 };
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
     
@@ -1505,6 +1705,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             return entities;
         }
 
+        if (model === undefined) {
+            throw new Error("No model given");
+        }
+
         if (!model.isEntity) {
             model = new this.model(model);
         }
@@ -1533,7 +1737,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                         // TODO: Merge collections
                         return true;
                     }
-                    
+                    if (options.overrideAttributes) {
+                       newAttribs[attribute] = value;
+                       return true;
+                    } 
                     if (attribute === '@context') {
                         newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
                     } else {
@@ -2911,6 +3118,14 @@ VIE.prototype.Namespaces.prototype.uri = function (curie) {
 //     namespaces.isUri(uri);   // --> true
 //     namespaces.isUri(curie); // --> false
 VIE.prototype.Namespaces.prototype.isUri = VIE.Util.isUri;
+//     VIE - Vienna IKS Editables
+//     (c) 2011 Henri Bergius, IKS Consortium
+//     (c) 2011 Sebastian Germesin, IKS Consortium
+//     (c) 2011 Szaby Grünwald, IKS Consortium
+//     VIE may be freely distributed under the MIT license.
+//     For all details and documentation:
+//     http://viejs.org/
+
 // Classic VIE API bindings to new VIE
 VIE.prototype.ClassicRDFa = function(vie) {
     this.vie = vie;
@@ -2927,7 +3142,7 @@ VIE.prototype.ClassicRDFa.prototype = {
     },
 
     findPredicateElements: function(subject, element, allowNestedPredicates) {
-        return this.vie.services.rdfa._findPredicateElements(subject, element, allowNestedPredicates);
+        return this.vie.services.rdfa.findPredicateElements(subject, element, allowNestedPredicates);
     },
 
     getPredicate: function(element) {
@@ -3777,7 +3992,7 @@ VIE.prototype.RdfaService.prototype = {
     
     _writeEntity : function(entity, element) {
         var service = this;
-        this._findPredicateElements(this.getElementSubject(element), element, true).each(function() {
+        this.findPredicateElements(this.getElementSubject(element), element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
             if (!entity.has(predicate)) {
@@ -3834,7 +4049,7 @@ VIE.prototype.RdfaService.prototype = {
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.fromReference(entity.get(predicate));
-            if (attributeValue.isCollection) {
+            if (attributeValue && attributeValue.isCollection) {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this), entity);
                 });
@@ -3977,7 +4192,7 @@ VIE.prototype.RdfaService.prototype = {
         var service = this;
         var entityPredicates = {};
     
-        this._findPredicateElements(subject, element, true).each(function() {
+        this.findPredicateElements(subject, element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
             if (predicate === '') {
@@ -4003,7 +4218,7 @@ VIE.prototype.RdfaService.prototype = {
         return entityPredicates;
     },
     
-    _findPredicateElements : function(subject, element, allowNestedPredicates) {
+    findPredicateElements : function(subject, element, allowNestedPredicates) {
         var service = this;
         return jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).filter(function() {
             if (service.getElementSubject(this) !== subject) {
@@ -4314,7 +4529,9 @@ VIE.prototype.StanbolService.prototype = {
 //     stnblService.load(new vie.Findable({
 //         term : "Bischofsh", 
 //         limit : 10, 
-//         offset: 0
+//         offset: 0,
+//         field: "skos:prefLabel", // used for the term lookup, default: "rdfs:label"
+//         properties: ["skos:prefLabel", "rdfs:label"] // are going to be loaded with the result entities
 //     }));
     find: function (findable) {
         var correct = findable instanceof this.vie.Findable;
@@ -4337,7 +4554,25 @@ VIE.prototype.StanbolService.prototype = {
         var error = function (e) {
             findable.reject(e);
         };
-        this.connector.find(term, limit, offset, success, error);
+
+        var vie = this.vie;
+        if(findable.options.properties){
+            var properties = findable.options.properties;
+            findable.options.ldPath = _(properties)
+            .map(function(property){
+                if(vie.namespaces.isCurie(property)){
+                    return vie.namespaces.uri(property) + ";"
+                } else {
+                    return property;
+                }
+            })
+            .join("");
+        }
+        if(findable.options.field && vie.namespaces.isCurie(field)){
+            var field = findable.options.field;
+                findable.options.field = vie.namespaces.uri(field);
+        }
+        this.connector.find(term, limit, offset, success, error, findable.options);
     },
 
 // ### load(loadable)
@@ -4407,13 +4642,15 @@ VIE.prototype.StanbolService.prototype = {
 //
 //     var stnblConn = new vie.StanbolConnector({<some-configuration>});
 VIE.prototype.StanbolConnector = function (options) {
+    options = (options)? options : {};
     this.options = options;
     this.baseUrl = (_.isArray(options.url))? options.url : [ options.url ];
-    this.enhancerUrlPrefix = "/engines";
-    this.entityhubUrlPrefix = "/entityhub";
-    /*TODO: this.ontonetUrlPrefix = "/ontonet"; */
-    /*TODO: this.rulesUrlPrefix = "/rules"; */
-    /*TODO: this.factstoreUrlPrefix = "/factstore"; */
+    this.enhancerUrlPostfix = (options.enhancerUrlPostfix)? options.enhancerUrlPostfix : "/enhancer";
+    this.entityhubUrlPostfix = (options.entityhubUrlPostfix)? options.entityhubUrlPostfix : "/entityhub";
+    this.entityhubSite = options.entityhubSite;
+    /*TODO: this.ontonetUrlPostfix = "/ontonet"; */
+    /*TODO: this.rulesUrlPostfix = "/rules"; */
+    /*TODO: this.factstoreUrlPostfix = "/factstore"; */
 };
 
 VIE.prototype.StanbolConnector.prototype = {
@@ -4443,7 +4680,7 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var enhancerUrl = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        enhancerUrl += this.enhancerUrlPrefix;
+        enhancerUrl += this.enhancerUrlPostfix;
         
         var format = options.format || "application/rdf+json";
         
@@ -4484,6 +4721,7 @@ VIE.prototype.StanbolConnector.prototype = {
             uri: url,
             body: text,
             headers: {
+                'Content-Type': 'text/plain',
                 Accept: format
             }
         }, function(error, response, body) {
@@ -4522,7 +4760,9 @@ VIE.prototype.StanbolConnector.prototype = {
         
         uri = uri.replace(/^</, '').replace(/>$/, '');
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPrefix + "/sites/entity?id=" + escape(uri);
+        url += this.entityhubUrlPostfix + 
+            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites") + 
+            "/entity?id=" + escape(uri);
         
         var format = options.format || "application/rdf+json";
         
@@ -4595,7 +4835,8 @@ VIE.prototype.StanbolConnector.prototype = {
 //                 function (err) { ... });
     find: function (term, limit, offset, success, error, options) {
         /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
-        if (!options) { options = { urlIndex : 0}; }
+        if (!options) { options = {}; }
+        if (typeof options.urlIndex != "number") { options.urlIndex = 0; }
         
         if (options.urlIndex >= this.baseUrl.length) {
             error("Could not connect to the given Stanbol endpoints! Please check for their setup!");
@@ -4603,10 +4844,12 @@ VIE.prototype.StanbolConnector.prototype = {
         }
         
         var url = this.baseUrl[options.urlIndex].replace(/\/$/, '');
-        url += this.entityhubUrlPrefix + "/sites/find";
+        url += this.entityhubUrlPostfix + 
+            (this.entityhubSite ? "/site/" + this.entityhubSite : "/sites") +
+            "/find";
         
         var format = options.format || "application/rdf+json";
-        
+        var field = options.field || "rdfs:label";
         if (offset == null) {
             offset = 0;
         }
@@ -4635,8 +4878,12 @@ VIE.prototype.StanbolConnector.prototype = {
             error: retryErrorCb,
             type: "POST",
             url: url,
-            data: "name=" + term + "&limit=" + limit + "&offset=" + offset,
-            dataType: format,
+            data: "name=" + term + 
+                "&limit=" + limit + 
+                "&offset=" + offset + 
+                "&field=" + field + 
+                "&ldpath=" + (options.ldPath || "")
+            , dataType: format,
             accepts: {"application/rdf+json": "application/rdf+json"}
         });
     },
@@ -4982,7 +5229,10 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             var predicate = jQuery(this).attr('rev');
             var relations = {};
             relations[predicate] = new service.vie.Collection();
-            relations[predicate].addOrUpdate(service.vie.entities.get(service.getElementSubject(this)));
+            var model = service.vie.entities.get(service.getElementSubject(this));
+            if (model) {
+                relations[predicate].addOrUpdate(model);
+            }
             entity.set(relations);
         });
         
@@ -5027,7 +5277,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
         newElement.find('[about]').attr('about', '');
         var subject = this.service.getElementSubject(newElement);
-        service._findPredicateElements(subject, newElement, false).each(function() {
+        service.findPredicateElements(subject, newElement, false).each(function() {
             var predicate = service.getElementPredicate(jQuery(this));
             if (entity.get(predicate) && entity.get(predicate).isCollection) {
               return true;
