@@ -31,7 +31,7 @@
                     <div id="analyze">
                         <p>Given the following contents:</p>
                         <blockquote class="analyze">
-Until September 2008, European policy measures were limited to a small number of countries (Spain and Italy). In both countries, the measures were dedicated to households (tax rebates) reform of the taxation system to support specific sectors such as housing. The European Commission proposed a &euro;200 billion stimulus plan to be implemented at the European level by the countries. At the beginning of 2009, the UK and Spain completed their initial plans, while Germany announced a new plan.
+The Hitchhiker's Guide to the Galaxy is a science fiction comedy series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon. Adaptations have included stage shows, a "trilogy" of five books published between 1979 and 1992, a sixth novel penned by Eoin Colfer in 2009, a 1981 TV series, a 1984 computer game, and three series of three-part comic book adaptations of the first three novels published by DC Comics between 1993 and 1996. There were also two series of towels, produced by Beer-Davies, that are considered by some fans to be an "official version" of The Hitchhiker's Guide to the Galaxy, as they include text from the first novel. A Hollywood-funded film version, produced and filmed in the UK, was released in April 2005, and radio adaptations of the third, fourth, and fifth novels were broadcast from 2004 to 2005.
                         </blockquote>
                         <p>This code can get you analysis:</p>
                         <div class="exampleholder">
@@ -56,8 +56,8 @@ v.analyze({
     var url = entity.getSubjectUri();
     var label;
     _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
-       if (labelLang.substr(-2) === 'en') {
-         label = labelLang.substr(2, labelLang.length - 7);
+       if (labelLang['@language'] === 'en') {
+         label = labelLang['@value'];
        }
     });
     if (!label) {
@@ -87,12 +87,11 @@ v.use(
 );
 v.load({
     entity : eiffel
-}).using("dbpedia").execute().done(function (entity) {
+    }).using("dbpedia").execute().done(function (entity) {
     var height = {
         year: entity.get(heightByYear)[1],
-        height: entity.get(heightByYear)[0],
+        height: entity.get(heightByYear)[0]['@value'],
     };
-    height.height = height.height.substr(2, 7);
     jQuery('#towerheight .resultsholder').append(
         jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
     );
@@ -125,11 +124,11 @@ vie
     .using('dbpedia')
     .execute()
     .done(function(capital) {
-        var url = capital.id.substr(1, capital.id.length - 2);
+        var url = capital.getSubjectUri();
         var label;
         _.each(capital.get(namePropURI), function(labelLang) {
-            if (labelLang.substr(-2) === 'en') {
-                label = labelLang.substr(2, labelLang.length - 7);
+            if (labelLang['@language'] === 'en') {
+                label = labelLang['@value'];
             }
         });
 
