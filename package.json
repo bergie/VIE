@@ -1,6 +1,6 @@
 {
   "name"          : "vie",
-  "version"       : "2.0.0",
+  "version"       : "2.0.2",
   "description"   : "Editable RDFa with Backbone.js and JSON-LD",
   "url"           : "http://viejs.org",
   "keywords"      : ["util", "rdfa", "model", "template", "server", "client", "browser"],
