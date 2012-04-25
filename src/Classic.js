@@ -22,7 +22,7 @@ VIE.prototype.ClassicRDFa.prototype = {
     },
 
     findPredicateElements: function(subject, element, allowNestedPredicates) {
-        return this.vie.services.rdfa._findPredicateElements(subject, element, allowNestedPredicates);
+        return this.vie.services.rdfa.findPredicateElements(subject, element, allowNestedPredicates);
     },
 
     getPredicate: function(element) {

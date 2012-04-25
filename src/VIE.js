@@ -138,7 +138,7 @@ var VIE = root.VIE = function(config) {
 //
 //     var vie = new VIE({classic: true});
 //     vie.RDFaEntities.getInstances();
-    if (this.config.classic !== false) {
+    if (this.config.classic === true) {
         /* Load Classic API as well */
         this.RDFa = new this.ClassicRDFa(this);
         this.RDFaEntities = new this.ClassicRDFaEntities(this);
@@ -385,7 +385,7 @@ VIE.prototype.loadSchema = function(url, options) {
 //
 // In browser environments the dependencies have to be included
 // before including VIE itself.
-if(typeof exports === 'object') {
+if (typeof exports === 'object') {
     exports.VIE = VIE;
 
     if (!jQuery) {
@@ -393,6 +393,7 @@ if(typeof exports === 'object') {
     }
     if (!Backbone) {
         Backbone = require('backbone');
+        Backbone.setDomLibrary(jQuery);
     }
     if (!_) {
         _ = require('underscore')._;

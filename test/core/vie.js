@@ -27,6 +27,7 @@ test("vie.js API", function () {
 test("vie.js Entities API", function () {
 	var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
+    z.namespaces.add('iks', 'http://www.iks-project.eu/#');
     ok(z.entities instanceof z.Collection);
     equal(z.entities.length, 0);
     z.entities.add({
@@ -48,7 +49,13 @@ test("vie.js Entities API", function () {
     equal(z.entities.at(0).has('dc:foo'), false);
     
     equal(z.entities.at(0).get('@type').id, z.types.get('owl:Thing').id);
-    
+
+    z.entities.at(0).set({
+      'iks:foo': ''
+    });
+    ok(z.entities.at(0).has('iks:foo'));   
+    equal(z.entities.at(0).get('iks:foo'), '');
+    equal(typeof z.entities.at(0).get('iks:foo'), 'string');
 });
 
 

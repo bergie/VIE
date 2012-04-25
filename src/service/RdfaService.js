@@ -159,7 +159,7 @@ VIE.prototype.RdfaService.prototype = {
     
     _writeEntity : function(entity, element) {
         var service = this;
-        this._findPredicateElements(this.getElementSubject(element), element, true).each(function() {
+        this.findPredicateElements(this.getElementSubject(element), element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
             if (!entity.has(predicate)) {
@@ -359,7 +359,7 @@ VIE.prototype.RdfaService.prototype = {
         var service = this;
         var entityPredicates = {};
     
-        this._findPredicateElements(subject, element, true).each(function() {
+        this.findPredicateElements(subject, element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
             if (predicate === '') {
@@ -385,7 +385,7 @@ VIE.prototype.RdfaService.prototype = {
         return entityPredicates;
     },
     
-    _findPredicateElements : function(subject, element, allowNestedPredicates) {
+    findPredicateElements : function(subject, element, allowNestedPredicates) {
         var service = this;
         return jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).filter(function() {
             if (service.getElementSubject(this) !== subject) {

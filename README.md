@@ -1,7 +1,7 @@
 ![VIE](https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png) Vienna IKS Editables
 ====================
 
-VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://wiki.iks-project.eu/index.php/VIE) the EU-funded [IKS project](http://www.iks-project.eu/).
+VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://www.iks-project.eu/projects/vienna-iks-editables) the EU-funded [IKS project](http://www.iks-project.eu/).
 
 ![Decoupled CMS communications](https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png)
 
@@ -61,7 +61,8 @@ With Backbone, the content extracted from the RDFa-annotated HTML page is easily
 
 The classic VIE API will also work:
 
-    var objectInstance = VIE.RDFaEntities.getInstance(jQuery('#myarticle'));
+    var v = new VIE({classic: true});
+    var objectInstance = v.RDFaEntities.getInstance(jQuery('#myarticle'));
     objectInstance.set({'dcterms:title': 'Hello, world'});
     objectInstance.save(null, {
         success: function(savedModel, response) {
@@ -77,7 +78,7 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 
 * [Example with Hallo](http://createjs.org)
 
-Be sure to read the [annotated VIE source code](http://bergie.github.com/VIE/) for API documentation.
+Be sure to read the [annotated VIE source code](http://viejs.org/docs/2.0.0/VIE.html) for API documentation.
 
 ## I/O operations
 
@@ -97,17 +98,12 @@ Some functionality in VIE additionally uses:
 
 * [RdfQuery](http://code.google.com/p/rdfquery/) as a triplestore and for reasoning over rules
 
-## Implementations
+## Integrations
 
-* [Midgard Create](https://github.com/bergie/midgardmvc_ui_create)
-* [WordPress](https://github.com/Jotschi/Aloha-Editor-Wordpress-Plugin)
-* [TYPO3](http://git.typo3.org/TYPO3v5/Distributions/Base.git)
-* [KaraCos](http://gitorious.org/karacos2-wsgi-web-applications-engine/karacos2-wsgi-web-applications-engine)
-* Gentics Enterprise CMS
-* Drupal
-* Jekyll
-* Plone ([GSoC 2011 proposal](http://www.google-melange.com/gsoc/proposal/review/google/gsoc2011/dalsh/1))
+* [Create](https://github.com/bergie/create)
+* [Google Web Toolkit](https://github.com/alkacon/vie-gwt)
 * [Symfony2](https://github.com/liip/LiipVieBundle)
+* [Palsu](https://github.com/bergie/ViePalsu)
 
 ## Using VIE on Node.js
 
@@ -119,14 +115,23 @@ Here is a simple Node.js script that uses VIE for parsing RDFa:
 
     var jQuery = require('jquery');
     var vie = require('vie');
+
+    // Instantiate VIE
     var VIE = new vie.VIE();
+
+    // Enable the RDFa service
+    VIE.use(new VIE.RdfaService());
 
     var html = jQuery('<p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics">In his latest book <cite property="dc:title">Wikinomics</cite>, <span property="dc:creator">Don Tapscott</span> explains deep changes in technology, demographics and business.</p>');
 
-    VIE.RDFaEntities.getInstances(html);
-    var objectInstance = VIE.EntityManager.getBySubject('http://www.example.com/books/wikinomics');
+    // 
+    VIE.load({element: html}).from('rdfa').execute().done(function() {
+    
+      var objectInstance = VIE.entities.get('http://www.example.com/books/wikinomics');
 
-    console.log(objectInstance.get('dc:title'));
+      console.log(objectInstance.get('dc:title'));
+
+    });
 
 ## Development
 
