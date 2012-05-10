@@ -1,0 +1,247 @@
+<!DOCTYPE html><html><head><title>DBPediaService.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="../../docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../../index.html" class="source"><span class="file_name">README</span></a><a href="../../src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="../../src/Attribute.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="../../src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="../../src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="../../src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="../../src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="../../src/service/DBPediaService.js.html" class="source selected"><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="../../src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="../../src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a><a href="../../src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="../../src/Type.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="../../src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="../../src/Util.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="../../src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="../../src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="../../src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="../../src/VIE.js.html" class="source "><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="../../src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>DBPediaService.js</h1><div class="filepath">src/service/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>
+</td><td class="code"><div class="highlight"><pre></pre></div></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><h2>VIE - DBPedia service</h2>
+
+<p>The DBPedia service allows a VIE developer to directly query
+the DBPedia database for entities and their properties. Obviously,
+the service does not allow for saving, removing or analyzing methods.</p>
+</td><td class="code"><div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(){</span></pre></div></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><h2>VIE.DBPediaService(options)</h2>
+
+<p>This is the constructor to instantiate a new service to collect
+properties of an entity from <a href="http://dbpedia.org">DBPedia</a>. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>options</strong> Optional set of fields, <code>namespaces</code>, <code>rules</code>, or <code>name</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.DBPediaService}</em> : A <strong>new</strong> VIE.DBPediaService instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var dbpService = new vie.DBPediaService({&lt;some-configuration&gt;});
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">DBPediaService</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">defaults</span> <span class="o">=</span> <span class="p">{</span></pre></div></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>the default name of this service</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;dbpedia&#39;</span><span class="p">,</span></pre></div></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>default namespaces that are shipped with this service</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="nx">namespaces</span> <span class="o">:</span> <span class="p">{</span>
+            <span class="nx">owl</span>    <span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2002/07/owl#&quot;</span><span class="p">,</span>
+            <span class="nx">yago</span>   <span class="o">:</span> <span class="s2">&quot;http://dbpedia.org/class/yago/&quot;</span><span class="p">,</span>
+            <span class="nx">foaf</span><span class="o">:</span> <span class="s1">&#39;http://xmlns.com/foaf/0.1/&#39;</span><span class="p">,</span>
+            <span class="nx">georss</span><span class="o">:</span> <span class="s2">&quot;http://www.georss.org/georss/&quot;</span><span class="p">,</span>
+            <span class="nx">geo</span><span class="o">:</span> <span class="s1">&#39;http://www.w3.org/2003/01/geo/wgs84_pos#&#39;</span><span class="p">,</span>
+            <span class="nx">rdfs</span><span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2000/01/rdf-schema#&quot;</span><span class="p">,</span>
+            <span class="nx">rdf</span><span class="o">:</span> <span class="s2">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;</span><span class="p">,</span>
+            <span class="nx">dbpedia</span><span class="o">:</span> <span class="s2">&quot;http://dbpedia.org/ontology/&quot;</span><span class="p">,</span>
+            <span class="nx">dbprop</span> <span class="o">:</span> <span class="s2">&quot;http://dbpedia.org/property/&quot;</span><span class="p">,</span>
+            <span class="nx">dcelements</span> <span class="o">:</span> <span class="s2">&quot;http://purl.org/dc/elements/1.1/&quot;</span>
+        <span class="p">},</span></pre></div></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>default rules that are shipped with this service</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="nx">rules</span> <span class="o">:</span> <span class="p">[]</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>the options are merged with the default options</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span> <span class="o">?</span> <span class="nx">options</span> <span class="o">:</span> <span class="p">{});</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="cm">/* this.vie will be set via VIE.use(); */</span></pre></div></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>overwrite options.name if you want to set another name</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    </pre></div></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>basic setup for the ajax connection</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajaxSetup</span><span class="p">({</span>
+        <span class="nx">converters</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;text application/rdf+json&quot;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">s</span><span class="p">){</span><span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">s</span><span class="p">);}},</span>
+        <span class="nx">timeout</span><span class="o">:</span> <span class="mi">60000</span> <span class="cm">/* 60 seconds timeout */</span>
+    <span class="p">});</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">DBPediaService</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    </pre></div></td></tr><tr id="section-10"><td class="docs"><div class="pilwrap"><a href="#section-10" class="pilcrow">&#182;</a></div><h3>init()</h3>
+
+<p>This method initializes certain properties of the service and is called
+via <code>VIE.use()</code>. <br />
+<strong>Parameters</strong>: <br />
+<em>nothing</em> <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.DBPediaService}</em> : The VIE.DBPediaService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var dbpService = new vie.DBPediaService({&lt;some-configuration&gt;});
+dbpService.init();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="k">this</span><span class="p">.</span><span class="nx">rules</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">([],</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">transformationRules</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">rules</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">rules</span><span class="p">,</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">rules</span><span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">rules</span> <span class="o">:</span> <span class="p">[]);</span>
+        
+        <span class="k">this</span><span class="p">.</span><span class="nx">connector</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">DBPediaConnector</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">options</span><span class="p">);</span>
+        
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></pre></div></td></tr><tr id="section-11"><td class="docs"><div class="pilwrap"><a href="#section-11" class="pilcrow">&#182;</a></div><h3>load(loadable)</h3>
+
+<p>This method loads the entity that is stored within the loadable into VIE.
+You can also query for multiple queries by setting <code>entities</code> with
+an array of entities. <br />
+<strong>Parameters</strong>: <br />
+<em>{VIE.Loadable}</em> <strong>lodable</strong> The loadable. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if an invalid VIE.Loadable is passed. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.DBPediaService}</em> : The VIE.DBPediaService instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<p>var dbpService = new vie.DBPediaService({<some-configuration>});
+ dbpService.load(new vie.Loadable({entity : "<a href="http://...">http://...</a>"}));
+   OR
+ var dbpService = new vie.DBPediaService({<some-configuration>});
+ dbpService.load(new vie.Loadable({entities : ["<a href="http://...">http://...</a>", "<a href="http://...">http://...</a>"]}));</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">loadable</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">service</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        
+        <span class="kd">var</span> <span class="nx">correct</span> <span class="o">=</span> <span class="nx">loadable</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">correct</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Invalid Loadable passed&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">results</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">results</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span><span class="o">?</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">:</span> <span class="nx">results</span><span class="p">;</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">try</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">rdf2Entities</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">results</span><span class="p">);</span>
+                    <span class="nx">entities</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">entities</span><span class="p">))</span><span class="o">?</span> <span class="nx">entities</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">entities</span> <span class="p">];</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">e</span> <span class="o">&lt;</span> <span class="nx">entities</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">e</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                      <span class="nx">entities</span><span class="p">[</span><span class="nx">e</span><span class="p">].</span><span class="nx">set</span><span class="p">(</span><span class="s2">&quot;DBPediaServiceLoad&quot;</span><span class="p">,</span> <span class="nx">VIE</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">xsdDateTime</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()));</span>
+                    <span class="p">}</span>
+                    <span class="nx">entities</span> <span class="o">=</span> <span class="p">(</span><span class="nx">entities</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span><span class="o">?</span> <span class="nx">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">entities</span><span class="p">;</span>
+                    <span class="nx">loadable</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">entities</span><span class="p">);</span>
+                <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">loadable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+        <span class="p">};</span>
+        
+        <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">loadable</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+        <span class="p">};</span>
+        
+        <span class="kd">var</span> <span class="nx">entities</span> <span class="o">=</span> <span class="p">(</span><span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entity</span><span class="p">)</span><span class="o">?</span> <span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entity</span> <span class="o">:</span> <span class="nx">loadable</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">entities</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">entities</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">loadable</span><span class="p">.</span><span class="nx">reject</span><span class="p">([]);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">entities</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">entities</span><span class="p">))</span><span class="o">?</span> <span class="nx">entities</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">entities</span> <span class="p">];</span>
+          <span class="kd">var</span> <span class="nx">tmpEntities</span> <span class="o">=</span> <span class="p">[];</span>
+          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">e</span> <span class="o">&lt;</span> <span class="nx">entities</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">e</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">tmpEnt</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">entities</span><span class="p">[</span><span class="nx">e</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span><span class="o">?</span> <span class="nx">entities</span><span class="p">[</span><span class="nx">e</span><span class="p">]</span> <span class="o">:</span> <span class="nx">entities</span><span class="p">[</span><span class="nx">e</span><span class="p">].</span><span class="nx">id</span><span class="p">;</span>
+            <span class="nx">tmpEntities</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">tmpEnt</span><span class="p">);</span>
+          <span class="p">}</span>
+                        
+            <span class="k">this</span><span class="p">.</span><span class="nx">connector</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="nx">tmpEntities</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span></pre></div></td></tr><tr id="section-12"><td class="docs"><div class="pilwrap"><a href="#section-12" class="pilcrow">&#182;</a></div><h2>VIE.DBPediaConnector(options)</h2>
+
+<p>The DBPediaConnector is the connection between the DBPedia service
+and the backend service. <br />
+<strong>Parameters</strong>: <br />
+<em>{object}</em> <strong>options</strong> The options. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.DBPediaConnector}</em> : The <strong>new</strong> VIE.DBPediaConnector instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var dbpConn = new vie.DBPediaConnector({&lt;some-configuration&gt;});
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">DBPediaConnector</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span> <span class="o">=</span> <span class="s2">&quot;http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&amp;timeout=0&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">DBPediaConnector</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span></pre></div></td></tr><tr id="section-13"><td class="docs"><div class="pilwrap"><a href="#section-13" class="pilcrow">&#182;</a></div><h3>load(uri, success, error, options)</h3>
+
+<p>This method loads all properties from an entity and returns the result by the success callback. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>uri</strong> The URI of the entity to be loaded. <br />
+<em>{function}</em> <strong>success</strong> The success callback. <br />
+<em>{function}</em> <strong>error</strong> The error callback. <br />
+<em>{object}</em> <strong>options</strong> Options, like the <code>format</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.DBPediaConnector}</em> : The VIE.DBPediaConnector instance itself. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var dbpConn = new vie.DBPediaConnector(opts);
+dbpConn.load("&lt;http://dbpedia.org/resource/Barack_Obama&gt;",
+            function (res) { ... },
+            function (err) { ... });
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">load</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
+        
+        <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">baseUrl</span> <span class="o">+</span> 
+        <span class="s2">&quot;&amp;format=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="s2">&quot;application/rdf+json&quot;</span><span class="p">)</span> <span class="o">+</span> 
+        <span class="s2">&quot;&amp;query=&quot;</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">uri</span><span class="p">))</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">construct</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+          <span class="kd">var</span> <span class="nx">where</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">u</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">u</span> <span class="o">&lt;</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">u</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">subject</span> <span class="o">=</span> <span class="p">(</span><span class="sr">/^&lt;.+&gt;$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">uri</span><span class="p">[</span><span class="nx">u</span><span class="p">]))</span><span class="o">?</span> <span class="nx">uri</span><span class="p">[</span><span class="nx">u</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">uri</span><span class="p">[</span><span class="nx">u</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">u</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">construct</span> <span class="o">+=</span> <span class="s2">&quot; .&quot;</span><span class="p">;</span>
+              <span class="nx">where</span> <span class="o">+=</span> <span class="s2">&quot; UNION &quot;</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nx">construct</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">subject</span> <span class="o">+</span> <span class="s2">&quot; ?prop&quot;</span> <span class="o">+</span> <span class="nx">u</span> <span class="o">+</span> <span class="s2">&quot; ?val&quot;</span> <span class="o">+</span> <span class="nx">u</span><span class="p">;</span>
+            <span class="nx">where</span>     <span class="o">+=</span> <span class="s2">&quot; { &quot;</span> <span class="o">+</span> <span class="nx">subject</span> <span class="o">+</span> <span class="s2">&quot; ?prop&quot;</span> <span class="o">+</span> <span class="nx">u</span> <span class="o">+</span> <span class="s2">&quot; ?val&quot;</span> <span class="o">+</span> <span class="nx">u</span> <span class="o">+</span> <span class="s2">&quot; }&quot;</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="nx">url</span> <span class="o">+=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="s2">&quot;CONSTRUCT {&quot;</span> <span class="o">+</span> <span class="nx">construct</span> <span class="o">+</span> <span class="s2">&quot; } WHERE {&quot;</span> <span class="o">+</span> <span class="nx">where</span> <span class="o">+</span> <span class="s2">&quot; }&quot;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">uri</span> <span class="o">=</span> <span class="p">(</span><span class="sr">/^&lt;.+&gt;$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">uri</span><span class="p">))</span><span class="o">?</span> <span class="nx">uri</span> <span class="o">:</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="nx">uri</span> <span class="o">+</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+          <span class="nx">url</span> <span class="o">+=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="s2">&quot;CONSTRUCT { &quot;</span> <span class="o">+</span> <span class="nx">uri</span> <span class="o">+</span> <span class="s2">&quot; ?prop ?val } WHERE { &quot;</span> <span class="o">+</span> <span class="nx">uri</span> <span class="o">+</span> <span class="s2">&quot; ?prop ?val }&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">format</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">format</span> <span class="o">||</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">process</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span></pre></div></td></tr><tr id="section-14"><td class="docs"><div class="pilwrap"><a href="#section-14" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>We're on Node.js, don't use jQuery.ajax</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_loadNode</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+            <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">){</span>
+                <span class="nx">success</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="nx">error</span><span class="o">:</span> <span class="nx">error</span><span class="p">,</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+            <span class="nx">accepts</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;application/rdf+json&quot;</span><span class="o">:</span> <span class="s2">&quot;application/rdf+json&quot;</span><span class="p">}</span>
+        <span class="p">});</span>
+        
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="nx">_loadNode</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">request</span><span class="p">({</span>
+            <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="nx">uri</span><span class="o">:</span> <span class="nx">uri</span><span class="p">,</span>
+            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">Accept</span><span class="o">:</span> <span class="nx">format</span>
+            <span class="p">}</span>
+        <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">,</span> <span class="nx">body</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">success</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">body</span><span class="p">));</span>
+        <span class="p">});</span>
+        <span class="nx">r</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+        
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="p">})();</span>
+
+</pre></div></td></tr></tbody></table><div id="generated">generated Wed Apr 25 2012 11:20:34 GMT+0200 (CEST)  </div><div id="projectname"><a href="../../index.html">VIE</a></div></div></body></html>

@@ -1,14 +1,15 @@
-<!DOCTYPE html>  <html> <head>   <title>VIE.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="Able.html">                 Able.js               </a>                                           <a class="source" href="Attribute.html">                 Attribute.js               </a>                                           <a class="source" href="Classic.html">                 Classic.js               </a>                                           <a class="source" href="Collection.html">                 Collection.js               </a>                                           <a class="source" href="CollectionView.html">                 CollectionView.js               </a>                                           <a class="source" href="DBPediaService.html">                 DBPediaService.js               </a>                                           <a class="source" href="Entity.html">                 Entity.js               </a>                                           <a class="source" href="EntityView.html">                 EntityView.js               </a>                                           <a class="source" href="Namespace.html">                 Namespace.js               </a>                                           <a class="source" href="OpenCalaisService.html">                 OpenCalaisService.js               </a>                                           <a class="source" href="RdfaRdfQueryService.html">                 RdfaRdfQueryService.js               </a>                                           <a class="source" href="RdfaService.html">                 RdfaService.js               </a>                                           <a class="source" href="StanbolService.html">                 StanbolService.js               </a>                                           <a class="source" href="Type.html">                 Type.js               </a>                                           <a class="source" href="Util.html">                 Util.js               </a>                                           <a class="source" href="VIE.html">                 VIE.js               </a>                                           <a class="source" href="ZemantaService.html">                 ZemantaService.js               </a>                                           <a class="source" href="xdr.html">                 xdr.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               VIE.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>VIE - Vienna IKS Editables
+<!DOCTYPE html><html><head><title>VIE.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="../docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../index.html" class="source"><span class="file_name">README</span></a><a href="../src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="../src/Attribute.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="../src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="../src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="../src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="../src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="../src/service/DBPediaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="../src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="../src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a><a href="../src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="../src/Type.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="../src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="../src/Util.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="../src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="../src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="../src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="../src/VIE.js.html" class="source selected"><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="../src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>VIE.js</h1><div class="filepath">src/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><pre><code>VIE - Vienna IKS Editables
 (c) 2011 Henri Bergius, IKS Consortium
 (c) 2011 Sebastian Germesin, IKS Consortium
 (c) 2011 Szaby Grünwald, IKS Consortium
 VIE may be freely distributed under the MIT license.
 For all details and documentation:
 http://viejs.org/
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">root</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">root</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
     <span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">,</span>
     <span class="nx">Backbone</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">Backbone</span><span class="p">,</span>
-    <span class="nx">_</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">_</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2>VIE constructor</h2>
+    <span class="nx">_</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">_</span><span class="p">;</span></pre></div></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><h2>VIE constructor</h2>
 
 <p>The VIE constructor is the way to initialize VIE for your
 application. The instance of VIE handles all management of
@@ -56,7 +57,8 @@ recommended to ensure it is enabled before using it. So:</p>
 
 <pre><code>var vie = new VIE({classic: true});
 vie.RDFaEntities.getInstances();
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">VIE</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">VIE</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">VIE</span> <span class="o">=</span> <span class="nx">root</span><span class="p">.</span><span class="nx">VIE</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">config</span> <span class="o">=</span> <span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="o">?</span> <span class="nx">config</span> <span class="o">:</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">services</span> <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
@@ -67,7 +69,7 @@ vie.RDFaEntities.getInstances();
     <span class="k">this</span><span class="p">.</span><span class="nx">Entity</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">entityCollection</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">Collection</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">Entity</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     
-    <span class="k">this</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3>Namespaces in VIE</h3>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><h3>Namespaces in VIE</h3>
 
 <p>VIE supports different ontologies and an easy use of them.
 Namespace prefixes reduce the amount of code you have to
@@ -80,9 +82,11 @@ is registered as <em>baseNamespace</em>.
 By default <code>"http://viejs.org/ns/"</code>is set as base namespace.
 For more information about how to set, get and list all
 registered namespaces, refer to the 
-<a href="Namespace.html">Namespaces documentation</a>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">namespaces</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">(</span>
+<a href="Namespace.html">Namespaces documentation</a>.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">namespaces</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Namespaces</span><span class="p">(</span>
         <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">baseNamespace</span><span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">baseNamespace</span> <span class="o">:</span> <span class="s2">&quot;http://viejs.org/ns/&quot;</span><span class="p">,</span>
-        </pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>By default, VIE is shipped with common namespace prefixes:</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <ul>
+        </pre></div></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><p>By default, VIE is shipped with common namespace prefixes:</p>
+</td><td class="code"><div class="highlight"><pre></pre></div></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><ul>
 <li>owl    : "http://www.w3.org/2002/07/owl#"</li>
 <li>rdfs   : "http://www.w3.org/2000/01/rdf-schema#"</li>
 <li>rdf    : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"</li>
@@ -95,7 +99,8 @@ registered namespaces, refer to the
 <li>xsd    : "http://www.w3.org/2001/XMLSchema#"</li>
 <li>sioc   : "http://rdfs.org/sioc/ns#"</li>
 <li>dcterms: "http://purl.org/dc/terms/"</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="p">{</span>
+</ul>
+</td><td class="code"><div class="highlight"><pre>        <span class="p">{</span>
             <span class="nx">owl</span>    <span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2002/07/owl#&quot;</span><span class="p">,</span>
             <span class="nx">rdfs</span>   <span class="o">:</span> <span class="s2">&quot;http://www.w3.org/2000/01/rdf-schema#&quot;</span><span class="p">,</span>
             <span class="nx">rdf</span>    <span class="o">:</span> <span class="s2">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;</span><span class="p">,</span>
@@ -115,7 +120,7 @@ registered namespaces, refer to the
     <span class="k">this</span><span class="p">.</span><span class="nx">Type</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">Types</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">Attributes</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h3>Type hierarchy in VIE</h3>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Attributes</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><h3>Type hierarchy in VIE</h3>
 
 <p>VIE takes care about type hierarchy of entities
 (aka. <em>schema</em> or <em>ontology</em>).
@@ -124,17 +129,19 @@ this information, to easily ask, whether an entity
 is of type, e.g., <em>foaf:Person</em> or <em>schema:Place</em>.
 For more information about how to generate such a type
 hierarchy, refer to the 
-<a href="Type.html">Types documentation</a>.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">types</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Types</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>By default, there is a parent type in VIE, called
+<a href="Type.html">Types documentation</a>.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">types</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Types</span><span class="p">();</span></pre></div></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><p>By default, there is a parent type in VIE, called
 <em>owl:Thing</em>. All types automatically inherit from this
-type and all registered entities, are of this type.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>As described above, the Classic API of VIE 1.x is loaded
+type and all registered entities, are of this type.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">);</span></pre></div></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><p>As described above, the Classic API of VIE 1.x is loaded
 by default. As this might change in the future, it is
 recommended to ensure it is enabled before using it. So:</p>
 
 <pre><code>var vie = new VIE({classic: true});
 vie.RDFaEntities.getInstances();
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">classic</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
-        <span class="cm">/* Load Classic API as well */</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">RDFa</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">ClassicRDFa</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">classic</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span></pre></div></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Load Classic API as well</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">this</span><span class="p">.</span><span class="nx">RDFa</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">ClassicRDFa</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">RDFaEntities</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">ClassicRDFaEntities</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">EntityManager</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">ClassicEntityManager</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 
@@ -142,7 +149,7 @@ vie.RDFaEntities.getInstances();
             <span class="k">this</span><span class="p">.</span><span class="nx">entities</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
         <span class="p">};</span>
     <span class="p">}</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3>use(service, name)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-10"><td class="docs"><div class="pilwrap"><a href="#section-10" class="pilcrow">&#182;</a></div><h3>use(service, name)</h3>
 
 <p>This method registers services within VIE. <br />
 <strong>Parameters</strong>: <br />
@@ -162,7 +169,8 @@ vie.use(new vie.StanbolService());
 vie.use(new vie.StanbolService(conf1), "stanbol_1");
 vie.use(new vie.StanbolService(conf2), "stanbol_2");
 // &lt;-- this means that there are now 3 services registered!
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">use</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">use</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">name</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Please provide a name for the service!&quot;</span><span class="p">);</span>
   <span class="p">}</span>
@@ -174,7 +182,7 @@ vie.use(new vie.StanbolService(conf2), "stanbol_2");
   <span class="k">this</span><span class="p">.</span><span class="nx">services</span><span class="p">[</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">service</span><span class="p">;</span>
   
   <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3>service(name)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-11"><td class="docs"><div class="pilwrap"><a href="#section-11" class="pilcrow">&#182;</a></div><h3>service(name)</h3>
 
 <p>This method returns the service object that is
 registered under the given name. <br />
@@ -189,12 +197,13 @@ registered under the given name. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var service = vie.service("stanbol");
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">service</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">service</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">services</span><span class="p">[</span><span class="nx">name</span><span class="p">])</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="s2">&quot;Undefined service &quot;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">services</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3>getServicesArray()</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-12"><td class="docs"><div class="pilwrap"><a href="#section-12" class="pilcrow">&#182;</a></div><h3>getServicesArray()</h3>
 
 <p>This method returns an array of all registered services. <br />
 <strong>Parameters</strong>: <br />
@@ -209,9 +218,10 @@ var service = vie.service("stanbol");
 vie.use(new vie.StanbolService(), "stanbol");
 var services = vie.getServicesArray();
 services.length; // &lt;-- 1
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getServicesArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getServicesArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">services</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">v</span><span class="p">;});</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3>load(options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-13"><td class="docs"><div class="pilwrap"><a href="#section-13" class="pilcrow">&#182;</a></div><h3>load(options)</h3>
 
 <p>This method instantiates a new VIE.Loadable in order to
 perform queries on the services. <br />
@@ -226,11 +236,12 @@ perform queries on the services. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var loader = vie.load({...});
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">load</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">load</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
   <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Loadable</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h3>save(options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-14"><td class="docs"><div class="pilwrap"><a href="#section-14" class="pilcrow">&#182;</a></div><h3>save(options)</h3>
 
 <p>This method instantiates a new VIE.Savable in order to
 perform queries on the services. <br />
@@ -245,11 +256,12 @@ perform queries on the services. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var saver = vie.save({...});
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">save</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">save</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
   <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Savable</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h3>remove(options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-15"><td class="docs"><div class="pilwrap"><a href="#section-15" class="pilcrow">&#182;</a></div><h3>remove(options)</h3>
 
 <p>This method instantiates a new VIE.Removable in order to
 perform queries on the services. <br />
@@ -264,11 +276,12 @@ perform queries on the services. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var remover = vie.remove({...});
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
   <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Removable</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h3>analyze(options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-16"><td class="docs"><div class="pilwrap"><a href="#section-16" class="pilcrow">&#182;</a></div><h3>analyze(options)</h3>
 
 <p>This method instantiates a new VIE.Analyzable in order to
 perform queries on the services. <br />
@@ -283,11 +296,12 @@ perform queries on the services. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var analyzer = vie.analyze({...});
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">analyze</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">analyze</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
   <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Analyzable</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h3>find(options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-17"><td class="docs"><div class="pilwrap"><a href="#section-17" class="pilcrow">&#182;</a></div><h3>find(options)</h3>
 
 <p>This method instantiates a new VIE.Findable in order to
 perform queries on the services. <br />
@@ -302,11 +316,12 @@ perform queries on the services. <br />
 <pre><code>var vie = new VIE();
 vie.use(new vie.StanbolService(), "stanbol");
 var finder = vie.find({...});
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">find</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">find</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span> <span class="p">}</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
   <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">Findable</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <h3>loadSchema(url, options)</h3>
+<span class="p">};</span></pre></div></td></tr><tr id="section-18"><td class="docs"><div class="pilwrap"><a href="#section-18" class="pilcrow">&#182;</a></div><h3>loadSchema(url, options)</h3>
 
 <p>VIE only knows the <em>owl:Thing</em> type by default.
 You can use this method to import another
@@ -332,7 +347,8 @@ vie.loadSchema("http://schema.rdfs.org/all.json",
      succes : function () {console.log("success");},
      error  : function (msg) {console.warn(msg);}
    });
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">loadSchema</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">loadSchema</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">options</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">)</span><span class="o">?</span> <span class="p">{}</span> <span class="o">:</span> <span class="nx">options</span><span class="p">;</span>
     
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
@@ -356,7 +372,7 @@ vie.loadSchema("http://schema.rdfs.org/all.json",
     <span class="p">}</span>
     
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <h2>Running VIE on Node.js</h2>
+<span class="p">};</span></pre></div></td></tr><tr id="section-19"><td class="docs"><div class="pilwrap"><a href="#section-19" class="pilcrow">&#182;</a></div><h2>Running VIE on Node.js</h2>
 
 <p>When VIE is running under Node.js we can use the CommonJS
 require interface to load our dependencies automatically.</p>
@@ -368,7 +384,8 @@ and can just run VIE with:</p>
 </code></pre>
 
 <p>In browser environments the dependencies have to be included
-before including VIE itself.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
+before including VIE itself.</p>
+</td><td class="code"><div class="highlight"><pre><span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">exports</span><span class="p">.</span><span class="nx">VIE</span> <span class="o">=</span> <span class="nx">VIE</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">jQuery</span><span class="p">)</span> <span class="p">{</span>
@@ -382,4 +399,4 @@ before including VIE itself.</p>             </td>             <td class="code">
     <span class="p">}</span>
 <span class="p">}</span>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+</pre></div></td></tr></tbody></table><div id="generated">generated Tue Apr 24 2012 16:50:57 GMT+0200 (CEST)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>

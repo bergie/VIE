@@ -1,0 +1,404 @@
+<!DOCTYPE html><html><head><title>Attribute.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="../docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../index.html" class="source"><span class="file_name">README</span></a><a href="../src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="../src/Attribute.js.html" class="source selected"><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="../src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="../src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="../src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="../src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="../src/service/DBPediaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="../src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="../src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a><a href="../src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="../src/Type.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="../src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="../src/Util.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="../src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="../src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="../src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="../src/VIE.js.html" class="source "><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="../src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>Attribute.js</h1><div class="filepath">src/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>
+</td><td class="code"><div class="highlight"><pre></pre></div></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><h2>VIE.Attributes</h2>
+
+<p>Within VIE, we provide special capabilities of handling attributes of types of entites. This
+helps first of all to list all attributes of an entity type, but furthermore fully supports
+inheritance of attributes from the type-class to inherit from.</p>
+</td><td class="code"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: VIE.Attribute is already defined. Please check your VIE installation!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Attributes</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: VIE.Attributes is already defined. Please check your VIE installation!&quot;</span><span class="p">);</span>
+<span class="p">}</span></pre></div></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><h3>VIE.Attribute(id, range, domain)</h3>
+
+<p>This is the constructor of a VIE.Attribute. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>id</strong> The id of the attribute. <br />
+<em>{string|array}</em> <strong>range</strong> A string or an array of strings of the target range of 
+the attribute. <br />
+<em>{string}</em> <strong>domain</strong> The domain of the attribute. <br />
+<em>{number}</em> <strong>minCount</strong> The minimal number this attribute can occur. (needs to be >= 0) <br />
+<em>{number}</em> <strong>maxCount</strong> The maximal number this attribute can occur. (needs to be >= minCount) <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if one of the given paramenters is missing. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : A <strong>new</strong> VIE.Attribute object. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var knowsAttr = new vie.Attribute("knows", ["Person"], "Person", 0, 10);
+ // Creates an attribute to describe a *knows*-relationship
+ // between persons. Each person can only have 
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Attribute</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">range</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">minCount</span><span class="p">,</span> <span class="nx">maxCount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">id</span> <span class="o">!==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;The attribute constructor needs an &#39;id&#39; of type string! E.g., &#39;Person&#39;&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">range</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;The attribute constructor needs &#39;range&#39;.&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">domain</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;The attribute constructor needs a &#39;domain&#39;.&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">_domain</span> <span class="o">=</span> <span class="nx">domain</span><span class="p">;</span>
+    </pre></div></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><h3>id</h3>
+
+<p>This field stores the id of the attribute's instance. <br />
+<strong>Parameters</strong>: <br />
+nothing
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> : A URI, representing the id of the attribute. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+console.log(knowsAttr.id);
+// --&gt; &lt;http://viejs.org/ns/knows&gt;
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">isUri</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="nx">id</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">uri</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+    </pre></div></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><h3>range</h3>
+
+<p>This field stores the ranges of the attribute's instance. <br />
+<strong>Parameters</strong>: <br />
+nothing
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{array}</em> : An array of strings which represent the types. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+console.log(knowsAttr.range);
+ // --&gt; ["Person"]
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">range</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">range</span><span class="p">))</span><span class="o">?</span> <span class="nx">range</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">range</span> <span class="p">];</span>
+    </pre></div></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><h3>min</h3>
+
+<p>This field stores the minimal amount this attribute can occur in the type's instance. The number
+needs to be greater or equal to zero. <br />
+<strong>Parameters</strong>: <br />
+nothing
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{int}</em> : The minimal amount this attribute can occur. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>console.log(person.min);
+ // --&gt; 0
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">minCount</span> <span class="o">=</span> <span class="nx">minCount</span> <span class="o">?</span> <span class="nx">minCount</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">min</span> <span class="o">=</span> <span class="p">(</span><span class="nx">minCount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">?</span> <span class="nx">minCount</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    </pre></div></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><h3>max</h3>
+
+<p>This field stores the maximal amount this attribute can occur in the type's instance.
+This number cannot be smaller than min <br />
+<strong>Parameters</strong>: <br />
+nothing
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{int}</em> : The maximal amount this attribute can occur. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>console.log(person.max);
+ // --&gt; 1.7976931348623157e+308
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="nx">maxCount</span> <span class="o">=</span> <span class="nx">maxCount</span> <span class="o">?</span> <span class="nx">maxCount</span> <span class="o">:</span> <span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_VALUE</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">max</span> <span class="o">=</span> <span class="p">(</span><span class="nx">maxCount</span> <span class="o">&gt;=</span> <span class="k">this</span><span class="p">.</span><span class="nx">min</span><span class="p">)</span><span class="o">?</span> <span class="nx">maxCount</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">min</span><span class="p">;</span></pre></div></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><h3>applies(range)</h3>
+
+<p>This method checks, whether the current attribute applies in the given range.
+If <code>range</code> is a string and cannot be transformed into a <code>VIE.Type</code>, 
+this performs only string comparison, if it is a VIE.Type 
+or an ID of a VIE.Type, then inheritance is checked as well.
+<strong>Parameters</strong>: <br />
+<em>{string|VIE.Type}</em> <strong>range</strong> The <code>VIE.Type</code> (or it's string representation) to be checked. 
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{boolean}</em> : <code>true</code> if the given type applies to this attribute and <code>false</code> otherwise. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+console.log(knowsAttr.applies("Person")); // --&gt; true
+console.log(knowsAttr.applies("Place")); // --&gt; false
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">applies</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">range</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">range</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">range</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">range</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">range</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">r</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">r</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="nx">r</span><span class="p">]);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">range</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">range</span> <span class="o">===</span> <span class="k">this</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="nx">r</span><span class="p">])</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">range</span><span class="p">.</span><span class="nx">isof</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="nx">r</span><span class="p">]))</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">};</span>
+            
+<span class="p">};</span></pre></div></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><h2>VIE.Attributes(domain, attrs)</h2>
+
+<p>This is the constructor of a VIE.Attributes. Basically a convenience class
+that represents a list of <code>VIE.Attribute</code>. As attributes are part of a 
+certain <code>VIE.Type</code>, it needs to be passed for inheritance checks. <br />
+<strong>Parameters</strong>: <br />
+<em>{string}</em> <strong>domain</strong> The domain of the attributes (the type they will be part of). <br />
+<em>{string|VIE.Attribute|array}</em> <strong>attrs</strong> Either a string representation of an attribute,
+a proper instance of <code>VIE.Attribute</code> or an array of both. <br />
+<em>{string}</em> <strong>domain</strong> The domain of the attribute. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> if one of the given paramenters is missing. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : A <strong>new</strong> VIE.Attribute instance. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
+var personAttrs = new vie.Attributes("Person", knowsAttr);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Attributes</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">domain</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">_local</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_attributes</span> <span class="o">=</span> <span class="p">{};</span>
+    </pre></div></td></tr><tr id="section-10"><td class="docs"><div class="pilwrap"><a href="#section-10" class="pilcrow">&#182;</a></div><h3>domain</h3>
+
+<p>This field stores the domain of the attributes' instance. <br />
+<strong>Parameters</strong>: <br />
+nothing
+<strong>Throws</strong>: <br />
+nothing <br />
+<strong>Returns</strong>: <br />
+<em>{string}</em> : The string representation of the domain. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>console.log(personAttrs.domain);
+// --&gt; ["Person"]
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">domain</span> <span class="o">=</span> <span class="nx">domain</span><span class="p">;</span>
+    </pre></div></td></tr><tr id="section-11"><td class="docs"><div class="pilwrap"><a href="#section-11" class="pilcrow">&#182;</a></div><h3>add(id, range)</h3>
+
+<p>This method adds a <code>VIE.Attribute</code> to the attributes instance.
+<strong>Parameters</strong>: <br />
+<em>{string|VIE.Attribute}</em> <strong>id</strong> The string representation of an attribute, or a proper
+instance of a <code>VIE.Attribute</code>. <br />
+<em>{string|array}</em> <strong>range</strong> An array representing the target range of the attribute. <br />
+<em>{number}</em> <strong>mmin</strong> The minimal amount this attribute can appear. <br />
+instance of a <code>VIE.Attribute</code>. <br />
+<em>{number}</em> <strong>max</strong> The maximal amount this attribute can appear. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> If an atribute with the given id is already registered. <br />
+<em>{Error}</em> If the <code>id</code> parameter is not a string, nor a <code>VIE.Type</code> instance. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : The generated or passed attribute. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>personAttrs.add("name", "Text", 0, 1);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">range</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Attribute &#39;&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;&#39; already registered for domain &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">domain</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">);</span>
+        <span class="p">}</span> 
+        <span class="k">else</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">id</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">range</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">domain</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">_local</span><span class="p">[</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">a</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">id</span><span class="p">.</span><span class="nx">domain</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">domain</span><span class="p">;</span>
+                <span class="nx">id</span><span class="p">.</span><span class="nx">vie</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">;</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">_local</span><span class="p">[</span><span class="nx">id</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Wrong argument to VIE.Types.add()!&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+    </pre></div></td></tr><tr id="section-12"><td class="docs"><div class="pilwrap"><a href="#section-12" class="pilcrow">&#182;</a></div><h3>remove(id)</h3>
+
+<p>This method removes a <code>VIE.Attribute</code> from the attributes instance.
+<strong>Parameters</strong>: <br />
+<em>{string|VIE.Attribute}</em> <strong>id</strong> The string representation of an attribute, or a proper
+instance of a <code>VIE.Attribute</code>. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> When the attribute is inherited from a parent <code>VIE.Type</code> and thus cannot be removed.
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : The removed attribute. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>personAttrs.remove("knows");
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">_local</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">_local</span><span class="p">[</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+            <span class="k">return</span> <span class="nx">a</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;The attribute &quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot; is inherited and cannot be removed from the domain &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">domain</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">);</span>
+    <span class="p">};</span>
+    </pre></div></td></tr><tr id="section-13"><td class="docs"><div class="pilwrap"><a href="#section-13" class="pilcrow">&#182;</a></div><h3>get(id)</h3>
+
+<p>This method returns a <code>VIE.Attribute</code> from the attributes instance by it's id. <br />
+<strong>Parameters</strong>: <br />
+<em>{string|VIE.Attribute}</em> <strong>id</strong> The string representation of an attribute, or a proper
+instance of a <code>VIE.Attribute</code>. <br />
+<strong>Throws</strong>: <br />
+<em>{Error}</em> When the method is called with an unknown datatype. <br />
+<strong>Returns</strong>: <br />
+<em>{VIE.Attribute}</em> : The attribute. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>personAttrs.get("knows");
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">id</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">lid</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">isUri</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="nx">id</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">uri</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_inherit</span><span class="p">().</span><span class="nx">_attributes</span><span class="p">[</span><span class="nx">lid</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Wrong argument in VIE.Attributes.get()&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+    </pre></div></td></tr><tr id="section-14"><td class="docs"><div class="pilwrap"><a href="#section-14" class="pilcrow">&#182;</a></div><h3>_inherit()</h3>
+
+<p>The private method <code>_inherit</code> creates a full list of all attributes. This includes
+local attributes as well as inherited attributes from the parents. The ranges of attributes
+with the same id will be merged. This method is called everytime an attribute is requested or
+the list of all attributes. Usually this method should not be invoked outside of the class. <br />
+<strong>Parameters</strong>: <br />
+<em>nothing</em> <br />
+instance of a <code>VIE.Attribute</code>. <br />
+<strong>Throws</strong>: <br />
+<em>nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>nothing</em> <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>personAttrs._inherit();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">_inherit</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">attributes</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">_local</span><span class="p">);</span>
+        
+        <span class="kd">var</span> <span class="nx">inherited</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">domain</span><span class="p">.</span><span class="nx">supertypes</span><span class="p">.</span><span class="nx">list</span><span class="p">(),</span>
+            <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+               <span class="k">return</span> <span class="nx">x</span><span class="p">.</span><span class="nx">attributes</span><span class="p">;</span> 
+            <span class="p">}</span>
+        <span class="p">);</span>
+
+        <span class="kd">var</span> <span class="nx">add</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="kd">var</span> <span class="nx">merge</span> <span class="o">=</span> <span class="p">{};</span>
+        
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">ilen</span> <span class="o">=</span> <span class="nx">inherited</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="nx">ilen</span><span class="p">;</span> <span class="nx">a</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">inherited</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">list</span><span class="p">();</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">alen</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">alen</span><span class="p">;</span> <span class="nx">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">id</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">attributes</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">add</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">merge</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">];</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">])</span> <span class="p">{</span>
+                            <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">range</span> <span class="o">:</span> <span class="p">[],</span> <span class="nx">mins</span> <span class="o">:</span> <span class="p">[],</span> <span class="nx">maxs</span><span class="o">:</span> <span class="p">[]};</span>
+                        <span class="p">}</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">in</span> <span class="nx">add</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">],</span> <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">range</span><span class="p">);</span>
+                            <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">],</span> <span class="p">[</span> <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">min</span> <span class="p">]);</span>
+                            <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">],</span> <span class="p">[</span> <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">max</span> <span class="p">]);</span>
+                            <span class="k">delete</span> <span class="nx">add</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+                        <span class="p">}</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">],</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">range</span><span class="p">);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">],</span> <span class="p">[</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">min</span> <span class="p">]);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">],</span> <span class="p">[</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">x</span><span class="p">].</span><span class="nx">max</span> <span class="p">]);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">]);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">]);</span>
+                        <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniq</span><span class="p">(</span><span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">]);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        </pre></div></td></tr><tr id="section-15"><td class="docs"><div class="pilwrap"><a href="#section-15" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>adds inherited attributes that do not need to be merged</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">attributes</span><span class="p">,</span> <span class="nx">add</span><span class="p">);</span>
+        </pre></div></td></tr><tr id="section-16"><td class="docs"><div class="pilwrap"><a href="#section-16" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>merges inherited attributes</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">id</span> <span class="k">in</span> <span class="nx">merge</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">mranges</span> <span class="o">=</span> <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">];</span>
+            <span class="kd">var</span> <span class="nx">mins</span> <span class="o">=</span> <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;mins&quot;</span><span class="p">];</span>
+            <span class="kd">var</span> <span class="nx">maxs</span> <span class="o">=</span> <span class="nx">merge</span><span class="p">[</span><span class="nx">id</span><span class="p">][</span><span class="s2">&quot;maxs&quot;</span><span class="p">];</span>
+            <span class="kd">var</span> <span class="nx">ranges</span> <span class="o">=</span> <span class="p">[];</span></pre></div></td></tr><tr id="section-17"><td class="docs"><div class="pilwrap"><a href="#section-17" class="pilcrow">&#182;</a></div><p>merging ranges</p>
+</td><td class="code"><div class="highlight"><pre>            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">mlen</span> <span class="o">=</span> <span class="nx">mranges</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">r</span> <span class="o">&lt;</span> <span class="nx">mlen</span><span class="p">;</span> <span class="nx">r</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">mranges</span><span class="p">[</span><span class="nx">r</span><span class="p">]);</span>
+                <span class="kd">var</span> <span class="nx">isAncestorOf</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">mlen</span><span class="p">;</span> <span class="nx">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">===</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="k">continue</span><span class="p">;</span>
+                        <span class="p">}</span>
+                        <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">mranges</span><span class="p">[</span><span class="nx">x</span><span class="p">]);</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">c</span> <span class="o">&amp;&amp;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">isof</span><span class="p">(</span><span class="nx">p</span><span class="p">))</span> <span class="p">{</span>
+                            <span class="nx">isAncestorOf</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+                            <span class="k">break</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isAncestorOf</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">ranges</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">mranges</span><span class="p">[</span><span class="nx">r</span><span class="p">]);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            
+            <span class="kd">var</span> <span class="nx">maxMin</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">mins</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">minMax</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">maxs</span><span class="p">);</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">maxMin</span> <span class="o">&lt;=</span> <span class="nx">minMax</span> <span class="o">&amp;&amp;</span> <span class="nx">minMax</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">maxMin</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">attributes</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Attribute</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">ranges</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">maxMin</span><span class="p">,</span> <span class="nx">minMax</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;This inheritance is not allowed because of an invalid minCount/maxCount pair!&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">this</span><span class="p">.</span><span class="nx">_attributes</span> <span class="o">=</span> <span class="nx">attributes</span><span class="p">;</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-18"><td class="docs"><div class="pilwrap"><a href="#section-18" class="pilcrow">&#182;</a></div><h3>toArray() === list()</h3>
+
+<p>This method return an array of <code>VIE.Attribute</code>s from the attributes instance. <br />
+<strong>Parameters</strong>: <br />
+<em>nothing. <br />
+<strong>Throws</strong>: <br />
+*nothing</em> <br />
+<strong>Returns</strong>: <br />
+<em>{array}</em> : An array of <code>VIE.Attribute</code>. <br />
+<strong>Example usage</strong>:  </p>
+
+<pre><code>personAttrs.list();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">toArray</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">list</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">range</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="kd">var</span> <span class="nx">attributes</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_inherit</span><span class="p">().</span><span class="nx">_attributes</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">a</span> <span class="k">in</span> <span class="nx">attributes</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">range</span> <span class="o">||</span> <span class="nx">attributes</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">applies</span><span class="p">(</span><span class="nx">range</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">ret</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">a</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+    <span class="p">};</span>
+        
+    <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">attrs</span><span class="p">)</span> <span class="o">?</span> <span class="nx">attrs</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">attrs</span> <span class="p">];</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">a</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">attrs</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">range</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">min</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">a</span><span class="p">].</span><span class="nx">max</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+</pre></div></td></tr></tbody></table><div id="generated">generated Wed Apr 25 2012 11:20:32 GMT+0200 (CEST)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>
