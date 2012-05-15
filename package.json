@@ -19,13 +19,13 @@
   "dependencies"  : {
     "backbone"  : ">=0.9.0",
     "underscore": ">=1.2.0",
-    "jquery"    : ">=1.5.0",
+    "jquery"    : "1.6.x",
     "request"   : ">=2.2.0"
   },
   "devDependencies": {
     "nodeunit"  : ">=0.6.0",
     "docco-husky" : ">=0.3.0",
-    "zombie"    : ">=0.12.0",
+    "zombie"    : "0.12.x",
     "express"   : "2.5.x"
   },
   "lib"           : ".",
