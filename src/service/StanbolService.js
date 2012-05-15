@@ -286,6 +286,48 @@ VIE.prototype.StanbolService.prototype = {
         this.connector.load(entity, success, error, options);
     },
 
+ // ### save(savable)
+ // This method saves the given entity to the Apache Stanbol installation.  
+ // **Parameters**:  
+ // *{VIE.Savable}* **savable** The savable.  
+ // **Throws**:  
+ // *{Error}* if an invalid VIE.Savable is passed.  
+ // **Returns**:  
+ // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
+ // **Example usage**:  
+ //
+ //      var entity = new vie.Entity({'name' : 'Test Entity'});
+ //      var stnblService = new vie.StanbolService({<some-configuration>});
+ //      stnblService.save(new vie.Savable(entity));
+     save: function(savable){
+         var correct = savable instanceof this.vie.Savable;
+         if (!correct) {throw "Invalid Savable passed";}
+         var service = this;
+
+         var entity = savable.options.entity;
+         if(!entity){
+             console.warn("StanbolConnector: No entity to save!");
+             savable.reject("StanbolConnector: No entity to save!");
+         };
+         var success = function (results) {
+             _.defer(function() {
+                 var entities = VIE.Util.rdf2Entities(service, results);
+                 savable.resolve(entities);
+             });
+         };
+         
+         var error = function (e) {
+        	 savable.reject(e);
+         };
+         
+         var options = {
+     		site : (loadable.options.site)? loadable.options.site : service.options.entityhub.site,
+     		local : loadable.options.local
+         };
+         
+         this.connector.save(entity, success, error, options);
+     },
+
     /* this private method extracts text from a jQuery element */
     _extractText: function (element) {
         if (element.get(0) &&
@@ -625,7 +667,7 @@ VIE.prototype.StanbolConnector.prototype = {
                 
                 var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                 if (isLocal) {
-                	u += "/find";
+                	u += "/sites/find";
                 } else {
                 	u += "/site" + site + "/find";
                 }
@@ -909,7 +951,7 @@ VIE.prototype.StanbolConnector.prototype = {
     	options = (options)? options :  {};
         var connector = this;
         
-        context = (_.isArray(context))? context : [ context ]
+        context = (_.isArray(context))? context : [ context ];
         
         var contextStr = "";
     	for (var c = 0; c < context.length; c++) {
@@ -1002,7 +1044,7 @@ VIE.prototype.StanbolConnector.prototype = {
                  
                  var index = (opts.index)? opts.index : this.options.contenthub.index;
                  
-                 //TODO: u += "/" + index.replace(/\/$/, '');
+                 u += "/" + index.replace(/\/$/, '');
                  u += "/store";
                
        		     return u;
@@ -1022,8 +1064,7 @@ VIE.prototype.StanbolConnector.prototype = {
                url: url,
                type: "POST",
                data : args.content,
-               contentType : "text/plain",
-               dataType: "application/rdf+xml"
+               contentType : "text/plain"
            });
        },
 

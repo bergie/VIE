@@ -51,7 +51,7 @@ module("vie.js - Apache Stanbol Service");
 //   /cmsadapter/contenthubfeed
 
 
-var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu/stanbolfull", "http://dev.iks-project.eu:8080"];
+var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu:8081", "http://dev.iks-project.eu/stanbolfull"];
 test("VIE.js StanbolService - Registration", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -287,6 +287,7 @@ test("VIE.js StanbolService - Find", function () {
     equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
+    
     z.find({term: term, limit: limit, offset: offset})
     .using('stanbol').execute().done(function(entities) {
 
@@ -432,9 +433,10 @@ test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhan
     z.use(stanbol);
     
     stop();
-    stanbol.connector.uploadContent(content, function (response) {
-    	debugger;
-    	start();
+    stanbol.connector.uploadContent(content, function(xml,status,xhr){
+        var location = xhr.getResponseHeader('Location');
+        //TODO: This does not work in jQuery :(
+        start();
     }, function (err) {
     	ok(false, err);
     	start();
@@ -539,6 +541,7 @@ test("VIE.js StanbolService - LDPath", function () {
     });
 });
 
+/* TODO: these tests need to be backed by implementations
 test("VIE.js StanbolService - Create a New Fact Schema", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
@@ -702,4 +705,4 @@ test("VIE.js StanbolService - CRUD on local entities", function () {
     z.use(new z.StanbolService({url : stanbolRootUrl}));
     //TODO
 });
-
+*/
