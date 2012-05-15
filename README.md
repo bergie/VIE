@@ -78,7 +78,7 @@ There is a full static HTML example of VIE at work. Saving outputs the edited co
 
 * [Example with Hallo](http://createjs.org)
 
-Be sure to read the [annotated VIE source code](http://viejs.org/docs/2.0.0/VIE.html) for API documentation.
+Be sure to read the [annotated VIE source code](http://viejs.org/docs/2.0.0/src/VIE.js.html) for API documentation.
 
 ## I/O operations
 

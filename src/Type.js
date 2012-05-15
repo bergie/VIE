@@ -473,6 +473,14 @@ VIE.prototype.Types = function () {
             }
         }
         
+        //unduplicate
+        for (var x = 0; x < copy.length; x++) {
+        	if (copy.lastIndexOf(copy[x]) !== x) {
+        		copy.splice(x, 1);
+        		x--;
+        	}
+        }
+        
         if (!desc) {
             copy.reverse();
         }
