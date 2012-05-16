@@ -56,7 +56,7 @@
 		<echo message="Adding..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-       <arg value="git add ${DOCS_DIR}" />
+        <arg value="git add ${DOCS_DIR}" />
 		</exec>
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
@@ -101,6 +101,11 @@
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="mv ${DIST_DIR}_tmp ${DIST_DIR}"/>
+		</exec>
+		<echo message="Remove timestamped files"/>
+		<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="rm ${DIST_DIR}/*_*.js"/>
 		</exec>
 		<echo message="Move libs again"/>
     	<delete dir="${LIB_DIR}" quiet="true"/>
