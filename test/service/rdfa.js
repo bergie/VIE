@@ -96,7 +96,7 @@ test("Test RDFa example from Wikipedia", function() {
 });
 
 test("Test RDFa image entitization", function() {
-    var options = {}
+    var options = {};
     if (navigator.userAgent === 'Zombie') {
         options.attributeExistenceComparator = '';
     }
