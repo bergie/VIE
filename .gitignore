@@ -2,6 +2,7 @@
 CNAME
 demo
 .project
+dist
 docs
 target
 node_modules
