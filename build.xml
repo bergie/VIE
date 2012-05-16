@@ -76,6 +76,11 @@
     </target>
 	
 	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
+		<echo message="Move lib folder temporarily"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${LIB_DIR} ${LIB_DIR}_tmp"/>
+		</exec>
 		<echo message="Move tests temporarily"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
@@ -85,6 +90,12 @@
 		<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout gh-pages" />
+		</exec>
+		<echo message="Move libs again"/>
+    	<delete dir="${LIB_DIR}" quiet="true"/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="mv ${LIB_DIR}_tmp ${LIB_DIR}"/>
 		</exec>
 		<echo message="Move tests again"/>
     	<delete dir="${TEST_DIR}" quiet="true"/>
