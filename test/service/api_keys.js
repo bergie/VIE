@@ -1,0 +1,1 @@
+window.ZEMANTA_API_KEY = "9f3k46ke9d44tzpmn75hgu5u";

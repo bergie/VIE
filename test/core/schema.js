@@ -16,7 +16,7 @@ test("Initialization", function() {
         baseNS : "http://schema.org/",
         success : function () {
             ok(true, "successfully loaded types!");
-            equal(z.types.list().length, 299);
+            equal(z.types.list().length, 303);
             
             //just pick some and test them:
             ok (z.types.get("Person"));
@@ -30,7 +30,8 @@ test("Initialization", function() {
             
             var hospital = z.types.get("Hospital");
             ok (hospital);
-            equal( hospital.attributes.list().length, 27);
+            var hospAttrs = hospital.attributes.list();
+            equal( hospAttrs.length, 35);
             
             equal(hospital.attributes.get('description').range.length, 1);
             equal(hospital.attributes.get('description').range[0], "Text");
@@ -46,7 +47,7 @@ test("Initialization", function() {
             
             z.types.get("Organization").attributes.remove("founders");
             
-            equal( hospital.attributes.list().length, 26);
+            equal( hospital.attributes.list().length, 34);
             start();
         },
         error : function (msg) {
