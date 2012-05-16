@@ -138,17 +138,9 @@
 		<echo message="Committing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${DIST_DIR}" />
+	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${DIST_DIR} ${LIB_DIR} ${TEST_DIR}" />
 		</exec>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${LIB_DIR}" />
-		</exec>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${TEST_DIR}" />
-		</exec>
-		<echo message="Pushing..."/>
+    	<echo message="Pushing..."/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git push origin gh-pages" />
