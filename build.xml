@@ -84,7 +84,7 @@
 		<echo message="Move lib folder temporarily"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-	 	   <arg value="mv ${LIB_DIR} ${LIB_DIR}_tmp"/>
+	 	   <arg value="cp -R ${LIB_DIR} ${LIB_DIR}_tmp"/>
 		</exec>
 		<echo message="Move tests temporarily"/>
     	<exec executable="sh" dir=".">
