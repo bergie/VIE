@@ -1,0 +1,205 @@
+<!DOCTYPE html><html><head><title>README</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="./docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="./index.html" class="source"><span class="file_name">README</span></a><a href="./src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="./src/Attribute.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="./src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="./src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="./src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a><a href="./src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="./src/service/DBPediaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="./src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="./src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="./src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="./src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="./src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="./src/Type.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="./src/Util.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="./src/VIE.js.html" class="source "><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="./src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="./src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="./src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"></th><th class="code"></th></tr></thead><tbody><tr id="section"><td class="docs"><h1>vie
+</h1><p>Editable RDFa with Backbone.js and JSON-LD</p><h3>Version</h3><p>2.1.0alpha1</p><h3>Author</h3><p><span class="gravatar"><img src="http://www.gravatar.com/avatar/995f27ce7205a79c55d4e44223cd6de0"/><span>Henri Bergius &lt;henri.bergius@iki.fi&gt;</span></span></p><h3>Contributors</h3><p>Benjamin Eberlei</p><p>Sebastian Germesin</p><p>Szaby Grünwald</p><p>Christopher Hlubek</p><p>Rene Kapusta</p><p>Sebastian Kurfuerst</p><p>Jonatan Lundin</p><p>Nicolas Karageuzian</p><p>Johannes Schüth</p><h3>Dependencies </h3><ul><li><b>backbone </b><span>&gt;=0.9.0</span></li><li><b>underscore </b><span>&gt;=1.2.0</span></li><li><b>jquery </b><span>1.6.x</span></li><li><b>request </b><span>&gt;=2.2.0</span></li></ul><p><h3>Stats</h3><pre class="code_stats">
+http://cloc.sourceforge.net v 1.55  T=0.5 s (36.0 files/s, 12514.0 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Javascript                      18            542           2122           3593
+-------------------------------------------------------------------------------
+SUM:                            18            542           2122           3593
+-------------------------------------------------------------------------------
+</pre></p></td><td id="content" class="code"><h1><img src="https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png" alt="VIE" title="" /> Vienna IKS Editables</h1>
+
+<p>VIE is a utility library for implementing <a href="http://bergie.iki.fi/blog/decoupling_content_management/">decoupled Content Management systems</a>. VIE is developed <a href="http://www.iks-project.eu/projects/vienna-iks-editables">as part of</a> the EU-funded <a href="http://www.iks-project.eu/">IKS project</a>.</p>
+
+<p><img src="https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png" alt="Decoupled CMS communications" title="" /></p>
+
+<ul>
+<li>In French, <em>vie</em> means life, showcasing how VIE makes your website come alive</li>
+<li>In English, <em>vie</em> means striving for victory or superiority</li>
+</ul>
+
+<p>VIE development is now targeting a 2.0 release. <a href="http://bergie.iki.fi/blog/vie_2-0_is_starting_to_emerge/">Read this blog post</a> to find out the changes from VIE 1.0. There is also a <a href="http://blog.iks-project.eu/semantic-ui-development-with-vie/">good introductory post on VIE</a> on the IKS blog.</p>
+
+<h2>VIE integration in nutshell</h2>
+
+<p>Adding VIE to your system is as easy as:</p>
+
+<ol>
+<li>Mark up your pages with RDFa annotations</li>
+<li>Include <code>vie.js</code> into the pages</li>
+<li>Implement <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync</a></li>
+</ol>
+
+<h2>Common representation of content on HTML level</h2>
+
+<p>A web editing tool has to understand the contents of the page. It has to understand what parts of the page should be editable, and how they connect together. If there is a list of news for instance, the tool needs to understand it enough to enable users to add new news items. The easy way of accomplishing this is to add some semantic annotations to the HTML pages. These annotations could be handled via Microformats, HTML5 microdata, but the most power lies with RDFa.</p>
+
+<p>RDFa is a way to describe the meaning of particular HTML elements using simple attributes. For example:</p>
+
+<pre><code>&lt;div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"&gt;
+    &lt;h1 property="dcterms:title"&gt;News item title&lt;/h1&gt;
+    &lt;div property="sioc:content"&gt;News item contents&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Here we get all the necessary information for making a blog entry editable:</p>
+
+<ul>
+<li>typeof tells us the type of the editable object. On typical CMSs this would map to a content model or a database table</li>
+<li>about gives us the identifier of a particular object. On typical CMSs this would be the object identifier or database row primary key</li>
+<li>property ties a particular HTML element to a property of the content object. On a CMS this could be a database column</li>
+</ul>
+
+<p>As a side effect, this also makes pages more understandable to search engines and other semantic tools. So the annotations are not just needed for UI, but also for SEO.</p>
+
+<h2>Common representation of content on JavaScript level</h2>
+
+<p>Having contents of a page described via RDFa makes it very easy to extract the content model into JavaScript. We can have a common utility library for doing this, but we also should have a common way of keeping track of these content objects. Enter <a href="http://documentcloud.github.com/backbone/">Backbone.js</a>:</p>
+
+<blockquote>
+  <p>Backbone supplies structure to JavaScript-heavy applications by providing models with key-value binding and custom events, collections with a rich API of enumerable functions, views with declarative event handling, and connects it all to your existing application over a RESTful JSON interface.</p>
+</blockquote>
+
+<p>With Backbone, the content extracted from the RDFa-annotated HTML page is easily manageable via JavaScript. Consider for example:</p>
+
+<pre><code>v = new VIE();
+v.use(new v.RdfaService());
+v.load({element: jQuery('#myarticle')}).from('rdfa').execute().success(function(entities) {
+    _.forEach(entities, function(entity) {
+        entity.set({'dcterms:title': 'Hello, world'});
+        entity.save(null, {
+            success: function(savedModel, response) {
+                alert("Your article '" + savedModel.get('dcterms:title') + "' was saved to server");
+            }
+        });
+    })
+    console.log("We got " + entities.length + " editable objects from the page");
+});
+</code></pre>
+
+<p>The classic VIE API will also work:</p>
+
+<pre><code>var v = new VIE({classic: true});
+var objectInstance = v.RDFaEntities.getInstance(jQuery('#myarticle'));
+objectInstance.set({'dcterms:title': 'Hello, world'});
+objectInstance.save(null, {
+    success: function(savedModel, response) {
+        alert("Your article '" + savedModel.get('dcterms:title') + "' was saved to server");
+    }
+});
+</code></pre>
+
+<p>This JS would work across all the different CMS implementations. Backbone.js provides a quite nice RESTful implementation of communicating with the server with JSON, but it can be easily overridden with CMS-specific implementation by just implementing a new <a href="http://documentcloud.github.com/backbone/#Sync">Backbone.sync method</a>.</p>
+
+<h2>Example</h2>
+
+<p>There is a full static HTML example of VIE at work. Saving outputs the edited contents as JSON into the JavaScript console:</p>
+
+<ul>
+<li><a href="http://createjs.org">Example with Hallo</a></li>
+</ul>
+
+<p>Be sure to read the <a href="http://viejs.org/docs/2.0.0/src/VIE.js.html">annotated VIE source code</a> for API documentation.</p>
+
+<h2>I/O operations</h2>
+
+<p>All Input/Output operations of VIE are based on the <a href="http://api.jquery.com/category/deferred-object/">jQuery Deferred</a> object, which means that you can attach callbacks to them either before they run, or also after they've been run.</p>
+
+<p>The operations may either succeed, in which case the <code>then</code> callbacks will fire, or be rejected, in which case the <code>fail</code> callbacks will fire. Any <code>then</code> callbacks will fire in either case.</p>
+
+<h2>Dependencies</h2>
+
+<p>VIE uses the following JavaScript libraries:</p>
+
+<ul>
+<li><a href="http://jquery.com/">jQuery</a> for DOM manipulation and <a href="http://api.jquery.com/category/deferred-object/">Deferreds</a></li>
+<li><a href="http://documentcloud.github.com/backbone/">Backbone.js</a> for entities (models) and collections</li>
+<li><a href="http://documentcloud.github.com/underscore/">Underscore.js</a> for various JavaScript utilities</li>
+</ul>
+
+<p>Some functionality in VIE additionally uses:</p>
+
+<ul>
+<li><a href="http://code.google.com/p/rdfquery/">RdfQuery</a> as a triplestore and for reasoning over rules</li>
+</ul>
+
+<h2>Integrations</h2>
+
+<ul>
+<li><a href="https://github.com/bergie/create">Create</a></li>
+<li><a href="https://github.com/alkacon/vie-gwt">Google Web Toolkit</a></li>
+<li><a href="https://github.com/liip/LiipVieBundle">Symfony2</a></li>
+<li><a href="https://github.com/bergie/ViePalsu">Palsu</a></li>
+</ul>
+
+<h2>Using VIE on Node.js</h2>
+
+<p>VIE is a CommonJS library that works on both browser and the server. On <a href="http://nodejs.org/">Node.js</a> you can install it with:</p>
+
+<pre><code>npm install vie
+</code></pre>
+
+<p>Here is a simple Node.js script that uses VIE for parsing RDFa:</p>
+
+<pre><code>var jQuery = require('jquery');
+var vie = require('vie');
+
+// Instantiate VIE
+var VIE = new vie.VIE();
+
+// Enable the RDFa service
+VIE.use(new VIE.RdfaService());
+
+var html = jQuery('&lt;p xmlns:dc="http://purl.org/dc/elements/1.1/" about="http://www.example.com/books/wikinomics"&gt;In his latest book &lt;cite property="dc:title"&gt;Wikinomics&lt;/cite&gt;, &lt;span property="dc:creator"&gt;Don Tapscott&lt;/span&gt; explains deep changes in technology, demographics and business.&lt;/p&gt;');
+
+// 
+VIE.load({element: html}).from('rdfa').execute().done(function() {
+
+  var objectInstance = VIE.entities.get('http://www.example.com/books/wikinomics');
+
+  console.log(objectInstance.get('dc:title'));
+
+});
+</code></pre>
+
+<h2>Development</h2>
+
+<p>VIE development is coordinated using Git. <a href="https://github.com/IKS/VIE">VIE@IKS</a> is the canonical "blessed repository", with actual development happening at <a href="https://github.com/bergie/VIE">VIE@bergie</a>.</p>
+
+<p>Feel free to <a href="https://github.com/bergie/VIE/issues">report issues</a> or send <a href="http://help.github.com/pull-requests/">pull requests</a> if you have ideas for pushing VIE forward. Contributions that include their own unit tests appreciated! </p>
+
+<p>Development discussions happen on the <a href="http://groups.google.com/group/viejs">VIE mailing list</a> and the <code>#iks</code> channel on Freenode. See also <a href="http://www.ohloh.net/p/vie">VIE on Ohloh</a>.</p>
+
+<h3>Code organization</h3>
+
+<p>VIE source code is inside the <code>src</code> directory. Each separate unit of functionality should be handled in its own file, with the <code>src/VIE.js</code> being the entry point to the system.</p>
+
+<p><img src="https://raw.github.com/bergie/VIE/master/design/architecture.png" alt="VIE architecture" title="" /></p>
+
+<h3>Building VIE</h3>
+
+<p>The VIE library consists of many individual pieces that we merge together in the build process. You'll need <a href="http://ant.apache.org/">Apache Ant</a>. Then just run:</p>
+
+<pre><code>$ ant
+</code></pre>
+
+<p>The built VIE library will appear in the <code>dist</code> folder.</p>
+
+<h3>Running Unit Tests</h3>
+
+<p>Direct your browser to the <code>test/index.html</code> file to run VIE's <a href="http://docs.jquery.com/Qunit">QUnit</a> tests.</p>
+
+<h4>Unit tests on Node.js</h4>
+
+<p>You need Node.js and <a href="http://npmjs.org/">NPM</a>. Then just run:</p>
+
+<pre><code>$ npm install --dev
+$ npm test
+</code></pre>
+
+<h4>Continuous integration</h4>
+
+<p>VIE uses <a href="http://travis-ci.org/">Travis</a> for continuous integration. Simply add your fork there and every time you push you'll get the tests run.</p>
+
+<p><a href="http://travis-ci.org/bergie/VIE"><img src="https://secure.travis-ci.org/bergie/VIE.png" alt="Build Status" title="" /></a></p>  </td></tr></tbody></table><div id="generated">generated Wed May 16 2012 12:12:38 GMT+0200 (CEST)  </div><div id="projectname"><a href="./index.html">VIE</a></div></div></body></html>
