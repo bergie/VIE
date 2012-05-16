@@ -5,7 +5,7 @@
     xml:lang="en">
     <head>
         <title>VIE browser tests</title>
-        <script type="text/javascript" src="../lib/jquery/1.7/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
         <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
         <script type="text/javascript" src="qunit.js"></script>
@@ -24,7 +24,7 @@
         <script type="text/javascript">
             if (window.jQuery === undefined) {
                 // we are in the gh-pages branch and have another location of the library!
-                document.write('<' + 'script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></' + 'script>');
+                document.write('<' + 'script type="text/javascript" src="../lib/jquery/1.7/jquery-1.7.1.min.js"></' + 'script>');
             }
             if (window.JSON === undefined ) { 
                 document.write('<' + 'script src="../lib/json/json2.js">/script>"></' + 'script>');
