@@ -96,6 +96,7 @@
 	 	   <arg value="-c" />
 	 	   <arg value="git checkout gh-pages" />
 		</exec>
+		<delete dir="${DIST_DIR}"/>
 		<echo message="Move dist again"/>
     	<delete dir="${DIST_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
@@ -107,12 +108,14 @@
 	 	   <arg value="-c" />
 	 	   <arg value="rm ${DIST_DIR}/*_*.js"/>
 		</exec>
+		<delete dir="${LIB_DIR}"/>
 		<echo message="Move libs again"/>
     	<delete dir="${LIB_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="mv ${LIB_DIR}_tmp ${LIB_DIR}"/>
 		</exec>
+		<delete dir="${TEST_DIR}"/>
 		<echo message="Move tests again"/>
     	<delete dir="${TEST_DIR}" quiet="true"/>
     	<exec executable="sh" dir=".">
@@ -133,6 +136,14 @@
 	 	   <arg value="git add ${DIST_DIR}/*" />
 		</exec>
 		<echo message="Committing..."/>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${DIST_DIR}" />
+		</exec>
+    	<exec executable="sh" dir=".">
+	 	   <arg value="-c" />
+	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${LIB_DIR}" />
+		</exec>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
 	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${TEST_DIR}" />
