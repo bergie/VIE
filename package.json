@@ -6,15 +6,15 @@
   "keywords"      : ["util", "rdfa", "model", "template", "server", "client", "browser"],
   "author"        : "Henri Bergius <henri.bergius@iki.fi>",
   "contributors"  : [
-    "Rene Kapusta",
-    "Christopher Hlubek",
     "Benjamin Eberlei",
-    "Nicolas Karageuzian",
     "Sebastian Germesin",
     "Szaby Grünwald",
-    "Johannes Schüth",
+    "Christopher Hlubek",
+    "Rene Kapusta",
     "Sebastian Kurfuerst",
-    "Jonatan Lundin"
+    "Jonatan Lundin",
+    "Nicolas Karageuzian",
+    "Johannes Schüth"
   ],
   "dependencies"  : {
     "backbone"  : ">=0.9.0",

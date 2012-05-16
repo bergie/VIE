@@ -28,7 +28,7 @@
         <echo message="get it from: https://github.com/mbrevoort/docco-husky"/>
     	<exec executable="sh" dir=".">
 	 	   <arg value="-c" />
-       <arg value="docco-husky src/" />
+        <arg value="docco-husky src/" />
 		  </exec>
         <move todir="${DOCS_DIR}">
           <fileset dir="${DOCS_TMP}" />
