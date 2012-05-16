@@ -23,20 +23,22 @@ test("VIE.js StanbolService - Analyze", function () {
 
         ok(entities);
         ok(entities.length > 0, "At least one entity returned");
-        ok(entities instanceof Array);
-        var allEntities = true;
-        for(var i=0; i<entities.length; i++){
-            var entity = entities[i];
-            if (! (entity instanceof Backbone.Model)){
-                allEntities = false;
-                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+        if(entities.length > 0){
+            ok(entities instanceof Array);
+            var allEntities = true;
+            for(var i=0; i<entities.length; i++){
+                var entity = entities[i];
+                if (! (entity instanceof Backbone.Model)){
+                    allEntities = false;
+                    console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+                }
             }
-        }
-        ok(allEntities);
-        var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text")})[0];
-        var s = firstTextAnnotation.get("enhancer:selected-text").toString();
+            ok(allEntities);
+            var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text")})[0];
+            var s = firstTextAnnotation.get("enhancer:selected-text").toString();
 
-        ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+            ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+        }
         start();
     })
     .fail(function(f){
@@ -60,16 +62,18 @@ test("VIE.js StanbolService - Analyze with Enhancement Chain", function () {
     v.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
         ok(entities);
         ok(entities.length > 0, "At least one entity returned");
-        ok(entities instanceof Array);
-        var allEntities = true;
-        for(var i=0; i<entities.length; i++){
-            var entity = entities[i];
-            if (! (entity instanceof Backbone.Model)){
-                allEntities = false;
-                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+        if(entities.length > 0){
+            ok(entities instanceof Array);
+            var allEntities = true;
+            for(var i=0; i<entities.length; i++){
+                var entity = entities[i];
+                if (! (entity instanceof Backbone.Model)){
+                    allEntities = false;
+                    console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
+                }
             }
+            ok(allEntities);
         }
-        ok(allEntities);
         start();
     })
     .fail(function(f){
