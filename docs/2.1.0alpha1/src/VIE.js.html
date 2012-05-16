@@ -343,9 +343,9 @@ options. <br />
 <pre><code>var vie = new VIE();
 vie.loadSchema("http://schema.rdfs.org/all.json", 
    {
-     baseNS  : "http://schema.org/",
+     baseNS : "http://schema.org/",
      success : function () {console.log("success");},
-     error   : function (msg) {console.warn(msg);}
+     error  : function (msg) {console.warn(msg);}
    });
 </code></pre>
 </td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">loadSchema</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
@@ -372,7 +372,15 @@ vie.loadSchema("http://schema.rdfs.org/all.json",
     <span class="p">}</span>
     
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<span class="p">};</span></pre></div></td></tr><tr id="section-19"><td class="docs"><div class="pilwrap"><a href="#section-19" class="pilcrow">&#182;</a></div><h2>Running VIE on Node.js</h2>
+<span class="p">};</span></pre></div></td></tr><tr id="section-19"><td class="docs"><div class="pilwrap"><a href="#section-19" class="pilcrow">&#182;</a></div><p>IE per default doesn't have a console API. For making sure this doesn't break
+anything we define it here to not do anything.</p>
+</td><td class="code"><div class="highlight"><pre><span class="nx">console</span> <span class="o">=</span> <span class="nx">console</span> <span class="o">||</span> <span class="p">{</span>
+    <span class="nx">info</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){},</span>
+    <span class="nx">log</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){}</span>
+<span class="p">};</span></pre></div></td></tr><tr id="section-20"><td class="docs"><div class="pilwrap"><a href="#section-20" class="pilcrow">&#182;</a></div><p>IE in debug mode does have a console object but no console.warn</p>
+</td><td class="code"><div class="highlight"><pre><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span> <span class="o">=</span> <span class="nx">console</span><span class="p">.</span><span class="nx">info</span><span class="p">;</span>
+<span class="p">}</span></pre></div></td></tr><tr id="section-21"><td class="docs"><div class="pilwrap"><a href="#section-21" class="pilcrow">&#182;</a></div><h2>Running VIE on Node.js</h2>
 
 <p>When VIE is running under Node.js we can use the CommonJS
 require interface to load our dependencies automatically.</p>
@@ -400,4 +408,4 @@ before including VIE itself.</p>
     <span class="p">}</span>
 <span class="p">}</span>
 
-</pre></div></td></tr></tbody></table><div id="generated">generated Wed May 16 2012 12:24:37 GMT+0200 (CEST)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>
+</pre></div></td></tr></tbody></table><div id="generated">generated Wed May 16 2012 14:57:26 GMT+0200 (CEST)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>
