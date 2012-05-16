@@ -443,7 +443,7 @@ test("VIE.js StanbolService - ContentHub: Upload of content / Retrieval of enhan
     });
 });
 
-
+/*
 test("VIE.js StanbolService - ContentHub: Lookup", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
@@ -480,7 +480,7 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     	start();
     });
 });
-
+*/
 test("VIE.js StanbolService - LDPath", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
