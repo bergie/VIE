@@ -10,6 +10,7 @@ var root = this,
     Backbone = root.Backbone,
     _ = root._;
 
+
 // ## VIE constructor
 //
 // The VIE constructor is the way to initialize VIE for your
@@ -343,9 +344,9 @@ VIE.prototype.find = function(options) {
 //     var vie = new VIE();
 //     vie.loadSchema("http://schema.rdfs.org/all.json", 
 //        {
-//          baseNS  : "http://schema.org/",
+//          baseNS : "http://schema.org/",
 //          success : function () {console.log("success");},
-//          error   : function (msg) {console.warn(msg);}
+//          error  : function (msg) {console.warn(msg);}
 //        });
 VIE.prototype.loadSchema = function(url, options) {
     options = (!options)? {} : options;
@@ -372,6 +373,17 @@ VIE.prototype.loadSchema = function(url, options) {
     
     return this;
 };
+
+// IE per default doesn't have a console API. For making sure this doesn't break
+// anything we define it here to not do anything.
+console = console || {
+    info: function(){},
+    log: function(){}
+};
+// IE in debug mode does have a console object but no console.warn
+if(!console.warn){
+    console.warn = console.info;
+}
 
 // ## Running VIE on Node.js
 //
