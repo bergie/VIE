@@ -367,8 +367,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                 var arr = [ existing ];
                 arr.push(value);
                 obj[attr] = arr;
-                this.set(obj, options);
-                return this._setOrAddOne(attr, value, options);
+                return this.set(obj, options);
             }
         },
 
