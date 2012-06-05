@@ -240,7 +240,10 @@ VIE.prototype.DBPediaConnector.prototype = {
             headers: {
                 Accept: format
             }
-        }, function(error, response, body) {
+        }, function(err, response, body) {
+            if (response.statusCode !== 200) {
+              return error(body);
+            }
             success(JSON.parse(body));
         });
         r.end();
