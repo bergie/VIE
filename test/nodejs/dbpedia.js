@@ -8,8 +8,12 @@ exports['test loading Salzburg'] = function(test) {
         }).
         using('dbpedia').
         execute().
-        always(function(entity) {
+        done(function(entity) {
             test.equal(typeof entity, "object");
+            test.done();
+        }).
+        fail(function(error) {
+            console.log("dbPedia requests fail, the service is probably down");
             test.done();
         });
 };
