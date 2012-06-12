@@ -190,6 +190,19 @@ VIE.prototype.Entity = function(attrs, opts) {
             return false;
         },
 
+        hasChanged: function(attr) {
+            if (this.markedChanged) {
+                return true;
+            }
+
+            return Backbone.Model.prototype.hasChanged.call(this, attr);
+        },
+
+        // Force hasChanged to return true
+        forceChanged: function(changed) {
+            this.markedChanged = changed ? true : false;
+        },
+
         // **`getSubject()`** is the getter for the entity identifier.
         getSubject: function(){
             if (typeof this.id === "undefined") {

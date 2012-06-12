@@ -97,6 +97,20 @@ test("vie.js Entities API -  id/getSubject()", function () {
     
 });
 
+test('vie.js Entities API - forceChanged', function () {
+    var z = new VIE();
+
+    var entity = new z.Entity();
+    equal(entity.hasChanged(), false);
+    equal(entity.isNew(), true);
+
+    entity.forceChanged(true);
+    equal(entity.hasChanged(), true);
+
+    entity.forceChanged(false);
+    equal(entity.hasChanged(), false);
+});
+
 test("vie.js Entities API - addOrUpdate", function () {
     var z = new VIE();
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
