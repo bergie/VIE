@@ -38,8 +38,18 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);
         }
 
-        // TODO: Ordering
-        jQuery(this.el).append(entityElement);
+        var entityIndex = collection.indexOf(entity);
+        if (entityIndex === 0) {
+          jQuery(this.el).prepend(entityElement);
+        } else {
+          var previousEntity = collection.at(entityIndex - 1);
+          var previousView = this.entityViews[previousEntity.cid];
+          if (previousView) {
+            jQuery(previousView.el).after(entityElement);
+          } else {
+            jQuery(this.el).append(entityElement);
+          }
+        }
 
         // Ensure we catch all inferred predicates. We add these via JSONLD
         // so the references get properly Collectionized.
