@@ -154,10 +154,15 @@ VIE.prototype.Entity = function(attrs, opts) {
                    } else if (value.isEntity) {
                        self.vie.entities.addOrUpdate(value);
                        var coll = new self.vie.Collection();
+                       coll.vie = self.vie;
                        coll.add(value);
                        attrs[key] = coll;
                    } else if (_.isArray(value)) {
-                       // The value is an array, ignore
+                       if (this.attributes[key] && this.attributes[key].isCollection) {
+                         var newEntities = this.attributes[key].addOrUpdate(value);
+                         attrs[key] = this.attributes[key];
+                         attrs[key].reset(newEntities);
+                       }
                    } else if (value["@value"]) {
                        // The value is a literal object, ignore
                    } else if (typeof value == "object") {
@@ -167,6 +172,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                        self.vie.entities.addOrUpdate(child);
                        // and set as VIE Collection attribute on the original entity 
                        var coll = new self.vie.Collection();
+                       coll.vie = self.vie;
                        coll.add(value);
                        attrs[key] = coll;
                    } else {

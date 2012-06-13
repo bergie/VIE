@@ -137,6 +137,7 @@ VIE.prototype.RdfaService.prototype = {
                 continue;
             }
             valueCollection = new this.vie.Collection();
+            valueCollection.vie = this.vie;
             _.each(value, function(valueItem) {
                 var linkedEntity = vie.entities.addOrUpdate({'@subject': valueItem});
                 valueCollection.addOrUpdate(linkedEntity);
@@ -444,7 +445,7 @@ VIE.prototype.RdfaService.prototype = {
     
     writeElementValue : function(predicate, element, value) {
         //TODO: this is a hack, please fix!
-        if (value instanceof Array && value.length > 0) {
+        if (_.isArray(value) && value.length > 0) {
             value = value[0];
         }
         

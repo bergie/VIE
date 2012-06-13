@@ -15,6 +15,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
         this.collection.bind('add', this.addItem);
         this.collection.bind('remove', this.removeItem);
+        this.collection.bind('reset', this.refreshItems);
 
         // Make the view aware of existing entities in collection
         var view = this;
@@ -58,6 +59,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             var predicate = jQuery(this).attr('rev');
             var relations = {};
             relations[predicate] = new service.vie.Collection();
+            relations[predicate].vie = service.vie;
             var model = service.vie.entities.get(service.getElementSubject(this));
             if (model) {
                 relations[predicate].addOrUpdate(model);
@@ -91,7 +93,10 @@ VIE.prototype.view.Collection = Backbone.View.extend({
 
     refreshItems: function(collection) {
         var view = this;
-        jQuery(this.el).empty();
+        _.each(this.entityViews, function(view, cid) {
+          jQuery(view.el).remove();
+        });
+        this.entityViews = {};
         collection.forEach(function(entity) {
             view.addItem(entity, collection);
         });

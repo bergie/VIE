@@ -132,3 +132,33 @@ test("Test RDFa image entitization", function() {
         start();
     });
 });
+
+
+test("Test collection reset with RDFa", function() {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-collection-reset');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function(entities) {
+        var entity = z.entities.get('<http://example.net/collectionreset>');
+        ok(entity.isEntity);
+
+        var collection = entity.get('collection');
+        ok(collection.isCollection);
+        equal(collection.length, 1);
+        equal(jQuery('li[about]', html).length, 1);
+
+        entity.set({
+          collection: ['<http://example.net/collectionreset/item>']
+        });
+
+        collection = entity.get('collection');
+        ok(collection.isCollection);
+        equal(collection.length, 1);
+        equal(jQuery('li[about]', html).length, 1);
+
+        start();
+    });
+});
