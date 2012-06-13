@@ -120,6 +120,10 @@ VIE.prototype.Entity = function(attrs, opts) {
                 return this;
             }
 
+            if (attrs['@subject']) {
+                attrs['@subject'] = this.toReference(attrs['@subject']);
+            }
+
             // Use **`.set(attrName, value, options)`** for setting or changing exactly one 
             // entity attribute.
             if (typeof attrs === "string") {
