@@ -30,6 +30,10 @@ a:hover {
   text-decoration: underline;
 }
 
+a.btn {
+  text-decoration: none;
+}
+
 .hero-unit {
   background-color: #ffffff;
   color: #000000;
@@ -72,6 +76,14 @@ div.diagram {
   background-color: #ffffff;
   border-radius: 6px;
   text-align: center;
+}
+
+div.abstract .download {
+  text-align: center;
+}
+
+div.abstract .download .btn {
+  margin: 1em;
 }
 
 p, blockquote {

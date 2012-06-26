@@ -13,4 +13,9 @@ All entities you deal with are managed in a centralized collection, and VIE prov
 
 VIE is used as the basis for a wide variety of tools ranging from [content annotators](http://szabyg.github.com/annotate.js/) to full [front-end editing interfaces](http://createjs.org/) and [semantic browser extensions](https://chrome.google.com/webstore/detail/jdfdjaijjmmidgflabhapjfhcgdiijpb). You can find many of these from the _Widgets_ section of this site.
 
+<div class="download">
+<a href="/js/vie-{{ site.stable }}.js" class="btn btn-success btn-large">Download {{ site.stable }} (minified)</a>
+<a href="/js/vie-{{ site.stable }}.debug.js" class="btn btn-success btn-large">Download {{ site.stable }} (debug)</a>
+</div>
+
 In addition to the examples below, you can also try out [VIE on jsFiddle](http://jsfiddle.net/germesin/7EYxP/).
