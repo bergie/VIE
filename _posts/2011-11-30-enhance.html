@@ -29,12 +29,7 @@ v.analyze({
     }
 
     var url = entity.getSubjectUri();
-    var label;
-    _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
-       if (labelLang['@language'] === 'en') {
-         label = labelLang['@value'];
-       }
-    });
+    var label = VIE.Util.getPreferredLangForPreferredProperty(entity, ['rdfs:label'], ['en']);
     if (!label) {
       return true;
     }
