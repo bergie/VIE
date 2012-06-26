@@ -1,0 +1,38 @@
+---
+layout: widget
+title: "Autocomplete"
+category: widgets
+js_extras:
+  - /lib/vie.autocomplete.js
+github: "https://github.com/szabyg/VIE.autocomplete"
+---
+<p>
+VIE autocomplete uses the VIE.find service method to make autocomplete suggestions. The VIE.find method can query different backend or frontend data sources.
+</p>
+<p>
+This demo goes to the default Apache Stanbol backend. 
+</p>
+<div class="example">
+  <form class="form-search">
+    <label for="search">Search:</label>
+    <input id="search" class="input-medium search-query" size="60" />
+  </form>
+
+  <div id="selected"></div>
+
+  <textarea>
+var vie = new VIE();
+vie.use(new vie.StanbolService({
+  url : "http://dev.iks-project.eu:8081",
+  proxyDisabled: true
+}));
+
+jQuery('#search').vieAutocomplete({
+  vie: vie,
+  select: function (e, ui) {
+    jQuery('#selected').html(jQuery('<p>You have selected <a>' + ui.item.value + '</a></p>'));
+    jQuery('a', '#selected').attr('href', ui.item.key);
+  }
+});
+  </textarea>
+</div>
