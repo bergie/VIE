@@ -1,0 +1,32 @@
+---
+layout: default
+js_base:
+  - "https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"
+  - "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"
+  - /js/vendor/underscore.min.js
+  - /js/vendor/backbone.min.js
+  - /js/vendor/jquery.rdfquery.min.js
+  - /js/vie-2.0.0.js
+  - /js/vie-widgets.js
+css_base:
+  - /lib/jquery-ui-bootstrap/jquery-ui-1.8.16.custom.css
+---
+<div class="hero-unit">
+  {% if page.github %}<a class="github" href="{{ page.github }}"><img src="/style/fork-me.png" alt="Fork me on GitHub" /></a>{% endif %}
+  <h1><span class="name"><span>{{ site.name }}</span></span> <span>Semantic Interaction {{ page.category | capitalize }}</span></h1>
+</div>
+
+<div class="row">
+  <div class="span9">
+    <h1>{{ page.title }}</h1>
+    {{ content }}
+  </div>
+  <div class="span3">
+    <h2>{{ page.category | capitalize }}</h2>
+    <ul class="nav nav-pills nav-stacked">
+      {% for post in site.categories[page.category] %}
+      <li{% if post.url == page.url %} class="active"{% endif %}><a href="{{ post.url }}">{{ post.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

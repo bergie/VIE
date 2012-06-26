@@ -10,8 +10,9 @@ h1, h2, h3, h4 {
   color: #ffffff;
 }
 
-p, li {
+p, li, label {
   font-family: "Helvetica", "Arial", sans-serif;
+  color: #ffffff;
 }
 
 a {

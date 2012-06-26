@@ -9,6 +9,12 @@
     {% for file in page.js_base %}
     <script src="{{ file }}"></script>
     {% endfor %}
+    {% for file in page.js_extras %}
+    <script src="{{ file }}"></script>
+    {% endfor %}
+    {% for file in page.css_base %}
+    <link rel="stylesheet" href="{{ file }}" />
+    {% endfor %}
   </head>
   <body>
     <div class="container">
