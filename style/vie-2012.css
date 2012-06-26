@@ -68,7 +68,7 @@ a.btn {
   color: #000000;
 }
 
-.hero-unit h1 span {
+.hero-unit h1 span, .hero-unit h1 a {
   vertical-align: middle;
 }
 
