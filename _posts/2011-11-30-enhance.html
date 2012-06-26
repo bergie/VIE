@@ -1,0 +1,49 @@
+---
+layout: example
+title: "Get enhancements for text"
+category: examples
+---
+<p>Given the following contents:</p>
+<blockquote class="analyze">
+The Hitchhiker's Guide to the Galaxy is a science fiction comedy series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, and over several years it gradually became an international multi-media phenomenon. Adaptations have included stage shows, a "trilogy" of five books published between 1979 and 1992, a sixth novel penned by Eoin Colfer in 2009, a 1981 TV series, a 1984 computer game, and three series of three-part comic book adaptations of the first three novels published by DC Comics between 1993 and 1996. There were also two series of towels, produced by Beer-Davies, that are considered by some fans to be an "official version" of The Hitchhiker's Guide to the Galaxy, as they include text from the first novel. A Hollywood-funded film version, produced and filmed in the UK, was released in April 2005, and radio adaptations of the third, fourth, and fifth novels were broadcast from 2004 to 2005.
+</blockquote>
+
+<p>This code can get you analysis:</p>
+
+<div class="example">
+  <textarea>
+var v = new VIE();
+v.use(
+    new v.StanbolService({
+        url: "http://dev.iks-project.eu/stanbolfull"
+    })
+);
+v.analyze({
+  element: jQuery('blockquote.analyze')
+}).using('stanbol').execute().done(function(entities) {
+  results.append(jQuery('<p>We found ' + entities.length + ' entities, including:</p>'));
+  results.append(jQuery('<ul></ul>'));
+  _.each(entities, function(entity) {
+    if (!entity.has('http://www.w3.org/2000/01/rdf-schema#label')) {
+      return true;
+    }
+
+    var url = entity.getSubjectUri();
+    var label;
+    _.each(entity.get('http://www.w3.org/2000/01/rdf-schema#label'), function(labelLang) {
+       if (labelLang['@language'] === 'en') {
+         label = labelLang['@value'];
+       }
+    });
+    if (!label) {
+      return true;
+    }
+    jQuery('ul', results).append(
+      jQuery('<li><a href="' + url + '">' + label + '</a></li>')
+    );
+  });
+});
+  </textarea>
+  <button class="btn btn-success">Run</button>
+  <div class="results"></div>
+</div>

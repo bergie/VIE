@@ -1,0 +1,30 @@
+---
+layout: example
+title: "Height of the Eiffel Tower"
+category: examples
+---
+<p>Using DBpedia, VIE can tell you interesting facts about various things on Wikipedia. For example, we can know the height of the Eiffel Tower with the following code:</p>
+
+<div class="example">
+  <textarea>
+var eiffel = "http://dbpedia.org/resource/Eiffel_Tower";
+var heightByYear = '<http://dbpedia.org/property/years>';
+var v = new VIE();
+v.use(
+  new v.DBPediaService()
+);
+v.load({
+    entity : eiffel
+    }).using("dbpedia").execute().done(function (entity) {
+    var height = {
+        year: entity.get(heightByYear)[1],
+        height: entity.get(heightByYear)[0]['@value'],
+    };
+    results.append(
+        jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")
+    );
+});
+  </textarea>
+  <button class="btn btn-success">Run</button>
+  <div class="results"></div>
+</div>

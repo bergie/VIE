@@ -1,19 +1,10 @@
 jQuery(document).ready(function() {
-    jQuery('.features').accordion({
-        collapsible: true,
-        active: false
+  jQuery('.example').each(function() {
+    var example = jQuery(this);
+    var results = jQuery('.results', this);
+    jQuery('button', example).click(function() {
+      results.empty();
+      eval(jQuery('textarea', example).val()); 
     });
-    jQuery('#moreinfo').tabs();
-
-    jQuery('.features > div').each(function() {
-        var feature = jQuery(this).attr('id');
-        if (!feature) {
-            return true;
-        }
-
-        jQuery('#' + feature + ' .exampleholder button').button().click(function() {
-            jQuery('#' + feature + ' .resultsholder').empty();
-            eval(jQuery('#' + feature + ' textarea').val()); 
-        });
-    });
+  });
 });

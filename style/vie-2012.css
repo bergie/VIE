@@ -1,0 +1,112 @@
+body {
+  background-color: #555753;
+  color: #ffffff;
+  padding-top: 1em;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Georgia", serif;
+  font-variant: small-caps;
+  color: #ffffff;
+}
+
+p, li {
+  font-family: "Helvetica", "Arial", sans-serif;
+}
+
+a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #eeeeec;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #ef2929;
+  text-decoration: underline;
+}
+
+.hero-unit {
+  background-color: #ffffff;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 3em;
+  margin-top: 5em;
+}
+
+.hero-unit .github {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.hero-unit .name {
+  background-image: url('/style/vie.png');
+  width: 100px;
+  height: 59px;
+  margin-bottom: 4px;
+  margin-right: 1em;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.hero-unit .name span {
+  display: none;
+}
+
+.hero-unit h1 {
+  font-size: 40px;
+  line-height: 60px;
+  color: #000000;
+}
+
+.hero-unit h1 span {
+  vertical-align: middle;
+}
+
+div.diagram {
+  background-color: #ffffff;
+  border-radius: 6px;
+  text-align: center;
+}
+
+p, blockquote {
+  line-height: 1.6em;
+  font-size: larger;
+  margin-bottom: 1em;
+}
+
+li {
+  font-size: larger;
+  line-height: 1.6em;
+}
+
+div.boxes {
+  margin-top: 2em;
+}
+
+.nav-pills .active > a, .nav-pills .active > a:hover, .nav-pills a:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.nav-pills li a {
+  text-decoration: none;
+}
+
+footer {
+  display: block;
+  margin-top: 2em;
+}
+
+textarea {
+    display: inline;
+    width: 88%;
+    height: 18em;
+    background-color: #eeeeec;
+    color: #000000;
+    border: none;
+}

@@ -1,0 +1,34 @@
+---
+layout: example
+title: "Load the schema.org ontology"
+category: examples
+---
+<p>The following code loads the full ontology from http://schema.org into VIE.</p>
+
+<div class="example">
+  <textarea>
+var vie = new VIE();
+vie.loadSchema("http://schema.rdfs.org/all.json", 
+{
+    baseNS : "http://schema.org",
+    success: function () {
+        jQuery('#schemaOrg .resultsholder').append('<div class="msg">Successfully loaded the schema ontology!</di>');
+        jQuery('#schemaOrg .resultsholder').append('<div class="msg">We now have ' + this.types.list().length + ' classes loaded!</di>');
+        var Place = this.types.get("Place");
+        var City = this.types.get("City");
+        var Person = this.types.get("Person");
+        results.append('<div class="msg">BTW (1): A schema:City is <b>' + 
+                ((City.isof(Place))? ' ' : 'not ') + 
+                '</b>of type schema:Place, but <b>' + 
+                ((City.isof(Person))? ' ' : 'not ') + 
+                '</b>of schema:Person!</div>');
+        results.append('<div class="msg">BTW (2): A schema:City has <b>' + City.attributes.list().length + ' attributes, including all inherited!</div>');
+    },
+    error: function () {
+        results.append('<div class="msg">Something went wrong with loading the ontology!</di>');
+    }
+});
+  </textarea>
+  <button class="btn btn-success">Run</button>
+  <div class="results"></div>
+</div>

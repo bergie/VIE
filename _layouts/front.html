@@ -1,0 +1,54 @@
+---
+layout: default
+---
+<div class="hero-unit" xmlns:doap="http://usefulinc.com/ns/doap#" about="http://viejs.org/#vie" typeof="doap:Project">
+  <a class="github" href="https://github.com/bergie/VIE"><img src="/style/fork-me.png" alt="Fork me on GitHub" /></a>
+  <h1><span class="name"><span property="doap:name">{{ site.name }}</span></span> <span property="doap:shortdesc">Semantic Interaction Framework</span></h1>
+</div>
+
+<div class="row">
+  {% if page.diagram %}
+  <div class="abstract span7" property="doap:description">
+    {{ content }}
+  </div>
+  <div class="diagram span5">
+    <img src="{{ page.diagram }}" alt="VIE.js architecture" />
+  </div>
+  {% else %}
+  <div class="abstract span12" property="doap:description">
+    {{ content }}
+  </div>
+  {% endif %}
+</div>
+
+<div class="row boxes">
+  <div class="span3">
+    <h2>Examples</h2>
+    <ul>
+      {% for post in site.categories.examples %}
+      <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="span3">
+    <h2>Widgets</h2>
+    <ul>
+      <li><a href="http://createjs.org/">Create.js</a> content editing</li>
+      <li><a href="http://szabyg.github.com/VIE.autocomplete/">VIE autocomplete.js</a></li> 
+      <li><a href="http://neogermi.github.com/VIEwidgets/widgets/image_search/">Image Search</a></li>
+      <li><a href="http://neogermi.github.com/VIEwidgets/widgets/auto_tagger/">Auto Tagger</a></li>
+      <li><a href="http://szabyg.github.com/annotate.js/">Annotate.js</a></li>
+    </ul>
+  </div>
+
+  <div class="span3">
+    <h2>Documentation</h2>
+    {{ page.documentation }}
+  </div>
+
+  <div class="span3">
+    <h2>Development</h2>
+    {{ page.development }}
+  </div>
+</div>

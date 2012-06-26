@@ -1,0 +1,43 @@
+---
+layout: example
+title: "Find the capital of Mongolia"
+category: examples
+---
+<p>This code digs out the answer:</p>
+<div class="example">
+  <textarea>
+var vie = new VIE();
+vie.use(new vie.DBPediaService());
+
+var mongoliaURI = "<http://dbpedia.org/resource/Mongolia>";
+var capitalPropURI = "<http://dbpedia.org/property/capital>";
+var namePropURI = "rdfs:label";
+
+vie
+.load({entity : mongoliaURI})
+.using('dbpedia')
+.execute()
+.done(function (mongolia) {
+    var capitalURI = mongolia.get(capitalPropURI);
+    vie
+    .load({entity : capitalURI})
+    .using('dbpedia')
+    .execute()
+    .done(function(capital) {
+        var url = capital.getSubjectUri();
+        var label;
+        _.each(capital.get(namePropURI), function(labelLang) {
+            if (labelLang['@language'] === 'en') {
+                label = labelLang['@value'];
+            }
+        });
+
+        results.append(
+            jQuery('<p>The capital of Mongolia is <a href="' + url + '">' + label + '</a>.</p>')
+        );
+    });
+});
+  </textarea>
+  <button class="btn btn-success">Run</button>
+  <div class="results"></div>
+</div>
