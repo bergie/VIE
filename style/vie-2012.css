@@ -86,6 +86,11 @@ div.abstract .download .btn {
   margin: 1em;
 }
 
+.well {
+  background-color: #2e3436;
+  min-height: 6em;
+}
+
 p, blockquote {
   line-height: 1.6em;
   font-size: larger;
