@@ -186,7 +186,7 @@ test("VIE - Attributes min and max", function() {
     ok(tt1.attributes.get("attr0").min !== undefined);
     equal(tt1.attributes.get("attr0").min, 0);
     ok(tt1.attributes.get("attr0").max !== undefined);
-    equal(tt1.attributes.get("attr0").max, Number.MAX_VALUE);
+    equal(tt1.attributes.get("attr0").max, 1);
     
     var tt2 = v.types.add("TestType2", [
         {
@@ -251,7 +251,19 @@ test("VIE - Attributes min and max", function() {
     equal(tt5.attributes.get("attr0").min, 15);
     ok(tt5.attributes.get("attr0").max !== undefined);
     equal(tt5.attributes.get("attr0").max, 15);
-    
+
+    var tt6 = v.types.add("TestType6", [
+        {
+          id: "attr0",
+          range: "xsd:string",
+          min: 4,
+          max: -1
+        }
+    ]);
+
+    ok(tt6);
+    equal(tt6.attributes.get("attr0").min, 4);
+    equal(tt6.attributes.get("attr0").max, Number.MAX_VALUE);
 });
 
 
@@ -263,7 +275,8 @@ test("VIE - Attributes min and max (inheritance)", function() {
         {
             id: "leg",
             range: "xsd:string",
-            min: 1
+            min: 1,
+            max: -1
         }
     ]);
     

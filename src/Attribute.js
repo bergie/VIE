@@ -26,7 +26,7 @@ if (VIE.prototype.Attributes) {
 // the attribute.  
 // *{string}* **domain** The domain of the attribute.  
 // *{number}* **minCount** The minimal number this attribute can occur. (needs to be >= 0)  
-// *{number}* **maxCount** The maximal number this attribute can occur. (needs to be >= minCount)  
+// *{number}* **maxCount** The maximal number this attribute can occur. (needs to be >= minCount, use `-1` for unlimited)
 // **Throws**:  
 // *{Error}* if one of the given paramenters is missing.  
 // **Returns**:  
@@ -108,7 +108,10 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount) {
 //
 //     console.log(person.max);
 //      // --> 1.7976931348623157e+308
-    maxCount = maxCount ? maxCount : Number.MAX_VALUE
+    maxCount = maxCount ? maxCount : 1;
+    if (maxCount === -1) {
+      maxCount = Number.MAX_VALUE;
+    }
     this.max = (maxCount >= this.min)? maxCount : this.min;
 // ### applies(range)
 // This method checks, whether the current attribute applies in the given range.
