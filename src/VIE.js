@@ -393,6 +393,9 @@ VIE.prototype.getTypedEntityClass = function (type) {
     throw new Error("unknown type");
 
   var TypedEntityClass = function (attrs, opts) {
+    if (!attrs) {
+      attrs = {};
+    }
     attrs["@type"] = "Person";
     this.set(attrs, opts);
   };

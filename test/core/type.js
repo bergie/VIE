@@ -261,9 +261,13 @@ test("VIE - Type form schema generation", function () {
 
     // Create an entity with the type
     var entity = new v.Entity({'@type': 'Article'});
+    ok(entity.vie);
+    ok(entity.vie.types);
 
     // Generate a Backbone Form schema for the entity
     var schema = VIE.Util.getFormSchema(entity);
     ok(schema['<http://viejs.org/ns/published>']);
     equal(schema['<http://viejs.org/ns/published>']['type'], 'DateTime');
+    var author = new schema['<http://viejs.org/ns/author>']['model'];
+    ok(author.isEntity);
 });
