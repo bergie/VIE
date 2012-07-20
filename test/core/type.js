@@ -187,7 +187,6 @@ test("VIE - Instantiation of types", function() {
 test("VIE - Type Sorting", function () {
     var v = new VIE();
     v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
-    
     var tt1 = v.types.add("TestType1", []);
     var tt2 = v.types.add("TestType2", []).inherit(tt1);
     var tt3 = v.types.add("TestType3", []).inherit(tt1);
@@ -236,4 +235,33 @@ test("VIE - Type Sorting", function () {
     equals(v.types.sort(["TestType1"])[0], "TestType1");
 
     
+});
+
+test("VIE - Type form schema generation", function () {
+    var v = new VIE();
+    v.namespaces.add("xsd", "http://www.w3.org/2001/XMLSchema#");
+
+    // Define an 'article' type
+    var article = new v.Type("Article");
+
+    // Define some properties
+    var title = new v.Attribute("title", ["xsd:string"], article, 1, 1);
+    var content = new v.Attribute("content", ["xsd:string"], article, 0, 1);
+    var published = new v.Attribute("published", ["xsd:dateTime"], article, 0, 1);
+    article.attributes.add([title, content, published]);
+
+    // Tell VIE about the type
+    v.types.add(article);
+
+    // Check that the type information looks correct
+    equal(article.attributes.toArray().length, 3);
+    equal(v.types.toArray().length, 2);
+
+    // Create an entity with the type
+    var entity = new v.Entity({'@type': 'Article'});
+
+    // Generate a Backbone Form schema for the entity
+    var schema = VIE.Util.getFormSchema(entity);
+    ok(schema['<http://viejs.org/ns/published>']);
+    equal(schema['<http://viejs.org/ns/published>']['type'], 'Date');
 });

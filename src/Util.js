@@ -503,6 +503,76 @@ VIE.Util = {
         vie.namespaces.base(baseNSBefore);
     },
 
+// ### VIE.Util.getEntityTypeUnion(entity)
+// This generates a entity-specific VIE type that is a subtype of all the
+// types of the entity. This makes it easier to deal with attribute definitions
+// specific to an entity because they're merged to a single list. This custom
+// type is transient, meaning that it won't be automatilly added to the entity
+// or the VIE type registry.
+    getEntityTypeUnion : function(entity) {
+      var vie = entity.vie;
+      return new vie.Type('Union').inherit(entity.get('@type'));
+    },
+
+// ### VIE.Util.getFormSchemaForType(type)
+// This creates a [Backbone Forms](https://github.com/powmedia/backbone-forms)
+// -compatible form schema for any VIE Type.
+    getFormSchemaForType : function(type) {
+      var schema = {};
+      _.each(type.attributes.toArray(), function (attribute) {
+        schema[attribute.id] = VIE.Util.getFormSchemaForAttribute(attribute);
+      });
+      return schema;
+    },
+
+/// ### VIE.Util.getFormSchemaForAttribute(attribute)
+    getFormSchemaForAttribute : function(attribute) {
+      var primaryType = attribute.range[0];
+      var schema = {};
+
+      var getWidgetForType = function (type) {
+        switch (type) {
+          case 'xsd:string':
+            return 'Text';
+          case 'xsd:dateTime':
+            return 'Date';
+        }
+      };
+
+      // TODO: Generate a nicer label
+      schema.title = VIE.Util.toCurie(attribute.id, false, attribute.vie.namespaces);
+
+      // TODO: Handle attributes linking to other VIE entities
+
+      if (attribute.min > 0) {
+        schema.validators = ['required'];
+      }
+
+      if (attribute.max > 1) {
+        schema.type = 'List';
+        schema.listType = getWidgetForType(primaryType);
+        return schema;
+      }
+
+      schema.type = getWidgetForType(primaryType);
+      return schema;
+    },
+
+// ### VIE.Util.getFormSchema(entity)
+// This creates a [Backbone Forms](https://github.com/powmedia/backbone-forms)
+// -compatible form schema for any VIE Entity. The form schema creation
+// utilizes type information attached to the entity.
+// **Parameters**:
+// *{```Entity```}* **entity** An instance of VIE ```Entity```.
+// **Throws**:
+// *nothing*..
+// **Returns**:
+// *{object}* a JavaScript object representation of the form schema
+    getFormSchema : function(entity) {
+      var unionType = VIE.Util.getEntityTypeUnion(entity);
+      return VIE.Util.getFormSchemaForType(unionType);
+    },
+
 // ### VIE.Util.xsdDateTime(date)
 // This transforms a ```Date``` instance into an xsd:DateTime format.  
 // **Parameters**:  
