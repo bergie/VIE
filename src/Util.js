@@ -519,9 +519,22 @@ VIE.Util = {
 // -compatible form schema for any VIE Type.
     getFormSchemaForType : function(type) {
       var schema = {};
+
+      // Generate a schema
       _.each(type.attributes.toArray(), function (attribute) {
         schema[attribute.id] = VIE.Util.getFormSchemaForAttribute(attribute);
       });
+
+      // Clean up unknown attribute types
+      _.each(schema, function (field, id) {
+        if (!field.type) {
+          delete schema[id];
+        }
+        if (field.type === 'List' && !field.listType) {
+          delete schema[id];
+        }
+      });
+
       return schema;
     },
 
@@ -534,8 +547,20 @@ VIE.Util = {
         switch (type) {
           case 'xsd:string':
             return 'Text';
+          case 'xsd:date':
+            return 'Date'
           case 'xsd:dateTime':
-            return 'Date';
+            return 'DateTime';
+          default:
+            var typeType = attribute.vie.types.get(type);
+            if (!typeType) {
+              return null;
+            }
+            if (typeType.attributes.get('value')) {
+              // Convert to proper xsd type
+              return getWidgetForType(typeType.attributes.get('value'));
+            }
+            return 'NestedModel';
         }
       };
 
@@ -551,10 +576,16 @@ VIE.Util = {
       if (attribute.max > 1) {
         schema.type = 'List';
         schema.listType = getWidgetForType(primaryType);
+        if (schema.listType === 'NestedModel') {
+          schema.nestedModelType = primaryType;
+        }
         return schema;
       }
 
       schema.type = getWidgetForType(primaryType);
+      if (schema.type === 'NestedModel') {
+        schema.nestedModelType = primaryType;
+      }
       return schema;
     },
 
@@ -570,7 +601,25 @@ VIE.Util = {
 // *{object}* a JavaScript object representation of the form schema
     getFormSchema : function(entity) {
       var unionType = VIE.Util.getEntityTypeUnion(entity);
-      return VIE.Util.getFormSchemaForType(unionType);
+      var schema = VIE.Util.getFormSchemaForType(unionType);
+
+      // Handle nested models
+      _.each(schema, function (property, id) {
+        if (property.type !== 'NestedModel' && property.listType !== 'NestedModel') {
+          return;
+        }
+
+        var value = entity.get(id);
+        if (value) {
+          schema[id].model = value;
+          return;
+        }
+        schema[id].model = new entity.vie.Entity({
+          '@type': property.nestedModelType
+        });
+      });
+
+      return schema;
     },
 
 // ### VIE.Util.xsdDateTime(date)
