@@ -36,20 +36,6 @@ vie.loadSchema("http://schema.rdfs.org/all.json", {
       '@type': type,
       '<http://schema.org/name>': 'Atelje'
     });
-
-    // Autogenerate the schema for the person
-    ent.schema = VIE.Util.getFormSchema(ent);
-
-    // Clean it up
-    _.each(ent.schema, function (field, id) {
-      if (!field.type) {
-        delete ent.schema[id];
-      }
-      if (field.type === 'List' && !field.listType) {
-        delete ent.schema[id];
-      } 
-    });
-
     // Generate the form
     var form = new Backbone.Form({
       model: ent
