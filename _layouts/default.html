@@ -6,9 +6,15 @@
     <link rel="stylesheet" href="/style/bootstrap.css" />
     <link rel="stylesheet" href="/style/vie-2012.css" />
     <link rel="shortcut icon" href="/style/vie-favicon.png" />
+    {% if page.js_custom %}
+    {% for file in page.js_custom %}
+    <script src="{{ file }}"></script>
+    {% endfor %}
+    {% else %}
     {% for file in page.js_base %}
     <script src="{{ file }}"></script>
     {% endfor %}
+    {% endif %}
     {% for file in page.js_extras %}
     <script src="{{ file }}"></script>
     {% endfor %}
