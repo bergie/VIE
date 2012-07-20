@@ -21,6 +21,9 @@
     {% for file in page.css_base %}
     <link rel="stylesheet" href="{{ file }}" />
     {% endfor %}
+    {% for file in page.css_extras %}
+    <link rel="stylesheet" href="{{ file }}" />
+    {% endfor %}
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-75936-15']);

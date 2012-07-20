@@ -9,16 +9,15 @@ js_custom:
   - /js/vendor/jquery.rdfquery.min.js
   - /js/vendor/backbone-forms.min.js
   - /js/vendor/backbone-forms-list.min.js
-  - /js/vendor/backbone-forms-bootstrap.js
   - /js/vie-2.1.0alpha1.js
   - /js/vie-widgets.js
-css_base:
-  - /js/vendor/backbone-forms-bootstrap.css
-published: false
+css_extras:
+  - /js/vendor/backbone-forms-default.css
+published: true
 ---
 <p>The VIE Type system is capable of generating <a href="https://github.com/powmedia/backbone-forms">Backbone Forms</a> schemas. This makes it easy to build forms to manage your VIE entities.</p>
 
-<p>This example loads the <a href="http://schema.org/Person">Schema.org Person</a> type into VIE and builds a form for it.</p>
+<p>This example loads the <a href="http://schema.org/BarOrPub">Schema.org BarOrPub</a> type into VIE and builds a form for it. The form schema contains everything schema.org knows about pubs, but we customize the fields to show only some interesting ones.</p>
 
 <div class="example">
   <div id="formholder" class="well">
@@ -36,9 +35,16 @@ vie.loadSchema("http://schema.rdfs.org/all.json", {
       '@type': type,
       '<http://schema.org/name>': 'Atelje'
     });
+    
     // Generate the form
     var form = new Backbone.Form({
-      model: ent
+      model: ent,
+      fields: [
+        'name',
+        'description',
+        'location',
+        'branchOf'
+      ]
     }).render();
 
     jQuery('#formholder').append(jQuery('<h2>Form for editing a ' + type + '</h2>'));
