@@ -73,6 +73,10 @@ VIE.prototype.Entity = function(attrs, opts) {
             return this;
         },
 
+        schema: function() {
+          return VIE.Util.getFormSchema(this);
+        },
+
         // ### Getter, Has, Setter
         // #### `.get(attr)`
         // To be able to communicate to a VIE Entity you can use a simple get(property)
