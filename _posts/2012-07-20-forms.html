@@ -1,0 +1,67 @@
+---
+layout: widget
+title: "Form generator"
+category: widgets
+js_custom:
+  - "https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"
+  - /js/vendor/underscore.min.js
+  - /js/vendor/backbone.min.js
+  - /js/vendor/jquery.rdfquery.min.js
+  - /js/vendor/backbone-forms.min.js
+  - /js/vendor/backbone-forms-list.min.js
+  - /js/vendor/backbone-forms-bootstrap.js
+  - /js/vie-2.1.0alpha1.js
+  - /js/vie-widgets.js
+css_base:
+  - /js/vendor/backbone-forms-bootstrap.css
+published: false
+---
+<p>The VIE Type system is capable of generating <a href="https://github.com/powmedia/backbone-forms">Backbone Forms</a> schemas. This makes it easy to build forms to manage your VIE entities.</p>
+
+<p>This example loads the <a href="http://schema.org/Person">Schema.org Person</a> type into VIE and builds a form for it.</p>
+
+<div class="example">
+  <div id="formholder" class="well">
+  </div>
+   
+  <textarea>
+var vie = new VIE();
+vie.loadSchema("http://schema.rdfs.org/all.json", {
+  baseNS : "http://schema.org/",
+  success: function () {
+    var type = 'BarOrPub';
+
+    // Create an entity with the type we're interested in
+    var ent = new vie.Entity({
+      '@type': type,
+      '<http://schema.org/name>': 'Atelje'
+    });
+
+    // Autogenerate the schema for the person
+    ent.schema = VIE.Util.getFormSchema(ent);
+
+    // Clean it up
+    _.each(ent.schema, function (field, id) {
+      if (!field.type) {
+        delete ent.schema[id];
+      }
+      if (field.type === 'List' && !field.listType) {
+        delete ent.schema[id];
+      } 
+    });
+
+    // Generate the form
+    var form = new Backbone.Form({
+      model: ent
+    }).render();
+
+    jQuery('#formholder').append(jQuery('<h2>Form for editing a ' + type + '</h2>'));
+    jQuery('#formholder').append(form.el); 
+  },
+  error: function () {
+    jQuery('.results').append('<div class="msg">Something went wrong with loading the ontology!</di>');
+    }
+});
+  </textarea>
+  <div class="results"></div>
+</div>
