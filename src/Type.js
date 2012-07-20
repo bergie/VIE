@@ -302,6 +302,13 @@ VIE.prototype.Types = function () {
 //     var types = new vie.Types();
 //     types.add("Person", ["name", "knows"]);
     this.add = function (id, attrs) {
+        if (_.isArray(id)) {
+           _.each(id, function (type) {
+             this.add(type);
+           }, this);
+           return this;
+        }
+
         if (this.get(id)) {
             throw new Error("Type '" + id + "' already registered.");
         } 

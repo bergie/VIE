@@ -202,6 +202,13 @@ VIE.prototype.Attributes = function (domain, attrs) {
 //
 //     personAttrs.add("name", "Text", 0, 1);
     this.add = function (id, range, min, max) {
+        if (_.isArray(id)) {
+          _.each(id, function (attribute) {
+            this.add(attribute);
+          }, this);
+          return this;
+        }
+        
         if (this.get(id)) {
             throw new Error("Attribute '" + id + "' already registered for domain " + this.domain.id + "!");
         } 
