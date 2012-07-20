@@ -389,18 +389,21 @@ VIE.prototype.loadSchema = function(url, options) {
 //     var PersonClass = vie.getTypedEntityClass("Person");
 //     var Person = new PersonClass({"name", "Sebastian"});
 VIE.prototype.getTypedEntityClass = function (type) {
-  if (!this.types.get(type))
-    throw new Error("unknown type");
-
+  var typeType = this.types.get(type);
+  if (!typeType) {
+    throw new Error("Unknown type " + type);
+  }
   var TypedEntityClass = function (attrs, opts) {
     if (!attrs) {
       attrs = {};
     }
-    attrs["@type"] = "Person";
+    attrs["@type"] = type;
     this.set(attrs, opts);
   };
   TypedEntityClass.prototype = new this.Entity();
-
+  TypedEntityClass.prototype.schema = function () {
+    return VIE.Util.getFormSchemaForType(typeType);
+  };
   return TypedEntityClass;
 };
 
