@@ -546,3 +546,15 @@ test("vie.js Analyzable API - always", 1, function () {
         start();
     }).execute();
 });
+
+test("vie.js Generate Typed Entity Classes", function () {
+    var v = new VIE();
+    v.types.add("Person");
+    var TypedEntityClass = v.getTypedEntityClass("Person");
+
+    var Person = new TypedEntityClass({"name": "Sebastian"});
+    ok(Person.isEntity);
+    ok(Person.isof("Person"));
+    equal(Person.get("@type").id, "<" + v.namespaces.base() + "Person" + ">");
+    ok(Person instanceof Backbone.Model);
+});
