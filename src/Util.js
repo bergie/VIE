@@ -517,12 +517,13 @@ VIE.Util = {
 // ### VIE.Util.getFormSchemaForType(type)
 // This creates a [Backbone Forms](https://github.com/powmedia/backbone-forms)
 // -compatible form schema for any VIE Type.
-    getFormSchemaForType : function(type) {
+    getFormSchemaForType : function(type, allowNested) {
       var schema = {};
 
       // Generate a schema
       _.each(type.attributes.toArray(), function (attribute) {
-        schema[attribute.id] = VIE.Util.getFormSchemaForAttribute(attribute);
+        var key = VIE.Util.toCurie(attribute.id, false, attribute.vie.namespaces);
+        schema[key] = VIE.Util.getFormSchemaForAttribute(attribute);
       });
 
       // Clean up unknown attribute types
@@ -532,6 +533,12 @@ VIE.Util = {
         }
         if (field.type === 'List' && !field.listType) {
           delete schema[id];
+        }
+
+        if (!allowNested) {
+          if (field.type === 'NestedModel' || field.listType === 'NestedModel') {
+            delete schema[id];
+          }
         }
       });
 
@@ -558,7 +565,7 @@ VIE.Util = {
             }
             if (typeType.attributes.get('value')) {
               // Convert to proper xsd type
-              return getWidgetForType(typeType.attributes.get('value'));
+              return getWidgetForType(typeType.attributes.get('value').range[0]);
             }
             return 'NestedModel';
         }
@@ -600,8 +607,12 @@ VIE.Util = {
 // **Returns**:
 // *{object}* a JavaScript object representation of the form schema
     getFormSchema : function(entity) {
+      if (!entity || !entity.isEntity) {
+        return {};
+      }
+
       var unionType = VIE.Util.getEntityTypeUnion(entity);
-      var schema = VIE.Util.getFormSchemaForType(unionType);
+      var schema = VIE.Util.getFormSchemaForType(unionType, true);
 
       // Handle nested models
       _.each(schema, function (property, id) {
