@@ -68,6 +68,8 @@ test("vie.js Entities API -  id/getSubject()", function () {
 
     ok(empty.isNew());
 
+    equal(empty.vie, z);
+
     // FIXME: This should be made to pass
     // equal(empty.id, null);
 
