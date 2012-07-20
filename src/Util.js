@@ -531,6 +531,12 @@ VIE.Util = {
         if (!field.type) {
           delete schema[id];
         }
+
+        if (field.type === 'URL') {
+          field.type = 'Text';
+          field.dataType = 'url';
+        }
+
         if (field.type === 'List' && !field.listType) {
           delete schema[id];
         }
@@ -552,12 +558,20 @@ VIE.Util = {
 
       var getWidgetForType = function (type) {
         switch (type) {
+          case 'xsd:anySimpleType':
+          case 'xsd:float':
+          case 'xsd:integer':
+            return 'Number';
           case 'xsd:string':
             return 'Text';
           case 'xsd:date':
             return 'Date'
           case 'xsd:dateTime':
             return 'DateTime';
+          case 'xsd:boolean':
+            return 'Checkbox';
+          case 'xsd:anyURI':
+            return 'URL';
           default:
             var typeType = attribute.vie.types.get(type);
             if (!typeType) {
