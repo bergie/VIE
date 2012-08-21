@@ -440,6 +440,8 @@ VIE.Util = {
             'DataType': 'xsd:anyType',
             'Boolean' : 'xsd:boolean',
             'Date'    : 'xsd:date',
+            'DateTime': 'xsd:dateTime',
+            'Time'    : 'xsd:time',
             'Float'   : 'xsd:float',
             'Integer' : 'xsd:integer',
             'Number'  : 'xsd:anySimpleType',

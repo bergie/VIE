@@ -41,10 +41,10 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount) {
         throw new Error("The attribute constructor needs an 'id' of type string! E.g., 'Person'");
     }
     if (range === undefined) {
-        throw new Error("The attribute constructor needs 'range'.");
+        throw new Error("The attribute constructor of " + id + " needs 'range'.");
     }
     if (domain === undefined) {
-        throw new Error("The attribute constructor needs a 'domain'.");
+        throw new Error("The attribute constructor of " + id + " needs a 'domain'.");
     }
     
     this._domain = domain;
