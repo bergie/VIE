@@ -277,7 +277,7 @@ test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
 });
 
 
-test("VIE.js StanbolService - Find", function () {
+test("VIE.js StanbolService - Find - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     } 
@@ -312,7 +312,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Search only in local entities", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     // search only in local entities
     z.find({term: "P*", limit: limit, offset: offset, local : true})
@@ -336,7 +348,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Only term given, no limit, no offset", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({term: term}) // only term given, no limit, no offset
     .using('stanbol').execute().done(function(entities) {
@@ -360,7 +384,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Empty term", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({term: "", limit: limit, offset: offset})
     .using('stanbol').execute()
@@ -373,7 +409,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(true, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - No term", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({limit: limit, offset: offset})
     .using('stanbol').execute()
@@ -395,8 +443,6 @@ test("VIE.js StanbolService - Load", function () {
     }
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
     var z = new VIE();
-    ok (z.StanbolService);
-    equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.load({entity: entity})
