@@ -5,7 +5,7 @@ if (!VIE.prototype.view) {
 VIE.prototype.view.Collection = Backbone.View.extend({
     // Ensure the collection view gets updated when items get added or removed
     initialize: function() {
-        this.template = this.options.template;
+        this.templates = this.options.templates;
         this.service = this.options.service;
         if (!this.service) {
             throw "No RDFa service provided to the Collection View";
@@ -39,7 +39,11 @@ VIE.prototype.view.Collection = Backbone.View.extend({
      *  Optionally you can pass a type to this method to check per type.
      */
     canAdd: function (type) {
-      if (!this.template || this.template.length === 0) {
+      if (_.isEmpty(this.templates)) {
+        return false;
+      }
+
+      if (type && !this.templates[type]) {
         return false;
       }
 
@@ -51,11 +55,19 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             return;
         }
 
-        if (!this.canAdd(entity.get('@type'))) {
+        var childType = entity.get('@type');
+        var childTypeName;
+        if (childType) {
+          childTypeName = childType.id;
+        } else {
+          childTypeName = '<http://www.w3.org/2002/07/owl#Thing>';
+        }
+
+        if (!this.canAdd(childTypeName)) {
             return;
         }
 
-        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.template, entity));
+        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.templates[childTypeName], entity));
         var entityElement = jQuery(entityView.render().el);
         if (entity.id) {
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);

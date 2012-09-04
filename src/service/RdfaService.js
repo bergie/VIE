@@ -34,7 +34,8 @@ VIE.prototype.RdfaService = function(options) {
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
-    this.views = [],
+    this.views = [];
+    this.templates = {};
 
     this.vie = null; /* will be set via VIE.use(); */
     /* overwrite options.name if you want to set another name */
@@ -131,27 +132,25 @@ VIE.prototype.RdfaService.prototype = {
     _readEntity : function(element) {
         var subject = this.getElementSubject(element);
         var type = this._getElementType(element);
-        var predicate, value, valueCollection;
         var entity = this._readEntityPredicates(subject, element, false);
         if (jQuery.isEmptyObject(entity)) {
             return null;
         }
         var vie = this.vie;
-        for (predicate in entity) {
-            value = entity[predicate];
+        _.each(entity, function (value, predicate) {
             if (!_.isArray(value)) {
-                continue;
+                return;
             }
-            valueCollection = new this.vie.Collection([], {
+            var valueCollection = new this.vie.Collection([], {
               vie: vie,
               predicate: predicate
             });
-            _.each(value, function(valueItem) {
+            _.each(value, function (valueItem) {
                 var linkedEntity = vie.entities.addOrUpdate({'@subject': valueItem});
                 valueCollection.addOrUpdate(linkedEntity);
             });
             entity[predicate] = valueCollection;
-        }
+        }, this);
         entity['@subject'] = subject;
         if (type) {
             entity['@type'] = type;
@@ -233,6 +232,77 @@ VIE.prototype.RdfaService.prototype = {
         });
         return viewInstance;
     },
+
+    setTemplate: function (type, predicate, template) {
+      if (!template) {
+        template = predicate;
+        predicate = 'default';
+      }
+
+      if (!this.templates[type]) {
+        this.templates[type] = {};
+      }
+
+      this.templates[type][predicate] = template;
+    },
+
+    getTemplate: function (type, predicate) {
+      if (!predicate) {
+        predicate = 'default';
+      }
+
+      if (!this.templates[type]) {
+        return;
+      }
+
+      return this.templates[type][predicate];
+    },
+
+    _getElementTemplates: function (element, entity, predicate) {
+      var templates = {};
+
+      var type = entity.get('@type');
+      if (type && type.attributes && type.attributes.get(predicate)) {
+        // Use type-specific templates, if any
+        var attribute = type.attributes.get(predicate);
+        _.each(attribute.range, function (childType) {
+          var template = this.getTemplate(childType, predicate);
+          if (template) {
+            var vieChildType = this.vie.types.get(childType);
+            templates[vieChildType.id] = template;
+          }
+        }, this);
+
+        if (!_.isEmpty(templates)) {
+          return templates;
+        }
+      }
+
+      // Try finding templates that have types
+      var self = this;
+      jQuery('[typeof]', element).each(function () {
+        var templateElement = jQuery(this);
+        var childType = templateElement.attr('typeof');
+        var vieChildType = self.vie.types.get(childType);
+        if (vieChildType) {
+          childType = vieChildType.id;
+        }
+        if (templates[childType]) {
+          return;
+        }
+        templates[childType] = templateElement;
+        templates['<http://www.w3.org/2002/07/owl#Thing>'] = templateElement;
+      });
+
+      if (_.isEmpty(templates)) {
+        var defaultTemplate = element.children(':first-child');
+        if (defaultTemplate.length) {
+          templates['<http://www.w3.org/2002/07/owl#Thing>'] = defaultTemplate;
+        }
+      }
+
+      return templates;
+    },
     
     _registerCollectionView : function(collection, element, entity) {
         var viewInstance = this._getViewForElement(element, true);
@@ -240,16 +310,13 @@ VIE.prototype.RdfaService.prototype = {
             return viewInstance;
         }
     
-        var entityTemplate = element.children(':first-child');
-    
         viewInstance = new this.vie.view.Collection({
             owner: entity,
             collection: collection,
             model: collection.model,
             el: element,
-            template: entityTemplate,
-            service: this,
-            tagName: element.get(0).nodeName
+            templates: this._getElementTemplates(element, entity, collection.predicate),
+            service: this
         });
         this.views.push(viewInstance);
         return viewInstance;
@@ -275,7 +342,7 @@ VIE.prototype.RdfaService.prototype = {
                 return document.baseURI;
             }
         }
-        var subject = undefined;
+        var subject;
         var matched = null;
         jQuery(element).closest(this.options.subjectSelector).each(function() {
             matched = this;
