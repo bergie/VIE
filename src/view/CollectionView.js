@@ -56,18 +56,13 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
 
         var childType = entity.get('@type');
-        var childTypeName;
-        if (childType) {
-          childTypeName = childType.id;
-        } else {
-          childTypeName = '<http://www.w3.org/2002/07/owl#Thing>';
-        }
+        var childTypeName = childType.id;
 
         if (!this.canAdd(childTypeName)) {
             return;
         }
 
-        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.templates[childTypeName], entity));
+        var entityView = this.service._registerEntityView(entity, this.cloneElement(this.templates[childTypeName], entity), true);
         var entityElement = jQuery(entityView.render().el);
         if (entity.id) {
             this.service.setElementSubject(entity.getSubjectUri(), entityElement);

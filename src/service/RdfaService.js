@@ -201,7 +201,7 @@ VIE.prototype.RdfaService.prototype = {
         return viewInstance;
     },
     
-    _registerEntityView : function(entity, element) {
+    _registerEntityView : function(entity, element, isNew) {
         if (!element.length) {
             return;
         }
@@ -220,6 +220,20 @@ VIE.prototype.RdfaService.prototype = {
             service: this.name
         });
         this.views.push(viewInstance);
+
+        // For new elements, ensure their relations are read from DOM
+        if (isNew) {
+          jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).each(function () {
+            var predicate = jQuery(this).attr('rel');
+            if (!predicate) {
+              return;
+            }
+            entity.set(predicate, new service.vie.Collection([], {
+              vie: service.vie,
+              predicate: predicate
+            }));
+          });
+        }
     
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
