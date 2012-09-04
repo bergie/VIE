@@ -80,8 +80,9 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         entityElement.parent('[rev]').each(function() {
             var predicate = jQuery(this).attr('rev');
             var relations = {};
-            relations[predicate] = new service.vie.Collection();
-            relations[predicate].vie = service.vie;
+            relations[predicate] = new service.vie.Collection([], {
+              vie: service.vie
+            });
             var model = service.vie.entities.get(service.getElementSubject(this));
             if (model) {
                 relations[predicate].addOrUpdate(model);

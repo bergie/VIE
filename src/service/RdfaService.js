@@ -143,7 +143,7 @@ VIE.prototype.RdfaService.prototype = {
                 continue;
             }
             valueCollection = new this.vie.Collection([], {
-              vie: this.vie,
+              vie: vie,
               predicate: predicate
             });
             _.each(value, function(valueItem) {
