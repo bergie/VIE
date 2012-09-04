@@ -59,10 +59,11 @@ var VIE = root.VIE = function(config) {
     this.config = (config) ? config : {};
     this.services = {};
     this.jQuery = jQuery;
-    this.entities = new this.Collection();
+    this.entities = new this.Collection([], {
+        vie: this
+    });
 
     this.Entity.prototype.entities = this.entities;
-    this.entities.vie = this;
     this.Entity.prototype.entityCollection = this.Collection;
     this.Entity.prototype.vie = this;
     

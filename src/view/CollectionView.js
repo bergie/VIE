@@ -11,8 +11,11 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             throw "No RDFa service provided to the Collection View";
         }
         this.owner = this.options.owner;
+        this.definition = this.options.definition;
         this.entityViews = {};
+
         _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
+
         this.collection.bind('add', this.addItem);
         this.collection.bind('remove', this.removeItem);
         this.collection.bind('reset', this.refreshItems);
@@ -24,12 +27,31 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         });
     },
 
+    /*
+     * ## canAdd: check if the view can add an item
+     *
+     * The Collection View can add items to itself if two constraints
+     * pass:
+     *
+     *  * Collection View has a template
+     *  * The attribute definition for the collection allows adding a model
+     *
+     *  Optionally you can pass a type to this method to check per type.
+     */
+    canAdd: function (type) {
+      if (!this.template || this.template.length === 0) {
+        return false;
+      }
+
+      return this.collection.canAdd(type);
+    },
+
     addItem: function(entity, collection) {
         if (collection !== this.collection) {
             return;
         }
 
-        if (!this.template || this.template.length === 0) {
+        if (!this.canAdd(entity.get('@type'))) {
             return;
         }
 

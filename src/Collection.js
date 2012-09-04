@@ -7,6 +7,18 @@
 //     http://viejs.org/
 VIE.prototype.Collection = Backbone.Collection.extend({
     model: VIE.prototype.Entity,
+
+    initialize: function (models, options) {
+      if (!options || !options.vie) {
+        throw new Error('Each collection needs a VIE reference');
+      }
+      this.vie = options.vie;
+      this.predicate = options.predicate;
+    },
+
+    canAdd: function (type) {
+      return true;
+    },
     
     get: function(id) {
         if (id === null) {
@@ -29,7 +41,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     },
 
     addOrUpdate: function(model, options) {
-        options || (options = {});
+        options = options || {};
 
         var collection = this;
         var existing;
@@ -59,7 +71,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             existing = this.get(model.id);
         }
         if (this.getByCid(model.cid)) {
-            var existing = this.getByCid(model.cid);
+            existing = this.getByCid(model.cid);
         }
         if (existing) {
             var newAttribs = {};

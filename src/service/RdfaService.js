@@ -88,18 +88,8 @@ VIE.prototype.RdfaService.prototype = {
         } else {
             element = loadable.options.element;
         }
-    
-        var ns = this.xmlns(element);
-        for (var prefix in ns) {
-            this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
-        }
-        var entities = [];
-        var entityElements = jQuery(this.options.subjectSelector, element).add(jQuery(element).filter(this.options.subjectSelector)).each(function() {
-            var entity = service._readEntity(jQuery(this));
-            if (entity) {
-                entities.push(entity);
-            }
-        });
+
+        entities = this.readEntities(element);
         loadable.resolve(entities);
     },
 
@@ -121,6 +111,22 @@ VIE.prototype.RdfaService.prototype = {
         this._writeEntity(savable.options.entity, savable.options.element);
         savable.resolve();
     },
+
+    readEntities : function (element) {
+        var service = this;
+        var ns = this.xmlns(element);
+        for (var prefix in ns) {
+            this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
+        }
+        var entities = [];
+        var entityElements = jQuery(this.options.subjectSelector, element).add(jQuery(element).filter(this.options.subjectSelector)).each(function() {
+            var entity = service._readEntity(jQuery(this));
+            if (entity) {
+                entities.push(entity);
+            }
+        });
+        return entities;
+    },
     
     _readEntity : function(element) {
         var subject = this.getElementSubject(element);
@@ -136,8 +142,10 @@ VIE.prototype.RdfaService.prototype = {
             if (!_.isArray(value)) {
                 continue;
             }
-            valueCollection = new this.vie.Collection();
-            valueCollection.vie = this.vie;
+            valueCollection = new this.vie.Collection([], {
+              vie: this.vie,
+              predicate: predicate
+            });
             _.each(value, function(valueItem) {
                 var linkedEntity = vie.entities.addOrUpdate({'@subject': valueItem});
                 valueCollection.addOrUpdate(linkedEntity);

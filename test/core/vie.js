@@ -29,6 +29,7 @@ test("vie.js Entities API", function () {
     z.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
     z.namespaces.add('iks', 'http://www.iks-project.eu/#');
     ok(z.entities instanceof z.Collection);
+    equal(z.entities.vie, z);
     equal(z.entities.length, 0);
     z.entities.add({
         '@subject': 'http://example.net/foo',
