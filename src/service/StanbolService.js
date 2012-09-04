@@ -813,15 +813,14 @@ VIE.prototype.StanbolConnector.prototype = {
         var connector = this;
      	
         var successCB = function (sites) {
-        	if (_.isArray(sites)) {
-	        	var sitesStripped = [];
-	        	for (var s = 0, l = sites.length; s < l; s++) {
-	        		sitesStripped.push(sites[s].replace(/.+\/(.+?)\/?$/, "$1"));
-	        	}
-	        	return success(sitesStripped);
-        	} else {
-        		return success(sites);
-        	}
+          if (!_.isArray(sites)) {
+            sites = JSON.parse(sites);
+          }
+          var sitesStripped = [];
+          for (var s = 0, l = sites.length; s < l; s++) {
+            sitesStripped.push(sites[s].replace(/.+\/(.+?)\/?$/, "$1"));
+          }
+          return success(sitesStripped);
         };
         
      	connector._iterate({
