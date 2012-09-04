@@ -107,21 +107,22 @@ test("VIE.js StanbolConnector - API", function() {
     equals(typeof stanbol.connector.queryFact, "function");
 });
 
-test("VIE.js StanbolService - Analyze", function () {
+test("VIE.js StanbolService - Analyze - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
-    } 
+    }
+    expect(7);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
     ok (z.StanbolService);
-    equal(typeof z.StanbolService, "function");
+    equal(typeof z.StanbolService, "function", "The StanbolService exists.");
     z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
 
-        ok(entities);
-        ok(entities instanceof Array);
+        ok(entities, "The returned results is not null.");
+        ok(entities instanceof Array, "The entities are an array.");
         ok(entities.length > 0, "At least one entity returned");
         if(entities.length > 0){
 	        var allEntities = true;
@@ -133,7 +134,7 @@ test("VIE.js StanbolService - Analyze", function () {
 	                console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
 	            }
 	        }
-	        ok(allEntities);
+	        ok(allEntities, "All result elements are VIE entities.");
 	        var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text");})[0];
 	        var s = firstTextAnnotation.get("enhancer:selected-text").toString();
 	        ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
@@ -149,7 +150,8 @@ test("VIE.js StanbolService - Analyze", function () {
 test("VIE.js StanbolService - Analyze with wrong URL of Stanbol", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
-    } 
+    }
+    expect(6);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
@@ -184,19 +186,18 @@ test("VIE.js StanbolService - Analyze with wrong URL of Stanbol", function () {
 test("VIE.js StanbolService - Analyze with Enhancement Chain", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
-    } 
+    }
+    expect(4);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var v = new VIE();
-    ok (v.StanbolService);
-    equal(typeof v.StanbolService, "function");
     v.use(new v.StanbolService({url : stanbolRootUrl, enhancerUrlPostfix: "/enhancer/chain/dbpedia-keyword"}));
     stop();
     v.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
-        ok(entities);
+        ok(entities, "Entities is not null");
+        ok(entities instanceof Array, "Result is an array");
         ok(entities.length > 0, "At least one entity returned");
         if(entities.length > 0) {
-            ok(entities instanceof Array);
             var allEntities = true;
             for(var i=0; i<entities.length; i++){
                 var entity = entities[i];
@@ -205,7 +206,7 @@ test("VIE.js StanbolService - Analyze with Enhancement Chain", function () {
                     console.error("VIE.js StanbolService - Analyze: ", entity, "is not a Backbone model!");
                 }
             }
-            ok(allEntities);
+            ok(allEntities, "All results are VIE Entities");
         }
         start();
     })
@@ -277,7 +278,7 @@ test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
 });
 
 
-test("VIE.js StanbolService - Find", function () {
+test("VIE.js StanbolService - Find - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     } 
@@ -312,7 +313,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Search only in local entities", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     // search only in local entities
     z.find({term: "P*", limit: limit, offset: offset, local : true})
@@ -336,7 +349,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Only term given, no limit, no offset", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({term: term}) // only term given, no limit, no offset
     .using('stanbol').execute().done(function(entities) {
@@ -360,7 +385,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(false, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - Empty term", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({term: "", limit: limit, offset: offset})
     .using('stanbol').execute()
@@ -373,7 +410,19 @@ test("VIE.js StanbolService - Find", function () {
         ok(true, f.statusText);
         start();
     });
-    
+
+});
+
+
+test("VIE.js StanbolService - Find - No term", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+    var term = "European Union";
+    var limit = 10;
+    var offset = 0;
+    var z = new VIE();
+    z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.find({limit: limit, offset: offset})
     .using('stanbol').execute()
@@ -395,8 +444,6 @@ test("VIE.js StanbolService - Load", function () {
     }
     var entity = "<http://dbpedia.org/resource/Barack_Obama>";
     var z = new VIE();
-    ok (z.StanbolService);
-    equal(typeof z.StanbolService, "function");
     z.use(new z.StanbolService({url : stanbolRootUrl}));
     stop();
     z.load({entity: entity})
@@ -483,7 +530,7 @@ test("VIE.js StanbolService - ContentHub: Lookup", function () {
     });
 });
 */
-test("VIE.js StanbolService - LDPath", function () {
+test("VIE.js StanbolConnector - LDPath - on all sites", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
@@ -515,9 +562,29 @@ test("VIE.js StanbolService - LDPath", function () {
     	ok(false, err);
     	start();
     });
-    
+});
+test("VIE.js StanbolService - LDPath - on one specific site", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+
+    var context = 'http://dbpedia.org/resource/Paris';
+    var ldpath = "@prefix dct : <http://purl.org/dc/terms/> ;\n" +
+        "@prefix geo : <http://www.w3.org/2003/01/geo/wgs84_pos#> ;\n" +
+        "name = rdfs:label[@en] :: xsd:string;\n" +
+        "labels = rdfs:label :: xsd:string;\n" +
+        "comment = rdfs:comment[@en] :: xsd:string;\n" +
+        "categories = dc:subject :: xsd:anyURI;\n" +
+        "homepage = foaf:homepage :: xsd:anyURI;\n" +
+        "location = fn:concat(\"[\",geo:lat,\",\",geo:long,\"]\") :: xsd:string;\n";
+
+    var z = new VIE();
+    z.namespaces.add("cc", "http://creativecommons.org/ns#");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
     stop();
-    // on on specific site
+
+    // on one specific site
     stanbol.connector.ldpath(ldpath, context, function (response) {
     	var entities = VIE.Util.rdf2Entities(stanbol, response);
     	ok(entities.length > 0);
@@ -528,7 +595,28 @@ test("VIE.js StanbolService - LDPath", function () {
     }, {
     	site: "dbpedia"
     });
-    
+
+});
+test("VIE.js StanbolService - LDPath - on local entities", function () {
+    if (navigator.userAgent === 'Zombie') {
+        return;
+    }
+
+    var context = 'http://dbpedia.org/resource/Paris';
+    var ldpath = "@prefix dct : <http://purl.org/dc/terms/> ;\n" +
+        "@prefix geo : <http://www.w3.org/2003/01/geo/wgs84_pos#> ;\n" +
+        "name = rdfs:label[@en] :: xsd:string;\n" +
+        "labels = rdfs:label :: xsd:string;\n" +
+        "comment = rdfs:comment[@en] :: xsd:string;\n" +
+        "categories = dc:subject :: xsd:anyURI;\n" +
+        "homepage = foaf:homepage :: xsd:anyURI;\n" +
+        "location = fn:concat(\"[\",geo:lat,\",\",geo:long,\"]\") :: xsd:string;\n";
+
+    var z = new VIE();
+    z.namespaces.add("cc", "http://creativecommons.org/ns#");
+    var stanbol = new z.StanbolService({url : stanbolRootUrl});
+    z.use(stanbol);
+
     stop();
     // on local entities
     stanbol.connector.ldpath(ldpath, context, function (response) {

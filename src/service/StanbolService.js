@@ -97,7 +97,7 @@ VIE.prototype.StanbolService = function(options) {
 VIE.prototype.StanbolService.prototype = {
     
 // ### init()
-// This method initializes certain properties of the service and is called
+// This internal method initializes certain properties of the service and is called
 // via ```VIE.use()```.  
 // **Parameters**:  
 // *nothing*  
@@ -105,10 +105,6 @@ VIE.prototype.StanbolService.prototype = {
 // *nothing*  
 // **Returns**:  
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
-// **Example usage**:  
-//
-//     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.init();
     init: function(){
 
         for (var key in this.options.namespaces) {
@@ -143,10 +139,9 @@ VIE.prototype.StanbolService.prototype = {
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
 // **Example usage**:  
 //
-//     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.analyzable(
-//         new vie.Analyzable({element : jQuery("#foo")})
-//     );
+//     vie.analyze({element : jQuery("#foo")})
+//     .using(new vie.StanbolService({<some-configuration>}))
+//     .execute().success(callback);
     analyze: function(analyzable) {
         var service = this;
 
@@ -192,15 +187,17 @@ VIE.prototype.StanbolService.prototype = {
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
 // **Example usage**:  
 //
-//     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.load(new vie.Findable({
-//         term : "Bischofsh", 
-//         limit : 10, 
+//     vie.find({
+//         term : "Bischofsh",
+//         limit : 10,
 //         offset: 0,
 //         field: "skos:prefLabel", // used for the term lookup, default: "rdfs:label"
 //         properties: ["skos:prefLabel", "rdfs:label"] // are going to be loaded with the result entities
-//     }));
-    find: function (findable) {        
+//     })
+//     .using(new vie.StanbolService({<some-configuration>}))
+//     .execute()
+//     .success(callback);
+    find: function (findable) {
         var correct = findable instanceof this.vie.Findable;
         if (!correct) {throw "Invalid Findable passed";}
         var service = this;
@@ -253,11 +250,12 @@ VIE.prototype.StanbolService.prototype = {
 // **Returns**:  
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.  
 // **Example usage**:  
-//
-//     var stnblService = new vie.StanbolService({<some-configuration>});
-//     stnblService.load(new vie.Loadable({
-//         entity : "<http://...>"
-//     }));
+//     vie.load({
+//         entity: "<http://...>"
+//     })
+//     .using(new vie.StanbolService({<some-configuration>}))
+//     .execute()
+//     .success(callback);
     load: function(loadable){
         var correct = loadable instanceof this.vie.Loadable;
         if (!correct) {throw "Invalid Loadable passed";}
