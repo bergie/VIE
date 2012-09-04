@@ -238,18 +238,33 @@ VIE.prototype.RdfaService.prototype = {
         template = predicate;
         predicate = 'default';
       }
+      type = this.vie.namespaces.isUri(type) ? type : this.vie.namespaces.uri(type);
 
       if (!this.templates[type]) {
         this.templates[type] = {};
       }
 
       this.templates[type][predicate] = template;
+
+      // Update existing Collection Views where this template applies
+      _.each(this.views, function (view) {
+        if (!(view instanceof this.vie.view.Collection)) {
+          return;
+        }
+
+        if (view.collection.predicate !== predicate) {
+          return;
+        }
+
+        view.templates[type] = template;
+      }, this);
     },
 
     getTemplate: function (type, predicate) {
       if (!predicate) {
         predicate = 'default';
       }
+      type = this.vie.namespaces.isUri(type) ? type : this.vie.namespaces.uri(type);
 
       if (!this.templates[type]) {
         return;
@@ -283,10 +298,7 @@ VIE.prototype.RdfaService.prototype = {
       jQuery('[typeof]', element).each(function () {
         var templateElement = jQuery(this);
         var childType = templateElement.attr('typeof');
-        var vieChildType = self.vie.types.get(childType);
-        if (vieChildType) {
-          childType = vieChildType.id;
-        }
+        childType = self.vie.namespaces.isUri(childType) ? childType : self.vie.namespaces.uri(childType);
         if (templates[childType]) {
           return;
         }

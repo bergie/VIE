@@ -120,7 +120,30 @@
                           <li about="http://example.net/collectionreset/item"><span property="title">Title</span></li>
                       </ul>
                   </div>
-             </div>
+              </div>
+              <div class="rdfa-collection-twotemplates">
+                  <div about="http://example.net/mycollection">
+                      <div rel="section">
+                          <div about="foo" typeof="first">
+                            <h1 property="title">Content</h1>
+                          </div>
+                          <div about="bar" typeof="second">
+                            <h2 property="title">Content</h2>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="rdfa-collection-scripttemplate">
+                  <script type="text/html" class="template">
+                      <div about="bar" typeof="second">
+                          <h2 property="title">Content</h2>
+                      </div>
+                  </script>
+                  <div about="http://example.net/mycollection">
+                      <div rel="section">
+                      </div>
+                  </div>
+              </div>
         </div>
 
         <!--<h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>

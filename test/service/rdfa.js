@@ -162,3 +162,98 @@ test("Test collection reset with RDFa", function() {
         start();
     });
 });
+
+test("Test type-specific collection RDFa templates", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-collection-twotemplates');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        var mainEntity = z.entities.get('<http://example.net/mycollection>');
+        ok(mainEntity.isEntity);
+
+        var collection = mainEntity.get('section');
+        ok(collection.isCollection);
+        equal(collection.length, 2);
+        equal(jQuery('div[about]', html).length, 3);
+        equal(jQuery('h1', html).length, 1);
+        equal(jQuery('h2', html).length, 1);
+
+        collection.add({
+          '@type': 'first'
+        });
+        equal(collection.length, 3);
+        equal(jQuery('h1', html).length, 2);
+        equal(jQuery('h2', html).length, 1);
+
+        collection.remove(collection.at(2));
+        equal(collection.length, 2);
+        equal(jQuery('h1', html).length, 1);
+
+        collection.add({
+          '@type': 'second'
+        });
+        equal(collection.length, 3);
+        equal(jQuery('h2', html).length, 2);
+        equal(jQuery('h1', html).length, 1);
+
+        collection.remove(collection.at(2));
+        equal(collection.length, 2);
+        equal(jQuery('h2', html).length, 1);
+
+        // Add a model of unspecified type, should add using the second template
+        collection.add({});
+        equal(collection.length, 3);
+        equal(jQuery('h2', html).length, 2);
+        equal(jQuery('h1', html).length, 1);
+
+        collection.remove(collection.at(2));
+        equal(collection.length, 2);
+        equal(jQuery('h2', html).length, 1);
+
+        start();
+    });
+});
+
+test("Test collection with custom RDFa template", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-collection-scripttemplate');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        var mainEntity = z.entities.get('<http://example.net/mycollection>');
+        ok(mainEntity.isEntity);
+
+        var collection = mainEntity.get('section');
+        ok(collection.isCollection);
+        equal(collection.length, 0);
+        equal(jQuery('div[rel="section"]', html).children().length, 0);
+
+        // We should not be able to add to DOM without template
+        collection.add({});
+        equal(jQuery('div[rel="section"]', html).children().length, 0);
+        equal(collection.length, 1);
+        collection.remove(collection.at(0));
+        equal(collection.length, 0);
+
+        // Register a template with the RDFa service
+        z.service('rdfa').setTemplate('second', 'section', jQuery('.template', html).html());
+
+        // Now adding should work
+        collection.add({
+          '@type': 'second'
+        });
+        equal(jQuery('div[rel="section"]', html).children().length, 1);
+        equal(collection.length, 1);
+        equal(jQuery('div[rel="section"] h2', html).length, 1);
+
+        collection.remove(collection.at(0));
+        equal(jQuery('div[rel="section"]', html).children().length, 0);
+
+        start();
+    });
+});
