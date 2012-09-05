@@ -248,17 +248,25 @@ VIE.prototype.RdfaService.prototype = {
     },
 
     setTemplate: function (type, predicate, template) {
+      var templateFunc;
+
       if (!template) {
         template = predicate;
         predicate = 'default';
       }
       type = this.vie.namespaces.isUri(type) ? type : this.vie.namespaces.uri(type);
 
+      if (_.isFunction(template)) {
+        templateFunc = template;
+      } else {
+        templateFunc = this.getElementTemplate(template);
+      }
+
       if (!this.templates[type]) {
         this.templates[type] = {};
       }
 
-      this.templates[type][predicate] = template;
+      this.templates[type][predicate] = templateFunc;
 
       // Update existing Collection Views where this template applies
       _.each(this.views, function (view) {
@@ -270,7 +278,7 @@ VIE.prototype.RdfaService.prototype = {
           return;
         }
 
-        view.templates[type] = template;
+        view.templates[type] = templateFunc;
       }, this);
     },
 
@@ -316,18 +324,41 @@ VIE.prototype.RdfaService.prototype = {
         if (templates[childType]) {
           return;
         }
-        templates[childType] = templateElement;
-        templates['<http://www.w3.org/2002/07/owl#Thing>'] = templateElement;
+        var templateFunc = self.getElementTemplate(templateElement);
+        templates[childType] = templateFunc;
+        templates['<http://www.w3.org/2002/07/owl#Thing>'] = templateFunc;
       });
 
       if (_.isEmpty(templates)) {
         var defaultTemplate = element.children(':first-child');
         if (defaultTemplate.length) {
-          templates['<http://www.w3.org/2002/07/owl#Thing>'] = defaultTemplate;
+          templates['<http://www.w3.org/2002/07/owl#Thing>'] = self.getElementTemplate(defaultTemplate);
         }
       }
 
       return templates;
+    },
+
+    // Return a template-generating function for given element
+    getElementTemplate: function (element) {
+        var service = this;
+        return function (entity, callback) {
+            var newElement = jQuery(element).clone(false);
+            if (newElement.attr('about') !== undefined) {
+                // Direct match with container element
+                newElement.attr('about', '');
+            }
+            newElement.find('[about]').attr('about', '');
+            var subject = service.findPredicateElements(subject, newElement, false).each(function () {
+                var predicateElement = jQuery(this);
+                var predicate = service.getElementPredicate(predicateElement);
+                if (entity.has(predicate) && entity.get(predicate).isCollection) {
+                    return true;
+                }
+                service.writeElementValue(null, predicateElement, '');
+            });
+            callback(newElement);
+        };
     },
     
     _registerCollectionView : function(collection, element, entity) {

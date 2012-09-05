@@ -258,6 +258,54 @@ test("Test collection with custom RDFa template", function () {
     });
 });
 
+test("Test collection with custom RDFa template function", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-collection-scripttemplate2');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        var mainEntity = z.entities.get('<http://example.net/mycollection>');
+        ok(mainEntity.isEntity);
+
+        var collection = mainEntity.get('section');
+        ok(collection.isCollection);
+        equal(collection.length, 0);
+        equal(jQuery('div[rel="section"]', html).children().length, 0);
+
+        // We should not be able to add to DOM without template
+        collection.add({});
+        equal(jQuery('div[rel="section"]', html).children().length, 0);
+        equal(collection.length, 1);
+        collection.remove(collection.at(0));
+        equal(collection.length, 0);
+
+        // Register a template with the RDFa service
+        z.service('rdfa').setTemplate('second', 'section', function (entity, callback) {
+            window.setTimeout(function () {
+                callback(jQuery(jQuery('.template', html).html()).clone(false));
+            }, 0);
+        });
+
+        // Now adding should work
+        collection.add({
+            '@type': 'second'
+        });
+
+        window.setTimeout(function () {
+            equal(jQuery('div[rel="section"]', html).children().length, 1);
+            equal(collection.length, 1);
+            equal(jQuery('div[rel="section"] h2', html).length, 1);
+
+            collection.remove(collection.at(0));
+            equal(jQuery('div[rel="section"]', html).children().length, 0);
+
+            start();
+        }, 1);
+    });
+});
+
 test("Test direct RDFa collection", function () {
     var z = new VIE();
     z.use(new z.RdfaService);
