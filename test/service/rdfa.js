@@ -347,3 +347,28 @@ test("Test direct RDFa collection", function () {
         start();
     });
 });
+
+test("Test RDFa datatype parsing", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-datatypes');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        var entity = z.entities.get('<http://example.net/datatypes>');
+
+        ok(_.isBoolean(entity.get('boolean')));
+        ok(_.isBoolean(entity.get('boolean2')));
+        equal(entity.get('boolean'), false);
+        equal(entity.get('boolean2'), true);
+
+        ok(_.isDate(entity.get('date')));
+        equal(entity.get('date').getFullYear(), 2012);
+
+        ok(_.isNumber(entity.get('number')));
+        equal(entity.get('number'), 123);
+
+        start();
+    });
+});

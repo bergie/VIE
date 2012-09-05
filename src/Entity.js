@@ -175,7 +175,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                        }
                    } else if (value["@value"]) {
                        // The value is a literal object, ignore
-                   } else if (typeof value == "object") {
+                   } else if (_.isObject(value) && !_.isDate(value)) {
                        // The value is another VIE Entity
                        var child = new self.vie.Entity(value, options);
                        // which is being stored in `v.entities`

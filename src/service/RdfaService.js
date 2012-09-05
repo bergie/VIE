@@ -29,13 +29,28 @@ VIE.prototype.RdfaService = function(options) {
         subjectSelector : "[about],[typeof],[src],html",
         predicateSelector : "[property],[rel]",
         /* default rules that are shipped with this service */
-        rules : []
+        rules : [],
     };
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
 
     this.views = [];
     this.templates = {};
+
+    this.datatypeReaders = {
+      '<http://www.w3.org/2001/XMLSchema#boolean>': function (value) {
+        if (value === 'true' || value === 1 || value === true) {
+          return true;
+        }
+        return false;
+      },
+      '<http://www.w3.org/2001/XMLSchema#dateTime>': function (value) {
+        return new Date(value);
+      },
+      '<http://www.w3.org/2001/XMLSchema#integer>': function (value) {
+        return parseInt(value);
+      }
+    };
 
     this.vie = null; /* will be set via VIE.use(); */
     /* overwrite options.name if you want to set another name */
@@ -534,14 +549,25 @@ VIE.prototype.RdfaService.prototype = {
             return true;
         });
     },
-    
+
+    parseElementValue: function (value, element) {
+        if (!element.attr('datatype')) {
+            return value;
+        }
+        var datatype = this.vie.namespaces.uri(element.attr('datatype'));
+        if (!this.datatypeReaders[datatype]) {
+            return value;
+        }
+        return this.datatypeReaders[datatype](value);
+    },
+
     readElementValue : function(predicate, element) {
         // The `content` attribute can be used for providing machine-readable
         // values for elements where the HTML presentation differs from the
         // actual value.
         var content = element.attr('content');
         if (content) {
-            return content;
+            return this.parseElementValue(content, element);
         }
                 
         // The `resource` attribute can be used to link a predicate to another
@@ -572,7 +598,7 @@ VIE.prototype.RdfaService.prototype = {
     
         // If none of the checks above matched we return the HTML contents of
         // the element as the literal value.
-        return element.html();
+        return this.parseElementValue(element.html(), element);
     },
     
     writeElementValue : function(predicate, element, value) {
