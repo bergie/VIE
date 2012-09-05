@@ -469,27 +469,45 @@ VIE.Util = {
                 dataTypeHelper.call(vie, ancestors, dt);
             }
         }
+
+        var metadataHelper = function (definition) {
+            var metadata = {};
+
+            if (definition.label) {
+              metadata.label = definition.label;
+            }
+
+            if (definition.url) {
+              metadata.url = definition.url;
+            }
+
+            if (definition.comment) {
+              metadata.comment = definition.comment;
+            }
+
+            if (definition.metadata) {
+              metadata = _.extend(metadata, definition.metadata);
+            }
+            return metadata;
+        };
         
         var typeProps = function (id) {
             var props = [];
-            var specProps = SchemaOrg["types"][id]["specific_properties"];
-            for (var p = 0; p < specProps.length; p++) {
-                var pId = specProps[p];
-                var range = SchemaOrg["properties"][pId].ranges;
-                var min = SchemaOrg["properties"][pId].min;
-                var max = SchemaOrg["properties"][pId].max;
+            _.each(SchemaOrg['types'][id]['specific_properties'], function (pId) {
+                var property = SchemaOrg['properties'][pId];
                 props.push({
-                    'id'    : pId,
-                    'range' : range,
-                    'min'   : min,
-                    'max'   : max
+                    'id'    : property.id,
+                    'range' : property.ranges,
+                    'min'   : property.min,
+                    'max'   : property.max,
+                    'metadata': metadataHelper(property)
                 });
-            }
+            });
             return props;
         };
         
-        var typeHelper = function (ancestors, id, props) {
-            var type = vie.types.add(id, props);
+        var typeHelper = function (ancestors, id, props, metadata) {
+            var type = vie.types.add(id, props, metadata);
            
             for (var i = 0; i < ancestors.length; i++) {
                 var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
@@ -501,13 +519,16 @@ VIE.Util = {
             }
             return type;
         };
-        
-        for (var t in SchemaOrg["types"]) {
-            if (!vie.types.get(t)) {
-                var ancestors = SchemaOrg["types"][t].supertypes;
-                typeHelper.call(vie, ancestors, t, typeProps.call(vie, t));
+       
+        _.each(SchemaOrg['types'], function (typeDef) {
+            if (vie.types.get(typeDef.id)) {
+                return;
             }
-        }
+            var ancestors = typeDef.supertypes;
+            var metadata = metadataHelper(typeDef);
+            typeHelper.call(vie, ancestors, typeDef.id, typeProps.call(vie, typeDef.id), metadata);
+        });
+
         /* set the namespace to either the old value or the provided baseNS value */
         vie.namespaces.base(baseNSBefore);
     },

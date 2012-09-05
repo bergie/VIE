@@ -18,11 +18,12 @@ if (VIE.prototype.Types) {
 	throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
 }
 
-// ### VIE.Type(id, attrs)
+// ### VIE.Type(id, attrs, metadata)
 // This is the constructor of a VIE.Type.  
 // **Parameters**:  
 // *{string}* **id** The id of the type.  
 // *{string|array|VIE.Attribute}* **attrs** A string, proper ```VIE.Attribute``` or an array of these which 
+// *{object}* **metadata** Possible metadata about the type
 // are the possible attributes of the type  
 // **Throws**:  
 // *{Error}* if one of the given paramenters is missing.  
@@ -31,7 +32,7 @@ if (VIE.prototype.Types) {
 // **Example usage**:  
 //
 //     var person = new vie.Type("Person", ["name", "knows"]);
-VIE.prototype.Type = function (id, attrs) {
+VIE.prototype.Type = function (id, attrs, metadata) {
     if (id === undefined || typeof id !== 'string') {
         throw "The type constructor needs an 'id' of type string! E.g., 'Person'";
     }
@@ -96,6 +97,11 @@ VIE.prototype.Type = function (id, attrs) {
 //
 //     console.log(person.attributes);
     this.attributes = new this.vie.Attributes(this, (attrs)? attrs : []);
+
+// ### metadata
+// This field stores possible additional information about the type, like
+// a human-readable label.
+    this.metadata = metadata ? metadata : {};
 
 // ### isof(type)
 // This method checks whether the current type is a child of the given type.  
@@ -288,11 +294,12 @@ VIE.prototype.Types = function () {
         
     this._types = {};
     
-// ### add(id, attrs)
+// ### add(id, attrs, metadata)
 // This method adds a `VIE.Type` to the types.  
 // **Parameters**:  
 // *{string|VIE.Type}* **id** If this is a string, the type is created and directly added.  
-// *{string|object}* **attrs** Only used if ```id``` is a string.   
+// *{string|object}* **attrs** Only used if ```id``` is a string.
+// *{object}* **metadata** potential additional metadata about the type.
 // **Throws**:  
 // *{Error}* if a type with the given id already exists a ```VIE.Entity``` instance from this type.  
 // **Returns**:  
@@ -301,7 +308,7 @@ VIE.prototype.Types = function () {
 //
 //     var types = new vie.Types();
 //     types.add("Person", ["name", "knows"]);
-    this.add = function (id, attrs) {
+    this.add = function (id, attrs, metadata) {
         if (_.isArray(id)) {
            _.each(id, function (type) {
              this.add(type);
@@ -311,10 +318,9 @@ VIE.prototype.Types = function () {
 
         if (this.get(id)) {
             throw new Error("Type '" + id + "' already registered.");
-        } 
-        else {
+        }  else {
             if (typeof id === "string") {
-                var t = new this.vie.Type(id, attrs);
+                var t = new this.vie.Type(id, attrs, metadata);
                 this._types[t.id] = t;
                 return t;
             } else if (id instanceof this.vie.Type) {
