@@ -93,7 +93,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             self.trigger('add', entityView);
             self.entityViews[entity.cid] = entityView;
             entityElement.show();
-        });
+        }, this);
     },
 
     findReverseRelations: function (entity, element) {
