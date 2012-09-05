@@ -282,7 +282,8 @@ test("Test collection with custom RDFa template function", function () {
         equal(collection.length, 0);
 
         // Register a template with the RDFa service
-        z.service('rdfa').setTemplate('second', 'section', function (entity, callback) {
+        z.service('rdfa').setTemplate('second', 'section', function (entity, callback, collectionView) {
+            ok(collectionView instanceof z.view.Collection);
             window.setTimeout(function () {
                 callback(jQuery(jQuery('.template', html).html()).clone(false));
             }, 0);
