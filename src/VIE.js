@@ -359,9 +359,14 @@ VIE.prototype.loadSchema = function(url, options) {
         var vie = this;
         jQuery.getJSON(url)
         .success(function(data) {
-            VIE.Util.loadSchemaOrg(vie, data, options.baseNS);
-            if (options.success) {
-                options.success.call(vie);
+            try {
+                VIE.Util.loadSchemaOrg(vie, data, options.baseNS);
+                if (options.success) {
+                    options.success.call(vie);
+                }
+            } catch (e) {
+                options.error.call(vie, e);
+                return;
             }
          })
         .error(function(data, textStatus, jqXHR) { 
