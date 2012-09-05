@@ -370,6 +370,17 @@ test("Test RDFa datatype parsing", function () {
         ok(_.isNumber(entity.get('number')));
         equal(entity.get('number'), 123);
 
+        // Test writing as well
+        equal(jQuery('[property="boolean"]', html).attr('content'), 'false');
+        entity.set('boolean', true);
+        equal(jQuery('[property="boolean"]', html).attr('content'), 'true');
+
+        entity.set('date', new Date('1999-05-08T21:00:01Z'));
+        equal(jQuery('[property="date"]', html).attr('content'), '1999-05-08T21:00:01.000Z');
+
+        entity.set('number', 42);
+        equal(jQuery('[property="number"]', html).text(), '42');
+
         start();
     });
 });

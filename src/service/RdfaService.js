@@ -52,6 +52,15 @@ VIE.prototype.RdfaService = function(options) {
       }
     };
 
+    this.datatypeWriters = {
+      '<http://www.w3.org/2001/XMLSchema#dateTime>': function (value) {
+        if (!_.isDate(value)) {
+          return date;
+        }
+        return value.toISOString();
+      }
+    };
+
     this.vie = null; /* will be set via VIE.use(); */
     /* overwrite options.name if you want to set another name */
     this.name = this.options.name;
@@ -561,6 +570,17 @@ VIE.prototype.RdfaService.prototype = {
         return this.datatypeReaders[datatype](value);
     },
 
+    generateElementValue: function (value, element) {
+        if (!element.attr('datatype')) {
+            return value;
+        }
+        var datatype = this.vie.namespaces.uri(element.attr('datatype'));
+        if (!this.datatypeWriters[datatype]) {
+            return value;
+        }
+        return this.datatypeWriters[datatype](value);
+    },
+
     readElementValue : function(predicate, element) {
         // The `content` attribute can be used for providing machine-readable
         // values for elements where the HTML presentation differs from the
@@ -602,6 +622,8 @@ VIE.prototype.RdfaService.prototype = {
     },
     
     writeElementValue : function(predicate, element, value) {
+        value = this.generateElementValue(value, element);
+
         //TODO: this is a hack, please fix!
         if (_.isArray(value) && value.length > 0) {
             value = value[0];

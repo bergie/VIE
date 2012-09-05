@@ -135,8 +135,7 @@ exports['test about and anonymous'] = function(test) {
     test.equal(jsonldEntities.length, 2);
     test.equal(jsonldEntities[0]['@type'][0], '<http://www.w3.org/2002/12/cal#Vevent>');
     test.equal(jsonldEntities[0]['@subject'], '<#bbq>');
-    // FIXME: This should really have the datatype
-    test.equal(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>'], '2007-09-16T16:00:00-05:00');
+    test.equal(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>'].toISOString(), new Date('2007-09-16T16:00:00-05:00').toISOString());
     
     var objectInstance = VIE.EntityManager.getByJSONLD(jsonldEntities[0]);
     test.equal(objectInstance.id, '<#bbq>');
