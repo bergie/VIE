@@ -257,3 +257,45 @@ test("Test collection with custom RDFa template", function () {
         start();
     });
 });
+
+test("Test direct RDFa collection", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-collection-twotemplates');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        var mainEntity = z.entities.get('<http://example.net/mycollection>');
+        ok(mainEntity.isEntity);
+
+        var collection = mainEntity.get('section');
+        ok(collection.isCollection);
+        equal(collection.length, 2);
+
+        equal(collection.at(0).get('title'), 'Content');
+
+        equal(jQuery('div[about]', html).length, 3);
+        equal(jQuery('h1', html).length, 1);
+        equal(jQuery('h2', html).length, 1);
+
+        collection.add({
+          '@type': 'first'
+        });
+        equal(collection.length, 3);
+        equal(jQuery('h1', html).length, 2);
+        equal(jQuery('h2', html).length, 1);
+
+        collection.remove(collection.at(2));
+        equal(collection.length, 2);
+        equal(jQuery('h1', html).length, 1);
+
+        collection.add({
+          '@type': 'second'
+        });
+        equal(collection.length, 3);
+        equal(jQuery('h2', html).length, 2);
+        
+        start();
+    });
+});
