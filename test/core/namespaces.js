@@ -185,3 +185,44 @@ test ("CURIE <-> URI", function () {
     ok(v.namespaces.isCurie(scurie));
     
 });
+
+test('Double prefixed CURIE <-> URI', function () {
+    var v = new VIE();
+    v.namespaces.add('typo3', 'http://www.typo3.org/ns/2011/Flow3/Packages/TYPO3/Content/');
+
+    var curie = 'typo3:TYPO3.TYPO3:Text';
+    var curie2 = 'typo3:TYPO3.TYPO3.FOO3:Text';
+
+    var uri = '<http://www.typo3.org/ns/2011/Flow3/Packages/TYPO3/Content/TYPO3.TYPO3:Text>';
+    var uri2 = '<http://www.typo3.org/ns/2011/Flow3/Packages/TYPO3/Content/TYPO3.TYPO3.FOO3:Text>';
+
+    // URI -> CURIE
+    equal(v.namespaces.curie(uri), curie);
+    equal(v.namespaces.curie(uri2), curie2);
+
+    // CURIE -> URI
+    equal(v.namespaces.uri(curie), uri);
+    equal(v.namespaces.uri(curie2), uri2);
+
+    // CURIE -> CURIE
+    equal(v.namespaces.curie(curie), curie);
+    equal(v.namespaces.curie(curie2), curie2);
+
+    // URI -> URI
+    equal(v.namespaces.uri(uri), uri);
+    equal(v.namespaces.uri(uri2), uri2);
+
+    // CURIE -> URI -> CURIE
+    equal(v.namespaces.curie(v.namespaces.uri(curie)), curie);
+    equal(v.namespaces.curie(v.namespaces.uri(curie2)), curie2);
+
+    ok(v.namespaces.isUri(uri));
+    ok(v.namespaces.isUri(uri2));
+    ok(!v.namespaces.isUri(curie));
+    ok(!v.namespaces.isUri(curie2));
+
+    ok(!v.namespaces.isCurie(uri));
+    ok(!v.namespaces.isCurie(uri2));
+    ok(v.namespaces.isCurie(curie));
+    ok(v.namespaces.isCurie(curie2));
+});

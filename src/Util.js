@@ -113,6 +113,9 @@ VIE.Util = {
 //     VIE.Util.toUri(scurie, ns);
 //          --> <http://dbpedia.org/ontology/Person>
     toUri : function (curie, namespaces) {
+        if (VIE.Util.isUri(curie)) {
+            return curie;
+        }
         var delim = ":";
         for (var prefix in namespaces.toObj()) {
             if (prefix !== "" && (curie.indexOf(prefix + ":") === 0 || curie.indexOf("[" + prefix + ":") === 0)) {
