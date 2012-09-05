@@ -472,10 +472,14 @@ VIE.Util = {
             var specProps = SchemaOrg["types"][id]["specific_properties"];
             for (var p = 0; p < specProps.length; p++) {
                 var pId = specProps[p];
-                var range = SchemaOrg["properties"][pId]["ranges"];
+                var range = SchemaOrg["properties"][pId].ranges;
+                var min = SchemaOrg["properties"][pId].min;
+                var max = SchemaOrg["properties"][pId].max;
                 props.push({
                     'id'    : pId,
-                    'range' : range
+                    'range' : range,
+                    'min'   : min,
+                    'max'   : max
                 });
             }
             return props;
