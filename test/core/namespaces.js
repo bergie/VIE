@@ -212,6 +212,10 @@ test('Double prefixed CURIE <-> URI', function () {
     equal(v.namespaces.uri(uri), uri);
     equal(v.namespaces.uri(uri2), uri2);
 
+    // URI -> prefix
+    equal(v.namespaces.getPrefix(uri), 'typo3');
+    equal(v.namespaces.getPrefix(curie), 'typo3');
+
     // CURIE -> URI -> CURIE
     equal(v.namespaces.curie(v.namespaces.uri(curie)), curie);
     equal(v.namespaces.curie(v.namespaces.uri(curie2)), curie2);

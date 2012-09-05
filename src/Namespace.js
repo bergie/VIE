@@ -207,8 +207,15 @@ VIE.prototype.Namespaces.prototype.get = function (prefix) {
 //     console.log(namespaces.getPrefix("http://test.ns")); // <-- "test"
 VIE.prototype.Namespaces.prototype.getPrefix = function (namespace) {
     var prefix = undefined;
+    if (namespace.indexOf('<') === 0) {
+        namespace = namespace.substring(1, namespace.length - 1);
+    }
     jQuery.each(this._namespaces, function (k1,v1) {
-        if (v1 === namespace) {
+        if (namespace.indexOf(v1) === 0) {
+            prefix = k1;
+        }
+
+        if (namespace.indexOf(k1 + ':') === 0) {
             prefix = k1;
         }
     });
