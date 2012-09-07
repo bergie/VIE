@@ -357,9 +357,12 @@ VIE.prototype.MockService.prototype.analyze = function(analyzable) {
     }
 };
 
-test("vie.js Service API", 8, function () {
+test("vie.js Service API", 10, function () {
     var z = new VIE();
+
+    equal(z.hasService('mock'), false);
     z.use(new z.MockService());
+    ok(z.hasService('mock'));
     ok(z.service('mock'));
     equal(typeof z.service('mock').load, 'function');
 

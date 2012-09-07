@@ -200,10 +200,24 @@ VIE.prototype.use = function(service, name) {
 //     vie.use(new vie.StanbolService(), "stanbol");
 //     var service = vie.service("stanbol");
 VIE.prototype.service = function(name) {
-  if (!this.services[name]) {
+  if (!this.hasService(name)) {
     throw "Undefined service " + name;
   }
   return this.services[name];
+};
+
+// ### hasService(name)
+// This method returns a boolean telling whether VIE has a particular
+// service loaded.
+// **Parameters**:
+// *{string}* **name**
+// **Returns**:
+// *{boolean}* whether service is available
+VIE.prototype.hasService = function(name) {
+  if (!this.services[name]) {
+    return false;
+  }
+  return true;
 };
 
 // ### getServicesArray()
