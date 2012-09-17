@@ -12,10 +12,10 @@
 // for example to query easily for certain entities (e.g., you only need to query for *Person*s 
 // and not for all subtypes).
 if (VIE.prototype.Type) {
-	throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
+    throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
 }
 if (VIE.prototype.Types) {
-	throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
+    throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
 }
 
 // ### VIE.Type(id, attrs, metadata)
@@ -324,7 +324,7 @@ VIE.prototype.Types = function () {
                 this._types[t.id] = t;
                 return t;
             } else if (id instanceof this.vie.Type) {
-            	this._types[id.id] = id;
+                this._types[id.id] = id;
                 return id;
             } else {
                 throw new Error("Wrong argument to VIE.Types.add()!");
@@ -469,9 +469,9 @@ VIE.prototype.Types = function () {
         
         if (types.length === 0) return [];
         var copy = [ types[0] ];
+        var x; 
         
-        
-        for (var x = 1, tlen = types.length; x < tlen; x++) {
+        for (x = 1, tlen = types.length; x < tlen; x++) {
             var insert = types[x];
             var insType = self.get(insert);
             if (insType) {
@@ -487,11 +487,11 @@ VIE.prototype.Types = function () {
         }
         
         //unduplicate
-        for (var x = 0; x < copy.length; x++) {
-        	if (copy.lastIndexOf(copy[x]) !== x) {
-        		copy.splice(x, 1);
-        		x--;
-        	}
+        for (x = 0; x < copy.length; x++) {
+            if (copy.lastIndexOf(copy[x]) !== x) {
+                copy.splice(x, 1);
+                x--;
+            }
         }
         
         if (!desc) {

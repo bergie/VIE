@@ -29,7 +29,7 @@ VIE.prototype.RdfaService = function(options) {
         subjectSelector : "[about],[typeof],[src],html",
         predicateSelector : "[property],[rel]",
         /* default rules that are shipped with this service */
-        rules : [],
+        rules : []
     };
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});

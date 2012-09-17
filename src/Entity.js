@@ -342,18 +342,19 @@ VIE.prototype.Entity = function(attrs, opts) {
             if (!attr || !value)
                 return;
             options = (options)? options : {};
+            var v;
                 
             attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
             
             if (_.isArray(value)) {
-                for (var v = 0; v < value.length; v++) {
+                for (v = 0; v < value.length; v++) {
                     this._setOrAddOne(attr, value[v], options);
                 }
                 return;
             }
             
             if (attr === "@type" && value instanceof self.vie.Type) {
-            	value = value.id;
+                value = value.id;
             }
             
             var obj = {};
@@ -379,14 +380,14 @@ VIE.prototype.Entity = function(attrs, opts) {
                 this.change({});
             } else if (_.isArray(existing)) {
                 if (value.isCollection) {
-                	for (var v = 0; v < value.size(); v++) {
-                		this._setOrAddOne(attr, value.at(v).getSubject(), options);
-                	}
+                    for (v = 0; v < value.size(); v++) {
+                        this._setOrAddOne(attr, value.at(v).getSubject(), options);
+                    }
                 } else if (value.isEntity) {
-                	this._setOrAddOne(attr, value.getSubject(), options);
+                    this._setOrAddOne(attr, value.getSubject(), options);
                 } else if (typeof value === "object") {
-                	value = new this.vie.Entity(value);
-                	this._setOrAddOne(attr, value, options);
+                    value = new this.vie.Entity(value);
+                    this._setOrAddOne(attr, value, options);
                 } else {
                     /* yes, we (have to) allow multiple equal values */
                     existing.push(value);

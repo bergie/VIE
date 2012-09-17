@@ -34,7 +34,7 @@ VIE.Util = {
 //     var uri = "<http://dbpedia.org/ontology/Person>";
 //     VIE.Util.toCurie(uri, false, ns); // --> dbp:Person
 //     VIE.Util.toCurie(uri, true, ns); // --> [dbp:Person]
-	toCurie : function (uri, safe, namespaces) {
+    toCurie : function (uri, safe, namespaces) {
         if (VIE.Util.isCurie(uri, namespaces)) {
             return uri;
         }
@@ -194,90 +194,90 @@ VIE.Util = {
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
         try {
-	        var rdf = (results instanceof jQuery.rdf)? 
-	        		results.base(service.vie.namespaces.base()) : 
-	        			jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
-	
-	        /* if the service contains rules to apply special transformation, they are executed here.*/
-	        if (service.rules) {
-	            var rules = jQuery.rdf.ruleset();
-	            for (var prefix in service.vie.namespaces.toObj()) {
-	                if (prefix !== "") {
-	                    rules.prefix(prefix, service.vie.namespaces.get(prefix));
-	                }
-	            }
-	            for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
-	                var rule = service.rules[i];
-	                rules.add(rule['left'], rule['right']);
-	            }
-	            rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
-	        }
-	        var entities = {};
-	        rdf.where('?subject ?property ?object').each(function() {
-	            var subject = this.subject.toString();
-	            if (!entities[subject]) {
-	                entities[subject] = {
-	                    '@subject': subject,
-	                    '@context': service.vie.namespaces.toObj(true),
-	                    '@type': []
-	                };
-	            }
-	            var propertyUri = this.property.toString();
-	            var propertyCurie;
-	
-	            try {
-	                propertyCurie = service.vie.namespaces.curie(propertyUri);
-	                //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
-	            } catch (e) {
-	                propertyCurie = propertyUri;
-	                // console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
-	            }
-	            entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
+            var rdf = (results instanceof jQuery.rdf)? 
+                    results.base(service.vie.namespaces.base()) : 
+                        jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
+    
+            /* if the service contains rules to apply special transformation, they are executed here.*/
+            if (service.rules) {
+                var rules = jQuery.rdf.ruleset();
+                for (var prefix in service.vie.namespaces.toObj()) {
+                    if (prefix !== "") {
+                        rules.prefix(prefix, service.vie.namespaces.get(prefix));
+                    }
+                }
+                for (var i = 0; i < service.rules.length; i++)if(service.rules.hasOwnProperty(i)) {
+                    var rule = service.rules[i];
+                    rules.add(rule.left, rule.right);
+                }
+                rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
+            }
+            var entities = {};
+            rdf.where('?subject ?property ?object').each(function() {
+                var subject = this.subject.toString();
+                if (!entities[subject]) {
+                    entities[subject] = {
+                        '@subject': subject,
+                        '@context': service.vie.namespaces.toObj(true),
+                        '@type': []
+                    };
+                }
+                var propertyUri = this.property.toString();
+                var propertyCurie;
+    
+                try {
+                    propertyCurie = service.vie.namespaces.curie(propertyUri);
+                    //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
+                } catch (e) {
+                    propertyCurie = propertyUri;
+                    // console.warn(propertyUri + " doesn't have a namespace definition in '", service.vie.namespaces.toObj());
+                }
+                entities[subject][propertyCurie] = entities[subject][propertyCurie] || [];
 
-	            function getValue(rdfQueryLiteral){
-	                if(typeof rdfQueryLiteral.value === "string"){
-	                    if (rdfQueryLiteral.lang){
-	                        var literal = {
-	                            toString: function(){
-	                                return this["@value"];
-	                            },
-	                            "@value": rdfQueryLiteral.value.replace(/^"|"$/g, ''),
-	                            "@language": rdfQueryLiteral.lang
-	                        };
-	                        return literal;
-	                    }
-	                    else
-	                        return rdfQueryLiteral.value;
-	                    return rdfQueryLiteral.value.toString();
-	                } else if (rdfQueryLiteral.type === "uri"){
-	                    return rdfQueryLiteral.toString();
-	                } else {
-	                    return rdfQueryLiteral.value;
-	                }
-	            }
-	            entities[subject][propertyCurie].push(getValue(this.object));
-	        });
-	
-	        _(entities).each(function(ent){
-	            ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
-	            delete ent["rdf:type"];
-	            _(ent).each(function(value, property){
-	                if(value.length === 1){
-	                    ent[property] = value[0];
-	                }
-	            });
-	        });
-	
-	        var vieEntities = [];
-	        jQuery.each(entities, function() {
-	            var entityInstance = new service.vie.Entity(this);
-	            entityInstance = service.vie.entities.addOrUpdate(entityInstance);
-	            vieEntities.push(entityInstance);
-	        });
-	        return vieEntities;
+                function getValue(rdfQueryLiteral){
+                    if(typeof rdfQueryLiteral.value === "string"){
+                        if (rdfQueryLiteral.lang){
+                            var literal = {
+                                toString: function(){
+                                    return this["@value"];
+                                },
+                                "@value": rdfQueryLiteral.value.replace(/^"|"$/g, ''),
+                                "@language": rdfQueryLiteral.lang
+                            };
+                            return literal;
+                        }
+                        else
+                            return rdfQueryLiteral.value;
+                        return rdfQueryLiteral.value.toString();
+                    } else if (rdfQueryLiteral.type === "uri"){
+                        return rdfQueryLiteral.toString();
+                    } else {
+                        return rdfQueryLiteral.value;
+                    }
+                }
+                entities[subject][propertyCurie].push(getValue(this.object));
+            });
+    
+            _(entities).each(function(ent){
+                ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+                delete ent["rdf:type"];
+                _(ent).each(function(value, property){
+                    if(value.length === 1){
+                        ent[property] = value[0];
+                    }
+                });
+            });
+    
+            var vieEntities = [];
+            jQuery.each(entities, function() {
+                var entityInstance = new service.vie.Entity(this);
+                entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+                vieEntities.push(entityInstance);
+            });
+            return vieEntities;
         } catch (e) {
-        	console.warn("Something went wrong while parsing the returned results!", e);
-        	return [];
+            console.warn("Something went wrong while parsing the returned results!", e);
+            return [];
         }
     },
 
@@ -457,15 +457,15 @@ VIE.Util = {
             
             for (var i = 0; i < ancestors.length; i++) {
                 var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
-                    dataTypeHelper.call(vie, SchemaOrg["datatypes"][ancestors[i]].supertypes, ancestors[i]);
+                    dataTypeHelper.call(vie, SchemaOrg.datatypes[ancestors[i]].supertypes, ancestors[i]);
                 type.inherit(supertype);
             }
             return type;
         };
         
-        for (var dt in SchemaOrg["datatypes"]) {
+        for (var dt in SchemaOrg.datatypes) {
             if (!vie.types.get(dt)) {
-                var ancestors = SchemaOrg["datatypes"][dt].supertypes;
+                var ancestors = SchemaOrg.datatypes[dt].supertypes;
                 dataTypeHelper.call(vie, ancestors, dt);
             }
         }
@@ -493,8 +493,8 @@ VIE.Util = {
         
         var typeProps = function (id) {
             var props = [];
-            _.each(SchemaOrg['types'][id]['specific_properties'], function (pId) {
-                var property = SchemaOrg['properties'][pId];
+            _.each(SchemaOrg.types[id].specific_properties, function (pId) {
+                var property = SchemaOrg.properties[pId];
                 props.push({
                     'id'    : property.id,
                     'range' : property.ranges,
@@ -511,7 +511,7 @@ VIE.Util = {
            
             for (var i = 0; i < ancestors.length; i++) {
                 var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
-                    typeHelper.call(vie, SchemaOrg["types"][ancestors[i]].supertypes, ancestors[i], typeProps.call(vie, ancestors[i]));
+                    typeHelper.call(vie, SchemaOrg.types[ancestors[i]].supertypes, ancestors[i], typeProps.call(vie, ancestors[i]));
                 type.inherit(supertype);
             }
             if (id === "Thing" && !type.isof("owl:Thing")) {
@@ -520,7 +520,7 @@ VIE.Util = {
             return type;
         };
        
-        _.each(SchemaOrg['types'], function (typeDef) {
+        _.each(SchemaOrg.types, function (typeDef) {
             if (vie.types.get(typeDef.id)) {
                 return;
             }
@@ -595,7 +595,7 @@ VIE.Util = {
           case 'xsd:string':
             return 'Text';
           case 'xsd:date':
-            return 'Date'
+            return 'Date';
           case 'xsd:dateTime':
             return 'DateTime';
           case 'xsd:boolean':
@@ -681,7 +681,7 @@ VIE.Util = {
         function pad(n) {
             var s = n.toString();
             return s.length < 2 ? '0'+s : s;
-        };
+        }
 
         var yyyy = date.getFullYear();
         var mm1  = pad(date.getMonth()+1);
@@ -709,50 +709,51 @@ VIE.Util = {
 //          var langs = ["en", "de"];
 //          VIE.Util.extractLanguageString(someEntity, attrs, langs); // "Barack Obama";
     extractLanguageString : function(entity, attrs, langs) {
+        var p, attr, name, i, n;
         if (entity && typeof entity !== "string") {
-        	attrs = (_.isArray(attrs))? attrs : [ attrs ];
-        	langs = (_.isArray(langs))? langs : [ langs ];
-        	for (var p = 0; p < attrs.length; p++) {
-	            for (var l = 0; l < langs.length; l++) {
-	            	var lang = langs[l];
-	                var attr = attrs[p];
-	                if (entity.has(attr)) {
-	                    var name = entity.get(attr);
-	                    name = (_.isArray(name))? name : [ name ];
-                        for ( var i = 0; i < name.length; i++) {
-                        	var n = name[i];
-                        	if (n.isEntity) {
-                        		n = VIE.Util.extractLanguageString(n, attrs, lang);
-                        	} else if (typeof n === "string") {
-                        		n = n;
-                        	} else {
-                        		n = "";
-                        	}
+            attrs = (_.isArray(attrs))? attrs : [ attrs ];
+            langs = (_.isArray(langs))? langs : [ langs ];
+            for (p = 0; p < attrs.length; p++) {
+                for (var l = 0; l < langs.length; l++) {
+                    var lang = langs[l];
+                    attr = attrs[p];
+                    if (entity.has(attr)) {
+                        name = entity.get(attr);
+                        name = (_.isArray(name))? name : [ name ];
+                        for (i = 0; i < name.length; i++) {
+                            n = name[i];
+                            if (n.isEntity) {
+                                n = VIE.Util.extractLanguageString(n, attrs, lang);
+                            } else if (typeof n === "string") {
+                                n = n;
+                            } else {
+                                n = "";
+                            }
                             if (n && n.indexOf('@' + lang) > -1) {
                                 return n.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
                             }
                         }
-	                }
-	            }
-        	}
-        	/* let's do this again in case we haven't found a name but are dealing with
-        	broken data where no language is given */
-        	for (var p = 0; p < attrs.length; p++) {
-                var attr = attrs[p];
+                    }
+                }
+            }
+            /* let's do this again in case we haven't found a name but are dealing with
+            broken data where no language is given */
+            for (p = 0; p < attrs.length; p++) {
+                attr = attrs[p];
                 if (entity.has(attr)) {
-                    var name = entity.get(attr);
+                    name = entity.get(attr);
                     name = (_.isArray(name))? name : [ name ];
-                    for ( var i = 0; i < name.length; i++) {
-                    	var n = name[i];
-                    	if (n.isEntity) {
-                    		n = VIE.Util.extractLanguageString(n, attrs, []);
-                    	}
+                    for (i = 0; i < name.length; i++) {
+                        n = name[i];
+                        if (n.isEntity) {
+                            n = VIE.Util.extractLanguageString(n, attrs, []);
+                        }
                         if (n && (typeof n === "string") && n.indexOf('@') === -1) {
                             return n.replace(/"/g, "").replace(/@[a-z]+/, '').trim();
                         }
                     }
                 }
-        	}
+            }
         }
         return undefined;
     },
@@ -878,50 +879,50 @@ VIE.Util = {
     
     getAdditionalRules : function (service) {
 
-    	var mapping = {
-			Work : "CreativeWork",
-			Film : "Movie",
-			TelevisionEpisode : "TVEpisode",
-			TelevisionShow : "TVSeries", // not listed as equivalent class on dbpedia.org
-			Website : "WebPage",
-			Painting : "Painting",
-			Sculpture : "Sculpture",
-	
-			Event : "Event",
-			SportsEvent : "SportsEvent",
-			MusicFestival : "Festival",
-			FilmFestival : "Festival",
-	
-			Place : "Place",
-			Continent : "Continent",
-			Country : "Country",
-			City : "City",
-			Airport : "Airport",
-			Station : "TrainStation", // not listed as equivalent class on dbpedia.org
-			Hospital : "GovernmentBuilding",
-			Mountain : "Mountain",
-			BodyOfWater : "BodyOfWater",
-	
-			Company : "Organization",
-			Person : "Person",
-    	};
+        var mapping = {
+            Work : "CreativeWork",
+            Film : "Movie",
+            TelevisionEpisode : "TVEpisode",
+            TelevisionShow : "TVSeries", // not listed as equivalent class on dbpedia.org
+            Website : "WebPage",
+            Painting : "Painting",
+            Sculpture : "Sculpture",
+    
+            Event : "Event",
+            SportsEvent : "SportsEvent",
+            MusicFestival : "Festival",
+            FilmFestival : "Festival",
+    
+            Place : "Place",
+            Continent : "Continent",
+            Country : "Country",
+            City : "City",
+            Airport : "Airport",
+            Station : "TrainStation", // not listed as equivalent class on dbpedia.org
+            Hospital : "GovernmentBuilding",
+            Mountain : "Mountain",
+            BodyOfWater : "BodyOfWater",
+    
+            Company : "Organization",
+            Person : "Person"
+        };
 
-		var additionalRules = new Array();
-		for ( var key in mapping) {
-			var tripple = {
-				'left' : [ '?subject a dbpedia:' + key, '?subject rdfs:label ?label' ],
-				'right' : function(ns) {
-					return function() {
-						return [ jQuery.rdf.triple(this.subject.toString(), 'a', '<' + ns.base() + mapping[key] + '>', {
-							namespaces : ns.toObj()
-						}), jQuery.rdf.triple(this.subject.toString(), '<' + ns.base() + 'name>', this.label.toString(), {
-							namespaces : ns.toObj()
-						}) ];
-					};
-				}(service.vie.namespaces)
-			};
-			additionalRules.push(tripple);
-		}
-		return additionalRules;
+        var additionalRules = [];
+        for ( var key in mapping) {
+            var tripple = {
+                'left' : [ '?subject a dbpedia:' + key, '?subject rdfs:label ?label' ],
+                'right' : function(ns) {
+                    return function() {
+                        return [ jQuery.rdf.triple(this.subject.toString(), 'a', '<' + ns.base() + mapping[key] + '>', {
+                            namespaces : ns.toObj()
+                        }), jQuery.rdf.triple(this.subject.toString(), '<' + ns.base() + 'name>', this.label.toString(), {
+                            namespaces : ns.toObj()
+                        }) ];
+                    };
+                }(service.vie.namespaces)
+            };
+            additionalRules.push(tripple);
+        }
+        return additionalRules;
     }
 };
