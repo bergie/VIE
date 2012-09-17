@@ -300,6 +300,13 @@ test("VIE - Type based validation", function () {
     ok(_.isArray(results));
     equal(results.length, 2);
 
+    // Ensure that minimum checks also affect empty values
+    entity.set('title', '');
+    var results = entity.validate(entity.attributes);
+    ok(_.isArray(results));
+    equal(results.length, 2);
+    equal(entity.has('title'), false);
+
     // Make the model valid again by setting the required fields
     entity.set({
       'title': 'Hello, world',

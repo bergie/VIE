@@ -241,7 +241,7 @@ VIE.prototype.Entity = function(attrs, opts) {
             };
 
             var checkMin = function (definition, attrs) {
-                if (!attrs[definition.id]) {
+                if (!attrs[definition.id] || _.isEmpty(attrs[definition.id])) {
                     return toError(definition, 'required', {});
                 }
             };
