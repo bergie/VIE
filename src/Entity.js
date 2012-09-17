@@ -200,6 +200,97 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
+        validate: function (attrs, opts) {
+            if (opts && opts.validate === false) {
+                return;
+            }
+
+            var types = this.get('@type');
+            if (_.isArray(types)) {
+                var results = [];
+                _.each(types, function (type) {
+                    var res = this.validateByType(type, attrs, opts);
+                    if (res) {
+                        results.push(res);
+                    }
+                }, this);
+                if (_.isEmpty(results)) {
+                  return;
+                }
+                return _.flatten(results);
+            }
+
+            return this.validateByType(types, attrs, opts);
+        },
+
+        validateByType: function (type, attrs, opts) {
+            var messages = {
+              max: '<%= property %> cannot contain more than <%= num %> items',
+              min: '<%= property %> must contain at least <%= num %> items',
+              required: '<%= property %> is required'
+            };
+
+            if (!type.attributes) {
+                return;
+            }
+
+            var toError = function (definition, constraint, messageValues) {
+                return {
+                    property: definition.id,
+                    constraint: constraint,
+                    message: _.template(messages[constraint], _.extend({
+                        property: definition.id
+                    }, messageValues))
+                };
+            };
+
+            var checkMin = function (definition, attrs) {
+                if (!attrs[definition.id]) {
+                    return toError(definition, 'required', {});
+                }
+            };
+
+            // Check the number of items in attr against max
+            var checkMax = function (definition, attrs) {
+                if (!attrs[definition.id]) {
+                    return;
+                }
+
+                if (!attrs[definition.id].isCollection || !_.isArray(attrs[definition.id])) {
+                    return;
+                }
+
+                if (attrs[definition.id].length > definition.max) {
+                    return toError(definition, 'max', {
+                        num: definition.max
+                    });
+                }
+            };
+
+            var results = [];
+            _.each(type.attributes.list(), function (definition) {
+                var res;
+                if (definition.max && definition.max != -1) {
+                    res = checkMax(definition, attrs);
+                    if (res) {
+                        results.push(res);
+                    }
+                }
+
+                if (definition.min && definition.min > 0) {
+                    res = checkMin(definition, attrs);
+                    if (res) {
+                        results.push(res);
+                    }
+                }
+            });
+
+            if (_.isEmpty(results)) {
+              return;
+            }
+            return results;
+        },
+
         isNew: function() {
             if (this.getSubjectUri().substr(0, 7) === '_:bnode') {
                 return true;
