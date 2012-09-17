@@ -209,7 +209,7 @@
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 
-	<target name="combineAll" description="combines js libs and core/*.js files into one file">
+	<target name="combineAll" description="combines js libs and core/*.js files into one file" depends="timestamp">
 	        <echo message="Building vie.js Distribution" />
 	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
                  <string>/*
