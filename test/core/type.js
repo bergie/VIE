@@ -293,9 +293,55 @@ test("VIE - Type based validation", function () {
     // Create an entity with the type
     var entity = new v.Entity({'@type': 'Article'});
     ok(entity);
-    equal(entity.isValid(), false);
 
+    // Check validation of required properties
+    equal(entity.isValid(), false);
     var results = entity.validate(entity.attributes);
     ok(_.isArray(results));
     equal(results.length, 2);
+
+    // Make the model valid again by setting the required fields
+    entity.set({
+      'title': 'Hello, world',
+      'author': '<foo>'
+    });
+    ok(entity.isValid());
+
+    // Check validation of max number of items
+    entity.set('content', ['one', 'two']);
+    // Plain set should not work as the model is not valid
+    equal(entity.has('content'), false);
+
+    // Check validation error callback
+    stop();
+    entity.set('content', ['one', 'two'], {
+      error: function (ent, res) {
+          equal(ent, entity, 'Validation errors should return correct entity');
+          ok(_.isArray(res));
+          equal(res.length, 1);
+          start();
+      }
+    });
+
+    // Check validation error event
+    stop();
+    var checkError = function (ent, res) {
+        equal(ent, entity, 'Validation errors should return correct entity');
+        ok(_.isArray(res));
+        equal(res.length, 1);
+        entity.off('error', checkError);
+        start();
+    };
+    entity.on('error', checkError);
+    entity.set('content', ['one', 'two']);
+
+    // Set invalid data without validation
+    entity.set('content', ['one', 'two'], {
+      silent: true 
+    });
+    equal(entity.has('content'), true);
+    equal(entity.isValid(), false);
+    var results = entity.validate(entity.attributes);
+    ok(_.isArray(results));
+    equal(results.length, 1);
 });

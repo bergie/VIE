@@ -201,10 +201,6 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         validate: function (attrs, opts) {
-            if (opts && opts.validate === false) {
-                return;
-            }
-
             var types = this.get('@type');
             if (_.isArray(types)) {
                 var results = [];
@@ -256,7 +252,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                     return;
                 }
 
-                if (!attrs[definition.id].isCollection || !_.isArray(attrs[definition.id])) {
+                if (!attrs[definition.id].isCollection && !_.isArray(attrs[definition.id])) {
                     return;
                 }
 
