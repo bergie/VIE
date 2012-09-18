@@ -430,17 +430,6 @@ VIE.prototype.getTypedEntityClass = function (type) {
   return TypedEntityClass;
 };
 
-// IE per default doesn't have a console API. For making sure this doesn't break
-// anything we define it here to not do anything.
-console = console || {
-    info: function(){},
-    log: function(){}
-};
-// IE in debug mode does have a console object but no console.warn
-if(!console.warn){
-    console.warn = console.info;
-}
-
 // ## Running VIE on Node.js
 //
 // When VIE is running under Node.js we can use the CommonJS

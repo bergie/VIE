@@ -292,10 +292,8 @@ VIE.Util = {
       resArr = [];
       /* Try to find a label in the preferred language
       */
-      for (l = 0, _len = preferredLanguages.length; l < _len; l++) {
-        lang = preferredLanguages[l];
-        for (p = 0, _len2 = preferredFields.length; p < _len2; p++) {
-          property = preferredFields[p];
+      _.each(preferredLanguages, function (lang) {
+        _.each(preferredFields, function (property) {
           labelArr = null;
           /* property can be a string e.g. "skos:prefLabel"
           */
@@ -360,8 +358,8 @@ VIE.Util = {
               value: property.makeLabel(valueArr)
             });
           }
-        }
-      }
+        });
+      });
       /*
               take the result with the best score
       */
@@ -908,12 +906,12 @@ VIE.Util = {
         };
 
         var additionalRules = [];
-        for ( var key in mapping) {
+        _.each(mapping, function (map, key) {
             var tripple = {
                 'left' : [ '?subject a dbpedia:' + key, '?subject rdfs:label ?label' ],
                 'right' : function(ns) {
                     return function() {
-                        return [ jQuery.rdf.triple(this.subject.toString(), 'a', '<' + ns.base() + mapping[key] + '>', {
+                        return [ jQuery.rdf.triple(this.subject.toString(), 'a', '<' + ns.base() + map + '>', {
                             namespaces : ns.toObj()
                         }), jQuery.rdf.triple(this.subject.toString(), '<' + ns.base() + 'name>', this.label.toString(), {
                             namespaces : ns.toObj()
@@ -922,7 +920,7 @@ VIE.Util = {
                 }(service.vie.namespaces)
             };
             additionalRules.push(tripple);
-        }
+        });
         return additionalRules;
     }
 };

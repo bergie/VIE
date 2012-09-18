@@ -49,7 +49,7 @@ VIE.prototype.RdfaService = function(options) {
         return new Date(value);
       },
       '<http://www.w3.org/2001/XMLSchema#integer>': function (value) {
-        return parseInt(value);
+        return parseInt(value, 10);
       }
     };
 
