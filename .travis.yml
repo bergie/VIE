@@ -5,7 +5,9 @@ node_js:
 before_script:
   - ./utils/travis.sh
 
-script: npm test
+script:
+  - ./node_modules/.bin/jshint src/
+  - npm test
 
 notifications:
     irc: "irc.freenode.org#iks"
