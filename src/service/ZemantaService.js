@@ -30,7 +30,7 @@ VIE.prototype.ZemantaService = function(options) {
         url: ["http://api.zemanta.com/services/rest/0.0/"],
         timeout : 20000, /* 20 seconds timeout */
         namespaces : {
-        	zemanta: "http://s.zemanta.com/ns#"
+            zemanta: "http://s.zemanta.com/ns#"
         },
         /* default rules that are shipped with this service */
         rules : [
@@ -161,9 +161,9 @@ VIE.prototype.ZemantaService.prototype = {
 VIE.prototype.ZemantaConnector = function (options) {
     
     var defaults =  {
-		/* you can pass an array of URLs which are then tried sequentially */
-	    url: ["http://api.zemanta.com/services/rest/0.0/"],
-	    timeout : 20000, /* 20 seconds timeout */
+        /* you can pass an array of URLs which are then tried sequentially */
+        url: ["http://api.zemanta.com/services/rest/0.0/"],
+        timeout : 20000, /* 20 seconds timeout */
         "api_key" : undefined
     };
 
@@ -177,7 +177,7 @@ VIE.prototype.ZemantaConnector = function (options) {
 };
 
 VIE.prototype.ZemantaConnector.prototype = {
-		
+        
 // ### _init()
 // Basic setup of the Zemanta connector.  This is called internally by the constructor!
 // **Parameters**:  
@@ -186,23 +186,23 @@ VIE.prototype.ZemantaConnector.prototype = {
 // *nothing*  
 // **Returns**:  
 // *{VIE.ZemantaConnector}* : The VIE.ZemantaConnector instance itself. 
-	_init : function () {
-		var connector = this;
-		
-	    /* basic setup for the ajax connection */
-	    jQuery.ajaxSetup({
-	        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
-	        timeout: connector.options.timeout
-	    });
-	    
-	    return this;
-	},
-	
-	_iterate : function (params) {
+    _init : function () {
+        var connector = this;
+        
+        /* basic setup for the ajax connection */
+        jQuery.ajaxSetup({
+            converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+            timeout: connector.options.timeout
+        });
+        
+        return this;
+    },
+    
+    _iterate : function (params) {
         if (!params) { return; }
         
         if (params.urlIndex >= this.options.url.length) {
-        	params.error.call(this, "Could not connect to the given Zemanta endpoints! Please check for their setup!");
+            params.error.call(this, "Could not connect to the given Zemanta endpoints! Please check for their setup!");
             return;
         }
         
@@ -220,20 +220,20 @@ VIE.prototype.ZemantaConnector.prototype = {
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
             /* We're on Node.js, don't use jQuery.ajax */
             return params.methodNode.call(
-            		this, 
-            		params.url.call(this, params.urlIndex, params.args.options),
-            		params.args,
-            		params.success,
-            		retryErrorCb);
+                    this, 
+                    params.url.call(this, params.urlIndex, params.args.options),
+                    params.args,
+                    params.success,
+                    retryErrorCb);
         }
         
         return params.method.call(
-        		this, 
-        		params.url.call(this, params.urlIndex, params.args.options),
-        		params.args,
-        		params.success,
-        		retryErrorCb);
-	},
+                this, 
+                params.url.call(this, params.urlIndex, params.args.options),
+                params.args,
+                params.success,
+                retryErrorCb);
+    },
 
 // ### analyze(text, success, error, options)
 // This method sends the given text to Zemanta returns the result by the success callback.  
@@ -253,43 +253,43 @@ VIE.prototype.ZemantaConnector.prototype = {
 //                 function (res) { ... },
 //                 function (err) { ... });
     analyze: function(text, success, error, options) {
-    	options = (options)? options :  {};
-    	var connector = this;
+        options = (options)? options :  {};
+        var connector = this;
         
-    	connector._iterate({
-        	method : connector._analyze,
-        	methodNode : connector._analyzeNode,
-        	success : success,
-        	error : error,
-        	url : function (idx, opts) {
-        		var u = this.options.url[idx].replace(/\/$/, '');
-        		return u;
-        	},
-        	args : {
-    			text : text,
-        		format : options.format || "rdfxml",
-        		options : options
-        	},
-        	urlIndex : 0
+        connector._iterate({
+            method : connector._analyze,
+            methodNode : connector._analyzeNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
+                var u = this.options.url[idx].replace(/\/$/, '');
+                return u;
+            },
+            args : {
+                text : text,
+                format : options.format || "rdfxml",
+                options : options
+            },
+            urlIndex : 0
         });
     },
     
     _analyze : function (url, args, success, error) {
-    	jQuery.ajax({
+        jQuery.ajax({
             success: function(a, b, c){
-	        	var responseData = c.responseText.replace(/<z:signature>.*?<\/z:signature>/, '');
-	        	success(responseData);
+                var responseData = c.responseText.replace(/<z:signature>.*?<\/z:signature>/, '');
+                success(responseData);
             },
             error: error,
             url: url,
             type: "POST",
             dataType: "xml",
             data: {
-            	method : "zemanta.suggest",
-            	text : args.text,
-            	format : args.format,
-            	api_key : this.options.api_key,
-            	return_rdf_links : args.options.return_rdf_links
+                method : "zemanta.suggest",
+                text : args.text,
+                format : args.format,
+                api_key : this.options.api_key,
+                return_rdf_links : args.options.return_rdf_links
             },
             contentType: "text/plain",
             accepts: {"application/rdf+json": "application/rdf+json"}

@@ -120,7 +120,7 @@ VIE.prototype.DBPediaService.prototype = {
                     var entities = VIE.Util.rdf2Entities(service, results);
                     entities = (_.isArray(entities))? entities : [ entities ];
                     for (var e = 0; e < entities.length; e++) {
-                    	entities[e].set("DBPediaServiceLoad", VIE.Util.xsdDateTime(new Date()));
+                        entities[e].set("DBPediaServiceLoad", VIE.Util.xsdDateTime(new Date()));
                     }
                     entities = (entities.length === 1)? entities[0] : entities;
                     loadable.resolve(entities);
@@ -139,12 +139,12 @@ VIE.prototype.DBPediaService.prototype = {
         if (!entities) {
             loadable.reject([]);
         } else {
-        	entities = (_.isArray(entities))? entities : [ entities ];
-        	var tmpEntities = [];
-        	for (var e = 0; e < entities.length; e++) {
-        		var tmpEnt = (typeof entities[e] === "string")? entities[e] : entities[e].id;
-        		tmpEntities.push(tmpEnt);
-        	}
+            entities = (_.isArray(entities))? entities : [ entities ];
+            var tmpEntities = [];
+            for (var e = 0; e < entities.length; e++) {
+                var tmpEnt = (typeof entities[e] === "string")? entities[e] : entities[e].id;
+                tmpEntities.push(tmpEnt);
+            }
                         
             this.connector.load(tmpEntities, success, error);
         }
@@ -196,21 +196,21 @@ VIE.prototype.DBPediaConnector.prototype = {
         "&query=";
         
         if (_.isArray(uri)) {
-        	var construct = "";
-        	var where = "";
-        	for (var u = 0; u < uri.length; u++) {
-        		var subject = (/^<.+>$/.test(uri[u]))? uri[u] : '<' + uri[u] + '>';
-        		if (u > 0) {
-        			construct += " .";
-        			where += " UNION ";
-        		}
-        		construct += " " + subject + " ?prop" + u + " ?val" + u;
-        		where     += " { " + subject + " ?prop" + u + " ?val" + u + " }";
-        	}
-        	url += encodeURIComponent("CONSTRUCT {" + construct + " } WHERE {" + where + " }");
+            var construct = "";
+            var where = "";
+            for (var u = 0; u < uri.length; u++) {
+                var subject = (/^<.+>$/.test(uri[u]))? uri[u] : '<' + uri[u] + '>';
+                if (u > 0) {
+                    construct += " .";
+                    where += " UNION ";
+                }
+                construct += " " + subject + " ?prop" + u + " ?val" + u;
+                where     += " { " + subject + " ?prop" + u + " ?val" + u + " }";
+            }
+            url += encodeURIComponent("CONSTRUCT {" + construct + " } WHERE {" + where + " }");
         } else {
-	        uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
-	        url += encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
+            uri = (/^<.+>$/.test(uri))? uri : '<' + uri + '>';
+            url += encodeURIComponent("CONSTRUCT { " + uri + " ?prop ?val } WHERE { " + uri + " ?prop ?val }");
         }
         var format = options.format || "application/rdf+json";
 

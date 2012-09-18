@@ -297,6 +297,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
 //
 //     personAttrs._inherit();
     this._inherit = function () {
+        var a, x, id;
         var attributes = jQuery.extend(true, {}, this._local);
         
         var inherited = _.map(this.domain.supertypes.list(),
@@ -307,11 +308,11 @@ VIE.prototype.Attributes = function (domain, attrs) {
 
         var add = {};
         var merge = {};
-        
-        for (var a = 0, ilen = inherited.length; a < ilen; a++) {
+        var ilen, alen; 
+        for (a = 0, ilen = inherited.length; a < ilen; a++) {
             var attrs = inherited[a].list();
-            for (var x = 0, alen = attrs.length; x < alen; x++) {
-                var id = attrs[x].id;
+            for (x = 0, alen = attrs.length; x < alen; x++) {
+                id = attrs[x].id;
                 if (!(id in attributes)) {
                     if (!(id in add) && !(id in merge)) {
                         add[id] = attrs[x];
@@ -321,20 +322,20 @@ VIE.prototype.Attributes = function (domain, attrs) {
                             merge[id] = {range : [], mins : [], maxs: [], metadatas: []};
                         }
                         if (id in add) {
-                            merge[id]["range"] = jQuery.merge(merge[id]["range"], add[id].range);
-                            merge[id]["mins"] = jQuery.merge(merge[id]["mins"], [ add[id].min ]);
-                            merge[id]["maxs"] = jQuery.merge(merge[id]["maxs"], [ add[id].max ]);
-                            merge[id]["metadatas"] = jQuery.merge(merge[id]["metadatas"], [ add[id].metadata ]);
+                            merge[id].range = jQuery.merge(merge[id].range, add[id].range);
+                            merge[id].mins = jQuery.merge(merge[id].mins, [ add[id].min ]);
+                            merge[id].maxs = jQuery.merge(merge[id].maxs, [ add[id].max ]);
+                            merge[id].metadatas = jQuery.merge(merge[id].metadatas, [ add[id].metadata ]);
                             delete add[id];
                         }
-                        merge[id]["range"] = jQuery.merge(merge[id]["range"], attrs[x].range);
-                        merge[id]["mins"] = jQuery.merge(merge[id]["mins"], [ attrs[x].min ]);
-                        merge[id]["maxs"] = jQuery.merge(merge[id]["maxs"], [ attrs[x].max ]);
-                        merge[id]["metadatas"] = jQuery.merge(merge[id]["metadatas"], [ attrs[x].metadata ]);
-                        merge[id]["range"] = _.uniq(merge[id]["range"]);
-                        merge[id]["mins"] = _.uniq(merge[id]["mins"]);
-                        merge[id]["maxs"] = _.uniq(merge[id]["maxs"]);
-                        merge[id]["metadatas"] = _.uniq(merge[id]["metadatas"]);
+                        merge[id].range = jQuery.merge(merge[id].range, attrs[x].range);
+                        merge[id].mins = jQuery.merge(merge[id].mins, [ attrs[x].min ]);
+                        merge[id].maxs = jQuery.merge(merge[id].maxs, [ attrs[x].max ]);
+                        merge[id].metadatas = jQuery.merge(merge[id].metadatas, [ attrs[x].metadata ]);
+                        merge[id].range = _.uniq(merge[id].range);
+                        merge[id].mins = _.uniq(merge[id].mins);
+                        merge[id].maxs = _.uniq(merge[id].maxs);
+                        merge[id].metadatas = _.uniq(merge[id].metadatas);
                     }
                 }
             }
@@ -344,18 +345,18 @@ VIE.prototype.Attributes = function (domain, attrs) {
         jQuery.extend(attributes, add);
         
         /* merges inherited attributes */
-        for (var id in merge) {
-            var mranges = merge[id]["range"];
-            var mins = merge[id]["mins"];
-            var maxs = merge[id]["maxs"];
-            var metadatas = merge[id]["metadatas"];
+        for (id in merge) {
+            var mranges = merge[id].range;
+            var mins = merge[id].mins;
+            var maxs = merge[id].maxs;
+            var metadatas = merge[id].metadatas;
             var ranges = [];
             //merging ranges
             for (var r = 0, mlen = mranges.length; r < mlen; r++) {
                 var p = this.vie.types.get(mranges[r]);
                 var isAncestorOf = false;
                 if (p) {
-                    for (var x = 0; x < mlen; x++) {
+                    for (x = 0; x < mlen; x++) {
                         if (x === r) {
                             continue;
                         }

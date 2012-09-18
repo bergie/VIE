@@ -1,20 +1,20 @@
 
 (function(){
-	
-	VIE.prototype.RdfaRdfQueryService = function(options) {
-		var defaults = {
-	        name : 'rdfardfquery',
-	        namespaces : {},
-	        rules : []
-	    };
-	    /* the options are merged with the default options */
-	    this.options = jQuery.extend(true, defaults, options ? options : {});
+    
+    VIE.prototype.RdfaRdfQueryService = function(options) {
+        var defaults = {
+            name : 'rdfardfquery',
+            namespaces : {},
+            rules : []
+        };
+        /* the options are merged with the default options */
+        this.options = jQuery.extend(true, defaults, options ? options : {});
 
-	    this.views = [],
+        this.views = [];
 
-	    this.vie = null; /* will be set via VIE.use(); */
-	    /* overwrite options.name if you want to set another name */
-	    this.name = this.options.name;
+        this.vie = null; /* will be set via VIE.use(); */
+        /* overwrite options.name if you want to set another name */
+        this.name = this.options.name;
 };
 
 VIE.prototype.RdfaRdfQueryService.prototype = {
@@ -29,7 +29,7 @@ VIE.prototype.RdfaRdfQueryService.prototype = {
         this.rules = jQuery.extend([], VIE.Util.transformationRules(this));
         this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
     },
-	    
+        
     analyze: function(analyzable) {
         // in a certain way, analyze is the same as load
         return this.load(analyzable);

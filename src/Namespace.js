@@ -206,7 +206,7 @@ VIE.prototype.Namespaces.prototype.get = function (prefix) {
 //     namespaces.addOrReplace("test", "http://test.ns");
 //     console.log(namespaces.getPrefix("http://test.ns")); // <-- "test"
 VIE.prototype.Namespaces.prototype.getPrefix = function (namespace) {
-    var prefix = undefined;
+    var prefix;
     if (namespace.indexOf('<') === 0) {
         namespace = namespace.substring(1, namespace.length - 1);
     }

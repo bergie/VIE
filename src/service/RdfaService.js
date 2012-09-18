@@ -8,6 +8,7 @@
 
 // ## VIE - RdfaService service
 // The RdfaService service allows ...
+/*global document:false */
 
 (function(){
 
@@ -55,7 +56,7 @@ VIE.prototype.RdfaService = function(options) {
     this.datatypeWriters = {
       '<http://www.w3.org/2001/XMLSchema#dateTime>': function (value) {
         if (!_.isDate(value)) {
-          return date;
+          return value;
         }
         return value.toISOString();
       }
@@ -114,7 +115,7 @@ VIE.prototype.RdfaService.prototype = {
             element = loadable.options.element;
         }
 
-        entities = this.readEntities(element);
+        var entities = this.readEntities(element);
         loadable.resolve(entities);
     },
 

@@ -469,8 +469,7 @@ VIE.prototype.Types = function () {
         
         if (types.length === 0) return [];
         var copy = [ types[0] ];
-        var x; 
-        
+        var x, tlen; 
         for (x = 1, tlen = types.length; x < tlen; x++) {
             var insert = types[x];
             var insType = self.get(insert);

@@ -30,9 +30,9 @@ VIE.prototype.OpenCalaisService = function(options) {
         url: ["http://api.opencalais.com/enlighten/rest/"],
         timeout : 60000, /* 60 seconds timeout */
         namespaces : {
-        	opencalaisc:  "http://s.opencalais.com/1/pred/",
-        	opencalaiscr: "http://s.opencalais.com/1/type/er/",
-        	opencalaiscm: "http://s.opencalais.com/1/type/em/e/"
+            opencalaisc:  "http://s.opencalais.com/1/pred/",
+            opencalaiscr: "http://s.opencalais.com/1/type/er/",
+            opencalaiscm: "http://s.opencalais.com/1/type/em/e/"
         },
         /* default rules that are shipped with this service */
         rules : []
@@ -75,11 +75,11 @@ VIE.prototype.OpenCalaisService.prototype = {
         
         this.rules = jQuery.extend([], VIE.Util.transformationRules(this));
        /* this.rules = jQuery.extend(this.rules, [{
-        	'left' : [
-        	          '?subject a opencalaiscm:Person',
+            'left' : [
+                      '?subject a opencalaiscm:Person',
                       '?subject opencalaisc:name ?name'
                 ],
-            	'right': function(ns) {
+                'right': function(ns) {
                     return function() {
                         return [
                             jQuery.rdf.triple(this.subject.toString(),
@@ -232,8 +232,8 @@ VIE.prototype.OpenCalaisConnector.prototype = {
 
         jQuery.ajax({
             success: function(a, b, c){
-            	var responseData = c.responseText.replace(/<!--[\s\S]*?-->/g, '');
-            	success(responseData);
+                var responseData = c.responseText.replace(/<!--[\s\S]*?-->/g, '');
+                success(responseData);
             },
             error: retryErrorCb,
             type: "POST",
@@ -263,8 +263,8 @@ VIE.prototype.OpenCalaisConnector.prototype = {
     },
     
     _prepareData : function (text) {
-    	return {
-    		licenseID: this.options.api_key,
+        return {
+            licenseID: this.options.api_key,
             calculareRelevanceScore: "true",
             enableMetadataType: "GenericRelations,SocialTags",
             contentType: "text/html",

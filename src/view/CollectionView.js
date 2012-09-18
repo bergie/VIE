@@ -1,3 +1,4 @@
+/*global VIE:false Backbone:false _:false jQuery:false */
 if (!VIE.prototype.view) {
     VIE.prototype.view = {};
 }

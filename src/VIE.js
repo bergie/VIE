@@ -5,6 +5,9 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
+
+/*global console:false exports:false require:false */
+
 var root = this,
     jQuery = root.jQuery,
     Backbone = root.Backbone,

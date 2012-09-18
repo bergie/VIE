@@ -5,6 +5,7 @@
 //     VIE may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://viejs.org/
+/*global escape:false */
 
 // ## VIE - StanbolService service
 // The StanbolService service allows a VIE developer to directly query
@@ -77,12 +78,12 @@ VIE.prototype.StanbolService = function(options) {
             }
         ],
         enhancer : {
-        	chain : "default"
+            chain : "default"
         },
         entityhub : {
-        	/* if set to undefined, the Referenced Site Manager @ /entityhub/sites is used. */
-        	/* if set to, e.g., dbpedia, eferenced Site @ /entityhub/site/dbpedia is used. */
-        	site : undefined
+            /* if set to undefined, the Referenced Site Manager @ /entityhub/sites is used. */
+            /* if set to, e.g., dbpedia, eferenced Site @ /entityhub/site/dbpedia is used. */
+            site : undefined
         }
     };
     /* the options are merged with the default options */
@@ -165,7 +166,7 @@ VIE.prototype.StanbolService.prototype = {
             };
             
             var options = {
-        		chain : (analyzable.options.chain)? analyzable.options.chain : service.options.enhancer.chain
+                chain : (analyzable.options.chain)? analyzable.options.chain : service.options.enhancer.chain
             };
 
             this.connector.analyze(text, success, error, options);
@@ -202,10 +203,10 @@ VIE.prototype.StanbolService.prototype = {
         if (!correct) {throw "Invalid Findable passed";}
         var service = this;
         /* The term to find, * as wildcard allowed */
-        if(!findable.options.term) {
+        if (!findable.options.term) {
             console.info("StanbolConnector: No term to look for!");
             findable.reject([]);
-        };
+        }
         var term = escape(findable.options.term);
         var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
@@ -226,8 +227,8 @@ VIE.prototype.StanbolService.prototype = {
             var properties = findable.options.properties;
             findable.options.ldPath = _(properties)
             .map(function(property){
-                if(vie.namespaces.isCurie(property)){
-                    return vie.namespaces.uri(property) + ";"
+                if (vie.namespaces.isCurie(property)){
+                    return vie.namespaces.uri(property) + ";";
                 } else {
                     return property;
                 }
@@ -262,10 +263,10 @@ VIE.prototype.StanbolService.prototype = {
         var service = this;
 
         var entity = loadable.options.entity;
-        if(!entity){
+        if (!entity){
             console.warn("StanbolConnector: No entity to look for!");
             loadable.resolve([]);
-        };
+        }
         var success = function (results) {
             _.defer(function(){
                 var entities = VIE.Util.rdf2Entities(service, results);
@@ -277,8 +278,8 @@ VIE.prototype.StanbolService.prototype = {
         };
         
         var options = {
-    		site : (loadable.options.site)? loadable.options.site : service.options.entityhub.site,
-    		local : loadable.options.local
+            site : (loadable.options.site)? loadable.options.site : service.options.entityhub.site,
+            local : loadable.options.local
         };
         
         this.connector.load(entity, success, error, options);
@@ -303,10 +304,10 @@ VIE.prototype.StanbolService.prototype = {
          var service = this;
 
          var entity = savable.options.entity;
-         if(!entity){
+         if (!entity){
              console.warn("StanbolConnector: No entity to save!");
              savable.reject("StanbolConnector: No entity to save!");
-         };
+         }
          var success = function (results) {
              _.defer(function() {
                  var entities = VIE.Util.rdf2Entities(service, results);
@@ -315,12 +316,12 @@ VIE.prototype.StanbolService.prototype = {
          };
          
          var error = function (e) {
-        	 savable.reject(e);
+             savable.reject(e);
          };
          
          var options = {
-     		site : (loadable.options.site)? loadable.options.site : service.options.entityhub.site,
-     		local : loadable.options.local
+            site : (savable.options.site)? savable.options.site : service.options.entityhub.site,
+            local : savable.options.local
          };
          
          this.connector.save(entity, success, error, options);
@@ -359,38 +360,38 @@ VIE.prototype.StanbolService.prototype = {
 VIE.prototype.StanbolConnector = function (options) {
     
     var defaults =  {
-		/* you can pass an array of URLs which are then tried sequentially */
-	    url: ["http://dev.iks-project.eu/stanbolfull"],
-	    timeout : 20000, /* 20 seconds timeout */
+        /* you can pass an array of URLs which are then tried sequentially */
+        url: ["http://dev.iks-project.eu/stanbolfull"],
+        timeout : 20000, /* 20 seconds timeout */
         enhancer : {
-        	urlPostfix : "/enhancer",
-        	chain : "default"
+            urlPostfix : "/enhancer",
+            chain : "default"
         },
         entityhub : {
-        	/* if set to undefined, the Referenced Site Manager @ /entityhub/sites is used. */
-        	/* if set to, e.g., dbpedia, referenced Site @ /entityhub/site/dbpedia is used. */
-        	site : undefined,
-        	urlPostfix : "/entityhub",
-        	local : false
+            /* if set to undefined, the Referenced Site Manager @ /entityhub/sites is used. */
+            /* if set to, e.g., dbpedia, referenced Site @ /entityhub/site/dbpedia is used. */
+            site : undefined,
+            urlPostfix : "/entityhub",
+            local : false
         },
         sparql : {
-        	urlPostfix : "/sparql"
+            urlPostfix : "/sparql"
         },
         contenthub : {
-        	urlPostfix : "/contenthub",
-        	index : "contenthub"
+            urlPostfix : "/contenthub",
+            index : "contenthub"
         },
         ontonet : {
-        	urlPostfix : "/ontonet"
+            urlPostfix : "/ontonet"
         },
         factstore : {
-        	urlPostfix : "/factstore"
+            urlPostfix : "/factstore"
         },
         rules : {
-        	urlPostfix : "/rules"
+            urlPostfix : "/rules"
         },
         cmsadapter : {
-        	urlPostfix : "/cmsadapter"
+            urlPostfix : "/cmsadapter"
         }
     };
 
@@ -404,7 +405,7 @@ VIE.prototype.StanbolConnector = function (options) {
 };
 
 VIE.prototype.StanbolConnector.prototype = {
-		
+        
 // ### _init()
 // Basic setup of the stanbol connector.  This is called internally by the constructor!
 // **Parameters**:  
@@ -413,23 +414,23 @@ VIE.prototype.StanbolConnector.prototype = {
 // *nothing*  
 // **Returns**:  
 // *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself. 
-	_init : function () {
-		var connector = this;
-		
-	    /* basic setup for the ajax connection */
-	    jQuery.ajaxSetup({
-	        converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
-	        timeout: connector.options.timeout
-	    });
-	    
-	    return this;
-	},
-	
-	_iterate : function (params) {
+    _init : function () {
+        var connector = this;
+        
+        /* basic setup for the ajax connection */
+        jQuery.ajaxSetup({
+            converters: {"text application/rdf+json": function(s){return JSON.parse(s);}},
+            timeout: connector.options.timeout
+        });
+        
+        return this;
+    },
+    
+    _iterate : function (params) {
         if (!params) { return; }
         
         if (params.urlIndex >= this.options.url.length) {
-        	params.error.call(this, "Could not connect to the given Stanbol endpoints! Please check for their setup!");
+            params.error.call(this, "Could not connect to the given Stanbol endpoints! Please check for their setup!");
             return;
         }
         
@@ -447,20 +448,20 @@ VIE.prototype.StanbolConnector.prototype = {
         if (typeof exports !== "undefined" && typeof process !== "undefined") {
             /* We're on Node.js, don't use jQuery.ajax */
             return params.methodNode.call(
-            		this, 
-            		params.url.call(this, params.urlIndex, params.args.options),
-            		params.args,
-            		params.success,
-            		retryErrorCb);
+                    this, 
+                    params.url.call(this, params.urlIndex, params.args.options),
+                    params.args,
+                    params.success,
+                    retryErrorCb);
         }
         
         return params.method.call(
-        		this, 
-        		params.url.call(this, params.urlIndex, params.args.options),
-        		params.args,
-        		params.success,
-        		retryErrorCb);
-	},
+                this, 
+                params.url.call(this, params.urlIndex, params.args.options),
+                params.args,
+                params.success,
+                retryErrorCb);
+    },
 
 // ### analyze(text, success, error, options)
 // This method sends the given text to Apache Stanbol returns the result by the success callback.  
@@ -480,32 +481,32 @@ VIE.prototype.StanbolConnector.prototype = {
 //                 function (res) { ... },
 //                 function (err) { ... });
     analyze: function(text, success, error, options) {
-    	options = (options)? options :  {};
-    	var connector = this;
+        options = (options)? options :  {};
+        var connector = this;
         
-    	connector._iterate({
-        	method : connector._analyze,
-        	methodNode : connector._analyzeNode,
-        	url : function (idx, opts) {
-        		var chain = (opts.chain)? opts.chain : this.options.enhancer.chain;
+        connector._iterate({
+            method : connector._analyze,
+            methodNode : connector._analyzeNode,
+            url : function (idx, opts) {
+                var chain = (opts.chain)? opts.chain : this.options.enhancer.chain;
                 
-        		var u = this.options.url[idx].replace(/\/$/, '');
-        		u += this.options.enhancer.urlPostfix + "/chain/" + chain.replace(/\/$/, '');
-        		return u;
-        	},
-        	args : {
-        		text : text,
-        		format : options.format || "application/rdf+json",
-        		options : options
-        	},
-        	success : success,
-        	error : error,
-        	urlIndex : 0
+                var u = this.options.url[idx].replace(/\/$/, '');
+                u += this.options.enhancer.urlPostfix + "/chain/" + chain.replace(/\/$/, '');
+                return u;
+            },
+            args : {
+                text : text,
+                format : options.format || "application/rdf+json",
+                options : options
+            },
+            success : success,
+            error : error,
+            urlIndex : 0
         });
     },
     
     _analyze : function (url, args, success, error) {
-    	jQuery.ajax({
+        jQuery.ajax({
             success: success,
             error: error,
             url: url,
@@ -556,40 +557,40 @@ VIE.prototype.StanbolConnector.prototype = {
 //                 function (err) { ... });
 
     load: function (uri, success, error, options) {
-    	var connector = this;
+        var connector = this;
         options = (options)? options :  {};
-    	
+        
         options.uri = uri.replace(/^</, '').replace(/>$/, '');
         
-    	connector._iterate({
-        	method : connector._load,
-        	methodNode : connector._loadNode,
-        	success : success,
-        	error : error,
-        	url : function (idx, opts) {
-        		var site = (opts.site)? opts.site : this.options.entityhub.site;
+        connector._iterate({
+            method : connector._load,
+            methodNode : connector._loadNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
+                var site = (opts.site)? opts.site : this.options.entityhub.site;
                 site = (site)? "/" + site : "s";
                 
                 var isLocal = opts.local;
                 
                 var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                 if (isLocal) {
-                	u += "/entity?id=" + escape(opts.uri);
+                    u += "/entity?id=" + escape(opts.uri);
                 } else {
-                	u += "/site" + site + "/entity?id=" + escape(opts.uri);
+                    u += "/site" + site + "/entity?id=" + escape(opts.uri);
                 }
-        		return u;
-        	},
-        	args : {
-        		format : options.format || "application/rdf+json",
-        		options : options
-        	},
-        	urlIndex : 0
+                return u;
+            },
+            args : {
+                format : options.format || "application/rdf+json",
+                options : options
+            },
+            urlIndex : 0
         });
     },
     
     _load : function (url, args, success, error) {
-    	jQuery.ajax({
+        jQuery.ajax({
             success: success,
             error: error,
             url: url,
@@ -639,52 +640,52 @@ VIE.prototype.StanbolConnector.prototype = {
 //                 function (res) { ... },
 //                 function (err) { ... });
     find: function(term, limit, offset, success, error, options) {
-    	options = (options)? options :  {};
+        options = (options)? options :  {};
         /* curl -X POST -d "name=Bishofsh&limit=10&offset=0" http://localhost:8080/entityhub/sites/find */
 
-    	var connector = this;
-    	
-    	if (!term || term === "") {
-    		error ("No term given!");
-    		return;
-    	}
-    	
-    	offset = (offset)? offset : 0;
+        var connector = this;
+        
+        if (!term || term === "") {
+            error ("No term given!");
+            return;
+        }
+        
+        offset = (offset)? offset : 0;
         limit  = (limit)? limit : 10;
         
-    	connector._iterate({
-        	method : connector._find,
-        	methodNode : connector._findNode,
-        	success : success,
-        	error : error,
-        	url : function (idx, opts) {
-        		var site = (opts.site)? opts.site : this.options.entityhub.site;
+        connector._iterate({
+            method : connector._find,
+            methodNode : connector._findNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
+                var site = (opts.site)? opts.site : this.options.entityhub.site;
                 site = (site)? "/" + site : "s";
                 
                 var isLocal = opts.local;
                 
                 var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                 if (isLocal) {
-                	u += "/sites/find";
+                    u += "/sites/find";
                 } else {
-                	u += "/site" + site + "/find";
+                    u += "/site" + site + "/find";
                 }
                 
-        		return u;
-        	},
-        	args : {
-        		term : term,
-        		offset : offset,
-        		limit : limit,
-        		format : options.format || "application/rdf+json",
-        		options : options
-        	},
-        	urlIndex : 0
+                return u;
+            },
+            args : {
+                term : term,
+                offset : offset,
+                limit : limit,
+                format : options.format || "application/rdf+json",
+                options : options
+            },
+            urlIndex : 0
         });
     },
     
     _find : function (url, args, success, error) {
-    	jQuery.ajax({
+        jQuery.ajax({
             success: success,
             error: error,
             url: url,
@@ -733,36 +734,36 @@ VIE.prototype.StanbolConnector.prototype = {
 // **Returns**:  
 // *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
     lookup: function(uri, success, error, options) {
-    	options = (options)? options :  {};
-    	/*/lookup/?id=http://dbpedia.org/resource/Paris&create=false"*/
-    	var connector = this;
-     	
-     	uri = uri.replace(/^</, '').replace(/>$/, '');
+        options = (options)? options :  {};
+        /*/lookup/?id=http://dbpedia.org/resource/Paris&create=false"*/
+        var connector = this;
+        
+        uri = uri.replace(/^</, '').replace(/>$/, '');
 
-     	options.uri = uri;
-     	options.create = (options.create)? options.create : false;
+        options.uri = uri;
+        options.create = (options.create)? options.create : false;
          
-     	connector._iterate({
-         	method : connector._lookup,
-         	methodNode : connector._lookupNode,
-         	success : success,
-         	error : error,
-         	url : function (idx, opts) {
-         		 
+        connector._iterate({
+            method : connector._lookup,
+            methodNode : connector._lookupNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
+                 
                  var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                  u += "/lookup?id=" + escape(opts.uri) + "&create=" + opts.create;
-         		 return u;
-         	},
-         	args : {
-         		format : options.format || "application/rdf+json",
-         		options : options
-         	},
-         	urlIndex : 0
+                 return u;
+            },
+            args : {
+                format : options.format || "application/rdf+json",
+                options : options
+            },
+            urlIndex : 0
          });
      },
      
      _lookup : function (url, args, success, error) {
-     	jQuery.ajax({
+        jQuery.ajax({
              success: success,
              error: error,
              url: url,
@@ -809,9 +810,9 @@ VIE.prototype.StanbolConnector.prototype = {
 //                  function (res) { ... },
 //                  function (err) { ... });  
      referenced: function(success, error, options) {
-     	options = (options)? options :  {};
+        options = (options)? options :  {};
         var connector = this;
-     	
+        
         var successCB = function (sites) {
           if (!_.isArray(sites)) {
             sites = JSON.parse(sites);
@@ -823,26 +824,26 @@ VIE.prototype.StanbolConnector.prototype = {
           return success(sitesStripped);
         };
         
-     	connector._iterate({
-         	method : connector._referenced,
-         	methodNode : connector._referencedNode,
-         	success : successCB,
-         	error : error,
-         	url : function (idx, opts) {
+        connector._iterate({
+            method : connector._referenced,
+            methodNode : connector._referencedNode,
+            success : successCB,
+            error : error,
+            url : function (idx, opts) {
                  var u = this.options.url[idx].replace(/\/$/, '');
                  u += this.options.entityhub.urlPostfix + "/sites/referenced";
                  
-         		return u;
-         	},
-         	args : {
-         		options : options
-         	},
-         	urlIndex : 0
+                return u;
+            },
+            args : {
+                options : options
+            },
+            urlIndex : 0
          });
      },
      
      _referenced : function (url, args, success, error) {
-     	jQuery.ajax({
+        jQuery.ajax({
              success: success,
              error: error,
              url: url,
@@ -881,30 +882,30 @@ VIE.prototype.StanbolConnector.prototype = {
 // **Returns**:  
 // *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
      sparql: function(query, success, error, options) {
-     	options = (options)? options :  {};
+        options = (options)? options :  {};
          var connector = this;
-      	
-      	connector._iterate({
-          	method : connector._sparql,
-          	methodNode : connector._sparqlNode,
-          	success : success,
-          	error : error,
-          	url : function (idx, opts) {
+        
+        connector._iterate({
+            method : connector._sparql,
+            methodNode : connector._sparqlNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
                 var u = this.options.url[idx].replace(/\/$/, '');
                 u += this.options.sparql.urlPostfix.replace(/\/$/, '');
               
-      		    return u;
-          	},
-          	args : {
-          		query : query,
-          		options : options
-          	},
-          	urlIndex : 0
+                return u;
+            },
+            args : {
+                query : query,
+                options : options
+            },
+            urlIndex : 0
           });
       },
       
       _sparql : function (url, args, success, error) {
-      	jQuery.ajax({
+        jQuery.ajax({
               success: success,
               error: error,
               url: url,
@@ -945,46 +946,46 @@ VIE.prototype.StanbolConnector.prototype = {
 // **Returns**:  
 // *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
     ldpath: function(ldpath, context, success, error, options) {
-    	options = (options)? options :  {};
+        options = (options)? options :  {};
         var connector = this;
         
         context = (_.isArray(context))? context : [ context ];
         
         var contextStr = "";
-    	for (var c = 0; c < context.length; c++) {
-    		contextStr += "&context=" + context[c];
-    	}
-     	
-     	connector._iterate({
-         	method : connector._ldpath,
-         	methodNode : connector._ldpathNode,
-         	success : success,
-         	error : error,
-         	url : function (idx, opts) {
-         		var site = (opts.site)? opts.site : this.options.entityhub.site;
+        for (var c = 0; c < context.length; c++) {
+            contextStr += "&context=" + context[c];
+        }
+        
+        connector._iterate({
+            method : connector._ldpath,
+            methodNode : connector._ldpathNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
+                var site = (opts.site)? opts.site : this.options.entityhub.site;
                 site = (site)? "/" + site : "s";
                 
                 var isLocal = opts.local;
                 
                 var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                 if (!isLocal)
-                	u += "/site" + site;
+                    u += "/site" + site;
                 u += "/ldpath";
              
-     		    return u;
-         	},
-         	args : {
-         		ldpath : ldpath,
-         		context : contextStr,
-        		format : options.format || "application/rdf+json",
-         		options : options
-         	},
-         	urlIndex : 0
+                return u;
+            },
+            args : {
+                ldpath : ldpath,
+                context : contextStr,
+                format : options.format || "application/rdf+json",
+                options : options
+            },
+            urlIndex : 0
          });
      },
      
      _ldpath : function (url, args, success, error) {
-    	jQuery.ajax({
+        jQuery.ajax({
              success: success,
              error: error,
              url: url,
@@ -1001,7 +1002,7 @@ VIE.prototype.StanbolConnector.prototype = {
          var r = request({
              method: "POST",
              uri: url,
-             body : "ldpath=" + args.ldpath + context,
+             body : "ldpath=" + args.ldpath + args.context,
              headers: {
                  Accept: args.format
              }
@@ -1027,15 +1028,15 @@ VIE.prototype.StanbolConnector.prototype = {
 // **Returns**:  
 // *{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
       uploadContent: function(content, success, error, options) {
-      	options = (options)? options :  {};
+        options = (options)? options :  {};
         var connector = this;
-       	
-       	connector._iterate({
-           	method : connector._uploadContent,
-           	methodNode : connector._uploadContentNode,
-           	success : success,
-           	error : error,
-           	url : function (idx, opts) {
+        
+        connector._iterate({
+            method : connector._uploadContent,
+            methodNode : connector._uploadContentNode,
+            success : success,
+            error : error,
+            url : function (idx, opts) {
                  var u = this.options.url[idx].replace(/\/$/, '');
                  u += this.options.contenthub.urlPostfix.replace(/\/$/, '');
                  
@@ -1044,18 +1045,18 @@ VIE.prototype.StanbolConnector.prototype = {
                  u += "/" + index.replace(/\/$/, '');
                  u += "/store";
                
-       		     return u;
-           	},
-           	args : {
-           		content: content,
-           		options : options
-           	},
-           	urlIndex : 0
+                 return u;
+            },
+            args : {
+                content: content,
+                options : options
+            },
+            urlIndex : 0
            });
        },
        
        _uploadContent : function (url, args, success, error) {
-       	   jQuery.ajax({
+           jQuery.ajax({
                success: success,
                error: error,
                url: url,
@@ -1096,179 +1097,179 @@ VIE.prototype.StanbolConnector.prototype = {
 //*nothing*  
 //**Returns**:  
 //*{VIE.StanbolConnector}* : The VIE.StanbolConnector instance itself.  
-	  createFactSchema: function(url, schema, success, error, options) {
-		   	 options = (options)? options :  {};
-		     var connector = this;
-		     
-		     options.url = url;
-	    	
-	    	 connector._iterate({
-	        	method : connector._createFactSchema,
-	        	methodNode : connector._createFactSchemaNode,
-	        	success : success,
-	        	error : error,
-	        	url : function (idx, opts) {
-	              var u = this.options.url[idx].replace(/\/$/, '');
-	              u += this.options.factstore.urlPostfix.replace(/\/$/, '');
-	              
-	              u += "/facts/" + escape(opts.url);
-	            
-	    		  return u;
-	        	},
-	        	args : {
-	        		url : url,
-	        		schema : schema,
-	        		options : options
-	        	},
-	        	urlIndex : 0
-	        });
-	    },
-	    
-	    _createFactSchema : function (url, args, success, error) {
-	    	   jQuery.ajax({
-	            success: success,
-	            error: error,
-	            url: url,
-	            type: "PUT",
-	            data : args.schema,
-	            contentType : "application/json",
-	            dataType: "application/json"
-	        });
-	    },
-	
-	    _createFactSchemaNode: function(url, args, success, error) {
-	        var request = require('request');
-	        var r = request({
-	            method: "PUT",
-	            uri: url,
-	            body : args.schema,
-	            headers: {
-	                Accept: "application/json",
-	                "Content-Type" : "application/json"
-	            }
-	        }, function(err, response, body) {
-	            try {
-	                success({results: JSON.parse(body)});
-	            } catch (e) {
-	                error(e);
-	            }
-	        });
-	        r.end();
-	    },
-	    
-	    createFact: function(fact, success, error, options) {
-		   	 options = (options)? options :  {};
-		     var connector = this;
-		     
-		   	 connector._iterate({
-		       	method : connector._createFact,
-		       	methodNode : connector._createFactNode,
-		       	success : success,
-		       	error : error,
-		       	url : function (idx, opts) {
-		             var u = this.options.url[idx].replace(/\/$/, '');
-		             u += this.options.factstore.urlPostfix.replace(/\/$/, '');
-		             
-		             u += "/facts";
-		           
-		   		  return u;
-		       	},
-		       	args : {
-		       		fact : fact,
-		       		options : options
-		       	},
-		       	urlIndex : 0
-		       });
-	   },
-	   
-	   _createFact : function (url, args, success, error) {
-	   	   jQuery.ajax({
-	           success: success,
-	           error: error,
-	           url: url,
-	           type: "POST",
-	           data : args.fact,
-	           contentType : "application/json",
-	           dataType: "application/json"
-	       });
-	   },
-	
-	   _createFactNode: function(url, args, success, error) {
-	       var request = require('request');
-	       var r = request({
-	           method: "POST",
-	           uri: url,
-	           body : args.fact,
-	           headers: {
-	               Accept: "application/json",
-	               "Content-Type" : "application/json"
-	           }
-	       }, function(err, response, body) {
-	           try {
-	               success({results: JSON.parse(body)});
-	           } catch (e) {
-	               error(e);
-	           }
-	       });
-	       r.end();
-	   },
-	   
-	    queryFact: function(query, success, error, options) {
-		   	 options = (options)? options :  {};
-		     var connector = this;
-		     
-		   	 connector._iterate({
-		       	method : connector._queryFact,
-		       	methodNode : connector._queryFactNode,
-		       	success : success,
-		       	error : error,
-		       	url : function (idx, opts) {
-		             var u = this.options.url[idx].replace(/\/$/, '');
-		             u += this.options.factstore.urlPostfix.replace(/\/$/, '');
-		             
-		             u += "/query";
-		           
-		   		  return u;
-		       	},
-		       	args : {
-		       		query : query,
-		       		options : options
-		       	},
-		       	urlIndex : 0
-		       });
-	   },
-	   
-	   _queryFact : function (url, args, success, error) {
-	   	   jQuery.ajax({
-	           success: success,
-	           error: error,
-	           url: url,
-	           type: "POST",
-	           data : args.query,
-	           contentType : "application/json",
-	           dataType: "application/json"
-	       });
-	   },
-	
-	   _queryFactNode: function(url, args, success, error) {
-	       var request = require('request');
-	       var r = request({
-	           method: "POST",
-	           uri: url,
-	           body : args.query,
-	           headers: {
-	               Accept: "application/json",
-	               "Content-Type" : "application/json"
-	           }
-	       }, function(err, response, body) {
-	           try {
-	               success({results: JSON.parse(body)});
-	           } catch (e) {
-	               error(e);
-	           }
-	       });
-	       r.end();
-	   }
+      createFactSchema: function(url, schema, success, error, options) {
+             options = (options)? options :  {};
+             var connector = this;
+             
+             options.url = url;
+            
+             connector._iterate({
+                method : connector._createFactSchema,
+                methodNode : connector._createFactSchemaNode,
+                success : success,
+                error : error,
+                url : function (idx, opts) {
+                  var u = this.options.url[idx].replace(/\/$/, '');
+                  u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+                  
+                  u += "/facts/" + escape(opts.url);
+                
+                  return u;
+                },
+                args : {
+                    url : url,
+                    schema : schema,
+                    options : options
+                },
+                urlIndex : 0
+            });
+        },
+        
+        _createFactSchema : function (url, args, success, error) {
+               jQuery.ajax({
+                success: success,
+                error: error,
+                url: url,
+                type: "PUT",
+                data : args.schema,
+                contentType : "application/json",
+                dataType: "application/json"
+            });
+        },
+    
+        _createFactSchemaNode: function(url, args, success, error) {
+            var request = require('request');
+            var r = request({
+                method: "PUT",
+                uri: url,
+                body : args.schema,
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type" : "application/json"
+                }
+            }, function(err, response, body) {
+                try {
+                    success({results: JSON.parse(body)});
+                } catch (e) {
+                    error(e);
+                }
+            });
+            r.end();
+        },
+        
+        createFact: function(fact, success, error, options) {
+             options = (options)? options :  {};
+             var connector = this;
+             
+             connector._iterate({
+                method : connector._createFact,
+                methodNode : connector._createFactNode,
+                success : success,
+                error : error,
+                url : function (idx, opts) {
+                     var u = this.options.url[idx].replace(/\/$/, '');
+                     u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+                     
+                     u += "/facts";
+                   
+                  return u;
+                },
+                args : {
+                    fact : fact,
+                    options : options
+                },
+                urlIndex : 0
+               });
+       },
+       
+       _createFact : function (url, args, success, error) {
+           jQuery.ajax({
+               success: success,
+               error: error,
+               url: url,
+               type: "POST",
+               data : args.fact,
+               contentType : "application/json",
+               dataType: "application/json"
+           });
+       },
+    
+       _createFactNode: function(url, args, success, error) {
+           var request = require('request');
+           var r = request({
+               method: "POST",
+               uri: url,
+               body : args.fact,
+               headers: {
+                   Accept: "application/json",
+                   "Content-Type" : "application/json"
+               }
+           }, function(err, response, body) {
+               try {
+                   success({results: JSON.parse(body)});
+               } catch (e) {
+                   error(e);
+               }
+           });
+           r.end();
+       },
+       
+        queryFact: function(query, success, error, options) {
+             options = (options)? options :  {};
+             var connector = this;
+             
+             connector._iterate({
+                method : connector._queryFact,
+                methodNode : connector._queryFactNode,
+                success : success,
+                error : error,
+                url : function (idx, opts) {
+                     var u = this.options.url[idx].replace(/\/$/, '');
+                     u += this.options.factstore.urlPostfix.replace(/\/$/, '');
+                     
+                     u += "/query";
+                   
+                  return u;
+                },
+                args : {
+                    query : query,
+                    options : options
+                },
+                urlIndex : 0
+               });
+       },
+       
+       _queryFact : function (url, args, success, error) {
+           jQuery.ajax({
+               success: success,
+               error: error,
+               url: url,
+               type: "POST",
+               data : args.query,
+               contentType : "application/json",
+               dataType: "application/json"
+           });
+       },
+    
+       _queryFactNode: function(url, args, success, error) {
+           var request = require('request');
+           var r = request({
+               method: "POST",
+               uri: url,
+               body : args.query,
+               headers: {
+                   Accept: "application/json",
+                   "Content-Type" : "application/json"
+               }
+           }, function(err, response, body) {
+               try {
+                   success({results: JSON.parse(body)});
+               } catch (e) {
+                   error(e);
+               }
+           });
+           r.end();
+       }
 };
 })();
 
