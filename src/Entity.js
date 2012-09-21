@@ -207,7 +207,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         // * `options.silent = true`
         // * `options.validate = false`
         validate: function (attrs, opts) {
-            if (opts.validate === false) {
+            if (opts && opts.validate === false) {
                 return;
             }
             var types = this.get('@type');
