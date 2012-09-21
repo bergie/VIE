@@ -57,9 +57,10 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             throw new Error("No model given");
         }
 
-        if (_.isString(model) && collection.isReference(model)) {
+        if (_.isString(model)) {
           model = {
-            '@subject': model
+            '@subject': model,
+            id: model
           };
         }
 

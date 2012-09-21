@@ -57,12 +57,20 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
 
         var childType = entity.get('@type');
+        var childTypeName;
         if (_.isArray(childType)) {
-          childType = childType[childType.length - 1];
+          _.each(childType, function (type) {
+            if (this.canAdd(type.id)) {
+              childTypeName = type.id;
+            }
+          }, this);
+        } else {
+          if (this.canAdd(childType.id)) {
+            childTypeName = childType.id;
+          }
         }
-        var childTypeName = childType.id;
-
-        if (!this.canAdd(childTypeName)) {
+          
+        if (!childTypeName) {
             return;
         }
 
