@@ -200,7 +200,16 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.unset.call(this, attr, opts);
         },
 
+        // Validation based on type rules.
+        //
+        // There are two ways to skip validation for entity operations:
+        //
+        // * `options.silent = true`
+        // * `options.validate = false`
         validate: function (attrs, opts) {
+            if (opts.validate === false) {
+                return;
+            }
             var types = this.get('@type');
             if (_.isArray(types)) {
                 var results = [];
