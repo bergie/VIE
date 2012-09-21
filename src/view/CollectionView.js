@@ -57,6 +57,9 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         }
 
         var childType = entity.get('@type');
+        if (_.isArray(childType)) {
+          childType = childType[childType.length - 1];
+        }
         var childTypeName = childType.id;
 
         if (!this.canAdd(childTypeName)) {
@@ -136,13 +139,12 @@ VIE.prototype.view.Collection = Backbone.View.extend({
     },
 
     refreshItems: function(collection) {
-        var view = this;
         _.each(this.entityViews, function(view, cid) {
           jQuery(view.el).remove();
         });
         this.entityViews = {};
         collection.forEach(function(entity) {
-            view.addItem(entity, collection);
-        });
+            this.addItem(entity, collection);
+        }, this);
     }
 });

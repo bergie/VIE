@@ -148,16 +148,17 @@ test("Test collection reset with RDFa", function() {
         var collection = entity.get('collection');
         ok(collection.isCollection);
         equal(collection.length, 1);
+        equal(collection.at(0).get('@type')[1].id, '<http://rdfs.org/sioc/ns#Post>');
         equal(jQuery('li[about]', html).length, 1);
 
         entity.set({
-          collection: ['<http://example.net/collectionreset/item>']
+          collection: ['<http://example.net/collectionreset/item>', '<http://example.net/collectionreset/item2>']
         });
 
         collection = entity.get('collection');
         ok(collection.isCollection);
-        equal(collection.length, 1);
-        equal(jQuery('li[about]', html).length, 1);
+        equal(collection.length, 2);
+        equal(jQuery('li[about]', html).length, 2);
 
         start();
     });
