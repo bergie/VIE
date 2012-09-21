@@ -81,29 +81,36 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                     newAttribs[attribute] = value;
                     return true;
                 }
-                else if (existing.get(attribute) === value) {
-                    return true;
-                } else {
-                    //merge existing attribute values with new ones!
-                    //not just overwrite 'em!!
-                    var oldVals = existing.attributes[attribute];
-                    var newVals = value;
-                    if (oldVals instanceof collection.vie.Collection) {
-                        // TODO: Merge collections
+
+                if (attribute === '@subject') {
+                    if (model.isNew() && !existing.isNew()) {
+                        // Save order issue, skip
                         return true;
                     }
-                    if (options.overrideAttributes) {
-                       newAttribs[attribute] = value;
-                       return true;
-                    } 
-                    if (attribute === '@context') {
-                        newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
-                    } else {
-                        oldVals = (jQuery.isArray(oldVals))? oldVals : [ oldVals ];
-                        newVals = (jQuery.isArray(newVals))? newVals : [ newVals ];
-                        newAttribs[attribute] = _.uniq(oldVals.concat(newVals));
-                        newAttribs[attribute] = (newAttribs[attribute].length === 1)? newAttribs[attribute][0] : newAttribs[attribute];
-                    }
+                }
+
+                if (existing.get(attribute) === value) {
+                    return true;
+                }
+                //merge existing attribute values with new ones!
+                //not just overwrite 'em!!
+                var oldVals = existing.attributes[attribute];
+                var newVals = value;
+                if (oldVals instanceof collection.vie.Collection) {
+                    // TODO: Merge collections
+                    return true;
+                }
+                if (options.overrideAttributes) {
+                   newAttribs[attribute] = value;
+                   return true;
+                } 
+                if (attribute === '@context') {
+                    newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
+                } else {
+                    oldVals = (jQuery.isArray(oldVals))? oldVals : [ oldVals ];
+                    newVals = (jQuery.isArray(newVals))? newVals : [ newVals ];
+                    newAttribs[attribute] = _.uniq(oldVals.concat(newVals));
+                    newAttribs[attribute] = (newAttribs[attribute].length === 1)? newAttribs[attribute][0] : newAttribs[attribute];
                 }
             });
 
