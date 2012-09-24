@@ -25,8 +25,6 @@
   "devDependencies": {
     "nodeunit"  : ">=0.6.0",
     "docco-husky" : ">=0.3.0",
-    "zombie"    : "0.12.x",
-    "express"   : "2.5.x",
     "jshint"    : "0.9.x"
   },
   "lib"           : ".",
