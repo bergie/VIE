@@ -12,5 +12,4 @@ script:
   - phantomjs test/qunit/run.js test/index.html
 
 notifications:
-    irc: "irc.freenode.org#iks"
-    email: "viejs@googlegroups.com"
+  irc: "irc.freenode.org#iks"
