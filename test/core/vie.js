@@ -161,7 +161,7 @@ test("vie.js Entity API - setOrAdd", function () {
     });
     var clapton = z.entities.get('http://example.org/EricClapton');
     clapton.setOrAdd('plays', 'guitar');
-    equals(typeof z.entities.get('http://example.org/EricClapton').get('plays'), "string", "Single values are stored as they are");
+    equal(typeof z.entities.get('http://example.org/EricClapton').get('plays'), "string", "Single values are stored as they are");
 
     clapton.setOrAdd('plays', 'vocals');
     ok(z.entities.get('http://example.org/EricClapton').get('plays') instanceof Array, "Multiple values are stored as Arrays");
@@ -170,14 +170,14 @@ test("vie.js Entity API - setOrAdd", function () {
     ok(!clapton.get('plays'), "Property unset");
 
     clapton.setOrAdd({'plays': 'guitar'});
-    equals(typeof clapton.get('plays'), "string", "Single values are stored as they are");
+    equal(typeof clapton.get('plays'), "string", "Single values are stored as they are");
 
     clapton.setOrAdd({'plays': 'vocals'});
     ok(clapton.get('plays') instanceof Array, "Multiple values are stored as Arrays");
-    equals(clapton.get('plays').length, 2);
+    equal(clapton.get('plays').length, 2);
 
     clapton.setOrAdd({'plays': 'vocals'});
-    equals(clapton.get('plays').length, 3, "Same value twice is the same value and needs to be added twice.");
+    equal(clapton.get('plays').length, 3, "Same value twice is the same value and needs to be added twice.");
 });
 
 test("vie.js Entities API - set()", function () {
@@ -195,27 +195,27 @@ test("vie.js Entities API - set()", function () {
     /* literals */
     
     madonna.set({"name" : "Madonna"}); // set literal with object notation
-    equals(madonna.get("name"), "Madonna");
+    equal(madonna.get("name"), "Madonna");
     
     madonna.unset("name");
-    equals(madonna.get("name"), undefined);
+    equal(madonna.get("name"), undefined);
     
     madonna.set("name", "Madonna Louise Ciccone"); // set literal with simple notation
-    equals(madonna.get("name"), "Madonna Louise Ciccone");
+    equal(madonna.get("name"), "Madonna Louise Ciccone");
     madonna.unset("name");
     
     madonna.set("name", ["Madonna", "Madonna Louise Ciccone"]); // set mulitple literals at the same time
-    equals(madonna.get("name").length, 2);
+    equal(madonna.get("name").length, 2);
     madonna.unset("name");
     
     madonna.set("name", "Madonna");
     madonna.set("name", "Madonna Louise Ciccone"); // overwrite existing literal
-    equals(madonna.get("name"), "Madonna Louise Ciccone");
+    equal(madonna.get("name"), "Madonna Louise Ciccone");
     madonna.unset("name");
     
     madonna.set("name", "Madonna");
     madonna.set("name", ["Madonna", "Madonna Louise Ciccone"]); // overwrite existing literal
-    equals(madonna.get("name").length, 2);
+    equal(madonna.get("name").length, 2);
     madonna.unset("name");
     
     var britney = z.entities.addOrUpdate({
@@ -225,8 +225,8 @@ test("vie.js Entities API - set()", function () {
     
     madonna.set("knows", britney); // set an entity
     ok(madonna.get("knows").isCollection);
-    equals(madonna.get("knows").size(), 1);
-    equals(madonna.get("knows").at(0).getSubject(), britney.getSubject());
+    equal(madonna.get("knows").size(), 1);
+    equal(madonna.get("knows").at(0).getSubject(), britney.getSubject());
     
     
     var courtney = z.entities.addOrUpdate({
@@ -236,8 +236,8 @@ test("vie.js Entities API - set()", function () {
     
     madonna.set("knows", courtney); // set another entity
     ok(madonna.get("knows").isCollection);
-    equals(madonna.get("knows").size(), 1);
-    equals(madonna.get("knows").at(0).getSubject(), courtney.getSubject());
+    equal(madonna.get("knows").size(), 1);
+    equal(madonna.get("knows").at(0).getSubject(), courtney.getSubject());
 
     // Set with array of subject URIs, should still be a collection
     var originalCollection = madonna.get("knows");
@@ -245,9 +245,9 @@ test("vie.js Entities API - set()", function () {
       knows: [courtney.getSubject()]
     });
     ok(madonna.get("knows").isCollection);
-    equals(madonna.get("knows").size(), 1);
-    equals(madonna.get("knows").at(0).getSubject(), courtney.getSubject());
-    equals(madonna.get("knows"), originalCollection);
+    equal(madonna.get("knows").size(), 1);
+    equal(madonna.get("knows").at(0).getSubject(), courtney.getSubject());
+    equal(madonna.get("knows"), originalCollection);
 });
 
 test("vie.js Entities API - setOrUpdate with entities", function () {
@@ -277,9 +277,9 @@ test("vie.js Entities API - setOrUpdate with entities", function () {
     
     
     var friends = madonna.get("knows");
-    equals(madonna.get("knows").size(), 2);
-    equals(madonna.get("knows").at(0).getSubject(), britney.getSubject());
-    equals(madonna.get("knows").at(1).getSubject(), courtney.getSubject());
+    equal(madonna.get("knows").size(), 2);
+    equal(madonna.get("knows").at(0).getSubject(), britney.getSubject());
+    equal(madonna.get("knows").at(1).getSubject(), courtney.getSubject());
     ok(friends);
     
 });
@@ -297,11 +297,11 @@ test("vie.js Entity API - addTo", function () {
     var sizeBefore = z.entities.size();
     clapton.addTo(z.entities);
     var sizeAfter = z.entities.size();
-    equals(sizeAfter, sizeBefore + 1);
+    equal(sizeAfter, sizeBefore + 1);
     z.entities.remove(clapton);
     clapton.addTo(z.entities, true);
     sizeAfter = z.entities.size();
-    equals(sizeAfter, sizeBefore + 1);
+    equal(sizeAfter, sizeBefore + 1);
 });
 
 VIE.prototype.MockService = function () {

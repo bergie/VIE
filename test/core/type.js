@@ -229,10 +229,10 @@ test("VIE - Type Sorting", function () {
     ok(test(sortedArrayDesc2));
     
     ok(v.types.sort([]));
-    equals(v.types.sort([]).length, [].length);
+    equal(v.types.sort([]).length, [].length);
     
-    equals(v.types.sort(["TestType1"]).length, 1);
-    equals(v.types.sort(["TestType1"])[0], "TestType1");
+    equal(v.types.sort(["TestType1"]).length, 1);
+    equal(v.types.sort(["TestType1"])[0], "TestType1");
 
     
 });

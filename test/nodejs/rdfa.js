@@ -18,7 +18,7 @@ exports['test inheriting subject'] = function(test) {
     test.equal(jsonldEntities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
     test.equal(jsonldEntities[1]['<http://xmlns.com/foaf/0.1/name>'], 'Albert Einstein');
     test.equal(jsonldEntities[0]['<http://dbpedia.org/resource/conventionalLongName>'], 'Federal Republic of Germany');
-    test.equals(jsonldEntities[1]['<http://dbpedia.org/resource/birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
+    test.equal(jsonldEntities[1]['<http://dbpedia.org/resource/birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
 
     var backboneEntities = VIE.RDFaEntities.getInstances(html);
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");

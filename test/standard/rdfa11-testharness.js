@@ -22,6 +22,7 @@ test("Test #1 (required): Predicate establishment with @property", function() {
 
 test("Test #6 (required): @rel and @rev", function() {
     //TODO:  Skip for now, not supported in VIE
+    expect(0);
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -47,6 +48,7 @@ test("Test #6 (required): @rel and @rev", function() {
 
 test("Test #7 (required): @rel, @rev, @property, @content", function() {
     //TODO:  Skip for now, not supported in VIE
+    expect(0);
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -73,6 +75,7 @@ test("Test #7 (required): @rel, @rev, @property, @content", function() {
 
 test("Test #9 (required): @rev", function() {
     //TODO:  Skip for now, not supported in VIE
+    expect(0);
     return;
     var z = new VIE();
     z.use(new z.RdfaService);
@@ -95,6 +98,7 @@ test("Test #9 (required): @rev", function() {
 
 test("Test #10 (required): @rel, @rev, @href", function() {
     //TODO: Skip for now, not supported in VIE
+    expect(0);
     return;
     var z = new VIE();
     z.use(new z.RdfaService);

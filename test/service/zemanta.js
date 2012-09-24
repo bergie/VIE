@@ -14,7 +14,7 @@ test("VIE.js ZemantaService - API", function() {
     z.use(new z.ZemantaService);    
     //API
     ok(z.service('zemanta').analyze);
-    equals(typeof z.service('zemanta').analyze, "function");
+    equal(typeof z.service('zemanta').analyze, "function");
 });
 
 test("VIE.js ZemantaService - Analyze", function () {
@@ -22,9 +22,9 @@ test("VIE.js ZemantaService - Analyze", function () {
        return;
     } 
     if (window.ZEMANTA_API_KEY === undefined) {
-    	console.warn("Please provide an API key for Zemanta.");
-    	ok(true, "Skipped tests, as no API key is available!");
-    	return;
+        console.warn("Please provide an API key for Zemanta.");
+        ok(true, "Skipped tests, as no API key is available!");
+        return;
     }
     // Sending a an example with double quotation marks.
     var text = "<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>";    
@@ -51,7 +51,7 @@ test("VIE.js ZemantaService - Analyze", function () {
         var firstTextAnnotation = _(entities).filter(function(e){return e.isof("zemanta:Document") && e.get("zemanta:text");})[0];
         var s = firstTextAnnotation.get("zemanta:text").toString();
         
-    	equals(text, s, "This should return the same text that has been sent to Zemanta.");
+        equal(text, s, "This should return the same text that has been sent to Zemanta.");
         ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
         start();
     })
