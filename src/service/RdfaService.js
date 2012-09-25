@@ -542,6 +542,10 @@ VIE.prototype.RdfaService.prototype = {
         }
         return entityPredicates;
     },
+
+    findSubjectElements: function (element) {
+      return jQuery('[about]', element);
+    },
     
     findPredicateElements : function(subject, element, allowNestedPredicates) {
         var service = this;
