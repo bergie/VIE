@@ -14,14 +14,14 @@
     <property name="TMP_DIR" value="./tmp"/>
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
-	
+
 	<target name="timestamp">
 		<tstamp>
 			<format property="current.time"
 				pattern="yyyyMMddHHmmss" />
 		</tstamp>
 	</target>
-	
+
     <target name="doc" depends="init" description="Generates documentation for vie.js with Docco-Husky">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco-Husky' is needed for that. Make sure it is on your PATH or"/>
@@ -35,7 +35,7 @@
         </move>
         <delete dir="${DOCS_TMP}"/>
     </target>
-	
+
 	<target name="doc_copy" depends="doc" description="Copies documentation into gh-pages branch ">
 		<echo message="Move docs temporarily"/>
     	<exec executable="sh" dir=".">
@@ -74,7 +74,7 @@
 	 	   <arg value="git checkout master" />
 		</exec>
     </target>
-	
+
 	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
 		<echo message="Move dist folder temporarily"/>
     	<exec executable="sh" dir=".">
@@ -151,8 +151,8 @@
 	 	   <arg value="git checkout master" />
 		</exec>
     </target>
-	    
-	    
+
+
     <target name="clean" description="Tidy up project.">
         <echo message="Deleting distribution and API documentation"/>
         <delete dir="${DIST_DIR}"/>
@@ -166,7 +166,7 @@
 
     <target name="all" depends="dist"/>
 
-    <target name="dist" depends="init, combine, minimise, combineAll, minimiseAll" />
+    <target name="dist" depends="init, combine, minimise, combineCore, minimiseCore, combineAll, minimiseAll" />
 
     <target name="zip" depends="dist">
         <zip destfile="${DIST_DIR}/vie-${VERSION}_${current.time}.zip">
@@ -209,6 +209,26 @@
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-latest.debug.js" overwrite="true" />
     </target>
 
+  <target name="combineCore" description="combines core/*.js files into one file. Excludes services and views.">
+    <echo message="Building vie-core.js Distribution" />
+    <concat destfile="${DIST_DIR}/vie-core-${VERSION}_${current.time}.debug.js">
+      <string>/*</string>
+      <fileset dir="." includes="LICENSE"/>
+      <string>*/</string>
+      <string>(function(){</string>
+      <fileset dir="${SRC_DIR}" includes="VIE.js"/>
+      <fileset dir="${SRC_DIR}" includes="Able.js"/>
+      <fileset dir="${SRC_DIR}" includes="Util.js"/>
+      <fileset dir="${SRC_DIR}" includes="Entity.js"/>
+      <fileset dir="${SRC_DIR}" includes="Collection.js"/>
+      <fileset dir="${SRC_DIR}" includes="Type.js"/>
+      <fileset dir="${SRC_DIR}" includes="Attribute.js"/>
+      <fileset dir="${SRC_DIR}" includes="Namespace.js"/>
+      <string>})();</string>
+    </concat>
+    <copy file="${DIST_DIR}/vie-core-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-core-latest.debug.js" overwrite="true" />
+  </target>
+
 	<target name="combineAll" description="combines js libs and core/*.js files into one file" depends="timestamp">
 	        <echo message="Building vie.js Distribution" />
 	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
@@ -248,7 +268,7 @@
 	        </concat>
 	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-ALL-latest.debug.js" overwrite="true" />
 	    </target>
-	
+
     <target name="minimise">
         <echo message="Minimising vie.js" />
 
@@ -259,6 +279,17 @@
         <replaceregexp file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" match="^" replace="/* VIE ${VERSION} may be freely distributed under the MIT license. See http://viejs.org/ for more details. */" />
         <copy file="${DIST_DIR}/vie-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-latest.js" overwrite="true" />
     </target>
+
+  <target name="minimiseCore">
+    <echo message="Minimising vie-core.js" />
+
+    <antcall target="minimiseJSFile">
+      <param name="inputFile" value="${DIST_DIR}/vie-core-${VERSION}_${current.time}.debug.js" />
+      <param name="outputFile" value="${DIST_DIR}/vie-core-${VERSION}_${current.time}.js" />
+    </antcall>
+    <replaceregexp file="${DIST_DIR}/vie-core-${VERSION}_${current.time}.js" match="^" replace="/* VIE ${VERSION} may be freely distributed under the MIT license. See http://viejs.org/ for more details. */" />
+    <copy file="${DIST_DIR}/vie-core-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-core-latest.js" overwrite="true" />
+  </target>
 
 	<target name="minimiseAll">
 	    <echo message="Minimising ALL vie.js" />
