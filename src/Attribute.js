@@ -19,24 +19,24 @@ if (VIE.prototype.Attributes) {
 }
 
 // ### VIE.Attribute(id, range, domain, minCount, maxCount, metadata)
-// This is the constructor of a VIE.Attribute.  
-// **Parameters**:  
-// *{string}* **id** The id of the attribute.  
-// *{string|array}* **range** A string or an array of strings of the target range of 
-// the attribute.  
-// *{string}* **domain** The domain of the attribute.  
-// *{number}* **minCount** The minimal number this attribute can occur. (needs to be >= 0)  
+// This is the constructor of a VIE.Attribute.
+// **Parameters**:
+// *{string}* **id** The id of the attribute.
+// *{string|array}* **range** A string or an array of strings of the target range of
+// the attribute.
+// *{string}* **domain** The domain of the attribute.
+// *{number}* **minCount** The minimal number this attribute can occur. (needs to be >= 0)
 // *{number}* **maxCount** The maximal number this attribute can occur. (needs to be >= minCount, use `-1` for unlimited)
 // *{object}* **metadata** Possible metadata about the attribute
-// **Throws**:  
-// *{Error}* if one of the given paramenters is missing.  
-// **Returns**:  
-// *{VIE.Attribute}* : A **new** VIE.Attribute object.  
-// **Example usage**:  
+// **Throws**:
+// *{Error}* if one of the given paramenters is missing.
+// **Returns**:
+// *{VIE.Attribute}* : A **new** VIE.Attribute object.
+// **Example usage**:
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person", 0, 10);
 //      // Creates an attribute to describe a *knows*-relationship
-//      // between persons. Each person can only have 
+//      // between persons. Each person can only have
 VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount, metadata) {
     if (id === undefined || typeof id !== 'string') {
         throw new Error("The attribute constructor needs an 'id' of type string! E.g., 'Person'");
@@ -47,33 +47,33 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount, metad
     if (domain === undefined) {
         throw new Error("The attribute constructor of " + id + " needs a 'domain'.");
     }
-    
+
     this._domain = domain;
-    
+
 // ### id
-// This field stores the id of the attribute's instance.  
-// **Parameters**:  
+// This field stores the id of the attribute's instance.
+// **Parameters**:
 // nothing
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{string}* : A URI, representing the id of the attribute.  
-// **Example usage**:  
+// **Throws**:
+// nothing
+// **Returns**:
+// *{string}* : A URI, representing the id of the attribute.
+// **Example usage**:
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
 //     console.log(knowsAttr.id);
 //     // --> <http://viejs.org/ns/knows>
     this.id = this.vie.namespaces.isUri(id) ? id : this.vie.namespaces.uri(id);
-    
+
 // ### range
-// This field stores the ranges of the attribute's instance.  
-// **Parameters**:  
+// This field stores the ranges of the attribute's instance.
+// **Parameters**:
 // nothing
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{array}* : An array of strings which represent the types.  
-// **Example usage**:  
+// **Throws**:
+// nothing
+// **Returns**:
+// *{array}* : An array of strings which represent the types.
+// **Example usage**:
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
 //     console.log(knowsAttr.range);
@@ -82,30 +82,30 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount, metad
 
 // ### min
 // This field stores the minimal amount this attribute can occur in the type's instance. The number
-// needs to be greater or equal to zero.  
-// **Parameters**:  
+// needs to be greater or equal to zero.
+// **Parameters**:
 // nothing
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{int}* : The minimal amount this attribute can occur.  
-// **Example usage**:  
+// **Throws**:
+// nothing
+// **Returns**:
+// *{int}* : The minimal amount this attribute can occur.
+// **Example usage**:
 //
 //     console.log(person.min);
 //      // --> 0
     minCount = minCount ? minCount : 0;
     this.min = (minCount > 0) ? minCount : 0;
-    
+
 // ### max
 // This field stores the maximal amount this attribute can occur in the type's instance.
-// This number cannot be smaller than min  
-// **Parameters**:  
+// This number cannot be smaller than min
+// **Parameters**:
 // nothing
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{int}* : The maximal amount this attribute can occur.  
-// **Example usage**:  
+// **Throws**:
+// nothing
+// **Returns**:
+// *{int}* : The maximal amount this attribute can occur.
+// **Example usage**:
 //
 //     console.log(person.max);
 //      // --> 1.7976931348623157e+308
@@ -121,16 +121,16 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount, metad
 
 // ### applies(range)
 // This method checks, whether the current attribute applies in the given range.
-// If ```range``` is a string and cannot be transformed into a ```VIE.Type```, 
-// this performs only string comparison, if it is a VIE.Type 
+// If ```range``` is a string and cannot be transformed into a ```VIE.Type```,
+// this performs only string comparison, if it is a VIE.Type
 // or an ID of a VIE.Type, then inheritance is checked as well.
-// **Parameters**:  
-// *{string|VIE.Type}* **range** The ```VIE.Type``` (or it's string representation) to be checked. 
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{boolean}* : ```true``` if the given type applies to this attribute and ```false``` otherwise.  
-// **Example usage**:  
+// **Parameters**:
+// *{string|VIE.Type}* **range** The ```VIE.Type``` (or it's string representation) to be checked.
+// **Throws**:
+// nothing
+// **Returns**:
+// *{boolean}* : ```true``` if the given type applies to this attribute and ```false``` otherwise.
+// **Example usage**:
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
 //     console.log(knowsAttr.applies("Person")); // --> true
@@ -154,61 +154,61 @@ VIE.prototype.Attribute = function (id, range, domain, minCount, maxCount, metad
         }
         return false;
     };
-            
+
 };
 
 // ## VIE.Attributes(domain, attrs)
 // This is the constructor of a VIE.Attributes. Basically a convenience class
-// that represents a list of ```VIE.Attribute```. As attributes are part of a 
-// certain ```VIE.Type```, it needs to be passed for inheritance checks.  
-// **Parameters**:  
-// *{string}* **domain** The domain of the attributes (the type they will be part of).  
+// that represents a list of ```VIE.Attribute```. As attributes are part of a
+// certain ```VIE.Type```, it needs to be passed for inheritance checks.
+// **Parameters**:
+// *{string}* **domain** The domain of the attributes (the type they will be part of).
 // *{string|VIE.Attribute|array}* **attrs** Either a string representation of an attribute,
-// a proper instance of ```VIE.Attribute``` or an array of both.  
-// *{string}* **domain** The domain of the attribute.  
-// **Throws**:  
-// *{Error}* if one of the given paramenters is missing.  
-// **Returns**:  
-// *{VIE.Attribute}* : A **new** VIE.Attribute instance.  
-// **Example usage**:  
+// a proper instance of ```VIE.Attribute``` or an array of both.
+// *{string}* **domain** The domain of the attribute.
+// **Throws**:
+// *{Error}* if one of the given paramenters is missing.
+// **Returns**:
+// *{VIE.Attribute}* : A **new** VIE.Attribute instance.
+// **Example usage**:
 //
 //     var knowsAttr = new vie.Attribute("knows", ["Person"], "Person");
 //     var personAttrs = new vie.Attributes("Person", knowsAttr);
 VIE.prototype.Attributes = function (domain, attrs) {
-    
+
     this._local = {};
     this._attributes = {};
-    
+
 // ### domain
-// This field stores the domain of the attributes' instance.  
-// **Parameters**:  
+// This field stores the domain of the attributes' instance.
+// **Parameters**:
 // nothing
-// **Throws**:  
-// nothing  
-// **Returns**:  
-// *{string}* : The string representation of the domain.  
-// **Example usage**:  
+// **Throws**:
+// nothing
+// **Returns**:
+// *{string}* : The string representation of the domain.
+// **Example usage**:
 //
 //     console.log(personAttrs.domain);
 //     // --> ["Person"]
     this.domain = domain;
-    
+
 // ### add(id, range, min, max, metadata)
 // This method adds a ```VIE.Attribute``` to the attributes instance.
-// **Parameters**:  
+// **Parameters**:
 // *{string|VIE.Attribute}* **id** The string representation of an attribute, or a proper
-// instance of a ```VIE.Attribute```.  
-// *{string|array}* **range** An array representing the target range of the attribute.  
-// *{number}* **min** The minimal amount this attribute can appear.  
-// instance of a ```VIE.Attribute```.  
-// *{number}* **max** The maximal amount this attribute can appear.  
+// instance of a ```VIE.Attribute```.
+// *{string|array}* **range** An array representing the target range of the attribute.
+// *{number}* **min** The minimal amount this attribute can appear.
+// instance of a ```VIE.Attribute```.
+// *{number}* **max** The maximal amount this attribute can appear.
 // *{object}* **metadata** Additional metadata for the attribute.
-// **Throws**:  
-// *{Error}* If an atribute with the given id is already registered.  
-// *{Error}* If the ```id``` parameter is not a string, nor a ```VIE.Type``` instance.  
-// **Returns**:  
-// *{VIE.Attribute}* : The generated or passed attribute.  
-// **Example usage**:  
+// **Throws**:
+// *{Error}* If an atribute with the given id is already registered.
+// *{Error}* If the ```id``` parameter is not a string, nor a ```VIE.Type``` instance.
+// **Returns**:
+// *{VIE.Attribute}* : The generated or passed attribute.
+// **Example usage**:
 //
 //     personAttrs.add("name", "Text", 0, 1);
     this.add = function (id, range, min, max, metadata) {
@@ -218,7 +218,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
           }, this);
           return this;
         }
-        
+
         if (this.get(id)) {
             throw new Error("Attribute '" + id + "' already registered for domain " + this.domain.id + "!");
         } else {
@@ -236,17 +236,17 @@ VIE.prototype.Attributes = function (domain, attrs) {
             }
         }
     };
-    
+
 // ### remove(id)
 // This method removes a ```VIE.Attribute``` from the attributes instance.
-// **Parameters**:  
+// **Parameters**:
 // *{string|VIE.Attribute}* **id** The string representation of an attribute, or a proper
-// instance of a ```VIE.Attribute```.  
-// **Throws**:  
+// instance of a ```VIE.Attribute```.
+// **Throws**:
 // *{Error}* When the attribute is inherited from a parent ```VIE.Type``` and thus cannot be removed.
-// **Returns**:  
-// *{VIE.Attribute}* : The removed attribute.  
-// **Example usage**:  
+// **Returns**:
+// *{VIE.Attribute}* : The removed attribute.
+// **Example usage**:
 //
 //     personAttrs.remove("knows");
     this.remove = function (id) {
@@ -257,17 +257,17 @@ VIE.prototype.Attributes = function (domain, attrs) {
         }
         throw new Error("The attribute " + id + " is inherited and cannot be removed from the domain " + this.domain.id + "!");
     };
-    
+
 // ### get(id)
-// This method returns a ```VIE.Attribute``` from the attributes instance by it's id.  
-// **Parameters**:  
+// This method returns a ```VIE.Attribute``` from the attributes instance by it's id.
+// **Parameters**:
 // *{string|VIE.Attribute}* **id** The string representation of an attribute, or a proper
-// instance of a ```VIE.Attribute```.  
-// **Throws**:  
-// *{Error}* When the method is called with an unknown datatype.  
-// **Returns**:  
-// *{VIE.Attribute}* : The attribute.  
-// **Example usage**:  
+// instance of a ```VIE.Attribute```.
+// **Throws**:
+// *{Error}* When the method is called with an unknown datatype.
+// **Returns**:
+// *{VIE.Attribute}* : The attribute.
+// **Example usage**:
 //
 //     personAttrs.get("knows");
     this.get = function (id) {
@@ -280,35 +280,35 @@ VIE.prototype.Attributes = function (domain, attrs) {
             throw new Error("Wrong argument in VIE.Attributes.get()");
         }
     };
-    
+
 // ### _inherit()
 // The private method ```_inherit``` creates a full list of all attributes. This includes
 // local attributes as well as inherited attributes from the parents. The ranges of attributes
 // with the same id will be merged. This method is called everytime an attribute is requested or
-// the list of all attributes. Usually this method should not be invoked outside of the class.  
-// **Parameters**:  
-// *nothing*  
-// instance of a ```VIE.Attribute```.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *nothing*  
-// **Example usage**:  
+// the list of all attributes. Usually this method should not be invoked outside of the class.
+// **Parameters**:
+// *nothing*
+// instance of a ```VIE.Attribute```.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *nothing*
+// **Example usage**:
 //
 //     personAttrs._inherit();
     this._inherit = function () {
         var a, x, id;
         var attributes = jQuery.extend(true, {}, this._local);
-        
+
         var inherited = _.map(this.domain.supertypes.list(),
             function (x) {
-               return x.attributes; 
+               return x.attributes;
             }
         );
 
         var add = {};
         var merge = {};
-        var ilen, alen; 
+        var ilen, alen;
         for (a = 0, ilen = inherited.length; a < ilen; a++) {
             var attrs = inherited[a].list();
             for (x = 0, alen = attrs.length; x < alen; x++) {
@@ -340,10 +340,10 @@ VIE.prototype.Attributes = function (domain, attrs) {
                 }
             }
         }
-        
+
         /* adds inherited attributes that do not need to be merged */
         jQuery.extend(attributes, add);
-        
+
         /* merges inherited attributes */
         for (id in merge) {
             var mranges = merge[id].range;
@@ -371,7 +371,7 @@ VIE.prototype.Attributes = function (domain, attrs) {
                     ranges.push(mranges[r]);
                 }
             }
-            
+
             var maxMin = _.max(mins);
             var minMax = _.min(maxs);
             if (maxMin <= minMax && minMax >= 0 && maxMin >= 0) {
@@ -386,14 +386,14 @@ VIE.prototype.Attributes = function (domain, attrs) {
     };
 
 // ### toArray() === list()
-// This method return an array of ```VIE.Attribute```s from the attributes instance.  
-// **Parameters**:  
-// *nothing.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{array}* : An array of ```VIE.Attribute```.  
-// **Example usage**:  
+// This method return an array of ```VIE.Attribute```s from the attributes instance.
+// **Parameters**:
+// *nothing.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{array}* : An array of ```VIE.Attribute```.
+// **Example usage**:
 //
 //     personAttrs.list();
     this.toArray = this.list = function (range) {
@@ -406,9 +406,9 @@ VIE.prototype.Attributes = function (domain, attrs) {
         }
         return ret;
     };
-        
+
     attrs = _.isArray(attrs) ? attrs : [ attrs ];
-    _.each(attrs, function (attr) {    
+    _.each(attrs, function (attr) {
         this.add(attr.id, attr.range, attr.min, attr.max, attr.metadata);
     }, this);
 };

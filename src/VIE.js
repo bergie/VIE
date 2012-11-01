@@ -69,24 +69,24 @@ var VIE = root.VIE = function(config) {
     this.Entity.prototype.entities = this.entities;
     this.Entity.prototype.entityCollection = this.Collection;
     this.Entity.prototype.vie = this;
-    
+
     this.Namespaces.prototype.vie = this;
 // ### Namespaces in VIE
 // VIE supports different ontologies and an easy use of them.
 // Namespace prefixes reduce the amount of code you have to
 // write. In VIE, it does not matter if you access an entitie's
-// property with 
-// `entity.get('<http://dbpedia.org/property/capitalOf>')` or 
-// `entity.get('dbprop:capitalOf')` or even 
+// property with
+// `entity.get('<http://dbpedia.org/property/capitalOf>')` or
+// `entity.get('dbprop:capitalOf')` or even
 // `entity.get('capitalOf')` once the corresponding namespace
 // is registered as *baseNamespace*.
 // By default `"http://viejs.org/ns/"`is set as base namespace.
 // For more information about how to set, get and list all
-// registered namespaces, refer to the 
+// registered namespaces, refer to the
 // <a href="Namespace.html">Namespaces documentation</a>.
     this.namespaces = new this.Namespaces(
         (this.config.baseNamespace) ? this.config.baseNamespace : "http://viejs.org/ns/",
-        
+
 // By default, VIE is shipped with common namespace prefixes:
 
 // +    owl    : "http://www.w3.org/2002/07/owl#"
@@ -129,7 +129,7 @@ var VIE = root.VIE = function(config) {
 // this information, to easily ask, whether an entity
 // is of type, e.g., *foaf:Person* or *schema:Place*.
 // For more information about how to generate such a type
-// hierarchy, refer to the 
+// hierarchy, refer to the
 // <a href="Type.html">Types documentation</a>.
     this.types = new this.Types();
 // By default, there is a parent type in VIE, called
@@ -156,16 +156,16 @@ var VIE = root.VIE = function(config) {
 };
 
 // ### use(service, name)
-// This method registers services within VIE.  
-// **Parameters**:  
-// *{string|object}* **service** The service to be registered.  
+// This method registers services within VIE.
+// **Parameters**:
+// *{string|object}* **service** The service to be registered.
 // *{string}* **name** An optional name to register the service with. If this
-// is not set, the default name that comes with the service is taken.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE}* : The current VIE instance.  
-// **Example usage**:  
+// is not set, the default name that comes with the service is taken.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE}* : The current VIE instance.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     var conf1 = {...};
@@ -184,20 +184,20 @@ VIE.prototype.use = function(service, name) {
       service.init();
   }
   this.services[service.name] = service;
-  
+
   return this;
 };
 
 // ### service(name)
 // This method returns the service object that is
-// registered under the given name.  
-// **Parameters**:  
-// *{string}* **name** ...  
-// **Throws**:  
-// *{Error}* if no service could be found.  
-// **Returns**:  
-// *{object}* : The service to be queried.  
-// **Example usage**:  
+// registered under the given name.
+// **Parameters**:
+// *{string}* **name** ...
+// **Throws**:
+// *{Error}* if no service could be found.
+// **Returns**:
+// *{object}* : The service to be queried.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -224,14 +224,14 @@ VIE.prototype.hasService = function(name) {
 };
 
 // ### getServicesArray()
-// This method returns an array of all registered services.  
-// **Parameters**:  
-// *nothing*  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{array}* : An array of service instances.  
-// **Example usage**:  
+// This method returns an array of all registered services.
+// **Parameters**:
+// *nothing*
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{array}* : An array of service instances.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -243,14 +243,14 @@ VIE.prototype.getServicesArray = function() {
 
 // ### load(options)
 // This method instantiates a new VIE.Loadable in order to
-// perform queries on the services.  
-// **Parameters**:  
-// *{object}* **options** Options to be set.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Loadable}* : A new instance of VIE.Loadable.  
-// **Example usage**:  
+// perform queries on the services.
+// **Parameters**:
+// *{object}* **options** Options to be set.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Loadable}* : A new instance of VIE.Loadable.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -263,14 +263,14 @@ VIE.prototype.load = function(options) {
 
 // ### save(options)
 // This method instantiates a new VIE.Savable in order to
-// perform queries on the services.  
-// **Parameters**:  
-// *{object}* **options** Options to be set.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Savable}* : A new instance of VIE.Savable.  
-// **Example usage**:  
+// perform queries on the services.
+// **Parameters**:
+// *{object}* **options** Options to be set.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Savable}* : A new instance of VIE.Savable.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -283,14 +283,14 @@ VIE.prototype.save = function(options) {
 
 // ### remove(options)
 // This method instantiates a new VIE.Removable in order to
-// perform queries on the services.  
-// **Parameters**:  
-// *{object}* **options** Options to be set.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Removable}* : A new instance of VIE.Removable.  
-// **Example usage**:  
+// perform queries on the services.
+// **Parameters**:
+// *{object}* **options** Options to be set.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Removable}* : A new instance of VIE.Removable.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -303,14 +303,14 @@ VIE.prototype.remove = function(options) {
 
 // ### analyze(options)
 // This method instantiates a new VIE.Analyzable in order to
-// perform queries on the services.  
-// **Parameters**:  
-// *{object}* **options** Options to be set.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Analyzable}* : A new instance of VIE.Analyzable.  
-// **Example usage**:  
+// perform queries on the services.
+// **Parameters**:
+// *{object}* **options** Options to be set.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Analyzable}* : A new instance of VIE.Analyzable.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -323,14 +323,14 @@ VIE.prototype.analyze = function(options) {
 
 // ### find(options)
 // This method instantiates a new VIE.Findable in order to
-// perform queries on the services.  
-// **Parameters**:  
-// *{object}* **options** Options to be set.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Findable}* : A new instance of VIE.Findable.  
-// **Example usage**:  
+// perform queries on the services.
+// **Parameters**:
+// *{object}* **options** Options to be set.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Findable}* : A new instance of VIE.Findable.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.use(new vie.StanbolService(), "stanbol");
@@ -348,19 +348,19 @@ VIE.prototype.find = function(options) {
 // (Currently, this supports only the JSON format!!)
 // As this method works asynchronously, you might want
 // to register `success` and `error` callbacks via the
-// options.  
-// **Parameters**:  
-// *{string}* **url** The url, pointing to the schema to import.  
+// options.
+// **Parameters**:
+// *{string}* **url** The url, pointing to the schema to import.
 // *{object}* **options** Options to be set.
-// (Set ```success``` and ```error``` as callbacks.).  
-// **Throws**:  
-// *{Error}* if the url is not set.  
-// **Returns**:  
-// *{VIE}* : The VIE instance itself.  
-// **Example usage**:  
+// (Set ```success``` and ```error``` as callbacks.).
+// **Throws**:
+// *{Error}* if the url is not set.
+// **Returns**:
+// *{VIE}* : The VIE instance itself.
+// **Example usage**:
 //
 //     var vie = new VIE();
-//     vie.loadSchema("http://schema.rdfs.org/all.json", 
+//     vie.loadSchema("http://schema.rdfs.org/all.json",
 //        {
 //          baseNS : "http://schema.org/",
 //          success : function () {console.log("success");},
@@ -368,7 +368,7 @@ VIE.prototype.find = function(options) {
 //        });
 VIE.prototype.loadSchema = function(url, options) {
     options = (!options)? {} : options;
-    
+
     if (!url) {
         throw new Error("Please provide a proper URL");
     }
@@ -386,26 +386,26 @@ VIE.prototype.loadSchema = function(url, options) {
                 return;
             }
          })
-        .error(function(data, textStatus, jqXHR) { 
+        .error(function(data, textStatus, jqXHR) {
             if (options.error) {
                 console.warn(data, textStatus, jqXHR);
                 options.error.call(vie, "Could not load schema from URL (" + url + ")");
             }
          });
     }
-    
+
     return this;
 };
 
 // ### getTypedEntityClass(type)
-// This method generates a special type of `Entity` based on the given type.  
-// **Parameters**:  
-// *{string}* **type** The type.  
-// **Throws**:  
-// *{Error}* if the type is unknown to VIE.  
-// **Returns**:  
-// *{VIE.Entity}* : A subclass of `VIE.Entity`.  
-// **Example usage**:  
+// This method generates a special type of `Entity` based on the given type.
+// **Parameters**:
+// *{string}* **type** The type.
+// **Throws**:
+// *{Error}* if the type is unknown to VIE.
+// **Returns**:
+// *{VIE.Entity}* : A subclass of `VIE.Entity`.
+// **Example usage**:
 //
 //     var vie = new VIE();
 //     vie.types.add("Person");

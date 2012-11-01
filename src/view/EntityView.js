@@ -18,7 +18,7 @@ VIE.prototype.view.Entity = Backbone.View.extend({
     // the element containing our RDFa annotations.
     render: function() {
         this.vie.save({
-                element: this.el, 
+                element: this.el,
                 entity: this.model
             }).
             to(this.service).
@@ -29,4 +29,4 @@ VIE.prototype.view.Entity = Backbone.View.extend({
     renderAbout: function () {
         this.vie.service(this.service).setElementSubject(this.model.getSubjectUri(), this.el);
     }
-}); 
+});

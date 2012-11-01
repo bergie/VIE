@@ -7,22 +7,22 @@
 //     http://viejs.org/
 
 // ## VIE Entities
-// 
+//
 // In VIE there are two low-level model types for storing data.
 // **Collections** and **Entities**. Considering `var v = new VIE();` a VIE instance,
-// `v.entities` is a Collection with `VIE Entity` objects in it. 
+// `v.entities` is a Collection with `VIE Entity` objects in it.
 // VIE internally uses JSON-LD to store entities.
 //
 // Each Entity has a few special attributes starting with an `@`. VIE has an API
-// for correctly using these attributes, so in order to stay compatible with later 
+// for correctly using these attributes, so in order to stay compatible with later
 // versions of the library, possibly using a later version of JSON-LD, use the API
 // to interact with your entities.
-// 
-// * `@subject` stands for the identifier of the entity. Use `e.getSubject()` 
+//
+// * `@subject` stands for the identifier of the entity. Use `e.getSubject()`
 // * `@type` stores the explicit entity types. VIE internally handles Type hierarchy,
-// which basically enables to define subtypes and supertypes. Every entity has 
+// which basically enables to define subtypes and supertypes. Every entity has
 // the type 'owl:Thing'. Read more about Types in <a href="Type.html">VIE.Type</a>.
-// * `@context` stores namespace definitions used in the entity. Read more about 
+// * `@context` stores namespace definitions used in the entity. Read more about
 // Namespaces in <a href="Namespace.html">VIE Namespaces</a>.
 VIE.prototype.Entity = function(attrs, opts) {
 
@@ -105,7 +105,7 @@ VIE.prototype.Entity = function(attrs, opts) {
         },
 
         // #### `.has(attr)`
-        // Sometimes you'd like to determine if a specific attribute is set 
+        // Sometimes you'd like to determine if a specific attribute is set
         // in an entity. For this reason you can call for example `person.has('friend')`
         // to determine if a person entity has friends.
         has: function(attr) {
@@ -113,11 +113,11 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
-        // #### `.set(attrName, value, opts)`, 
+        // #### `.set(attrName, value, opts)`,
         // The `options` parameter always refers to a `Backbone.Model.set` `options` object.
         //
         // **`.set(attributes, options)`** is the most universal way of calling the
-        // `.set` method. In this case the `attributes` object is a map of all 
+        // `.set` method. In this case the `attributes` object is a map of all
         // attributes to be changed.
         set : function(attrs, options, opts) {
             if (!attrs) {
@@ -128,14 +128,14 @@ VIE.prototype.Entity = function(attrs, opts) {
                 attrs['@subject'] = this.toReference(attrs['@subject']);
             }
 
-            // Use **`.set(attrName, value, options)`** for setting or changing exactly one 
+            // Use **`.set(attrName, value, options)`** for setting or changing exactly one
             // entity attribute.
             if (typeof attrs === "string") {
                 var obj = {};
                 obj[attrs] = options;
                 return this.set(obj, opts);
             }
-            // **`.set(entity)`**: In case you'd pass a VIE entity, 
+            // **`.set(entity)`**: In case you'd pass a VIE entity,
             // the passed entities attributes are being set for the entity.
             if (attrs.attributes) {
                 attrs = attrs.attributes;
@@ -150,7 +150,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                     attrs[newKey] = value;
                 }
             }, this);
-            // Finally iterate through the *attributes* to be set and prepare 
+            // Finally iterate through the *attributes* to be set and prepare
             // them for the Backbone.Model.set method.
             _.each (attrs, function (value, key) {
                if (!value) { return; }
@@ -180,7 +180,7 @@ VIE.prototype.Entity = function(attrs, opts) {
                        var child = new self.vie.Entity(value, options);
                        // which is being stored in `v.entities`
                        self.vie.entities.addOrUpdate(child);
-                       // and set as VIE Collection attribute on the original entity 
+                       // and set as VIE Collection attribute on the original entity
                        coll = new self.vie.Collection(value, {
                          vie: self.vie,
                          predicate: key
@@ -406,11 +406,11 @@ VIE.prototype.Entity = function(attrs, opts) {
             return instanceLD;
         },
 
-        // **`.setOrAdd(arg1, arg2)`** similar to `.set(..)`, `.setOrAdd(..)` can 
+        // **`.setOrAdd(arg1, arg2)`** similar to `.set(..)`, `.setOrAdd(..)` can
         // be used for setting one or more attributes of an entity, but in
         // this case it's a collection of values, not just one. That means, if the
         // entity already has the attribute set, make the value to a VIE Collection
-        // and use the collection as value. The collection can contain entities 
+        // and use the collection as value. The collection can contain entities
         // or literals, but not both at the same time.
         setOrAdd: function (arg1, arg2, option) {
             var entity = this;
@@ -432,30 +432,30 @@ VIE.prototype.Entity = function(attrs, opts) {
         /* attr is always of type string */
         /* value can be of type: string,int,double,object,VIE.Entity,VIE.Collection */
        /*  val can be of type: undefined,string,int,double,array,VIE.Collection */
-       
+
         /* depending on the type of value and the type of val, different actions need to be made */
         _setOrAddOne: function (attr, value, options) {
             if (!attr || !value)
                 return;
             options = (options)? options : {};
             var v;
-                
+
             attr = VIE.Util.mapAttributeNS(attr, self.vie.namespaces);
-            
+
             if (_.isArray(value)) {
                 for (v = 0; v < value.length; v++) {
                     this._setOrAddOne(attr, value[v], options);
                 }
                 return;
             }
-            
+
             if (attr === "@type" && value instanceof self.vie.Type) {
                 value = value.id;
             }
-            
+
             var obj = {};
             var existing = Backbone.Model.prototype.get.call(this, attr);
-            
+
             if (!existing) {
                 obj[attr] = value;
                 this.set(obj, options);
@@ -518,17 +518,17 @@ VIE.prototype.Entity = function(attrs, opts) {
             }
         },
 
-        // **`.isof(type)`** determines if the entity is of `type` by explicit or implicit 
+        // **`.isof(type)`** determines if the entity is of `type` by explicit or implicit
         // declaration. E.g. if Employee is a subtype of Person and e Entity has
         // explicitly set type Employee, e.isof(Person) will evaluate to true.
         isof: function (type) {
             var types = this.get('@type');
-            
+
             if (types === undefined) {
                 return false;
             }
             types = (_.isArray(types))? types : [ types ];
-            
+
             type = (self.vie.types.get(type))? self.vie.types.get(type) : new self.vie.Type(type);
             for (var t = 0; t < types.length; t++) {
                 if (self.vie.types.get(types[t])) {

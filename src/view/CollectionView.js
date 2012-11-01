@@ -69,7 +69,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
             childTypeName = childType.id;
           }
         }
-          
+
         if (!childTypeName) {
             return;
         }
@@ -100,7 +100,7 @@ VIE.prototype.view.Collection = Backbone.View.extend({
 
             // Update reverse relations, if any
             self.findReverseRelations(entity, entityElement);
-       
+
             // Handle eventing
             self.trigger('add', entityView);
             self.entityViews[entity.cid] = entityView;

@@ -8,27 +8,27 @@
 
 // ## VIE Utils
 //
-// The here-listed methods are utility methods for the day-to-day 
+// The here-listed methods are utility methods for the day-to-day
 // VIE.js usage. All methods are within the static namespace ```VIE.Util```.
 VIE.Util = {
 
 // ### VIE.Util.toCurie(uri, safe, namespaces)
-// This method converts a given 
+// This method converts a given
 // URI into a CURIE (or SCURIE), based on the given ```VIE.Namespaces``` object.
 // If the given uri is already a URI, it is left untouched and directly returned.
-// If no prefix could be found, an ```Error``` is thrown.  
-// **Parameters**:  
-// *{string}* **uri** The URI to be transformed.  
-// *{boolean}* **safe** A flag whether to generate CURIEs or SCURIEs.  
-// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.  
-// **Throws**:  
-// *{Error}* If no prefix could be found in the passed namespaces.  
-// **Returns**:  
-// *{string}* The CURIE or SCURIE.  
-// **Example usage**: 
+// If no prefix could be found, an ```Error``` is thrown.
+// **Parameters**:
+// *{string}* **uri** The URI to be transformed.
+// *{boolean}* **safe** A flag whether to generate CURIEs or SCURIEs.
+// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.
+// **Throws**:
+// *{Error}* If no prefix could be found in the passed namespaces.
+// **Returns**:
+// *{string}* The CURIE or SCURIE.
+// **Example usage**:
 //
 //     var ns = new myVIE.Namespaces(
-//           "http://viejs.org/ns/", 
+//           "http://viejs.org/ns/",
 //           { "dbp": "http://dbpedia.org/ontology/" }
 //     );
 //     var uri = "<http://dbpedia.org/ontology/Person>";
@@ -45,7 +45,7 @@ VIE.Util = {
                 if (k === '') {
                     delim = '';
                 }
-                return ((safe)? "[" : "") + 
+                return ((safe)? "[" : "") +
                         uri.replace(pattern, k + delim).replace(/>$/, '') +
                         ((safe)? "]" : "");
             }
@@ -54,19 +54,19 @@ VIE.Util = {
     },
 
 // ### VIE.Util.isCurie(curie, namespaces)
-// This method checks, whether 
-// the given string is a CURIE and returns ```true``` if so and ```false```otherwise.  
-// **Parameters**:  
-// *{string}* **curie** The CURIE (or SCURIE) to be checked.  
-// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{boolean}* ```true``` if the given curie is a CURIE or SCURIE and ```false``` otherwise.  
-// **Example usage**: 
+// This method checks, whether
+// the given string is a CURIE and returns ```true``` if so and ```false```otherwise.
+// **Parameters**:
+// *{string}* **curie** The CURIE (or SCURIE) to be checked.
+// *{VIE.Namespaces}* **namespaces** The namespaces to be used for the prefixes.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{boolean}* ```true``` if the given curie is a CURIE or SCURIE and ```false``` otherwise.
+// **Example usage**:
 //
 //     var ns = new myVIE.Namespaces(
-//           "http://viejs.org/ns/", 
+//           "http://viejs.org/ns/",
 //           { "dbp": "http://dbpedia.org/ontology/" }
 //     );
 //     var uri = "<http://dbpedia.org/ontology/Person>";
@@ -91,24 +91,24 @@ VIE.Util = {
     },
 
 // ### VIE.Util.toUri(curie, namespaces)
-// This method converts a 
-// given CURIE (or save CURIE) into a URI, based on the given ```VIE.Namespaces``` object.  
-// **Parameters**:  
-// *{string}* **curie** The CURIE to be transformed.  
-// *{VIE.Namespaces}* **namespaces** The namespaces object  
-// **Throws**:  
-// *{Error}* If no URI could be assembled.  
-// **Returns**:  
-// *{string}* : A string, representing the URI.  
-// **Example usage**: 
+// This method converts a
+// given CURIE (or save CURIE) into a URI, based on the given ```VIE.Namespaces``` object.
+// **Parameters**:
+// *{string}* **curie** The CURIE to be transformed.
+// *{VIE.Namespaces}* **namespaces** The namespaces object
+// **Throws**:
+// *{Error}* If no URI could be assembled.
+// **Returns**:
+// *{string}* : A string, representing the URI.
+// **Example usage**:
 //
 //     var ns = new myVIE.Namespaces(
-//           "http://viejs.org/ns/", 
+//           "http://viejs.org/ns/",
 //           { "dbp": "http://dbpedia.org/ontology/" }
 //     );
 //     var curie = "dbp:Person";
 //     var scurie = "[dbp:Person]";
-//     VIE.Util.toUri(curie, ns); 
+//     VIE.Util.toUri(curie, ns);
 //          --> <http://dbpedia.org/ontology/Person>
 //     VIE.Util.toUri(scurie, ns);
 //          --> <http://dbpedia.org/ontology/Person>
@@ -129,16 +129,16 @@ VIE.Util = {
         }
         throw new Error("No prefix found for CURIE '" + curie + "'!");
     },
-    
+
 // ### VIE.Util.isUri(something)
-// This method checks, whether the given string is a URI.  
-// **Parameters**:  
-// *{string}* **something** : The string to be checked.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{boolean}* : ```true``` if the string is a URI, ```false``` otherwise.  
-// **Example usage**: 
+// This method checks, whether the given string is a URI.
+// **Parameters**:
+// *{string}* **something** : The string to be checked.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{boolean}* : ```true``` if the string is a URI, ```false``` otherwise.
+// **Example usage**:
 //
 //     var uri = "<http://dbpedia.org/ontology/Person>";
 //     var curie = "dbp:Person";
@@ -149,15 +149,15 @@ VIE.Util = {
     },
 
 // ### VIE.Util.mapAttributeNS(attr, ns)
-// This method maps an attribute of an entity into namespaces if they have CURIEs.  
-// **Parameters**:  
-// *{string}* **attr** : The attribute to be transformed.  
-// *{VIE.Namespaces}* **ns** : The namespaces.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{string}* : The transformed attribute's name.  
-// **Example usage**: 
+// This method maps an attribute of an entity into namespaces if they have CURIEs.
+// **Parameters**:
+// *{string}* **attr** : The attribute to be transformed.
+// *{VIE.Namespaces}* **ns** : The namespaces.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{string}* : The transformed attribute's name.
+// **Example usage**:
 //
 //      var attr = "name";
 //      var ns = myVIE.namespaces;
@@ -177,16 +177,16 @@ VIE.Util = {
         }
         return a;
     },
-    
+
 // ### VIE.Util.rdf2Entities(service, results)
 // This method converts *rdf/json* data from an external service
-// into VIE.Entities.  
-// **Parameters**:  
-// *{object}* **service** The service that retrieved the data.  
-// *{object}* **results** The data to be transformed.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
+// into VIE.Entities.
+// **Parameters**:
+// *{object}* **service** The service that retrieved the data.
+// *{object}* **results** The data to be transformed.
+// **Throws**:
+// *nothing*
+// **Returns**:
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     rdf2Entities: function (service, results) {
         if (typeof jQuery.rdf !== 'function') {
@@ -194,10 +194,10 @@ VIE.Util = {
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
         try {
-            var rdf = (results instanceof jQuery.rdf)? 
-                    results.base(service.vie.namespaces.base()) : 
+            var rdf = (results instanceof jQuery.rdf)?
+                    results.base(service.vie.namespaces.base()) :
                         jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
-    
+
             /* if the service contains rules to apply special transformation, they are executed here.*/
             if (service.rules) {
                 var rules = jQuery.rdf.ruleset();
@@ -224,7 +224,7 @@ VIE.Util = {
                 }
                 var propertyUri = this.property.toString();
                 var propertyCurie;
-    
+
                 try {
                     propertyCurie = service.vie.namespaces.curie(propertyUri);
                     //jQuery.createCurie(propertyUri, {namespaces: service.vie.namespaces.toObj(true)});
@@ -257,7 +257,7 @@ VIE.Util = {
                 }
                 entities[subject][propertyCurie].push(getValue(this.object));
             });
-    
+
             _(entities).each(function(ent){
                 ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
                 delete ent["rdf:type"];
@@ -267,7 +267,7 @@ VIE.Util = {
                     }
                 });
             });
-    
+
             var vieEntities = [];
             jQuery.each(entities, function() {
                 var entityInstance = new service.vie.Entity(this);
@@ -300,8 +300,8 @@ VIE.Util = {
           if (typeof property === "string" && entity.get(property)) {
             labelArr = _.flatten([entity.get(property)]);
             _(labelArr).each(function(label) {
-              /* 
-              The score is a natural number with 0 for the 
+              /*
+              The score is a natural number with 0 for the
               best candidate with the first preferred language
               and first preferred property
               */
@@ -309,7 +309,7 @@ VIE.Util = {
               score = p;
               labelLang = label["@language"];
               /*
-                                      legacy code for compatibility with uotdated stanbol, 
+                                      legacy code for compatibility with uotdated stanbol,
                                       to be removed after may 2012
               */
               if (typeof label === "string" && (label.indexOf("@") === label.length - 3 || label.indexOf("@") === label.length - 5)) {
@@ -337,10 +337,10 @@ VIE.Util = {
                 value: value
               });
             });
-            /* 
-            property can be an object like 
+            /*
+            property can be an object like
             {
-              property: "skos:broader", 
+              property: "skos:broader",
               makeLabel: function(propertyValueArr) { return "..."; }
             }
             */
@@ -373,17 +373,17 @@ VIE.Util = {
       }
     },
 
-    
+
 // ### VIE.Util._rdf2EntitiesNoRdfQuery(service, results)
 // This is a **private** method which should
 // only be accessed through ```VIE.Util._rdf2Entities()``` and is a helper method in case there is no
-// rdfQuery loaded (*not recommended*).  
-// **Parameters**:  
-// *{object}* **service** The service that retrieved the data.  
-// *{object}* **results** The data to be transformed.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
+// rdfQuery loaded (*not recommended*).
+// **Parameters**:
+// *{object}* **service** The service that retrieved the data.
+// *{object}* **results** The data to be transformed.
+// **Throws**:
+// *nothing*
+// **Returns**:
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     _rdf2EntitiesNoRdfQuery: function (service, results) {
         var jsonLD = [];
@@ -418,25 +418,25 @@ VIE.Util = {
 // the <a href="http://schema.org/">schema.org</a> ontology. It adds all the
 // given types and properties as ```VIE.Type``` instances to the given VIE instance.
 // If the paramenter **baseNS** is set, the method automatically sets the namespace
-// to the provided one. If it is not set, it will keep the base namespace of VIE untouched.  
-// **Parameters**:  
-// *{VIE}* **vie** The instance of ```VIE```.   
-// *{object}* **SchemaOrg** The data imported from schema.org.   
-// *{string|undefined}* **baseNS** If set, this will become the new baseNamespace within the given ```VIE``` instance.   
-// **Throws**:  
-// *{Error}* If the parameter was not given.  
-// **Returns**:  
+// to the provided one. If it is not set, it will keep the base namespace of VIE untouched.
+// **Parameters**:
+// *{VIE}* **vie** The instance of ```VIE```.
+// *{object}* **SchemaOrg** The data imported from schema.org.
+// *{string|undefined}* **baseNS** If set, this will become the new baseNamespace within the given ```VIE``` instance.
+// **Throws**:
+// *{Error}* If the parameter was not given.
+// **Returns**:
 // *nothing*
     loadSchemaOrg : function (vie, SchemaOrg, baseNS) {
-    
+
         if (!SchemaOrg) {
             throw new Error("Please load the schema.json file.");
         }
         vie.types.remove("<http://schema.org/Thing>");
-        
+
         var baseNSBefore = (baseNS)? baseNS : vie.namespaces.base();
         vie.namespaces.base(baseNS);
-        
+
         var datatypeMapping = {
             'DataType': 'xsd:anyType',
             'Boolean' : 'xsd:boolean',
@@ -449,10 +449,10 @@ VIE.Util = {
             'Text'    : 'xsd:string',
             'URL'     : 'xsd:anyURI'
         };
-        
+
         var dataTypeHelper = function (ancestors, id) {
             var type = vie.types.add(id, [{'id' : 'value', 'range' : datatypeMapping[id]}]);
-            
+
             for (var i = 0; i < ancestors.length; i++) {
                 var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
                     dataTypeHelper.call(vie, SchemaOrg.datatypes[ancestors[i]].supertypes, ancestors[i]);
@@ -460,7 +460,7 @@ VIE.Util = {
             }
             return type;
         };
-        
+
         for (var dt in SchemaOrg.datatypes) {
             if (!vie.types.get(dt)) {
                 var ancestors = SchemaOrg.datatypes[dt].supertypes;
@@ -488,7 +488,7 @@ VIE.Util = {
             }
             return metadata;
         };
-        
+
         var typeProps = function (id) {
             var props = [];
             _.each(SchemaOrg.types[id].specific_properties, function (pId) {
@@ -503,10 +503,10 @@ VIE.Util = {
             });
             return props;
         };
-        
+
         var typeHelper = function (ancestors, id, props, metadata) {
             var type = vie.types.add(id, props, metadata);
-           
+
             for (var i = 0; i < ancestors.length; i++) {
                 var supertype = (vie.types.get(ancestors[i]))? vie.types.get(ancestors[i]) :
                     typeHelper.call(vie, SchemaOrg.types[ancestors[i]].supertypes, ancestors[i], typeProps.call(vie, ancestors[i]));
@@ -517,7 +517,7 @@ VIE.Util = {
             }
             return type;
         };
-       
+
         _.each(SchemaOrg.types, function (typeDef) {
             if (vie.types.get(typeDef.id)) {
                 return;
@@ -668,12 +668,12 @@ VIE.Util = {
     },
 
 // ### VIE.Util.xsdDateTime(date)
-// This transforms a ```Date``` instance into an xsd:DateTime format.  
-// **Parameters**:  
-// *{```Date```}* **date** An instance of a javascript ```Date```.  
-// **Throws**: 
-// *nothing*..  
-// **Returns**: 
+// This transforms a ```Date``` instance into an xsd:DateTime format.
+// **Parameters**:
+// *{```Date```}* **date** An instance of a javascript ```Date```.
+// **Throws**:
+// *nothing*..
+// **Returns**:
 // *{string}* A string representation of the dateTime in the xsd:dateTime format.
     xsdDateTime : function(date) {
         function pad(n) {
@@ -692,16 +692,16 @@ VIE.Util = {
     },
 
 // ### VIE.Util.extractLanguageString(entity, attrs, langs)
-// This method extracts a literal string from an entity, searching through the given attributes and languages.  
-// **Parameters**:  
-// *{```VIE.Entity```}* **entity** An instance of a VIE.Entity.  
-// *{```array|string```}* **attrs** Either a string or an array of possible attributes.  
-// *{```array|string```}* **langs** Either a string or an array of possible languages.  
-// **Throws**: 
-// *nothing*..  
-// **Returns**: 
+// This method extracts a literal string from an entity, searching through the given attributes and languages.
+// **Parameters**:
+// *{```VIE.Entity```}* **entity** An instance of a VIE.Entity.
+// *{```array|string```}* **attrs** Either a string or an array of possible attributes.
+// *{```array|string```}* **langs** Either a string or an array of possible languages.
+// **Throws**:
+// *nothing*..
+// **Returns**:
 // *{string|undefined}* The string that was found at the attribute with the wanted language, undefined if nothing could be found.
-// **Example usage**: 
+// **Example usage**:
 //
 //          var attrs = ["name", "rdfs:label"];
 //          var langs = ["en", "de"];
@@ -755,15 +755,15 @@ VIE.Util = {
         }
         return undefined;
     },
-    
+
 // ### VIE.Util.transformationRules(service)
 // This returns a default set of rdfQuery rules that transform semantic data into the
-// VIE entity types.  
-// **Parameters**:  
-// *{object}* **service** An instance of a vie.service.  
-// **Throws**: 
-// *nothing*..  
-// **Returns**: 
+// VIE entity types.
+// **Parameters**:
+// *{object}* **service** An instance of a vie.service.
+// **Throws**:
+// *nothing*..
+// **Returns**:
 // *{array}* An array of rules with 'left' and 'right' side.
     transformationRules : function (service) {
         var res = [
@@ -874,7 +874,7 @@ VIE.Util = {
         ];
         return res;
     },
-    
+
     getAdditionalRules : function (service) {
 
         var mapping = {
@@ -885,12 +885,12 @@ VIE.Util = {
             Website : "WebPage",
             Painting : "Painting",
             Sculpture : "Sculpture",
-    
+
             Event : "Event",
             SportsEvent : "SportsEvent",
             MusicFestival : "Festival",
             FilmFestival : "Festival",
-    
+
             Place : "Place",
             Continent : "Continent",
             Country : "Country",
@@ -900,7 +900,7 @@ VIE.Util = {
             Hospital : "GovernmentBuilding",
             Mountain : "Mountain",
             BodyOfWater : "BodyOfWater",
-    
+
             Company : "Organization",
             Person : "Person"
         };
