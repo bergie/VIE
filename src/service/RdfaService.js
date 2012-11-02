@@ -13,14 +13,14 @@
 (function(){
 
 // ## VIE.RdfaService(options)
-// This is the constructor to instantiate a new service.  
-// **Parameters**:  
-// *{object}* **options** Optional set of fields, ```namespaces```, ```rules```, ```url```, or ```name```.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.RdfaService}* : A **new** VIE.RdfaService instance.  
-// **Example usage**:  
+// This is the constructor to instantiate a new service.
+// **Parameters**:
+// *{object}* **options** Optional set of fields, ```namespaces```, ```rules```, ```url```, or ```name```.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.RdfaService}* : A **new** VIE.RdfaService instance.
+// **Example usage**:
 //
 //     var rdfaService = new vie.RdfaService({<some-configuration>});
 VIE.prototype.RdfaService = function(options) {
@@ -68,17 +68,17 @@ VIE.prototype.RdfaService = function(options) {
 };
 
 VIE.prototype.RdfaService.prototype = {
-    
+
 // ### init()
 // This method initializes certain properties of the service and is called
-// via ```VIE.use()```.  
-// **Parameters**:  
-// *nothing*  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.RdfaService}* : The VIE.RdfaService instance itself.  
-// **Example usage**:  
+// via ```VIE.use()```.
+// **Parameters**:
+// *nothing*
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.RdfaService}* : The VIE.RdfaService instance itself.
+// **Example usage**:
 //
 //     var rdfaService = new vie.RdfaService({<some-configuration>});
 //     rdfaService.init();
@@ -88,16 +88,16 @@ VIE.prototype.RdfaService.prototype = {
             var val = this.options.namespaces[key];
             this.vie.namespaces.add(key, val);
         }
-        
+
         this.rules = jQuery.merge([], VIE.Util.transformationRules(this));
         this.rules = jQuery.merge(this.rules, (this.options.rules) ? this.options.rules : []);
     },
-    
+
     analyze: function(analyzable) {
         // in a certain way, analyze is the same as load
         return this.load(analyzable);
     },
-        
+
     load : function(loadable) {
         var service = this;
         var correct = loadable instanceof this.vie.Loadable || loadable instanceof this.vie.Analyzable;
@@ -107,7 +107,7 @@ VIE.prototype.RdfaService.prototype = {
 
         var element;
         if (!loadable.options.element) {
-            if (typeof document === 'undefined') { 
+            if (typeof document === 'undefined') {
                 return loadable.resolve([]);
             }
             element = jQuery(document);
@@ -124,16 +124,16 @@ VIE.prototype.RdfaService.prototype = {
         if (!correct) {
             throw "Invalid Savable passed";
         }
-    
+
         if (!savable.options.element) {
             // FIXME: we could find element based on subject
             throw "Unable to write entity to RDFa, no element given";
         }
-    
+
         if (!savable.options.entity) {
             throw "Unable to write to RDFa, no entity given";
         }
-    
+
         this._writeEntity(savable.options.entity, savable.options.element);
         savable.resolve();
     },
@@ -153,7 +153,7 @@ VIE.prototype.RdfaService.prototype = {
         });
         return entities;
     },
-    
+
     _readEntity : function(element) {
         var subject = this.getElementSubject(element);
         var type = this._getElementType(element);
@@ -189,7 +189,7 @@ VIE.prototype.RdfaService.prototype = {
         this._registerEntityView(entityInstance, element);
         return entityInstance;
     },
-    
+
     _writeEntity : function(entity, element) {
         var service = this;
         this.findPredicateElements(this.getElementSubject(element), element, true).each(function() {
@@ -198,7 +198,7 @@ VIE.prototype.RdfaService.prototype = {
             if (!entity.has(predicate)) {
                 return true;
             }
-    
+
             var value = entity.get(predicate);
             if (value && value.isCollection) {
                 // Handled by CollectionViews separately
@@ -211,7 +211,7 @@ VIE.prototype.RdfaService.prototype = {
         });
         return true;
     },
-    
+
     _getViewForElement : function(element, collectionView) {
         var viewInstance;
         jQuery.each(this.views, function() {
@@ -225,7 +225,7 @@ VIE.prototype.RdfaService.prototype = {
         });
         return viewInstance;
     },
-    
+
     _registerEntityView : function(entity, element, isNew) {
         if (!element.length) {
             return;
@@ -236,7 +236,7 @@ VIE.prototype.RdfaService.prototype = {
         if (viewInstance) {
             return viewInstance;
         }
-    
+
         viewInstance = new this.vie.view.Entity({
             model: entity,
             el: element,
@@ -259,7 +259,7 @@ VIE.prototype.RdfaService.prototype = {
             }));
           });
         }
-    
+
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.fromReference(entity.get(predicate));
@@ -385,13 +385,13 @@ VIE.prototype.RdfaService.prototype = {
             callback(newElement);
         };
     },
-    
+
     _registerCollectionView : function(collection, element, entity) {
         var viewInstance = this._getViewForElement(element, true);
         if (viewInstance) {
             return viewInstance;
         }
-    
+
         viewInstance = new this.vie.view.Collection({
             owner: entity,
             collection: collection,
@@ -403,7 +403,7 @@ VIE.prototype.RdfaService.prototype = {
         this.views.push(viewInstance);
         return viewInstance;
     },
-    
+
     _getElementType : function (element) {
         var type;
         if (jQuery(element).attr('typeof') !== this.options.attributeExistenceComparator) {
@@ -416,10 +416,10 @@ VIE.prototype.RdfaService.prototype = {
         }
         return null;
     },
-    
+
     getElementSubject : function(element) {
         var service = this;
-        if (typeof document !== 'undefined') { 
+        if (typeof document !== 'undefined') {
             if (element === document) {
                 return document.baseURI;
             }
@@ -455,7 +455,7 @@ VIE.prototype.RdfaService.prototype = {
             }
             return undefined;
         }
-                
+
         if (typeof subject === 'object') {
             return subject;
         }
@@ -467,14 +467,14 @@ VIE.prototype.RdfaService.prototype = {
         }
         return "<" + subject + ">";
     },
-    
+
     setElementSubject : function(subject, element) {
         if (jQuery(element).attr('src')) {
             return jQuery(element).attr('src', subject);
         }
         return jQuery(element).attr('about', subject);
     },
-    
+
     getElementPredicate : function(element) {
         var predicate;
         element = jQuery(element);
@@ -484,18 +484,18 @@ VIE.prototype.RdfaService.prototype = {
         }
         return predicate;
     },
-    
+
     getElementBySubject : function(subject, element) {
         var service = this;
         return jQuery(element).find(this.options.subjectSelector).add(jQuery(element).filter(this.options.subjectSelector)).filter(function() {
             if (service.getElementSubject(jQuery(this)) !== subject) {
                 return false;
             }
-     
+
             return true;
         });
     },
-    
+
     getElementByPredicate : function(predicate, element) {
         var service = this;
         var subject = this.getElementSubject(element);
@@ -504,19 +504,19 @@ VIE.prototype.RdfaService.prototype = {
             if (service.vie.namespaces.curie(foundPredicate) !== service.vie.namespaces.curie(predicate)) {
                 return false;
             }
-    
+
             if (service.getElementSubject(this) !== subject) {
                 return false;
             }
-     
+
             return true;
         });
     },
-    
+
     _readEntityPredicates : function(subject, element, emptyValues) {
         var service = this;
         var entityPredicates = {};
-    
+
         this.findPredicateElements(subject, element, true).each(function() {
             var predicateElement = jQuery(this);
             var predicate = service.getElementPredicate(predicateElement);
@@ -527,17 +527,17 @@ VIE.prototype.RdfaService.prototype = {
             if (value === null && !emptyValues) {
                 return;
             }
-   
+
             entityPredicates[predicate] = value;
         });
-    
+
         if (jQuery(element).get(0).tagName !== 'HTML') {
             jQuery(element).parent('[rev]').each(function() {
                 var relation = jQuery(this).attr('rev');
                 if (!relation) {
                     return;
                 }
-                entityPredicates[jQuery(this).attr('rev')] = service.getElementSubject(this); 
+                entityPredicates[jQuery(this).attr('rev')] = service.getElementSubject(this);
             });
         }
         return entityPredicates;
@@ -546,7 +546,7 @@ VIE.prototype.RdfaService.prototype = {
     findSubjectElements: function (element) {
       return jQuery('[about]', element);
     },
-    
+
     findPredicateElements : function(subject, element, allowNestedPredicates) {
         var service = this;
         return jQuery(element).find(this.options.predicateSelector).add(jQuery(element).filter(this.options.predicateSelector)).filter(function() {
@@ -559,7 +559,7 @@ VIE.prototype.RdfaService.prototype = {
                 }
                 return false;
             }
-    
+
             return true;
         });
     },
@@ -594,20 +594,20 @@ VIE.prototype.RdfaService.prototype = {
         if (content) {
             return this.parseElementValue(content, element);
         }
-                
+
         // The `resource` attribute can be used to link a predicate to another
         // RDF resource.
         var resource = element.attr('resource');
         if (resource) {
             return ["<" + resource + ">"];
         }
-                
+
         // `href` attribute also links to another RDF resource.
         var href = element.attr('href');
         if (href && element.attr('rel') === predicate) {
             return ["<" + href + ">"];
         }
-    
+
         // If the predicate is a relation, we look for identified child objects
         // and provide their identifiers as the values. To protect from scope
         // creep, we only support direct descentants of the element where the
@@ -620,12 +620,12 @@ VIE.prototype.RdfaService.prototype = {
             });
             return value;
         }
-    
+
         // If none of the checks above matched we return the HTML contents of
         // the element as the literal value.
         return this.parseElementValue(element.html(), element);
     },
-    
+
     writeElementValue : function(predicate, element, value) {
         value = this.generateElementValue(value, element);
 
@@ -633,7 +633,7 @@ VIE.prototype.RdfaService.prototype = {
         if (_.isArray(value) && value.length > 0) {
             value = value[0];
         }
-        
+
         // The `content` attribute can be used for providing machine-readable
         // values for elements where the HTML presentation differs from the
         // actual value.
@@ -642,24 +642,24 @@ VIE.prototype.RdfaService.prototype = {
             element.attr('content', value);
             return;
         }
-                
+
         // The `resource` attribute can be used to link a predicate to another
         // RDF resource.
         var resource = element.attr('resource');
         if (resource) {
             element.attr('resource', value);
         }
-    
+
         // Property has inline value. Change the HTML contents of the property
         // element to match the new value.
         element.html(value);
     },
-    
+
     // mostyl copied from http://code.google.com/p/rdfquery/source/browse/trunk/jquery.xmlns.js
     xmlns : function (elem) {
         var $elem;
         if (!elem) {
-            if (typeof document === 'undefined') { 
+            if (typeof document === 'undefined') {
                 return {};
             }
             $elem = jQuery(document);
@@ -684,7 +684,7 @@ VIE.prototype.RdfaService.prototype = {
                 }
             }
         });
-        
+
         return obj;
     }
 

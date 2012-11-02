@@ -19,13 +19,13 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     canAdd: function (type) {
       return true;
     },
-    
+
     get: function(id) {
         if (id === null) {
             return null;
         }
-        
-        id = (id.getSubject)? id.getSubject() : id;        
+
+        id = (id.getSubject)? id.getSubject() : id;
         if (typeof id === "string" && id.indexOf("_:") === 0) {
             if (id.indexOf("bnode") === 2) {
                 //bnode!
@@ -103,7 +103,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                 if (options.overrideAttributes) {
                    newAttribs[attribute] = value;
                    return true;
-                } 
+                }
                 if (attribute === '@context') {
                     newAttribs[attribute] = jQuery.extend(true, {}, oldVals, newVals);
                 } else {
@@ -130,20 +130,20 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         }
         return false;
     },
-        
+
     toReference: function(uri){
         if (this.isReference(uri)) {
             return uri;
         }
         return '<' + uri + '>';
     },
-        
+
     fromReference: function(uri){
         if (!this.isReference(uri)) {
             return uri;
         }
         return uri.substring(1, uri.length - 1);
     },
-    
+
     isCollection: true
 });

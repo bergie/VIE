@@ -9,7 +9,7 @@
 // ## VIE.Able
 // VIE implements asynchronius service methods through
 // [jQuery.Deferred](http://api.jquery.com/category/deferred-object/) objects.
-// Loadable, Analysable, Savable, etc. are part of the VIE service API and 
+// Loadable, Analysable, Savable, etc. are part of the VIE service API and
 // are implemented with the generic VIE.Able class.
 // Example:
 //
@@ -18,7 +18,7 @@
 //      };
 //      VIE.prototype.Loadable.prototype = new VIE.prototype.Able();
 //
-// This defines 
+// This defines
 //
 //     someVIEService.load(options)
 //     .using(...)
@@ -30,13 +30,13 @@
 
 // ### VIE.Able()
 // This is the constructor of a VIE.Able. This should not be called
-// globally but using the inherited classes below.  
-// **Parameters**: 
-// *nothing*  
-// **Throws**: 
-// *nothing*  
-// **Returns**: 
-// *{VIE.Able}* : A **new** VIE.Able object. 
+// globally but using the inherited classes below.
+// **Parameters**:
+// *nothing*
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Able}* : A **new** VIE.Able object.
 // Example:
 //
 //      VIE.prototype.Loadable = function (options) {
@@ -47,14 +47,14 @@ VIE.prototype.Able = function(){
 
 // ### init(options, methodName)
 // Internal method, called during initialization.
-// **Parameters**:  
+// **Parameters**:
 // *{object}* **options** the *able* options coming from the API call
 // *{string}* **methodName** the service method called on `.execute`.
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Able}* : The current instance.  
-// **Example usage**:  
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Able}* : The current instance.
+// **Example usage**:
 //
 //      VIE.prototype.Loadable = function (options) {
 //          this.init(options,"load");
@@ -71,7 +71,7 @@ VIE.prototype.Able = function(){
         this.deferred = jQuery.Deferred();
 
 // In order to get more information and documentation about the passed-through
-// deferred methods and their synonyms, please see the documentation of 
+// deferred methods and their synonyms, please see the documentation of
 // the [jQuery.Deferred object](http://api.jquery.com/category/deferred-object/)
         /* Public deferred-methods */
         this.resolve = this.deferred.resolve;
@@ -90,14 +90,14 @@ VIE.prototype.Able = function(){
 
 
 // ### using(services)
-// This method registers services with the current able instance.  
-// **Parameters**:  
-// *{string|array}* **services** An id of a service or an array of strings.  
-// **Throws**:  
-// *nothing*  
-// **Returns**:  
-// *{VIE.Able}* : The current instance.  
-// **Example usage**:  
+// This method registers services with the current able instance.
+// **Parameters**:
+// *{string|array}* **services** An id of a service or an array of strings.
+// **Throws**:
+// *nothing*
+// **Returns**:
+// *{VIE.Able}* : The current instance.
+// **Example usage**:
 //
 //     var loadable = vie.load({id: "http://example.com/entity/1234"});
 //     able.using("myService");
@@ -110,16 +110,16 @@ VIE.prototype.Able = function(){
         });
         return this;
     };
-    
+
 // ### execute()
-// This method runs the actual method on all registered services.  
-// **Parameters**:  
-// *nothing*  
-// **Throws**:  
-// *nothing* ...   
-// **Returns**:  
-// *{VIE.Able}* : The current instance.  
-// **Example usage**:  
+// This method runs the actual method on all registered services.
+// **Parameters**:
+// *nothing*
+// **Throws**:
+// *nothing* ...
+// **Returns**:
+// *{VIE.Able}* : The current instance.
+// **Example usage**:
 //
 //     var able = new vie.Able().init();
 //     able.using("stanbol")
