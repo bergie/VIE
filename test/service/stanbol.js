@@ -268,6 +268,7 @@ test("VIE.js StanbolConnector - Perform SPARQL Query", function () {
       ok(myJsonObject.sparql);
       ok(myJsonObject.sparql.results);
       ok(myJsonObject.sparql.results.result);
+      ok(myJsonObject.sparql.results.result.length);
       ok(myJsonObject.sparql.results.result.length > 0);
       
       start();
