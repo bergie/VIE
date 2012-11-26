@@ -1,5 +1,11 @@
 module("vie.js - Schema.org Ontology");
 
+// Update these when Schema.org ontologies change
+var schemaOrgNumbers = {
+  types: 417,
+  hospitalAttribs: 52
+};
+
 test("Initialization", function() {
     var z = new VIE();
     
@@ -16,7 +22,7 @@ test("Initialization", function() {
         baseNS : "http://schema.org/",
         success : function () {
             ok(true, "successfully loaded types!");
-            equal(z.types.list().length, 394);
+            equal(z.types.list().length, schemaOrgNumbers.types);
             
             //just pick some and test them:
             ok (z.types.get("Person"));
@@ -31,7 +37,7 @@ test("Initialization", function() {
             var hospital = z.types.get("Hospital");
             ok (hospital);
             var hospAttrs = hospital.attributes.list();
-            equal( hospAttrs.length, 38);
+            equal(hospAttrs.length, schemaOrgNumbers.hospitalAttribs);
             
             equal(hospital.attributes.get('description').range.length, 1);
             equal(hospital.attributes.get('description').range[0], "Text");
@@ -55,7 +61,7 @@ test("Initialization", function() {
             
             z.types.get("Organization").attributes.remove("founders");
             
-            equal( hospital.attributes.list().length, 37);
+            equal(hospital.attributes.list().length, schemaOrgNumbers.hospitalAttribs - 1);
             start();
         },
         error : function (msg) {
