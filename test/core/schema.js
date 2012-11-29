@@ -69,5 +69,46 @@ test("Initialization", function() {
             start();
         }
     });
-    
+
+});
+
+test("Hierarchy Metadata", function() {
+    var z = new VIE();
+    z.namespaces.addOrReplace('typo3', 'http://typo3.org/ns');
+
+    ok(z.loadSchema);
+    equal(typeof z.loadSchema, "function");
+
+    VIE.Util.loadSchemaOrg(z, {
+        properties: {},
+        types: {
+            'typo3:Foo.Bar': {
+                id: 'typo3:Foo.Bar',
+                metadata: {
+                    group: 'Test',
+                    other: 'Foo'
+                },
+                supertypes: ['typo3:Other'],
+                subtypes: [],
+                specific_properties: [],
+                properties: []
+            },
+            'typo3:Other': {
+                id: 'typo3:Other',
+                metadata: {
+                    some: 'thing',
+                    prop2: 'val2'
+                },
+                subtypes: ['typo3:Foo.Bar'],
+                supertypes: [],
+                specific_properties: [],
+                properties: []
+            }
+        }
+    }, null);
+
+    equal(z.types.get('typo3:Foo.Bar').metadata.group, 'Test');
+    equal(z.types.get('typo3:Foo.Bar').metadata.other, 'Foo');
+    equal(z.types.get('typo3:Other').metadata.some, 'thing');
+    equal(z.types.get('typo3:Other').metadata.prop2, 'val2');
 });
