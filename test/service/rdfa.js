@@ -406,3 +406,27 @@ test("Test RDFa datatype parsing", function () {
         start();
     });
 });
+
+test("Test multiple RDFa instances of same entity", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-twoinstances');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        // Freshly parsed, there should be no recorded changes in the entity
+        var entity = z.entities.get('<http://example.net/example>');
+        equal(entity.changedAttributes(), false);
+        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), false);
+
+        // Change one value, now changes should be recorded
+        entity.set('dcterms:description', 'Baz');
+        equal(entity.get('<http://purl.org/dc/terms/description>'), 'Baz');
+        // Since the change has already been propagated to the view, we should
+        // have no changed attributes remaining
+        equal(entity.changedAttributes(), false);
+        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), false);
+        start();
+    });
+});

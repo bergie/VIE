@@ -191,7 +191,12 @@ VIE.prototype.Entity = function(attrs, opts) {
                    }
                }
             }, this);
-            return Backbone.Model.prototype.set.call(this, attrs, options);
+            var ret = Backbone.Model.prototype.set.call(this, attrs, options);
+            if (options && options.ignoreChanges) {
+                this.changed = {};
+                this._previousAttributes = _.clone(this.attributes);
+            }
+            return ret;
         },
 
         // **`.unset(attr, opts)` ** removes an attribute from the entity.

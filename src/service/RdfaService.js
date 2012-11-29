@@ -183,7 +183,8 @@ VIE.prototype.RdfaService.prototype = {
         var entityInstance = new this.vie.Entity(entity);
         entityInstance = this.vie.entities.addOrUpdate(entityInstance, {
           updateOptions: {
-            silent: true
+            silent: true,
+            ignoreChanges: true
           }
         });
         this._registerEntityView(entityInstance, element);
