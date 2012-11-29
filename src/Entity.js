@@ -193,6 +193,8 @@ VIE.prototype.Entity = function(attrs, opts) {
             }, this);
             var ret = Backbone.Model.prototype.set.call(this, attrs, options);
             if (options && options.ignoreChanges) {
+                // TODO: This will need to be changed to reflect now change tracking mechanisms
+                // in Backbone.js 1.0.0
                 this.changed = {};
                 this._previousAttributes = _.clone(this.attributes);
             }
