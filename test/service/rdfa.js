@@ -450,3 +450,66 @@ test("Test anonymous relation", function () {
         equal(relations.at(0).get('dcterms:title'), 'Bar');
     });
 });
+
+test("Test deep relations", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-deeprelation');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        start();
+
+        var entity = z.entities.get('<http://example.net/example>');
+        ok(entity);
+        equal(entity.get('dcterms:title'), 'Foo');
+
+        equal(jQuery('div[about]', html).length, 3);
+
+        var relations = entity.get('relations');
+        equal(relations.length, 1);
+
+        var first = relations.at(0);
+        equal(first.get('dcterms:title'), 'Bar');
+        equal(jQuery('[rel="relations"] > div[about]', html).length, 1);
+
+        relations.add({
+          'dcterms:title': 'BarFoo'
+        });
+        equal(relations.length, 2);
+        equal(relations.at(1).get('dcterms:title'), 'BarFoo');
+        equal(jQuery('[rel="relations"] > div[about]', html).length, 2);
+        equal(jQuery('div[property]', jQuery('[rel="relations"] > div[about]', html).get(1)).html(), 'BarFoo');
+
+        relations.at(1).set('dcterms:title', 'BarFooBaz');
+        equal(jQuery('div[property]', jQuery('[rel="relations"] > div[about]', html).get(1)).html(), 'BarFooBaz');
+
+        relations.remove(relations.at(1));
+        equal(relations.length, 1);
+        equal(jQuery('[rel="relations"] > div[about]', html).length, 1);
+        equal(jQuery('[rel="relations"] > div[about] div[property]', html).html(), 'Bar');
+
+        var subrelations = first.get('subrelations');
+        equal(subrelations.length, 1);
+        var second = subrelations.at(0);
+        equal(second.get('dcterms:title'), 'Baz');
+
+        equal(jQuery('[rel="subrelations"] div[about]', html).length, 1);
+
+        subrelations.add({
+          'dcterms:title': 'BazFoo'
+        });
+        equal(subrelations.length, 2);
+        equal(jQuery('[rel="subrelations"] div[about]', html).length, 2);
+        equal(jQuery('div[property]', jQuery('[rel="subrelations"] div[about]', html).get(1)).html(), 'BazFoo');
+
+        subrelations.at(1).set('dcterms:title', 'BazFooBar');
+        equal(jQuery('div[property]', jQuery('[rel="subrelations"] > div[about]', html).get(1)).html(), 'BazFooBar');
+
+        subrelations.remove(subrelations.at(1));
+        equal(subrelations.length, 1);
+        equal(jQuery('[rel="subrelations"] div[about]', html).length, 1);
+        equal(jQuery('[rel="subrelations"] > div[about] div[property]', html).html(), 'Baz');
+    });
+});

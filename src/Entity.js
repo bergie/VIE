@@ -113,6 +113,16 @@ VIE.prototype.Entity = function(attrs, opts) {
             return Backbone.Model.prototype.has.call(this, attr);
         },
 
+        hasRelations: function() {
+            var found = false;
+            _.each(this.attributes, function (value) {
+                if (value && value.isCollection) {
+                    found = true;
+                }
+            });
+            return found;
+        },
+
         // #### `.set(attrName, value, opts)`,
         // The `options` parameter always refers to a `Backbone.Model.set` `options` object.
         //

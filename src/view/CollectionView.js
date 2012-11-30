@@ -22,10 +22,9 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         this.collection.on('reset', this.refreshItems);
 
         // Make the view aware of existing entities in collection
-        var view = this;
-        this.collection.forEach(function(entity) {
-            view.registerItem(entity, view.collection);
-        });
+        this.collection.each(function(entity) {
+            this.registerItem(entity, this.collection);
+        }, this);
     },
 
     /*

@@ -192,6 +192,21 @@
                       </div>
                   </div>
               </div>
+              <div class="rdfa-deeprelation">
+                  <div about="http://example.net/example">
+                      <div property="dcterms:title">Foo</div>
+                      <div rel="relations">
+                          <div about="http://example.net/first">
+                              <div property="dcterms:title">Bar</div>
+                              <div rel="subrelations">
+                                  <div about="http://example.net/second">
+                                      <div property="dcterms:title">Baz</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
         </div>
 
         <!--<h1 id="qunit-header"><a href="#">vie.js Speed Suite</a></h1>

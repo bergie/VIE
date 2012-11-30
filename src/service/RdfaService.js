@@ -239,6 +239,11 @@ VIE.prototype.RdfaService.prototype = {
         var service = this;
         var viewInstance = this._getViewForElement(element);
         if (viewInstance) {
+            if (entity.hasRelations() && !viewInstance.collectionsChecked) {
+                // Entity has collections but these haven't been registered
+                // as views yet. This usually happens with deep relations.
+                this._registerEntityCollectionViews(entity, element, viewInstance);
+            }
             return viewInstance;
         }
 
@@ -265,6 +270,14 @@ VIE.prototype.RdfaService.prototype = {
           });
         }
 
+        this._registerEntityCollectionViews(entity, element, viewInstance);
+
+        return viewInstance;
+    },
+
+
+    _registerEntityCollectionViews: function (entity, element, view) {
+        var service = this;
         // Find collection elements and create collection views for them
         _.each(entity.attributes, function(value, predicate) {
             var attributeValue = entity.fromReference(entity.get(predicate));
@@ -272,9 +285,11 @@ VIE.prototype.RdfaService.prototype = {
                 jQuery.each(service.getElementByPredicate(predicate, element), function() {
                     service._registerCollectionView(attributeValue, jQuery(this), entity);
                 });
+                // Collections of the entity have been checked and views
+                // registered for them. This doesn't need to be done again.
+                view.collectionsChecked = true;
             }
         });
-        return viewInstance;
     },
 
     setTemplate: function (type, predicate, template) {
