@@ -430,3 +430,23 @@ test("Test multiple RDFa instances of same entity", function () {
         start();
     });
 });
+
+test("Test anonymous relation", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService);
+
+    var html = jQuery('#qunit-fixture .rdfa-anonrelation');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        start();
+
+        var entity = z.entities.get('<http://example.net/example>');
+        ok(entity);
+        equal(entity.get('dcterms:title'), 'Foo');
+
+        var relations = entity.get('relations');
+        equal(relations.length, 1);
+        equal(relations.at(0).get('dcterms:title'), 'Bar');
+    });
+});

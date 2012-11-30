@@ -30,10 +30,14 @@ VIE.prototype.RdfaService = function(options) {
         subjectSelector : "[about],[typeof],[src],html",
         predicateSelector : "[property],[rel]",
         /* default rules that are shipped with this service */
-        rules : []
+        rules : [],
+        bnodePrefix: '_a'
     };
     /* the options are merged with the default options */
     this.options = jQuery.extend(true, defaults, options ? options : {});
+
+    // Counter for bnodes created by this service instance
+    this.bnodes = 0;
 
     this.views = [];
     this.templates = {};
@@ -418,7 +422,13 @@ VIE.prototype.RdfaService.prototype = {
         return null;
     },
 
-    getElementSubject : function(element) {
+    _generatebnodeId: function () {
+      var newId = this.options.bnodePrefix + ':' + this.bnodes;
+      this.bnodes++;
+      return newId;
+    },
+
+    getElementSubject : function(element, allowTypeOf) {
         var service = this;
         if (typeof document !== 'undefined') {
             if (element === document) {
@@ -438,6 +448,13 @@ VIE.prototype.RdfaService.prototype = {
                 return true;
             }
             if (jQuery(this).attr('typeof') !== service.options.attributeExistenceComparator) {
+                var typeElement = jQuery(this);
+                if (typeElement.data('vie-bnode')) {
+                  subject = typeElement.data('vie-bnode');
+                  return true;
+                }
+                subject = service._generatebnodeId();
+                typeElement.data('vie-bnode', subject);
                 return true;
             }
             // We also handle baseURL outside browser context by manually
@@ -617,7 +634,7 @@ VIE.prototype.RdfaService.prototype = {
             var value = [];
             var service = this;
             jQuery(element).children(this.options.subjectSelector).each(function() {
-                value.push(service.getElementSubject(this));
+                value.push(service.getElementSubject(this, true));
             });
             return value;
         }
