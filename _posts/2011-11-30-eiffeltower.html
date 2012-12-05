@@ -17,8 +17,8 @@ v.load({
     entity : eiffel
     }).using("dbpedia").execute().done(function (entity) {
     var height = {
-        year: entity.get(heightByYear)[1],
-        height: entity.get(heightByYear)[0]['@value'],
+        year: entity.get(heightByYear)[0],
+        height: entity.get(heightByYear)[1]['@value'],
     };
     results.append(
         jQuery("<p>Eiffel Tower, at " + height.year + " was " + height.height + " tall. We also know " + Object.keys(entity.attributes).length + " other facts about the tower.</p>")

@@ -1,0 +1,488 @@
+<!DOCTYPE html><html><head><title>Type.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="../docco.css"></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../index.html" class="source"><span class="file_name">README</span></a><a href="../src/Namespace.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Namespace.js</span></a><a href="../src/Attribute.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Attribute.js</span></a><a href="../src/service/OpenCalaisService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">OpenCalaisService.js</span></a><a href="../src/service/RdfaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaService.js</span></a><a href="../src/service/RdfaRdfQueryService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">RdfaRdfQueryService.js</span></a><a href="../src/service/ZemantaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">ZemantaService.js</span></a><a href="../src/service/DBPediaService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">DBPediaService.js</span></a><a href="../src/service/StanbolService.js.html" class="source "><span class="base_path">src / service / </span><span class="file_name">StanbolService.js</span></a><a href="../src/xdr.js.html" class="source "><span class="base_path">src / </span><span class="file_name">xdr.js</span></a><a href="../src/Collection.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Collection.js</span></a><a href="../src/Type.js.html" class="source selected"><span class="base_path">src / </span><span class="file_name">Type.js</span></a><a href="../src/Classic.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Classic.js</span></a><a href="../src/Util.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Util.js</span></a><a href="../src/view/CollectionView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">CollectionView.js</span></a><a href="../src/view/EntityView.js.html" class="source "><span class="base_path">src / view / </span><span class="file_name">EntityView.js</span></a><a href="../src/Able.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Able.js</span></a><a href="../src/VIE.js.html" class="source "><span class="base_path">src / </span><span class="file_name">VIE.js</span></a><a href="../src/Entity.js.html" class="source "><span class="base_path">src / </span><span class="file_name">Entity.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>Type.js</h1><div class="filepath">src/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><pre><code>VIE - Vienna IKS Editables
+(c) 2011 Henri Bergius, IKS Consortium
+(c) 2011 Sebastian Germesin, IKS Consortium
+(c) 2011 Szaby Grünwald, IKS Consortium
+VIE may be freely distributed under the MIT license.
+For all details and documentation:
+http://viejs.org/
+</code></pre>
+</td><td class="code"><div class="highlight"><pre></pre></div></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><h2>VIE.Types</h2>
+
+<p>Within VIE, we provide special capabilities of handling types of entites. This helps
+for example to query easily for certain entities (e.g., you only need to query for <em>Person</em>s
+and not for all subtypes).</p>
+</td><td class="code"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: VIE.Type is already defined. Please check your installation!&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Types</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;ERROR: VIE.Types is already defined. Please check your installation!&quot;</span><span class="p">);</span>
+<span class="p">}</span></pre></div></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><h3>VIE.Type(id, attrs, metadata)</h3>
+
+<p>This is the constructor of a VIE.Type.
+<strong>Parameters</strong>:
+<em>{string}</em> <strong>id</strong> The id of the type.
+<em>{string|array|VIE.Attribute}</em> <strong>attrs</strong> A string, proper <code>VIE.Attribute</code> or an array of these which
+<em>{object}</em> <strong>metadata</strong> Possible metadata about the type
+are the possible attributes of the type
+<strong>Throws</strong>:
+<em>{Error}</em> if one of the given paramenters is missing.
+<strong>Returns</strong>:
+<em>{VIE.Type}</em> : A <strong>new</strong> VIE.Type object.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var person = new vie.Type("Person", ["name", "knows"]);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Type</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">,</span> <span class="nx">metadata</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">id</span> <span class="o">!==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="s2">&quot;The type constructor needs an &#39;id&#39; of type string! E.g., &#39;Person&#39;&quot;</span><span class="p">;</span>
+    <span class="p">}</span></pre></div></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><h3>id</h3>
+
+<p>This field stores the id of the type's instance.
+<strong>Parameters</strong>:
+nothing
+<strong>Throws</strong>:
+nothing
+<strong>Returns</strong>:
+<em>{string}</em> : The id of the type as a URI.
+<strong>Example usage</strong>:</p>
+
+<pre><code>console.log(person.id);
+ // --&gt; "&lt;http://viejs.org/ns/Person&gt;"
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">isUri</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="nx">id</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">uri</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span></pre></div></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>checks whether such a type is already defined.</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;The type &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot; is already defined!&quot;</span><span class="p">);</span>
+    <span class="p">}</span></pre></div></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><h3>supertypes</h3>
+
+<p>This field stores all parent types of the type's instance. This
+is set if the current type inherits from another type.
+<strong>Parameters</strong>:
+nothing
+<strong>Throws</strong>:
+nothing
+<strong>Returns</strong>:
+<em>{VIE.Types}</em> : The supertypes (parents) of the type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>console.log(person.supertypes);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">supertypes</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Types</span><span class="p">();</span></pre></div></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><h3>subtypes</h3>
+
+<p>This field stores all children types of the type's instance. This
+will be set if another type inherits from the current type.
+<strong>Parameters</strong>:
+nothing
+<strong>Throws</strong>:
+nothing
+<strong>Returns</strong>:
+<em>{VIE.Types}</em> : The subtypes (parents) of the type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>console.log(person.subtypes);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">subtypes</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Types</span><span class="p">();</span></pre></div></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><h3>attributes</h3>
+
+<p>This field stores all attributes of the type's instance as
+a proper <code>VIE.Attributes</code> class. (see also <a href="Attribute.html">VIE.Attributes</a>)
+<strong>Parameters</strong>:
+nothing
+<strong>Throws</strong>:
+nothing
+<strong>Returns</strong>:
+<em>{VIE.Attributes}</em> : The attributes of the type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>console.log(person.attributes);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Attributes</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="p">(</span><span class="nx">attrs</span><span class="p">)</span><span class="o">?</span> <span class="nx">attrs</span> <span class="o">:</span> <span class="p">[]);</span></pre></div></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><h3>metadata</h3>
+
+<p>This field stores possible additional information about the type, like
+a human-readable label.</p>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">metadata</span> <span class="o">=</span> <span class="nx">metadata</span> <span class="o">?</span> <span class="nx">metadata</span> <span class="o">:</span> <span class="p">{};</span></pre></div></td></tr><tr id="section-10"><td class="docs"><div class="pilwrap"><a href="#section-10" class="pilcrow">&#182;</a></div><h3>isof(type)</h3>
+
+<p>This method checks whether the current type is a child of the given type.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>type</strong> The type (or the id of that type) to be checked.
+<strong>Throws</strong>:
+<em>{Error}</em> If the type is not valid.
+<strong>Returns</strong>:
+<em>{boolean}</em> : <code>true</code> if the current type inherits from the type, <code>false</code> otherwise.
+<strong>Example usage</strong>:</p>
+
+<pre><code>console.log(person.isof("owl:Thing"));
+// &lt;-- true
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">isof</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">type</span><span class="p">.</span><span class="nx">subsumes</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;No valid type given&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-11"><td class="docs"><div class="pilwrap"><a href="#section-11" class="pilcrow">&#182;</a></div><h3>subsumes(type)</h3>
+
+<p>This method checks whether the current type is a parent of the given type.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>type</strong> The type (or the id of that type) to be checked.
+<strong>Throws</strong>:
+<em>{Error}</em> If the type is not valid.
+<strong>Returns</strong>:
+<em>{boolean}</em> : <code>true</code> if the current type is a parent of the type, <code>false</code> otherwise.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var x = new vie.Type(...);
+var y = new vie.Type(...).inherit(x);
+y.isof(x) === x.subsumes(y);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">subsumes</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">type</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="kd">var</span> <span class="nx">subtypes</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">list</span><span class="p">();</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="nx">subtypes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">childObj</span> <span class="o">=</span> <span class="nx">subtypes</span><span class="p">[</span><span class="nx">c</span><span class="p">];</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">childObj</span><span class="p">)</span> <span class="p">{</span>
+                     <span class="k">if</span> <span class="p">(</span><span class="nx">childObj</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">type</span><span class="p">.</span><span class="nx">id</span> <span class="o">||</span> <span class="nx">childObj</span><span class="p">.</span><span class="nx">subsumes</span><span class="p">(</span><span class="nx">type</span><span class="p">))</span> <span class="p">{</span>
+                         <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                     <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;No valid type given&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-12"><td class="docs"><div class="pilwrap"><a href="#section-12" class="pilcrow">&#182;</a></div><h3>inherit(supertype)</h3>
+
+<p>This method invokes inheritance throught the types. This adds the current type to the
+subtypes of the supertype and vice versa.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type|array}</em> <strong>supertype</strong> The type to be inherited from. If this is an array
+the inherit method is called sequentially on all types.
+<strong>Throws</strong>:
+<em>{Error}</em> If the type is not valid.
+<strong>Returns</strong>:
+<em>{VIE.Type}</em> : The instance itself.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var x = new vie.Type(...);
+var y = new vie.Type(...).inherit(x);
+y.isof(x) // &lt;-- true
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">inherit</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">supertype</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">supertype</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">inherit</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">supertype</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">supertype</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">supertype</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">addOrOverwrite</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">supertypes</span><span class="p">.</span><span class="nx">addOrOverwrite</span><span class="p">(</span><span class="nx">supertype</span><span class="p">);</span>
+            <span class="k">try</span> <span class="p">{</span></pre></div></td></tr><tr id="section-13"><td class="docs"><div class="pilwrap"><a href="#section-13" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>only for validation of attribute-inheritance!<br />                   if this throws an error (inheriting two attributes<br />                   that cannot be combined) we reverse all changes.</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>                <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">list</span><span class="p">();</span>
+            <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">supertype</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">supertypes</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">supertype</span><span class="p">);</span>
+                <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">supertype</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">slen</span> <span class="o">=</span> <span class="nx">supertype</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">slen</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">inherit</span><span class="p">(</span><span class="nx">supertype</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Wrong argument in VIE.Type.inherit()&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-14"><td class="docs"><div class="pilwrap"><a href="#section-14" class="pilcrow">&#182;</a></div><h3>hierarchy()</h3>
+
+<p>This method serializes the hierarchy of child types into an object.
+<strong>Parameters</strong>:
+<em>nothing</em>
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{object}</em> : The hierachy of child types as an object.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var x = new vie.Type(...);
+var y = new vie.Type(...).inherit(x);
+x.hierarchy();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">hierarchy</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span><span class="nx">id</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">subtypes</span><span class="o">:</span> <span class="p">[]};</span>
+        <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">list</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">llen</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="nx">llen</span><span class="p">;</span> <span class="nx">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">childObj</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">list</span><span class="p">[</span><span class="nx">c</span><span class="p">]);</span>
+            <span class="nx">obj</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">childObj</span><span class="p">.</span><span class="nx">hierarchy</span><span class="p">());</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-15"><td class="docs"><div class="pilwrap"><a href="#section-15" class="pilcrow">&#182;</a></div><h3>instance()</h3>
+
+<p>This method creates a <code>VIE.Entity</code> instance from this type.
+<strong>Parameters</strong>:
+<em>{object}</em> <strong>attrs</strong>  see <a href="Entity.html">constructor of VIE.Entity</a>
+<em>{object}</em> <strong>opts</strong>  see <a href="Entity.html">constructor of VIE.Entity</a>
+<strong>Throws</strong>:
+<em>{Error}</em> if the instance could not be built
+<strong>Returns</strong>:
+<em>{VIE.Entity}</em> : A <strong>new</strong> instance of a <code>VIE.Entity</code> with the current type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var person = new vie.Type("person");
+var sebastian = person.instance(
+    {"@subject" : "#me",
+     "name" : "Sebastian"});
+console.log(sebastian.get("name")); // &lt;-- "Sebastian"
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">instance</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="nx">opts</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">attrs</span> <span class="o">=</span> <span class="p">(</span><span class="nx">attrs</span><span class="p">)</span><span class="o">?</span> <span class="nx">attrs</span> <span class="o">:</span> <span class="p">{};</span>
+        <span class="nx">opts</span> <span class="o">=</span> <span class="p">(</span><span class="nx">opts</span><span class="p">)</span><span class="o">?</span> <span class="nx">opts</span> <span class="o">:</span> <span class="p">{};</span></pre></div></td></tr><tr id="section-16"><td class="docs"><div class="pilwrap"><a href="#section-16" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>turn type/attribute checking on by default!</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">opts</span><span class="p">.</span><span class="nx">typeChecking</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">a</span> <span class="k">in</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span> <span class="o">!==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">a</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Cannot create an instance of &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot; as the type does not allow an attribute &#39;&quot;</span> <span class="o">+</span> <span class="nx">a</span> <span class="o">+</span> <span class="s2">&quot;&#39;!&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">attrs</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">])</span> <span class="p">{</span>
+            <span class="nx">attrs</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">attrs</span><span class="p">[</span><span class="s1">&#39;@type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Entity</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="nx">opts</span><span class="p">);</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-17"><td class="docs"><div class="pilwrap"><a href="#section-17" class="pilcrow">&#182;</a></div><h3>toString()</h3>
+
+<p>This method returns the id of the type.
+<strong>Parameters</strong>:
+<em>nothing</em>
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{string}</em> : The id of the type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var x = new vie.Type(...);
+x.toString() === x.id;
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">};</span></pre></div></td></tr><tr id="section-18"><td class="docs"><div class="pilwrap"><a href="#section-18" class="pilcrow">&#182;</a></div><h3>VIE.Types()</h3>
+
+<p>This is the constructor of a VIE.Types. This is a convenience class
+to store <code>VIE.Type</code> instances properly.
+<strong>Parameters</strong>:
+<em>nothing</em>
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{VIE.Types}</em> : A <strong>new</strong> VIE.Types object.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre><span class="nx">VIE</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">Types</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">_types</span> <span class="o">=</span> <span class="p">{};</span></pre></div></td></tr><tr id="section-19"><td class="docs"><div class="pilwrap"><a href="#section-19" class="pilcrow">&#182;</a></div><h3>add(id, attrs, metadata)</h3>
+
+<p>This method adds a <code>VIE.Type</code> to the types.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>id</strong> If this is a string, the type is created and directly added.
+<em>{string|object}</em> <strong>attrs</strong> Only used if <code>id</code> is a string.
+<em>{object}</em> <strong>metadata</strong> potential additional metadata about the type.
+<strong>Throws</strong>:
+<em>{Error}</em> if a type with the given id already exists a <code>VIE.Entity</code> instance from this type.
+<strong>Returns</strong>:
+<em>{VIE.Types}</em> : The instance itself.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.add("Person", ["name", "knows"]);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">,</span> <span class="nx">metadata</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+           <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+             <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+           <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
+           <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Type &#39;&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;&#39; already registered.&quot;</span><span class="p">);</span>
+        <span class="p">}</span>  <span class="k">else</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">id</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">new</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Type</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">,</span> <span class="nx">metadata</span><span class="p">);</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">t</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">t</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">t</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">id</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Wrong argument to VIE.Types.add()!&quot;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-20"><td class="docs"><div class="pilwrap"><a href="#section-20" class="pilcrow">&#182;</a></div><h3>addOrOverwrite(id, attrs)</h3>
+
+<p>This method adds or overwrites a <code>VIE.Type</code> to the types. This is the same as
+<code>this.remove(id); this.add(id, attrs);</code>
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>id</strong> If this is a string, the type is created and directly added.
+<em>{string|object}</em> <strong>attrs</strong> Only used if <code>id</code> is a string.
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{VIE.Types}</em> : The instance itself.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.addOrOverwrite("Person", ["name", "knows"]);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">addOrOverwrite</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">);</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-21"><td class="docs"><div class="pilwrap"><a href="#section-21" class="pilcrow">&#182;</a></div><h3>get(id)</h3>
+
+<p>This method retrieves a <code>VIE.Type</code> from the types by it's id.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>id</strong> The id or the type itself.
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{VIE.Type}</em> : The instance of the type or <code>undefined</code>.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.addOrOverwrite("Person", ["name", "knows"]);
+types.get("Person");
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">id</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">lid</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">isUri</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="o">?</span> <span class="nx">id</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">namespaces</span><span class="p">.</span><span class="nx">uri</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">lid</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">id</span> <span class="k">instanceof</span> <span class="k">this</span><span class="p">.</span><span class="nx">vie</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-22"><td class="docs"><div class="pilwrap"><a href="#section-22" class="pilcrow">&#182;</a></div><h3>remove(id)</h3>
+
+<p>This method removes a type of given id from the type. This also
+removes all children if their only parent were this
+type. Furthermore, this removes the link from the
+super- and subtypes.
+<strong>Parameters</strong>:
+<em>{string|VIE.Type}</em> <strong>id</strong> The id or the type itself.
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{VIE.Type}</em> : The removed type.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.addOrOverwrite("Person", ["name", "knows"]);
+types.remove("Person");
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span></pre></div></td></tr><tr id="section-23"><td class="docs"><div class="pilwrap"><a href="#section-23" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>test whether the type actually exists in VIE<br />and prevents removing <em>owl:Thing</em>.</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">t</span> <span class="o">||</span> <span class="nx">t</span><span class="p">.</span><span class="nx">subsumes</span><span class="p">(</span><span class="s2">&quot;owl:Thing&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s2">&quot;You are not allowed to remove &#39;owl:Thing&#39;.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">t</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
+
+        <span class="kd">var</span> <span class="nx">subtypes</span> <span class="o">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">subtypes</span><span class="p">.</span><span class="nx">list</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="nx">subtypes</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">childObj</span> <span class="o">=</span> <span class="nx">subtypes</span><span class="p">[</span><span class="nx">c</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">childObj</span><span class="p">.</span><span class="nx">supertypes</span><span class="p">.</span><span class="nx">list</span><span class="p">().</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span></pre></div></td></tr><tr id="section-24"><td class="docs"><div class="pilwrap"><a href="#section-24" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>recursively remove all children<br />                   that inherit only from this type</p></div><div class="body"></div></div>
+</td><td class="code"><div class="highlight"><pre>                <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">childObj</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">childObj</span><span class="p">.</span><span class="nx">supertypes</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">t</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-25"><td class="docs"><div class="pilwrap"><a href="#section-25" class="pilcrow">&#182;</a></div><h3>toArray() === list()</h3>
+
+<p>This method returns an array of all types.
+<strong>Parameters</strong>:
+<em>nothing</em>
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{array}</em> : An array of <code>VIE.Type</code> instances.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.addOrOverwrite("Person", ["name", "knows"]);
+types.list();
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">toArray</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">list</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">ret</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_types</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+    <span class="p">};</span></pre></div></td></tr><tr id="section-26"><td class="docs"><div class="pilwrap"><a href="#section-26" class="pilcrow">&#182;</a></div><h3>sort(types, desc)</h3>
+
+<p>This method sorts an array of types in their order, given by the
+inheritance. This returns a copy and leaves the original array untouched.
+<strong>Parameters</strong>:
+<em>{array|VIE.Type}</em> <strong>types</strong> The array of <code>VIE.Type</code> instances or ids of types to be sorted.
+<em>{boolean}</em> <strong>desc</strong> If 'desc' is given and 'true', the array will be sorted
+in descendant order.
+<em>nothing</em>
+<strong>Throws</strong>:
+<em>nothing</em>
+<strong>Returns</strong>:
+<em>{array}</em> : A sorted copy of the array.
+<strong>Example usage</strong>:</p>
+
+<pre><code>var types = new vie.Types();
+types.addOrOverwrite("Person", ["name", "knows"]);
+types.sort(types.list(), true);
+</code></pre>
+</td><td class="code"><div class="highlight"><pre>    <span class="k">this</span><span class="p">.</span><span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">types</span><span class="p">,</span> <span class="nx">desc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+        <span class="nx">types</span> <span class="o">=</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">types</span><span class="p">))</span><span class="o">?</span> <span class="nx">types</span> <span class="o">:</span> <span class="p">[</span> <span class="nx">types</span> <span class="p">];</span>
+        <span class="nx">desc</span> <span class="o">=</span> <span class="p">(</span><span class="nx">desc</span><span class="p">)</span><span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="p">[];</span>
+        <span class="kd">var</span> <span class="nx">copy</span> <span class="o">=</span> <span class="p">[</span> <span class="nx">types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">];</span>
+        <span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">tlen</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">tlen</span> <span class="o">=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">tlen</span><span class="p">;</span> <span class="nx">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">insert</span> <span class="o">=</span> <span class="nx">types</span><span class="p">[</span><span class="nx">x</span><span class="p">];</span>
+            <span class="kd">var</span> <span class="nx">insType</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">insert</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">insType</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">y</span> <span class="o">&lt;</span> <span class="nx">copy</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">insType</span><span class="p">.</span><span class="nx">subsumes</span><span class="p">(</span><span class="nx">copy</span><span class="p">[</span><span class="nx">y</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="nx">copy</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">y</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nx">insert</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">y</span> <span class="o">===</span> <span class="nx">copy</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">copy</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">insert</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span></pre></div></td></tr><tr id="section-27"><td class="docs"><div class="pilwrap"><a href="#section-27" class="pilcrow">&#182;</a></div><p>unduplicate</p>
+</td><td class="code"><div class="highlight"><pre>        <span class="k">for</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="nx">copy</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">copy</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="nx">copy</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span> <span class="o">!==</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">copy</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+                <span class="nx">x</span><span class="o">--</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">desc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">copy</span><span class="p">.</span><span class="nx">reverse</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">copy</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">};</span>
+
+</pre></div></td></tr></tbody></table><div id="generated">generated Wed Dec 05 2012 19:56:04 GMT+0100 (CET)  </div><div id="projectname"><a href="../index.html">VIE</a></div></div></body></html>
