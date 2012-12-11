@@ -13,6 +13,7 @@
 // Furthermore, it gives access to the enhance facilities of
 // Stanbol to analyze content and semantically enrich it.
 (function(){
+var defaultStanbolUris = ["http://demo.iks-project.eu/stanbolfull", "http://dev.iks-project.eu/stanbolfull"];
 
 // ## VIE.StanbolService(options)
 // This is the constructor to instantiate a new service to collect
@@ -31,7 +32,7 @@ VIE.prototype.StanbolService = function(options) {
         /* the default name of this service */
         name : 'stanbol',
         /* you can pass an array of URLs which are then tried sequentially */
-        url: ["http://dev.iks-project.eu/stanbolfull"],
+        url: defaultStanbolUris,
         timeout : 20000, /* 20 seconds timeout */
         namespaces : {
             semdeski : "http://www.semanticdesktop.org/ontologies/2007/01/19/nie#",
@@ -361,7 +362,7 @@ VIE.prototype.StanbolConnector = function (options) {
 
     var defaults =  {
         /* you can pass an array of URLs which are then tried sequentially */
-        url: ["http://dev.iks-project.eu/stanbolfull"],
+        url: defaultStanbolUris,
         timeout : 20000, /* 20 seconds timeout */
         enhancer : {
             urlPostfix : "/enhancer",
