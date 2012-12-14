@@ -296,14 +296,20 @@ test("VIE - Type based validation", function () {
 
     // Check validation of required properties
     var results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 2);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 2);
+    }
 
     // Ensure that minimum checks also affect empty values
     entity.set('title', '');
     results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 2);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 2);
+    }
     equal(entity.has('title'), false);
 
     // Make the model valid again by setting the required fields
@@ -346,7 +352,10 @@ test("VIE - Type based validation", function () {
       silent: true 
     });
     equal(entity.has('content'), true);
-    var results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 1);
+    results = entity.validate(entity.attributes);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 1);
+    }
 });
