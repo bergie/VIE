@@ -295,14 +295,13 @@ test("VIE - Type based validation", function () {
     ok(entity);
 
     // Check validation of required properties
-    equal(entity.isValid(), false);
     var results = entity.validate(entity.attributes);
     ok(_.isArray(results));
     equal(results.length, 2);
 
     // Ensure that minimum checks also affect empty values
     entity.set('title', '');
-    var results = entity.validate(entity.attributes);
+    results = entity.validate(entity.attributes);
     ok(_.isArray(results));
     equal(results.length, 2);
     equal(entity.has('title'), false);
@@ -312,7 +311,7 @@ test("VIE - Type based validation", function () {
       'title': 'Hello, world',
       'author': '<foo>'
     });
-    ok(entity.isValid());
+    equal(entity.validate(), undefined);
 
     // Check validation of max number of items
     entity.set('content', ['one', 'two']);
@@ -347,7 +346,6 @@ test("VIE - Type based validation", function () {
       silent: true 
     });
     equal(entity.has('content'), true);
-    equal(entity.isValid(), false);
     var results = entity.validate(entity.attributes);
     ok(_.isArray(results));
     equal(results.length, 1);
