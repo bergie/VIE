@@ -71,8 +71,8 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         if (model.id && this.get(model.id)) {
             existing = this.get(model.id);
         }
-        if (this.getByCid(model.cid)) {
-            existing = this.getByCid(model.cid);
+        if (this.get(model.cid)) {
+            existing = this.get(model.cid);
         }
         if (existing) {
             var newAttribs = {};
