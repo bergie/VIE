@@ -15,141 +15,141 @@
     <property name="TOOLS_DIR" value="./utils"/>
     <property name="YUI" value="${TOOLS_DIR}/yui-compressor/yuicompressor-2.4.2.jar" />
 
-	<target name="timestamp">
-		<tstamp>
-			<format property="current.time"
-				pattern="yyyyMMddHHmmss" />
-		</tstamp>
-	</target>
+  <target name="timestamp">
+    <tstamp>
+      <format property="current.time"
+        pattern="yyyyMMddHHmmss" />
+    </tstamp>
+  </target>
 
     <target name="doc" depends="init" description="Generates documentation for vie.js with Docco-Husky">
         <echo message="Generating Documentation"/>
         <echo message="Attention: 'Docco-Husky' is needed for that. Make sure it is on your PATH or"/>
         <echo message="get it from: https://github.com/mbrevoort/docco-husky"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
         <arg value="docco-husky src/" />
-		  </exec>
+      </exec>
         <move todir="${DOCS_DIR}">
           <fileset dir="${DOCS_TMP}" />
         </move>
         <delete dir="${DOCS_TMP}"/>
     </target>
 
-	<target name="doc_copy" depends="doc" description="Copies documentation into gh-pages branch ">
-		<echo message="Move docs temporarily"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${DOCS_DIR} ${DOCS_ROOT}/tmp"/>
-		</exec>
-		<echo message="Switching to gh-pages branch"/>
-		<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git checkout gh-pages" />
-		</exec>
-		<echo message="Move docs again"/>
-    	<delete dir="${DOCS_DIR}" quiet="true"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${DOCS_ROOT}/tmp ${DOCS_DIR}"/>
-		</exec>
-		<echo message="Adding..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
+  <target name="doc_copy" depends="doc" description="Copies documentation into gh-pages branch ">
+    <echo message="Move docs temporarily"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${DOCS_DIR} ${DOCS_ROOT}/tmp"/>
+    </exec>
+    <echo message="Switching to gh-pages branch"/>
+    <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git checkout gh-pages" />
+    </exec>
+    <echo message="Move docs again"/>
+      <delete dir="${DOCS_DIR}" quiet="true"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${DOCS_ROOT}/tmp ${DOCS_DIR}"/>
+    </exec>
+    <echo message="Adding..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
         <arg value="git add ${DOCS_DIR}" />
-		</exec>
-		<echo message="Committing..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating documentation for version ${VERSION}' ${DOCS_DIR}" />
-		</exec>
-		<echo message="Pushing..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git push origin gh-pages" />
-		</exec>
-    	<echo message="Switching to master branch"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git checkout master" />
-		</exec>
+    </exec>
+    <echo message="Committing..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git commit -m 'updating documentation for version ${VERSION}' ${DOCS_DIR}" />
+    </exec>
+    <echo message="Pushing..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git push origin gh-pages" />
+    </exec>
+      <echo message="Switching to master branch"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git checkout master" />
+    </exec>
     </target>
 
-	<target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
-		<echo message="Move dist folder temporarily"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${DIST_DIR} ${DIST_DIR}_tmp"/>
-		</exec>
-		<echo message="Move lib folder temporarily"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="cp -R ${LIB_DIR} ${LIB_DIR}_tmp"/>
-		</exec>
-		<echo message="Move tests temporarily"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${TEST_DIR} ${TEST_DIR}_tmp"/>
-		</exec>
-		<echo message="Switching to gh-pages branch"/>
-		<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git checkout gh-pages" />
-		</exec>
-		<delete dir="${DIST_DIR}"/>
-		<echo message="Move dist again"/>
-    	<delete dir="${DIST_DIR}" quiet="true"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${DIST_DIR}_tmp ${DIST_DIR}"/>
-		</exec>
-		<echo message="Remove timestamped files"/>
-		<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="rm ${DIST_DIR}/*_*.js"/>
-		</exec>
-		<delete dir="${LIB_DIR}"/>
-		<echo message="Move libs again"/>
-    	<delete dir="${LIB_DIR}" quiet="true"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${LIB_DIR}_tmp ${LIB_DIR}"/>
-		</exec>
-		<delete dir="${TEST_DIR}"/>
-		<echo message="Move tests again"/>
-    	<delete dir="${TEST_DIR}" quiet="true"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="mv ${TEST_DIR}_tmp ${TEST_DIR}"/>
-		</exec>
-		<echo message="Adding..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git add ${TEST_DIR}/*" />
-		</exec>
-		<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git add ${LIB_DIR}/*" />
-		</exec>
-		<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git add ${DIST_DIR}/*" />
-		</exec>
-		<echo message="Committing..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${DIST_DIR} ${LIB_DIR} ${TEST_DIR}" />
-		</exec>
-    	<echo message="Pushing..."/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git push origin gh-pages" />
-		</exec>
-    	<echo message="Switching to master branch"/>
-    	<exec executable="sh" dir=".">
-	 	   <arg value="-c" />
-	 	   <arg value="git checkout master" />
-		</exec>
+  <target name="test_copy" depends="dist" description="Copies browser-tests into gh-pages branch ">
+    <echo message="Move dist folder temporarily"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${DIST_DIR} ${DIST_DIR}_tmp"/>
+    </exec>
+    <echo message="Move lib folder temporarily"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="cp -R ${LIB_DIR} ${LIB_DIR}_tmp"/>
+    </exec>
+    <echo message="Move tests temporarily"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${TEST_DIR} ${TEST_DIR}_tmp"/>
+    </exec>
+    <echo message="Switching to gh-pages branch"/>
+    <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git checkout gh-pages" />
+    </exec>
+    <delete dir="${DIST_DIR}"/>
+    <echo message="Move dist again"/>
+      <delete dir="${DIST_DIR}" quiet="true"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${DIST_DIR}_tmp ${DIST_DIR}"/>
+    </exec>
+    <echo message="Remove timestamped files"/>
+    <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="rm ${DIST_DIR}/*_*.js"/>
+    </exec>
+    <delete dir="${LIB_DIR}"/>
+    <echo message="Move libs again"/>
+      <delete dir="${LIB_DIR}" quiet="true"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${LIB_DIR}_tmp ${LIB_DIR}"/>
+    </exec>
+    <delete dir="${TEST_DIR}"/>
+    <echo message="Move tests again"/>
+      <delete dir="${TEST_DIR}" quiet="true"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="mv ${TEST_DIR}_tmp ${TEST_DIR}"/>
+    </exec>
+    <echo message="Adding..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git add ${TEST_DIR}/*" />
+    </exec>
+    <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git add ${LIB_DIR}/*" />
+    </exec>
+    <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git add ${DIST_DIR}/*" />
+    </exec>
+    <echo message="Committing..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git commit -m 'updating browser-tests for version ${VERSION}_${current.time}' ${DIST_DIR} ${LIB_DIR} ${TEST_DIR}" />
+    </exec>
+      <echo message="Pushing..."/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git push origin gh-pages" />
+    </exec>
+      <echo message="Switching to master branch"/>
+      <exec executable="sh" dir=".">
+       <arg value="-c" />
+       <arg value="git checkout master" />
+    </exec>
     </target>
 
 
@@ -159,7 +159,7 @@
         <delete dir="${DOCS_DIR}"/>
     </target>
 
-	<target name="init" depends="clean, timestamp">
+  <target name="init" depends="clean, timestamp">
         <mkdir dir="${DIST_DIR}" />
         <mkdir dir="${DOCS_DIR}" />
     </target>
@@ -229,45 +229,45 @@
     <copy file="${DIST_DIR}/vie-core-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-core-latest.debug.js" overwrite="true" />
   </target>
 
-	<target name="combineAll" description="combines js libs and core/*.js files into one file" depends="timestamp">
-	        <echo message="Building vie.js Distribution" />
-	        <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
+  <target name="combineAll" description="combines js libs and core/*.js files into one file" depends="timestamp">
+          <echo message="Building vie.js Distribution" />
+          <concat destfile="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js">
                  <string>/*
 
 </string>
-	        	<fileset dir="${LIB_DIR}/jquery" includes="LICENSE"/>
+            <fileset dir="${LIB_DIR}/jquery" includes="LICENSE"/>
                 <string>*/
 
 </string>
-	        	<fileset dir="${LIB_DIR}/jquery/1.7" includes="jquery-1.7.1.min.js"/>
+            <fileset dir="${LIB_DIR}/jquery" includes="jquery-1.8.3.min.js"/>
                 <string>/*
 
 </string>
-	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="LICENSE"/>
+            <fileset dir="${LIB_DIR}/underscoreJS" includes="LICENSE"/>
                 <string>*/
 
 </string>
-	        	<fileset dir="${LIB_DIR}/underscoreJS" includes="underscore.js"/>
+            <fileset dir="${LIB_DIR}/underscoreJS" includes="underscore.js"/>
                 <string>/*
 
 </string>
-	        	<fileset dir="${LIB_DIR}/backboneJS" includes="LICENSE"/>
+            <fileset dir="${LIB_DIR}/backboneJS" includes="LICENSE"/>
                 <string>*/
 
 </string>
-	        	<fileset dir="${LIB_DIR}/backboneJS" includes="backbone.js"/>
+            <fileset dir="${LIB_DIR}/backboneJS" includes="backbone.js"/>
                 <string>/*
 
 </string>
-	        	<fileset dir="${LIB_DIR}/json" includes="README"/>
+            <fileset dir="${LIB_DIR}/json" includes="README"/>
                 <string>*/
 
 </string>
-	        	<fileset dir="${LIB_DIR}/json" includes="json2.js"/>
-	        	<fileset dir="${DIST_DIR}" includes="vie-latest.debug.js"/>
-	        </concat>
-	        <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-ALL-latest.debug.js" overwrite="true" />
-	    </target>
+            <fileset dir="${LIB_DIR}/json" includes="json2.js"/>
+            <fileset dir="${DIST_DIR}" includes="vie-latest.debug.js"/>
+          </concat>
+          <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" tofile="${DIST_DIR}/vie-ALL-latest.debug.js" overwrite="true" />
+      </target>
 
     <target name="minimise">
         <echo message="Minimising vie.js" />
@@ -291,16 +291,16 @@
     <copy file="${DIST_DIR}/vie-core-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-core-latest.js" overwrite="true" />
   </target>
 
-	<target name="minimiseAll">
-	    <echo message="Minimising ALL vie.js" />
+  <target name="minimiseAll">
+      <echo message="Minimising ALL vie.js" />
 
-	    <antcall target="minimiseJSFile">
-	        <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" />
-	        <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" />
-	    </antcall>
-	    <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-ALL-latest.js" overwrite="true" />
+      <antcall target="minimiseJSFile">
+          <param name="inputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.debug.js" />
+          <param name="outputFile" value="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" />
+      </antcall>
+      <copy file="${DIST_DIR}/vie-ALL-${VERSION}_${current.time}.js" tofile="${DIST_DIR}/vie-ALL-latest.js" overwrite="true" />
         <replaceregexp file="${DIST_DIR}/vie-latest.js" match="^" replace="/*VIE may be freely distributed under the MIT license.*/" />
-	</target>
+  </target>
 
     <target name="minimiseJSFile">
         <java jar="${YUI}" fork="true" failonerror="true">
