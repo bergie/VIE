@@ -241,7 +241,9 @@ VIE.prototype.Entity = function(attrs, opts) {
                 }
                 return _.flatten(results);
             }
-
+            if (!types) {
+              return;
+            }
             return this.validateByType(types, attrs, opts);
         },
 
@@ -267,6 +269,9 @@ VIE.prototype.Entity = function(attrs, opts) {
             };
 
             var checkMin = function (definition, attrs) {
+                if (!attrs) {
+                    return;
+                }
                 if (!attrs[definition.id] || _.isEmpty(attrs[definition.id])) {
                     return toError(definition, 'required', {});
                 }
@@ -274,6 +279,9 @@ VIE.prototype.Entity = function(attrs, opts) {
 
             // Check the number of items in attr against max
             var checkMax = function (definition, attrs) {
+                if (!attrs) {
+                    return;
+                }
                 if (!attrs[definition.id]) {
                     return;
                 }
