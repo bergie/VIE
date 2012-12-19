@@ -51,7 +51,7 @@ module("vie.js - Apache Stanbol Service");
 //   /cmsadapter/contenthubfeed
 
 
-var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu:8081", "http://dev.iks-project.eu/stanbolfull"];
+var stanbolRootUrl = ["http://demo.iks-project.eu/stanbolfull", "http://dev.iks-project.eu/stanbolfull"];
 test("VIE.js StanbolService - Registration", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -160,7 +160,7 @@ test("VIE.js StanbolService - Analyze with wrong URL of Stanbol", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    var wrongUrls = ["http://www.this-is-wrong.url/", "http://dev.iks-project.eu/stanbolfull"];
+    var wrongUrls = ["http://www.this-is-wrong.url/", "http://dev.iks-project.eu/stanbolfull", "http://demo.iks-project.eu/stanbolfull"];
     z.use(new z.StanbolService({url : wrongUrls}));
     stop();
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {
