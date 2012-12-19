@@ -111,7 +111,7 @@ test("VIE.js StanbolService - Analyze - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
-    expect(7);
+    expect(8);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
