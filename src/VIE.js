@@ -416,19 +416,16 @@ VIE.prototype.getTypedEntityClass = function (type) {
   if (!typeType) {
     throw new Error("Unknown type " + type);
   }
-  var TypedEntityClass = function (attrs, opts) {
-    if (!attrs) {
-      attrs = {};
-    }
-    attrs["@type"] = type;
-    this.set(attrs, opts);
-  };
-  TypedEntityClass.prototype = new this.Entity();
-  TypedEntityClass.prototype.schema = function () {
-    return VIE.Util.getFormSchemaForType(typeType);
-  };
-  return TypedEntityClass;
+  if (!this.typeEntityClasses[type.id]) {
+    this.typeEntityClasses[type.id] = this.Entity.extend({
+      defaults: {
+        '@type': type
+      }
+    });
+  }
+  return this.typeEntityClasses[type.id];
 };
+VIE.prototype.typeEntityClasses = {};
 
 // ## Running VIE on Node.js
 //
