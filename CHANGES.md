@@ -9,3 +9,7 @@ VIE ChangeLog
 ## 2.1.0 (December 5th 2012)
 
 See the [release announcement](https://groups.google.com/d/topic/viejs/RYKfp0Fhuag/discussion).
+
+## 2.0.0 (April 25th 2012)
+
+See the [introductory blog post](http://blog.iks-project.eu/vie-towards-v2-0-update/).
