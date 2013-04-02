@@ -214,6 +214,9 @@ VIE.prototype.Entity = Backbone.Model.extend({
       return;
     }
     var types = this.get('@type');
+    if (!types) {
+      return;
+    }
     if (_.isArray(types)) {
       var results = [];
       _.each(types, function (type) {
@@ -260,7 +263,7 @@ VIE.prototype.Entity = Backbone.Model.extend({
 
     // Check the number of items in attr against max
     var checkMax = function (definition, attrs) {
-      if (!attrs[definition.id]) {
+      if (!attrs || !attrs[definition.id]) {
         return;
       }
 

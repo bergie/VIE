@@ -179,7 +179,7 @@ test("VIE - Instantiation of types", function() {
     equal(type2Instance.get("attr0"), "This is a test.");
     
     raises(function () {
-    	tt1.instance({"attr1" : "This should fail."});
+      tt1.instance({"attr1" : "This should fail."});
     });
     
 });
@@ -266,9 +266,9 @@ test("VIE - Type form schema generation", function () {
 
     // Generate a Backbone Form schema for the entity
     var schema = VIE.Util.getFormSchema(entity);
-    ok(schema['published']);
-    equal(schema['published']['type'], 'DateTime');
-    var author = new schema['author']['model'];
+    ok(schema.published);
+    equal(schema.published.type, 'DateTime');
+    author = new schema.author.model();
     ok(author.isEntity);
 });
 
@@ -317,7 +317,7 @@ test("VIE - Type based validation", function () {
       'title': 'Hello, world',
       'author': '<foo>'
     });
-    equal(entity.validate(), undefined);
+    equal(entity.validate(entity.attributes), undefined);
 
     // Check validation of max number of items
     entity.set('content', ['one', 'two']);
