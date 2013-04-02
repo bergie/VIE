@@ -386,6 +386,9 @@ VIE.prototype.RdfaService.prototype = {
 
     // Return a template-generating function for given element
     getElementTemplate: function (element) {
+        if (_.isString(element)) {
+          element = jQuery.trim(element);
+        }
         var service = this;
         return function (entity, callback) {
             var newElement = jQuery(element).clone(false);
