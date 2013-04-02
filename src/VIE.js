@@ -447,7 +447,7 @@ if (typeof exports === 'object') {
     }
     if (!Backbone) {
         Backbone = require('backbone');
-        Backbone.setDomLibrary(jQuery);
+        Backbone.$ = jQuery;
     }
     if (!_) {
         _ = require('underscore')._;
