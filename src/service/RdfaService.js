@@ -428,7 +428,7 @@ VIE.prototype.RdfaService.prototype = {
         var type;
         if (jQuery(element).attr('typeof') !== this.options.attributeExistenceComparator) {
             type = jQuery(element).attr('typeof');
-            if (type.indexOf("://") !== -1) {
+            if (type && type.indexOf("://") !== -1) {
                 return "<" + type + ">";
             } else {
                 return type;
