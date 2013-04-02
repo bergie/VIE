@@ -9,9 +9,8 @@ VIE.prototype.view.Entity = Backbone.View.extend({
         this.vie = options.vie;
 
         // Ensure view gets updated when properties of the Entity change.
-        _.bindAll(this, 'render', 'renderAbout');
-        this.model.on('change', this.render);
-        this.model.on('change:@subject', this.renderAbout);
+        this.listenTo(this.model, 'change', this.render);
+        this.listenTo(this.model, 'change:@subject', this.renderAbout);
     },
 
     // Rendering a view means writing the properties of the Entity back to

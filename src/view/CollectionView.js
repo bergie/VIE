@@ -15,11 +15,9 @@ VIE.prototype.view.Collection = Backbone.View.extend({
         this.definition = this.options.definition;
         this.entityViews = {};
 
-        _.bindAll(this, 'addItem', 'removeItem', 'refreshItems');
-
-        this.collection.on('add', this.addItem);
-        this.collection.on('remove', this.removeItem);
-        this.collection.on('reset', this.refreshItems);
+        this.listenTo(this.collection, 'add', this.addItem);
+        this.listenTo(this.collection, 'remove', this.removeItem);
+        this.listenTo(this.collection, 'reset', this.refreshItems);
 
         // Make the view aware of existing entities in collection
         this.collection.each(function(entity) {
