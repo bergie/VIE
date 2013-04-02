@@ -560,7 +560,16 @@ test("vie.js Generate Typed Entity Classes", function () {
 
     var Person = new TypedEntityClass({"name": "Sebastian"});
     ok(Person.isEntity);
+    ok(Person instanceof TypedEntityClass);
     ok(Person.isof("Person"));
     equal(Person.get("@type").id, "<" + v.namespaces.base() + "Person" + ">");
     ok(Person instanceof Backbone.Model);
+
+    var SecondPerson = new TypedEntityClass({"name": "Henri"});
+    ok(SecondPerson.isEntity);
+    ok(SecondPerson instanceof TypedEntityClass);
+    ok(SecondPerson.isof("Person"));
+    equal(Person.get('name'), 'Sebastian');
+    equal(SecondPerson.get('name'), 'Henri');
+    ok(Person.cid !== SecondPerson.cid);
 });

@@ -51,7 +51,7 @@ module("vie.js - Apache Stanbol Service");
 //   /cmsadapter/contenthubfeed
 
 
-var stanbolRootUrl = [/*"http://134.96.189.108:1025", */"http://dev.iks-project.eu:8081", "http://dev.iks-project.eu/stanbolfull"];
+var stanbolRootUrl = ["http://demo.iks-project.eu/stanbolfull", "http://dev.iks-project.eu/stanbolfull"];
 test("VIE.js StanbolService - Registration", function() {
     var z = new VIE();
     ok(z.StanbolService, "Checking if the Stanbol Service exists.'");
@@ -111,7 +111,7 @@ test("VIE.js StanbolService - Analyze - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
-    expect(7);
+    expect(8);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
@@ -136,8 +136,11 @@ test("VIE.js StanbolService - Analyze - Default", function () {
           }
           ok(allEntities, "All result elements are VIE entities.");
           var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text");})[0];
-          var s = firstTextAnnotation.get("enhancer:selected-text").toString();
-          ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+          ok(firstTextAnnotation);
+          if (firstTextAnnotation) {
+            var s = firstTextAnnotation.get("enhancer:selected-text").toString();
+            ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+          }
         }
         start();
     })
@@ -157,7 +160,7 @@ test("VIE.js StanbolService - Analyze with wrong URL of Stanbol", function () {
     var z = new VIE();
     ok (z.StanbolService);
     equal(typeof z.StanbolService, "function");
-    var wrongUrls = ["http://www.this-is-wrong.url/", "http://dev.iks-project.eu/stanbolfull"];
+    var wrongUrls = ["http://www.this-is-wrong.url/", "http://dev.iks-project.eu/stanbolfull", "http://demo.iks-project.eu/stanbolfull"];
     z.use(new z.StanbolService({url : wrongUrls}));
     stop();
     z.analyze({element: elem}).using('stanbol').execute().done(function(entities) {

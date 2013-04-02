@@ -17,8 +17,8 @@
     "Johannes Schüth"
   ],
   "dependencies"  : {
-    "backbone"  : ">=0.9.9",
-    "underscore": ">=1.4.3",
+    "backbone"  : "1.x.x",
+    "underscore": "1.4.x",
     "jquery"    : "1.6.x",
     "request"   : ">=2.2.0"
   },
