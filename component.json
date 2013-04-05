@@ -6,7 +6,10 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "components"
+    "components",
+    "lib",
+    "maven",
+    "utils"
   ],
   "dependencies": {
     "jquery": ">=1.8.0",
