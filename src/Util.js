@@ -292,8 +292,8 @@ VIE.Util = {
       resArr = [];
       /* Try to find a label in the preferred language
       */
-      _.each(preferredLanguages, function (lang) {
-        _.each(preferredFields, function (property) {
+      _.each(preferredLanguages, function (lang, l) {
+        _.each(preferredFields, function (property, p) {
           labelArr = null;
           /* property can be a string e.g. "skos:prefLabel"
           */
