@@ -111,7 +111,7 @@ test("VIE.js StanbolService - Analyze - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     }
-    expect(7);
+    expect(8);
     // Sending a an example with double quotation marks.
     var elem = $('<p>This is a small test, where Steve Jobs sings the song \"We want to live forever!\" song.</p>');
     var z = new VIE();
@@ -136,8 +136,11 @@ test("VIE.js StanbolService - Analyze - Default", function () {
           }
           ok(allEntities, "All result elements are VIE entities.");
           var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text");})[0];
-          var s = firstTextAnnotation.get("enhancer:selected-text").toString();
-          ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+          ok(firstTextAnnotation);
+          if (firstTextAnnotation) {
+            var s = firstTextAnnotation.get("enhancer:selected-text").toString();
+            ok(s.substring(s.length-4, s.length-2) != "\"@", "Selected text should be converted into a normal string.");
+          }
         }
         start();
     })
