@@ -26,7 +26,7 @@ if ( root.XDomainRequest ) {
           // For backends supporting header_* in the URI instead of real header parameters,
           // use the dataType for setting the Accept request header. e.g. Stanbol supports this.
           if(s.dataType){
-              var headerThroughUriParameters = "header_Accept=" + encodeURIComponent(s.dataType);
+              var headerThroughUriParameters = "header_Accept=" + encodeURIComponent(s.dataType) + "&header_Content-Type=text/plain";
               s.url = s.url + (s.url.indexOf("?") === -1 ? "?" : "&" ) + headerThroughUriParameters;
           }
           xdr.open( s.type, s.url );

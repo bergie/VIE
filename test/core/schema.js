@@ -2,7 +2,7 @@ module("vie.js - Schema.org Ontology");
 
 // Update these when Schema.org ontologies change
 var schemaOrgNumbers = {
-  types: 417,
+  types: 429,
   hospitalAttribs: 52
 };
 
@@ -22,8 +22,8 @@ test("Initialization", function() {
         baseNS : "http://schema.org/",
         success : function () {
             ok(true, "successfully loaded types!");
-            equal(z.types.list().length, schemaOrgNumbers.types);
-            
+            ok(z.types.list().length >= schemaOrgNumbers.types, "Check for a minimum number of Schema.org types.");
+
             //just pick some and test them:
             ok (z.types.get("Person"));
             ok (z.types.get("Corporation"));
