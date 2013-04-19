@@ -259,7 +259,11 @@ VIE.Util = {
             });
 
             _(entities).each(function(ent){
-                ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
+                var rdfType = ent["rdf:type"];
+                if(rdfType) {
+                    ent["@type"] = ent["@type"].concat(rdfType);
+                }
+
                 delete ent["rdf:type"];
                 _(ent).each(function(value, property){
                     if(value.length === 1){
@@ -271,18 +275,17 @@ VIE.Util = {
             console.warn("Something went wrong while parsing the returned results!", e);
             return [];
         }
-        try {
-            var vieEntities = [];
-            jQuery.each(entities, function() {
+        var vieEntities = [];
+        jQuery.each(entities, function() {
+            try {
                 var entityInstance = new service.vie.Entity(this);
-                entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+                entityInstance = service.vie.entities.addOrUpdate(entityInstance, {updateOptions: {validate: false}});
                 vieEntities.push(entityInstance);
-            });
-            return vieEntities;
-        } catch (e) {
-            console.warn("Something went wrong while creating VIE entities out of the returned results!", e);
-            return [];
-        }
+            } catch (e) {
+                console.warn("Something went wrong while creating VIE entities out of the returned results!", e, this, entityInstance);
+            }
+        });
+        return vieEntities;
     },
 
     /*
@@ -421,7 +424,10 @@ VIE.Util = {
         });
 
         _(jsonLD).each(function(ent){
-            ent["@type"] = ent["@type"].concat(ent[service.vie.namespaces.uri('rdf:type')]);
+            var rdfType = ent[service.vie.namespaces.uri('rdf:type')];
+            if(rdfType) {
+                ent["@type"] = ent["@type"].concat(rdfType);
+            }
             delete ent["rdf:type"];
             _(ent).each(function(value, property){
                 if(value.length === 1){
