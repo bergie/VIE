@@ -214,6 +214,11 @@ VIE.prototype.Entity = Backbone.Model.extend({
       return;
     }
     var types = this.get('@type');
+
+    if (!types) {
+        return true;
+    }
+
     if (_.isArray(types)) {
       var results = [];
       _.each(types, function (type) {
