@@ -135,7 +135,9 @@ test("VIE.js StanbolService - Analyze - Default", function () {
               }
           }
           ok(allEntities, "All result elements are VIE entities.");
-          var firstTextAnnotation = _(entities).filter(function(e){return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text");})[0];
+          var firstTextAnnotation = _(entities).filter(function(e){
+              return e.isof("enhancer:TextAnnotation") && e.get("enhancer:selected-text");
+          })[0];
           ok(firstTextAnnotation);
           if (firstTextAnnotation) {
             var s = firstTextAnnotation.get("enhancer:selected-text").toString();

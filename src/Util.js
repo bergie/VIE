@@ -267,7 +267,11 @@ VIE.Util = {
                     }
                 });
             });
-
+        } catch (e) {
+            console.warn("Something went wrong while parsing the returned results!", e);
+            return [];
+        }
+        try {
             var vieEntities = [];
             jQuery.each(entities, function() {
                 var entityInstance = new service.vie.Entity(this);
@@ -276,7 +280,7 @@ VIE.Util = {
             });
             return vieEntities;
         } catch (e) {
-            console.warn("Something went wrong while parsing the returned results!", e);
+            console.warn("Something went wrong while creating VIE entities out of the returned results!", e);
             return [];
         }
     },
@@ -387,9 +391,14 @@ VIE.Util = {
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     _rdf2EntitiesNoRdfQuery: function (service, results) {
         var jsonLD = [];
+        var entities = {};
         _.forEach(results, function(value, key) {
-            var entity = {};
-            entity['@subject'] = '<' + key + '>';
+
+            var entity = {
+                '@subject': '<' + key + '>',
+                '@context': service.vie.namespaces.toObj(true),
+                '@type': []
+            };
             _.forEach(value, function(triples, predicate) {
                 predicate = '<' + predicate + '>';
                 _.forEach(triples, function(triple) {
@@ -410,7 +419,29 @@ VIE.Util = {
             });
             jsonLD.push(entity);
         });
-        return jsonLD;
+
+        _(jsonLD).each(function(ent){
+            ent["@type"] = ent["@type"].concat(ent[service.vie.namespaces.uri('rdf:type')]);
+            delete ent["rdf:type"];
+            _(ent).each(function(value, property){
+                if(value.length === 1){
+                    ent[property] = value[0];
+                }
+            });
+        });
+
+        try {
+            var vieEntities = [];
+            jQuery.each(jsonLD, function() {
+                var entityInstance = new service.vie.Entity(this);
+                entityInstance = service.vie.entities.addOrUpdate(entityInstance);
+                vieEntities.push(entityInstance);
+            });
+            return vieEntities;
+        } catch (e) {
+            console.warn("Something went wrong while creating VIE entities out of the returned results!", e);
+            return [];
+        }
     },
 
 // ### VIE.Util.loadSchemaOrg(vie, SchemaOrg, baseNS)
