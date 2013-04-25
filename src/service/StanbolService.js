@@ -136,7 +136,7 @@ VIE.prototype.StanbolService.prototype = {
 // **Parameters**:
 // *{VIE.Analyzable}* **analyzable** The analyzable.
 // **Throws**:
-// *{Error}* if an invalid VIE.Findable is passed.
+// *{Error}* if an invalid VIE.Analyzable is passed.
 // **Returns**:
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.
 // **Example usage**:
