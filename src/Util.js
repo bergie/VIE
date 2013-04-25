@@ -279,7 +279,6 @@ VIE.Util = {
         jQuery.each(entities, function() {
             try {
                 var entityInstance = new service.vie.Entity(this);
-                entityInstance = service.vie.entities.addOrUpdate(entityInstance, {updateOptions: {validate: false}});
                 vieEntities.push(entityInstance);
             } catch (e) {
                 console.warn("Something went wrong while creating VIE entities out of the returned results!", e, this, entityInstance);
@@ -440,7 +439,6 @@ VIE.Util = {
             var vieEntities = [];
             jQuery.each(jsonLD, function() {
                 var entityInstance = new service.vie.Entity(this);
-                entityInstance = service.vie.entities.addOrUpdate(entityInstance);
                 vieEntities.push(entityInstance);
             });
             return vieEntities;
