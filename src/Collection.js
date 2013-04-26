@@ -30,7 +30,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             if (id.indexOf("bnode") === 2) {
                 //bnode!
                 id = id.replace("_:bnode", 'c');
-                return this._byCid[id];
+                return this._byId[id];
             } else {
                 return this._byId["<" + id + ">"];
             }
