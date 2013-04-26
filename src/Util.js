@@ -193,6 +193,7 @@ VIE.Util = {
             /* fallback if no rdfQuery has been loaded */
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
+        var entities = {};
         try {
             var rdf = (results instanceof jQuery.rdf)?
                     results.base(service.vie.namespaces.base()) :
@@ -212,7 +213,6 @@ VIE.Util = {
                 }
                 rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
             }
-            var entities = {};
             rdf.where('?subject ?property ?object').each(function() {
                 var subject = this.subject.toString();
                 if (!entities[subject]) {
@@ -259,11 +259,7 @@ VIE.Util = {
             });
 
             _(entities).each(function(ent){
-                var rdfType = ent["rdf:type"];
-                if(rdfType) {
-                    ent["@type"] = ent["@type"].concat(rdfType);
-                }
-
+                ent["@type"] = ent["@type"].concat(ent["rdf:type"]);
                 delete ent["rdf:type"];
                 _(ent).each(function(value, property){
                     if(value.length === 1){
@@ -393,14 +389,9 @@ VIE.Util = {
 // *{[VIE.Entity]}* : An array, containing VIE.Entity instances which have been transformed from the given data.
     _rdf2EntitiesNoRdfQuery: function (service, results) {
         var jsonLD = [];
-        var entities = {};
         _.forEach(results, function(value, key) {
-
-            var entity = {
-                '@subject': '<' + key + '>',
-                '@context': service.vie.namespaces.toObj(true),
-                '@type': []
-            };
+            var entity = {};
+            entity['@subject'] = '<' + key + '>';
             _.forEach(value, function(triples, predicate) {
                 predicate = '<' + predicate + '>';
                 _.forEach(triples, function(triple) {
@@ -421,31 +412,7 @@ VIE.Util = {
             });
             jsonLD.push(entity);
         });
-
-        _(jsonLD).each(function(ent){
-            var rdfType = ent[service.vie.namespaces.uri('rdf:type')];
-            if(rdfType) {
-                ent["@type"] = ent["@type"].concat(rdfType);
-            }
-            delete ent["rdf:type"];
-            _(ent).each(function(value, property){
-                if(value.length === 1){
-                    ent[property] = value[0];
-                }
-            });
-        });
-
-        try {
-            var vieEntities = [];
-            jQuery.each(jsonLD, function() {
-                var entityInstance = new service.vie.Entity(this);
-                vieEntities.push(entityInstance);
-            });
-            return vieEntities;
-        } catch (e) {
-            console.warn("Something went wrong while creating VIE entities out of the returned results!", e);
-            return [];
-        }
+        return jsonLD;
     },
 
 // ### VIE.Util.loadSchemaOrg(vie, SchemaOrg, baseNS)
