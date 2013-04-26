@@ -159,6 +159,7 @@ VIE.prototype.StanbolService.prototype = {
             var success = function (results) {
                 _.defer(function(){
                     var entities = VIE.Util.rdf2Entities(service, results);
+                    service.vie.entities.addOrUpdate(entities);
                     analyzable.resolve(entities);
                 });
             };
