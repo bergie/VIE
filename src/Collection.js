@@ -35,6 +35,9 @@ VIE.prototype.Collection = Backbone.Collection.extend({
                 return this._byId["<" + id + ">"];
             }
         } else {
+            if (this._byId[id]) {
+              return this._byId[id];
+            }
             id = this.toReference(id);
             return this._byId[id];
         }

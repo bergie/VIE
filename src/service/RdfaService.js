@@ -485,10 +485,6 @@ VIE.prototype.RdfaService.prototype = {
         });
 
         if (!subject) {
-            if (matched === element) {
-                // Workaround for https://github.com/assaf/zombie/issues/235
-                return service.getElementSubject(jQuery(element).parent());
-            }
             return undefined;
         }
 
