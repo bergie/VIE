@@ -389,7 +389,7 @@ VIE.prototype.loadSchema = function(url, options) {
         .error(function(data, textStatus, jqXHR) {
             if (options.error) {
                 console.warn(data, textStatus, jqXHR);
-                options.error.call(vie, "Could not load schema from URL (" + url + ")");
+                options.error.call(vie, "Could not load schema from URL (" + url + "): " + textStatus);
             }
          });
     }
@@ -447,7 +447,7 @@ if (typeof exports === 'object') {
     }
     if (!Backbone) {
         Backbone = require('backbone');
-        Backbone.setDomLibrary(jQuery);
+        Backbone.$ = jQuery;
     }
     if (!_) {
         _ = require('underscore')._;

@@ -131,6 +131,16 @@ VIE.prototype.Entity = Backbone.Model.extend({
       obj[attrs] = options;
       return this.set(obj, opts);
     }
+
+    // VIE's type system is more strict than default Backbone. Unless validation is
+    // explicitly disabled, we should always validate on set
+    if (!options) {
+      options = {};
+    }
+    if (options.validate !== false && options.silent !== true) {
+      options.validate = true;
+    }
+
     // **`.set(entity)`**: In case you'd pass a VIE entity,
     // the passed entities attributes are being set for the entity.
     if (attrs.attributes) {
@@ -214,11 +224,9 @@ VIE.prototype.Entity = Backbone.Model.extend({
       return;
     }
     var types = this.get('@type');
-
     if (!types) {
-        return true;
+      return;
     }
-
     if (_.isArray(types)) {
       var results = [];
       _.each(types, function (type) {
@@ -265,7 +273,7 @@ VIE.prototype.Entity = Backbone.Model.extend({
 
     // Check the number of items in attr against max
     var checkMax = function (definition, attrs) {
-      if (!attrs[definition.id]) {
+      if (!attrs || !attrs[definition.id]) {
         return;
       }
 
@@ -474,7 +482,7 @@ VIE.prototype.Entity = Backbone.Model.extend({
         throw new Error("you cannot add a literal to a collection of entities!");
       }
       this.trigger('change:' + attr, this, value, {});
-      this.change({});
+      //this.change({});
     } else if (_.isArray(existing)) {
       if (value.isCollection) {
         value.each(function (v) {

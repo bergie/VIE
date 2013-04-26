@@ -1,16 +1,10 @@
 language: node_js
 node_js:
-  - 0.6
   - 0.8
-
-before_script:
-  - sudo apt-get install -y ant
-  - ant
+  - 0.10
 
 script:
-  - ./node_modules/.bin/jshint src/
   - npm test
-  - phantomjs test/qunit/run.js test/index.html
 
 notifications:
   irc: "irc.freenode.org#iks"

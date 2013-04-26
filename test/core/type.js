@@ -179,7 +179,7 @@ test("VIE - Instantiation of types", function() {
     equal(type2Instance.get("attr0"), "This is a test.");
     
     raises(function () {
-    	tt1.instance({"attr1" : "This should fail."});
+      tt1.instance({"attr1" : "This should fail."});
     });
     
 });
@@ -266,9 +266,9 @@ test("VIE - Type form schema generation", function () {
 
     // Generate a Backbone Form schema for the entity
     var schema = VIE.Util.getFormSchema(entity);
-    ok(schema['published']);
-    equal(schema['published']['type'], 'DateTime');
-    var author = new schema['author']['model'];
+    ok(schema.published);
+    equal(schema.published.type, 'DateTime');
+    author = new schema.author.model();
     ok(author.isEntity);
 });
 
@@ -295,16 +295,21 @@ test("VIE - Type based validation", function () {
     ok(entity);
 
     // Check validation of required properties
-    equal(entity.isValid(), false);
     var results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 2);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 2);
+    }
 
     // Ensure that minimum checks also affect empty values
     entity.set('title', '');
-    var results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 2);
+    results = entity.validate(entity.attributes);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 2);
+    }
     equal(entity.has('title'), false);
 
     // Make the model valid again by setting the required fields
@@ -312,23 +317,12 @@ test("VIE - Type based validation", function () {
       'title': 'Hello, world',
       'author': '<foo>'
     });
-    ok(entity.isValid());
+    equal(entity.validate(entity.attributes), undefined);
 
     // Check validation of max number of items
     entity.set('content', ['one', 'two']);
     // Plain set should not work as the model is not valid
     equal(entity.has('content'), false);
-
-    // Check validation error callback
-    stop();
-    entity.set('content', ['one', 'two'], {
-      error: function (ent, res) {
-          equal(ent, entity, 'Validation errors should return correct entity');
-          ok(_.isArray(res));
-          equal(res.length, 1);
-          start();
-      }
-    });
 
     // Check validation error event
     stop();
@@ -336,10 +330,10 @@ test("VIE - Type based validation", function () {
         equal(ent, entity, 'Validation errors should return correct entity');
         ok(_.isArray(res));
         equal(res.length, 1);
-        entity.off('error', checkError);
+        entity.off('invalid', checkError);
         start();
     };
-    entity.on('error', checkError);
+    entity.on('invalid', checkError);
     entity.set('content', ['one', 'two']);
 
     // Set invalid data without validation
@@ -347,8 +341,10 @@ test("VIE - Type based validation", function () {
       silent: true 
     });
     equal(entity.has('content'), true);
-    equal(entity.isValid(), false);
-    var results = entity.validate(entity.attributes);
-    ok(_.isArray(results));
-    equal(results.length, 1);
+    results = entity.validate(entity.attributes);
+    ok(results);
+    if (results !== undefined) {
+      ok(_.isArray(results));
+      equal(results.length, 1);
+    }
 });

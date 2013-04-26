@@ -1,5 +1,5 @@
 var jQuery = require('jquery');
-var vie = require('../../dist/vie-latest.debug.js');
+var vie = require('../../dist/vie.js');
 
 exports['test annotations'] = function(test) {
     var html = jQuery('<p>This is a small test, where Steve Jobs sings a song.</p>');

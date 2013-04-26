@@ -386,6 +386,9 @@ VIE.prototype.RdfaService.prototype = {
 
     // Return a template-generating function for given element
     getElementTemplate: function (element) {
+        if (_.isString(element)) {
+          element = jQuery.trim(element);
+        }
         var service = this;
         return function (entity, callback) {
             var newElement = jQuery(element).clone(false);
@@ -428,7 +431,7 @@ VIE.prototype.RdfaService.prototype = {
         var type;
         if (jQuery(element).attr('typeof') !== this.options.attributeExistenceComparator) {
             type = jQuery(element).attr('typeof');
-            if (type.indexOf("://") !== -1) {
+            if (type && type.indexOf("://") !== -1) {
                 return "<" + type + ">";
             } else {
                 return type;
@@ -482,10 +485,6 @@ VIE.prototype.RdfaService.prototype = {
         });
 
         if (!subject) {
-            if (matched === element) {
-                // Workaround for https://github.com/assaf/zombie/issues/235
-                return service.getElementSubject(jQuery(element).parent());
-            }
             return undefined;
         }
 

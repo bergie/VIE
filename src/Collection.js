@@ -30,11 +30,14 @@ VIE.prototype.Collection = Backbone.Collection.extend({
             if (id.indexOf("bnode") === 2) {
                 //bnode!
                 id = id.replace("_:bnode", 'c');
-                return this._byCid[id];
+                return this._byId[id];
             } else {
                 return this._byId["<" + id + ">"];
             }
         } else {
+            if (this._byId[id]) {
+              return this._byId[id];
+            }
             id = this.toReference(id);
             return this._byId[id];
         }
@@ -71,8 +74,8 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         if (model.id && this.get(model.id)) {
             existing = this.get(model.id);
         }
-        if (this.getByCid(model.cid)) {
-            existing = this.getByCid(model.cid);
+        if (this.get(model.cid)) {
+            existing = this.get(model.cid);
         }
         if (existing) {
             var newAttribs = {};

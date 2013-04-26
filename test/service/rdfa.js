@@ -2,7 +2,7 @@ module("vie.js - RDFa Service");
 
 test("Test simple RDFa parsing", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-simple div');
 
@@ -22,7 +22,7 @@ test("Test simple RDFa parsing", function() {
 
 test("Test updating RDFa views", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-updating div');
     
@@ -48,7 +48,7 @@ test("Test updating RDFa views", function() {
 
 test("Test simple RDFa nested tags", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-nested div');
 
@@ -62,7 +62,7 @@ test("Test simple RDFa nested tags", function() {
 
 test("Test RDFa property content", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-property-content div');
 
@@ -82,7 +82,7 @@ test("Test RDFa property content", function() {
 
 test("Test RDFa example from Wikipedia", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-wikipedia p');
 
@@ -108,9 +108,8 @@ test("Test RDFa image entitization", function() {
     stop();
     
     z.load({element: html}).from('rdfa').execute().done(function(entities) {
-    	var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
+      var icons = z.entities.get('<http://example.net/blog/news_item>').get('mgd:icon');
         // Ensure we have the image correctly read
-    	
         ok(icons instanceof z.Collection, "Icons should be a collection");
         if (!icons) {
             start();
@@ -136,7 +135,7 @@ test("Test RDFa image entitization", function() {
 
 test("Test collection reset with RDFa", function() {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-collection-reset');
 
@@ -187,7 +186,7 @@ test("Test collection reset with RDFa", function() {
 
 test("Test type-specific collection RDFa templates", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-collection-twotemplates');
 
@@ -241,7 +240,7 @@ test("Test type-specific collection RDFa templates", function () {
 
 test("Test collection with custom RDFa template", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-collection-scripttemplate');
 
@@ -282,7 +281,7 @@ test("Test collection with custom RDFa template", function () {
 
 test("Test collection with custom RDFa template function", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-collection-scripttemplate2');
 
@@ -307,7 +306,7 @@ test("Test collection with custom RDFa template function", function () {
         z.service('rdfa').setTemplate('second', 'section', function (entity, callback, collectionView) {
             ok(collectionView instanceof z.view.Collection);
             window.setTimeout(function () {
-                callback(jQuery(jQuery('.template', html).html()).clone(false));
+                callback(jQuery(jQuery.trim(jQuery('.template', html).html())).clone(false));
             }, 0);
         });
 
@@ -331,7 +330,7 @@ test("Test collection with custom RDFa template function", function () {
 
 test("Test direct RDFa collection", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-collection-twotemplates');
 
@@ -373,7 +372,7 @@ test("Test direct RDFa collection", function () {
 
 test("Test RDFa datatype parsing", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-datatypes');
 
@@ -409,7 +408,7 @@ test("Test RDFa datatype parsing", function () {
 
 test("Test multiple RDFa instances of same entity", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-twoinstances');
 
@@ -423,17 +422,14 @@ test("Test multiple RDFa instances of same entity", function () {
         // Change one value, now changes should be recorded
         entity.set('dcterms:description', 'Baz');
         equal(entity.get('<http://purl.org/dc/terms/description>'), 'Baz');
-        // Since the change has already been propagated to the view, we should
-        // have no changed attributes remaining
-        equal(entity.changedAttributes(), false);
-        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), false);
+        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), true);
         start();
     });
 });
 
 test("Test anonymous relation", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-anonrelation');
 
@@ -453,7 +449,7 @@ test("Test anonymous relation", function () {
 
 test("Test deep relations", function () {
     var z = new VIE();
-    z.use(new z.RdfaService);
+    z.use(new z.RdfaService());
 
     var html = jQuery('#qunit-fixture .rdfa-deeprelation');
 
