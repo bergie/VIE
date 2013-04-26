@@ -105,7 +105,7 @@ exports['test global entity'] = function(test) {
 
     var html = jQuery('<html><head><title>Jo\'s Blog</title></head><body><h1><span property="dc:creator">Jo</span>\'s blog</h1><p>Welcome to my blog.</p></body></html>');
 
-   var jsonldEntities = VIE.RDFa.readEntities(html);
+    jsonldEntities = VIE.RDFa.readEntities(html);
     
     // We should find the dc:creator from this. Unfortunately there is no subject as this isn't on browser
     test.equal(jsonldEntities.length, 1);
@@ -135,6 +135,7 @@ exports['test about and anonymous'] = function(test) {
     test.equal(jsonldEntities.length, 2);
     test.equal(jsonldEntities[0]['@type'][0], '<http://www.w3.org/2002/12/cal#Vevent>');
     test.equal(jsonldEntities[0]['@subject'], '<#bbq>');
+    test.ok(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>']);
     test.equal(jsonldEntities[0]['<http://www.w3.org/2002/12/cal#dtstart>'].toISOString(), new Date('2007-09-16T16:00:00-05:00').toISOString());
     
     var objectInstance = VIE.EntityManager.getByJSONLD(jsonldEntities[0]);

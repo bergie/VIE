@@ -286,7 +286,7 @@ test("VIE.js StanbolService - Find - Default", function () {
     if (navigator.userAgent === 'Zombie') {
        return;
     } 
-    var term = "European Union";
+    var term = "München";
     var limit = 10;
     var offset = 0;
     var z = new VIE();

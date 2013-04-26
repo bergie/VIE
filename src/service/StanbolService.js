@@ -205,10 +205,9 @@ VIE.prototype.StanbolService.prototype = {
         var service = this;
         /* The term to find, * as wildcard allowed */
         if (!findable.options.term) {
-            console.info("StanbolConnector: No term to look for!");
             findable.reject([]);
         }
-        var term = escape(findable.options.term);
+        var term = findable.options.term;
         var limit = (typeof findable.options.limit === "undefined") ? 20 : findable.options.limit;
         var offset = (typeof findable.options.offset === "undefined") ? 0 : findable.options.offset;
         var success = function (results) {
@@ -576,9 +575,9 @@ VIE.prototype.StanbolConnector.prototype = {
 
                 var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
                 if (isLocal) {
-                    u += "/entity?id=" + escape(opts.uri);
+                    u += "/entity?id=" + encodeURIComponent(opts.uri);
                 } else {
-                    u += "/site" + site + "/entity?id=" + escape(opts.uri);
+                    u += "/site" + site + "/entity?id=" + encodeURIComponent(opts.uri);
                 }
                 return u;
             },
@@ -686,12 +685,18 @@ VIE.prototype.StanbolConnector.prototype = {
     },
 
     _find : function (url, args, success, error) {
+        var fields={
+            "name": args.term,
+            "limit": args.limit,
+            "offset": args.offset
+        };
+        console.info('find query', fields);
         jQuery.ajax({
             success: success,
             error: error,
             url: url,
             type: "POST",
-            data: "name=" + args.term + "&limit=" + args.limit + "&offset=" + args.offset,
+            data: jQuery.param(fields),
             dataType: args.format,
             contentType : "application/x-www-form-urlencoded",
             accepts: {"application/rdf+json": "application/rdf+json"}
@@ -752,7 +757,7 @@ VIE.prototype.StanbolConnector.prototype = {
             url : function (idx, opts) {
 
                  var u = this.options.url[idx].replace(/\/$/, '') + this.options.entityhub.urlPostfix;
-                 u += "/lookup?id=" + escape(opts.uri) + "&create=" + opts.create;
+                 u += "/lookup?id=" + encodeURIComponent(opts.uri) + "&create=" + opts.create;
                  return u;
             },
             args : {
@@ -1113,7 +1118,7 @@ VIE.prototype.StanbolConnector.prototype = {
                   var u = this.options.url[idx].replace(/\/$/, '');
                   u += this.options.factstore.urlPostfix.replace(/\/$/, '');
 
-                  u += "/facts/" + escape(opts.url);
+                  u += "/facts/" + encodeURIComponent(opts.url);
 
                   return u;
                 },
