@@ -305,8 +305,8 @@ VIE.Util = {
               best candidate with the first preferred language
               and first preferred property
               */
-              var labelLang, value;
-              var score = p = l = 0;
+              var labelLang, value, p, score, l;
+              score = p = l = 0;
               labelLang = label["@language"];
               /*
                                       legacy code for compatibility with uotdated stanbol,
