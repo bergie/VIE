@@ -139,7 +139,7 @@ Here is a simple Node.js script that uses VIE for parsing RDFa:
 
 ## Development
 
-VIE development is coordinated using Git. [VIE@IKS](https://github.com/IKS/VIE) is the canonical "blessed repository", with actual development happening at [VIE@bergie](https://github.com/bergie/VIE).
+VIE development is coordinated using Git at [bergie/VIE](https://github.com/bergie/VIE).
 
 Feel free to [report issues](https://github.com/bergie/VIE/issues) or send [pull requests](http://help.github.com/pull-requests/) if you have ideas for pushing VIE forward. Contributions that include their own unit tests appreciated! 
 
