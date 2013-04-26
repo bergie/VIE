@@ -153,11 +153,17 @@ VIE source code is inside the `src` directory. Each separate unit of functionali
 
 ### Building VIE
 
-The VIE library consists of many individual pieces that we merge together in the build process. You'll need [Apache Ant](http://ant.apache.org/). Then just run:
+The VIE library consists of many individual pieces that we merge together in the build process. You'll need [Grunt](http://gruntjs.com). Then just run:
 
-    $ ant
+    $ grunt build
 
 The built VIE library will appear in the `dist` folder.
+
+#### Core-only distribution
+
+In addition to the regular full build, there is also a slimmer build of VIE available that only includes the core parts of the library and no external service. To build that instead, run:
+
+    $ grunt build:core
 
 ### Running Unit Tests
 
@@ -165,9 +171,12 @@ Direct your browser to the `test/index.html` file to run VIE's [QUnit](http://do
 
 #### Unit tests on Node.js
 
-You need Node.js and [NPM](http://npmjs.org/). Then just run:
+The Grunt testing setup includes multiple parts. With it, you can test the library on both Node.js and a headless browser. Run:
 
-    $ npm install --dev
+    $ grunt test
+
+or:
+
     $ npm test
 
 #### Continuous integration

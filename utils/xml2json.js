@@ -28,7 +28,7 @@ xml2json={
 		return y
 	},
 	xml_to_object:function(xmlcode){
-		var x=xmlcode.replace(/<\//g,"ยง");
+		var x=xmlcode.replace(/<\//g,"ง");
 		x=x.split("<");
 		var y=[];
 		var level=0;
@@ -37,8 +37,8 @@ xml2json={
 			var tagname=x[i].split(">")[0];
 			opentags.push(tagname);
 			level++
-			y.push(level+"<"+x[i].split("ยง")[0]);
-			while(x[i].indexOf("ยง"+opentags[opentags.length-1]+">")>=0){level--;opentags.pop()}
+			y.push(level+"<"+x[i].split("ง")[0]);
+			while(x[i].indexOf("ง"+opentags[opentags.length-1]+">")>=0){level--;opentags.pop()}
 		};
 		var oldniva=-1;
 		var objname="this.xmlobject";

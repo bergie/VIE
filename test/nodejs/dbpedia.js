@@ -1,4 +1,4 @@
-var vie = require('../../dist/vie-latest.debug.js');
+var vie = require('../../dist/vie.js');
 
 exports['test loading Salzburg'] = function(test) {
     var VIE = new vie.VIE();

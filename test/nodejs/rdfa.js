@@ -1,5 +1,5 @@
 var jQuery = require('jquery');
-var vie = require('../../dist/vie-latest.debug.js');
+var vie = require('../../dist/vie.js');
 var VIE = new vie.VIE({classic: true});
 VIE.use(new VIE.RdfaService({attributeExistenceComparator: ''}), 'rdfa');
 VIE.namespaces.add('dc', 'http://purl.org/dc/elements/1.1/');
