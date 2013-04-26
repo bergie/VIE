@@ -422,10 +422,7 @@ test("Test multiple RDFa instances of same entity", function () {
         // Change one value, now changes should be recorded
         entity.set('dcterms:description', 'Baz');
         equal(entity.get('<http://purl.org/dc/terms/description>'), 'Baz');
-        // Since the change has already been propagated to the view, we should
-        // have no changed attributes remaining
-        equal(entity.changedAttributes(), false);
-        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), false);
+        equal(entity.hasChanged('<http://purl.org/dc/terms/description>'), true);
         start();
     });
 });
