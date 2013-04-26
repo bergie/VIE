@@ -19,7 +19,7 @@
   "dependencies"  : {
     "backbone"  : "0.9.2",
     "underscore": ">=1.2.0",
-    "jquery"    : "1.7.x",
+    "jquery"    : "1.8.x",
     "request"   : ">=2.2.0"
   },
   "devDependencies": {
