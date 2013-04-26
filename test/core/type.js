@@ -324,27 +324,16 @@ test("VIE - Type based validation", function () {
     // Plain set should not work as the model is not valid
     equal(entity.has('content'), false);
 
-    // Check validation error callback
-    stop();
-    entity.set('content', ['one', 'two'], {
-      error: function (ent, res) {
-          equal(ent, entity, 'Validation errors should return correct entity');
-          ok(_.isArray(res));
-          equal(res.length, 1);
-          start();
-      }
-    });
-
     // Check validation error event
     stop();
     var checkError = function (ent, res) {
         equal(ent, entity, 'Validation errors should return correct entity');
         ok(_.isArray(res));
         equal(res.length, 1);
-        entity.off('error', checkError);
+        entity.off('invalid', checkError);
         start();
     };
-    entity.on('error', checkError);
+    entity.on('invalid', checkError);
     entity.set('content', ['one', 'two']);
 
     // Set invalid data without validation
