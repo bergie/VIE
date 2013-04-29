@@ -193,6 +193,7 @@ VIE.Util = {
             /* fallback if no rdfQuery has been loaded */
             return VIE.Util._rdf2EntitiesNoRdfQuery(service, results);
         }
+        var entities = {};
         try {
             var rdf = (results instanceof jQuery.rdf)?
                     results.base(service.vie.namespaces.base()) :
@@ -212,7 +213,6 @@ VIE.Util = {
                 }
                 rdf = rdf.reason(rules, 10); /* execute the rules only 10 times to avoid looping */
             }
-            var entities = {};
             rdf.where('?subject ?property ?object').each(function() {
                 var subject = this.subject.toString();
                 if (!entities[subject]) {
@@ -267,18 +267,20 @@ VIE.Util = {
                     }
                 });
             });
-
-            var vieEntities = [];
-            jQuery.each(entities, function() {
-                var entityInstance = new service.vie.Entity(this);
-                entityInstance = service.vie.entities.addOrUpdate(entityInstance);
-                vieEntities.push(entityInstance);
-            });
-            return vieEntities;
         } catch (e) {
             console.warn("Something went wrong while parsing the returned results!", e);
             return [];
         }
+        var vieEntities = [];
+        jQuery.each(entities, function() {
+            try {
+                var entityInstance = new service.vie.Entity(this);
+                vieEntities.push(entityInstance);
+            } catch (e) {
+                console.warn("Something went wrong while creating VIE entities out of the returned results!", e, this, entityInstance);
+            }
+        });
+        return vieEntities;
     },
 
     /*

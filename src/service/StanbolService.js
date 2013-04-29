@@ -136,7 +136,7 @@ VIE.prototype.StanbolService.prototype = {
 // **Parameters**:
 // *{VIE.Analyzable}* **analyzable** The analyzable.
 // **Throws**:
-// *{Error}* if an invalid VIE.Findable is passed.
+// *{Error}* if an invalid VIE.Analyzable is passed.
 // **Returns**:
 // *{VIE.StanbolService}* : The VIE.StanbolService instance itself.
 // **Example usage**:
@@ -159,6 +159,7 @@ VIE.prototype.StanbolService.prototype = {
             var success = function (results) {
                 _.defer(function(){
                     var entities = VIE.Util.rdf2Entities(service, results);
+                    service.vie.entities.addOrUpdate(entities);
                     analyzable.resolve(entities);
                 });
             };
@@ -270,6 +271,9 @@ VIE.prototype.StanbolService.prototype = {
         var success = function (results) {
             _.defer(function(){
                 var entities = VIE.Util.rdf2Entities(service, results);
+                _.each(entities, function(vieEntity) {
+                    service.vie.entities.addOrUpdate(vieEntity);
+                });
                 loadable.resolve(entities);
             });
         };
