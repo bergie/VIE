@@ -11,6 +11,44 @@
 // The here-listed methods are utility methods for the day-to-day
 // VIE.js usage. All methods are within the static namespace ```VIE.Util```.
 VIE.Util = {
+  isReference: function(uri){
+    var matcher = new RegExp("^\\<([^\\>]*)\\>$");
+    if (matcher.exec(uri)) {
+      return true;
+    }
+    return false;
+  },
+
+  toReference: function(uri, ns) {
+    if (_.isArray(uri)) {
+      return _.map(uri, function(part) {
+       return this.toReference(part);
+      }, this);
+    }
+    if (!_.isString(uri)) {
+      return uri;
+    }
+    var ret = uri;
+    if (uri.substring(0, 2) === "_:") {
+      ret = uri;
+    } else if (ns && ns.isCurie(uri)) {
+      ret = ns.uri(uri);
+      if (ret === "<" + ns.base() + uri + ">") {
+        // no base namespace extension with IDs
+        ret = '<' + uri + '>';
+      }
+    } else if (ns && !ns.isUri(uri)) {
+      ret = '<' + uri + '>';
+    }
+    return ret;
+  },
+
+  fromReference: function(uri, ns) {
+    if (ns && !ns.isUri(uri)) {
+      return uri;
+    }
+    return uri.substring(1, uri.length - 1);
+  },
 
 // ### VIE.Util.toCurie(uri, safe, namespaces)
 // This method converts a given
