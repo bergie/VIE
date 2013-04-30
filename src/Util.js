@@ -306,7 +306,7 @@ VIE.Util = {
                 });
             });
         } catch (e) {
-            console.warn("Something went wrong while parsing the returned results!", e);
+            // console.warn("Something went wrong while parsing the returned results!", e);
             return [];
         }
         var vieEntities = [];
@@ -315,7 +315,7 @@ VIE.Util = {
                 var entityInstance = new service.vie.Entity(this);
                 vieEntities.push(entityInstance);
             } catch (e) {
-                console.warn("Something went wrong while creating VIE entities out of the returned results!", e, this, entityInstance);
+                // console.warn("Something went wrong while creating VIE entities out of the returned results!", e, this, entityInstance);
             }
         });
         return vieEntities;

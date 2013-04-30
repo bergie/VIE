@@ -388,7 +388,7 @@ VIE.prototype.loadSchema = function(url, options) {
          })
         .error(function(data, textStatus, jqXHR) {
             if (options.error) {
-                console.warn(data, textStatus, jqXHR);
+                // console.warn(data, textStatus, jqXHR);
                 options.error.call(vie, "Could not load schema from URL (" + url + "): " + textStatus);
             }
          });

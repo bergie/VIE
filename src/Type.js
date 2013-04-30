@@ -11,12 +11,6 @@
 // Within VIE, we provide special capabilities of handling types of entites. This helps
 // for example to query easily for certain entities (e.g., you only need to query for *Person*s
 // and not for all subtypes).
-if (VIE.prototype.Type) {
-    throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
-}
-if (VIE.prototype.Types) {
-    throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
-}
 
 // ### VIE.Type(id, attrs, metadata)
 // This is the constructor of a VIE.Type.
@@ -388,7 +382,6 @@ VIE.prototype.Types = function () {
             return this;
         }
         if (!t || t.subsumes("owl:Thing")) {
-            console.warn("You are not allowed to remove 'owl:Thing'.");
             return this;
         }
         delete this._types[t.id];

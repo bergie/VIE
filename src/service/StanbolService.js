@@ -174,7 +174,6 @@ VIE.prototype.StanbolService.prototype = {
             this.connector.analyze(text, success, error, options);
 
         } else {
-            console.warn("No text found in element.");
             analyzable.resolve([]);
         }
 
@@ -265,7 +264,6 @@ VIE.prototype.StanbolService.prototype = {
 
         var entity = loadable.options.entity;
         if (!entity){
-            console.warn("StanbolConnector: No entity to look for!");
             loadable.resolve([]);
         }
         var success = function (results) {
@@ -309,7 +307,6 @@ VIE.prototype.StanbolService.prototype = {
 
          var entity = savable.options.entity;
          if (!entity){
-             console.warn("StanbolConnector: No entity to save!");
              savable.reject("StanbolConnector: No entity to save!");
          }
          var success = function (results) {
@@ -443,7 +440,6 @@ VIE.prototype.StanbolConnector.prototype = {
              * multiple URLs have been registered
              */
             return function () {
-                console.log("Stanbol connection error", arguments);
                 p.urlIndex = p.urlIndex+1;
                 c._iterate(p);
             };
@@ -694,7 +690,6 @@ VIE.prototype.StanbolConnector.prototype = {
             "limit": args.limit,
             "offset": args.offset
         };
-        console.info('find query', fields);
         jQuery.ajax({
             success: success,
             error: error,
