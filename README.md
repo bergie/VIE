@@ -179,6 +179,12 @@ or:
 
     $ npm test
 
+#### Automatic unit tests
+
+You can also run the Grunt setup in *watch mode*, where any change in VIE sources or tests will trigger a rebuild and test run:
+
+    $ grunt watch
+
 #### Continuous integration
 
 VIE uses [Travis](http://travis-ci.org/) for continuous integration. Simply add your fork there and every time you push you'll get the tests run.

@@ -70,6 +70,15 @@ See http://viejs.org for more information
     nodeunit:
       all: ['test/nodejs/*.js']
 
+    # Automated recompilation and testing when developing
+    watch:
+      files: [
+        'test/**/*.js'
+        'src/*.js'
+        'src/**/*.js'
+      ]
+      tasks: ['test']
+
   # Build dependencies
   @loadNpmTasks 'grunt-contrib-concat'
   @loadNpmTasks 'grunt-contrib-uglify'
@@ -78,6 +87,7 @@ See http://viejs.org for more information
   @loadNpmTasks 'grunt-contrib-jshint'
   @loadNpmTasks 'grunt-contrib-qunit'
   @loadNpmTasks 'grunt-contrib-nodeunit'
+  @loadNpmTasks 'grunt-contrib-watch'
 
   # Local tasks
   @registerTask 'build', (target = 'full') =>
