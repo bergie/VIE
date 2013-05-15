@@ -13,7 +13,7 @@ See http://viejs.org for more information
       options:
         stripBanners: true
         banner: "#{banner}(function () {"
-        footer: "})();"
+        footer: "})(this);"
       full:
         src: [
           'src/VIE.js'
