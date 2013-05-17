@@ -381,6 +381,9 @@ VIE.prototype.Entity = Backbone.Model.extend({
           return instance.getSubject();
         });
       }
+      if (entityValue instanceof this.vie.Type) {
+        entityValue = entityValue.toString();
+      }
 
       instanceLD[name] = entityValue;
     }, this);
