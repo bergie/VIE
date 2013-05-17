@@ -2,19 +2,22 @@ module("Core - Entity");
 
 test('toJSONLD export to JSON', function() {
     var z = new VIE();
+    z.namespaces.add('example', 'http://example.net/foo/');
+    z.namespaces.add("foaf", "http://xmlns.com/foaf/0.1/");
+
+    var person = z.types.add("foaf:Person").inherit(z.types.get('owl:Thing'));
+    var musician = z.types.add("example:Musician").inherit(z.types.get('owl:Thing'));
 
     z.entities.add({
-        '@subject': 'http://example.net/foo',
-        'dc:title': 'Bar'
+        '@subject': 'http://example.net/Madonna',
+        '@type': ['foaf:Person', 'example:Musician']
     });
 
-    var model = z.entities.get('http://example.net/foo');
+    var model = z.entities.get('http://example.net/Madonna');
 
-    var jsonLd = model.toJSONLD();
-    var exportedJson = JSON.stringify(jsonLd);
-
+    var exportedJson = JSON.stringify(model.toJSONLD());
     var parsedJson = JSON.parse(exportedJson);
 
-    equal(parsedJson['@subject'], '<http://example.net/foo>');
-    equal(parsedJson['@type'], '<http://www.w3.org/2002/07/owl#Thing>');
+    equal(parsedJson['@subject'], '<http://example.net/Madonna>');
+    deepEqual(parsedJson['@type'], ['<http://xmlns.com/foaf/0.1/Person>', '<http://example.net/foo/Musician>']);
 });

@@ -70,7 +70,7 @@ VIE.prototype.Entity = Backbone.Model.extend({
       if (v !== undefined && attr === '@type') {
         // Reference to a type. Return actual type instance
         if (!this.vie.types.get(v)) {
-          // if there is no such type -> add it and let it inherit from 
+          // if there is no such type -> add it and let it inherit from
           // "owl:Thing"
           this.vie.types.add(v).inherit("owl:Thing");
         }
@@ -381,8 +381,12 @@ VIE.prototype.Entity = Backbone.Model.extend({
           return instance.getSubject();
         });
       }
-      if (entityValue instanceof this.vie.Type) {
-        entityValue = entityValue.toString();
+      if (name === '@type') {
+        if (_.isArray(entityValue)) {
+          entityValue = _.map(entityValue, function(type) { return type.toString(); });
+        } else {
+          entityValue = entityValue.toString();
+        }
       }
 
       instanceLD[name] = entityValue;
