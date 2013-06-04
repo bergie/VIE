@@ -116,7 +116,7 @@ VIE.prototype.Type = function (id, attrs, metadata) {
 //     console.log(person.isof("owl:Thing"));
 //     // <-- true
     this.isof = function (type) {
-        type = this.vie.types.get(type);
+        type = (this.vie.types.get(type)) ? this.vie.types.get(type) : new this.vie.Type(type);
         if (type) {
             return type.subsumes(this.id);
         } else {

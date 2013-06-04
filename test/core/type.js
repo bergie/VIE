@@ -85,6 +85,7 @@ test("VIE - Creation/Extension/Removal of types", function() {
     var persony = v.types.add("TestPersony").inherit("TestThingy");
     ok(persony);
     ok(persony.isof(thingy));
+    equal(persony.isof('dbpedia:nonsensetype'), false);
     ok(thingy.subsumes(persony));
     
     ok (thingy.hierarchy());
