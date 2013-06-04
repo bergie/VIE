@@ -134,7 +134,6 @@ VIE.prototype.ZemantaService.prototype = {
             this.connector.analyze(text, success, error, options);
 
         } else {
-            console.warn("No text found in element.");
             analyzable.resolve([]);
         }
 
@@ -211,7 +210,6 @@ VIE.prototype.ZemantaConnector.prototype = {
              * multiple URLs have been registered
              */
             return function () {
-                console.log("Zemanta connection error", arguments);
                 p.urlIndex = p.urlIndex+1;
                 c._iterate(p);
             };

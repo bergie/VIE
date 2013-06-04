@@ -36,7 +36,6 @@ if ( root.XDomainRequest ) {
           // XDR cannot differentiate between errors,
           // we call every error 404. Could be changed to another one.
           xdr.onerror = function(e) {
-              console.error(JSON.stringify(e));
             callback( 404, "Not Found" );
           };
           if ( s.xdrTimeout ) {

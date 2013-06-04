@@ -13,7 +13,7 @@ exports['test loading Salzburg'] = function(test) {
             test.done();
         }).
         fail(function(error) {
-            console.log("dbPedia requests fail, the service is probably down");
+            // console.log("dbPedia requests fail, the service is probably down");
             test.done();
         });
 };

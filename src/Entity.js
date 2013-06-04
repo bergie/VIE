@@ -70,7 +70,7 @@ VIE.prototype.Entity = Backbone.Model.extend({
       if (v !== undefined && attr === '@type') {
         // Reference to a type. Return actual type instance
         if (!this.vie.types.get(v)) {
-          // if there is no such type -> add it and let it inherit from 
+          // if there is no such type -> add it and let it inherit from
           // "owl:Thing"
           this.vie.types.add(v).inherit("owl:Thing");
         }
@@ -351,42 +351,14 @@ VIE.prototype.Entity = Backbone.Model.extend({
     return this.fromReference(this.getSubject());
   },
 
-  isReference: function(uri){
-    var matcher = new RegExp("^\\<([^\\>]*)\\>$");
-    if (matcher.exec(uri)) {
-      return true;
-    }
-    return false;
+  isReference: function (uri) {
+    return VIE.Util.isReference(uri);
   },
-
-  toReference: function(uri){
-    if (_.isArray(uri)) {
-      return _.map(uri, function(part) {
-       return this.toReference(part);
-      }, this);
-    }
-    var ns = this.vie.namespaces;
-    var ret = uri;
-    if (uri.substring(0, 2) === "_:") {
-      ret = uri;
-    } else if (ns.isCurie(uri)) {
-      ret = ns.uri(uri);
-      if (ret === "<" + ns.base() + uri + ">") {
-        // no base namespace extension with IDs
-        ret = '<' + uri + '>';
-      }
-    } else if (!ns.isUri(uri)) {
-      ret = '<' + uri + '>';
-    }
-    return ret;
+  toReference: function (uri) {
+    return VIE.Util.toReference(uri, this.vie.namespaces);
   },
-
-  fromReference: function(uri){
-    var ns = this.vie.namespaces;
-    if (!ns.isUri(uri)) {
-      return uri;
-    }
-    return uri.substring(1, uri.length - 1);
+  fromReference: function (uri) {
+    return VIE.Util.fromReference(uri, this.vie.namespaces);
   },
 
   as: function(encoding){
@@ -408,6 +380,13 @@ VIE.prototype.Entity = Backbone.Model.extend({
         entityValue = value.map(function(instance) {
           return instance.getSubject();
         });
+      }
+      if (name === '@type') {
+        if (_.isArray(entityValue)) {
+          entityValue = _.map(entityValue, function(type) { return type.toString(); });
+        } else {
+          entityValue = entityValue.toString();
+        }
       }
 
       instanceLD[name] = entityValue;

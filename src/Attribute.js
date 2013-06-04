@@ -11,12 +11,6 @@
 // Within VIE, we provide special capabilities of handling attributes of types of entites. This
 // helps first of all to list all attributes of an entity type, but furthermore fully supports
 // inheritance of attributes from the type-class to inherit from.
-if (VIE.prototype.Attribute) {
-	throw new Error("ERROR: VIE.Attribute is already defined. Please check your VIE installation!");
-}
-if (VIE.prototype.Attributes) {
-	throw new Error("ERROR: VIE.Attributes is already defined. Please check your VIE installation!");
-}
 
 // ### VIE.Attribute(id, range, domain, minCount, maxCount, metadata)
 // This is the constructor of a VIE.Attribute.

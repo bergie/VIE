@@ -11,12 +11,6 @@
 // Within VIE, we provide special capabilities of handling types of entites. This helps
 // for example to query easily for certain entities (e.g., you only need to query for *Person*s
 // and not for all subtypes).
-if (VIE.prototype.Type) {
-    throw new Error("ERROR: VIE.Type is already defined. Please check your installation!");
-}
-if (VIE.prototype.Types) {
-    throw new Error("ERROR: VIE.Types is already defined. Please check your installation!");
-}
 
 // ### VIE.Type(id, attrs, metadata)
 // This is the constructor of a VIE.Type.
@@ -240,25 +234,8 @@ VIE.prototype.Type = function (id, attrs, metadata) {
 //          "name" : "Sebastian"});
 //     console.log(sebastian.get("name")); // <-- "Sebastian"
     this.instance = function (attrs, opts) {
-        attrs = (attrs)? attrs : {};
-        opts = (opts)? opts : {};
-
-        /* turn type/attribute checking on by default! */
-        if (opts.typeChecking !== false) {
-            for (var a in attrs) {
-                if (a.indexOf('@') !== 0 && !this.attributes.get(a)) {
-                    throw new Error("Cannot create an instance of " + this.id + " as the type does not allow an attribute '" + a + "'!");
-                }
-            }
-        }
-
-        if (attrs['@type']) {
-            attrs['@type'].push(this.id);
-        } else {
-            attrs['@type'] = this.id;
-        }
-
-        return new this.vie.Entity(attrs, opts);
+      var typedClass = this.vie.getTypedEntityClass(this);
+      return new typedClass(attrs, opts);
     };
 
 // ### toString()
@@ -405,7 +382,6 @@ VIE.prototype.Types = function () {
             return this;
         }
         if (!t || t.subsumes("owl:Thing")) {
-            console.warn("You are not allowed to remove 'owl:Thing'.");
             return this;
         }
         delete this._types[t.id];

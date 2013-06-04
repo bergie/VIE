@@ -22,7 +22,6 @@ test("VIE.js ZemantaService - Analyze", function () {
        return;
     } 
     if (window.ZEMANTA_API_KEY === undefined) {
-        console.warn("Please provide an API key for Zemanta.");
         ok(true, "Skipped tests, as no API key is available!");
         return;
     }

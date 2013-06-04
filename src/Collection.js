@@ -126,26 +126,14 @@ VIE.prototype.Collection = Backbone.Collection.extend({
         return model;
     },
 
-    isReference: function(uri){
-        var matcher = new RegExp("^\\<([^\\>]*)\\>$");
-        if (matcher.exec(uri)) {
-            return true;
-        }
-        return false;
+    isReference: function (uri) {
+        return VIE.Util.isReference(uri);
     },
-
-    toReference: function(uri){
-        if (this.isReference(uri)) {
-            return uri;
-        }
-        return '<' + uri + '>';
+    toReference: function (uri) {
+        return VIE.Util.toReference(uri, this.vie.namespaces);
     },
-
-    fromReference: function(uri){
-        if (!this.isReference(uri)) {
-            return uri;
-        }
-        return uri.substring(1, uri.length - 1);
+    fromReference: function (uri) {
+        return VIE.Util.fromReference(uri, this.vie.namespaces);
     },
 
     isCollection: true

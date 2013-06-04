@@ -178,11 +178,6 @@ test("VIE - Instantiation of types", function() {
     ok(type1Instance.isEntity);
     ok(type2Instance.isEntity);
     equal(type2Instance.get("attr0"), "This is a test.");
-    
-    raises(function () {
-      tt1.instance({"attr1" : "This should fail."});
-    });
-    
 });
 
 test("VIE - Type Sorting", function () {
