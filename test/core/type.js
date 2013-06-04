@@ -86,6 +86,8 @@ test("VIE - Creation/Extension/Removal of types", function() {
     ok(persony);
     ok(persony.isof(thingy));
     equal(persony.isof('dbpedia:nonsensetype'), false);
+    equal(persony.isof(new v.Type('dbpedia:nonsensetype')), false);
+
     ok(thingy.subsumes(persony));
     
     ok (thingy.hierarchy());
