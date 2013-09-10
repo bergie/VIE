@@ -4510,12 +4510,12 @@ VIE.prototype.RdfaService.prototype = {
 
     readEntities : function (element) {
         var service = this;
-        var ns = this.xmlns(element);
-        for (var prefix in ns) {
-            this.vie.namespaces.addOrReplace(prefix, ns[prefix]);
-        }
         var entities = [];
         var entityElements = jQuery(this.options.subjectSelector, element).add(jQuery(element).filter(this.options.subjectSelector)).each(function() {
+            var ns = service.xmlns(this);
+            for (var prefix in ns) {
+                service.vie.namespaces.addOrReplace(prefix, ns[prefix]);
+              }
             var entity = service._readEntity(jQuery(this));
             if (entity) {
                 entities.push(entity);
@@ -5068,16 +5068,15 @@ VIE.prototype.RdfaService.prototype = {
         $elem = $elem.add($elem.parents());
         var obj = {};
 
-        $elem.each(function (i, e) {
-            if (e.attributes) {
-                for (i = 0; i < e.attributes.length; i += 1) {
-                    var attr = e.attributes[i];
-                    if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
-                        var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
-                        var value = attr.nodeValue;
-                        if (prefix === '' || value !== '') {
-                            obj[prefix] = attr.nodeValue;
-                        }
+        $elem.each(function () {
+            var e = this;
+            for (i = 0; i < e.attributes.length; i += 1) {
+                var attr = e.attributes[i];
+                if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
+                    var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
+                    var value = attr.nodeValue;
+                    if (prefix === '' || value !== '') {
+                        obj[prefix] = attr.nodeValue;
                     }
                 }
             }

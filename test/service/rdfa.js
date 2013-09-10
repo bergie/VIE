@@ -509,3 +509,20 @@ test("Test deep relations", function () {
         equal(jQuery('[rel="subrelations"] > div[about] div[property]', html).html(), 'Baz');
     });
 });
+
+test("Test local namespace declaration", function () {
+    var z = new VIE();
+    z.use(new z.RdfaService());
+
+    var html = jQuery('#qunit-fixture .rdfa-localns');
+
+    stop();
+    z.load({element: html}).from('rdfa').execute().done(function (entities) {
+        start();
+        ok(entities.length);
+        var entity = z.entities.at(0);
+        ok(entity);
+        ok(entity.isof('foo:Bar'));
+        equal(entity.get('foo:Baz'), 'Foo');
+    });
+});
