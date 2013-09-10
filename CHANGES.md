@@ -7,6 +7,7 @@ VIE ChangeLog
 * Default [Apache Stanbol](http://stanbol.apache.org/) configuration was swithed to use the IKS-hosted [demo server](http://demo.iks-project.eu/stanbolfull)
 * Compatibility with Backbone.js 1.0.0
 * Build system was switched from Ant to [Grunt](http://gruntjs.com)
+* Dependencies moved to using Bower
 
 ## 2.1.0 (December 5th 2012)
 
