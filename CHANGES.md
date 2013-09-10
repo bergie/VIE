@@ -1,7 +1,7 @@
 VIE ChangeLog
 =============
 
-## 2.1.2 (git master)
+## 2.1.2 (September 10th 2013)
 
 * Namespace registration is now less strict, allowing multiple prefixes pointing to same URI
 

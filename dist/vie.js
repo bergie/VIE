@@ -1,4 +1,4 @@
-/* VIE.js 2.1.1 - Semantic Interaction Toolkit
+/* VIE.js 2.1.2 - Semantic Interaction Toolkit
 by Henri Bergius and the IKS Project. Available under the MIT license.
 See http://viejs.org for more information
 */(function () {//     VIE - Vienna IKS Editables
