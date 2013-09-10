@@ -129,13 +129,6 @@ VIE.prototype.Namespaces.prototype.add = function (prefix, namespace) {
     else if (this.contains(prefix) && namespace !== this._namespaces[prefix]) {
         throw new Error("ERROR: Trying to register namespace prefix mapping (" + prefix + "," + namespace + ")!" +
               "There is already a mapping existing: '(" + prefix + "," + this.get(prefix) + ")'!");
-    } else {
-        jQuery.each(this._namespaces, function (k1,v1) {
-            if (v1 === namespace && k1 !== prefix) {
-                throw new Error("ERROR: Trying to register namespace prefix mapping (" + prefix + "," + namespace + ")!" +
-                      "There is already a mapping existing: '(" + k1 + "," + namespace + ")'!");
-            }
-        });
     }
     /* if not, just add them */
     this._namespaces[prefix] = namespace;
@@ -167,7 +160,6 @@ VIE.prototype.Namespaces.prototype.addOrReplace = function (prefix, namespace) {
         return this;
     }
     this.remove(prefix);
-    this.removeNamespace(namespace);
     return this.add(prefix, namespace);
 };
 

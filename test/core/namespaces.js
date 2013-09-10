@@ -91,12 +91,12 @@ test ("Manually adding duplicate", function () {
     strictEqual(v.namespaces.get("test"), "http://this.is.a/test#", "Manually adding namespaces.");
 });
 
-test ("Manually adding wrong duplicate (key)", function () {
+test ("Manually adding duplicate (key)", function () {
     var v = new VIE();
     v.namespaces.add("test", "http://this.is.a/test#");
-    raises(function () {
-        v.namespaces.add("test1", "http://this.is.a/test#");
-    });
+    v.namespaces.add("test1", "http://this.is.a/test#");
+    equal(v.namespaces.get('test'), 'http://this.is.a/test#');
+    equal(v.namespaces.get('test1'), 'http://this.is.a/test#');
 });
 
 test ("Manually adding wrong duplicate (value)", function () {
@@ -112,7 +112,7 @@ test ("Manually adding wrong duplicate (key) - addOrReplace", function () {
     v.namespaces.add("test", "http://this.is.a/test#");
     v.namespaces.addOrReplace("test1", "http://this.is.a/test#");
     
-    equal(v.namespaces.get("test"), undefined);
+    equal(v.namespaces.get('test'), 'http://this.is.a/test#');
     equal(v.namespaces.get("test1"), "http://this.is.a/test#");
 });
 
@@ -229,4 +229,14 @@ test('Double prefixed CURIE <-> URI', function () {
     ok(!v.namespaces.isCurie(uri2));
     ok(v.namespaces.isCurie(curie));
     ok(v.namespaces.isCurie(curie2));
+});
+
+test('Sub-namespaces', function () {
+    var v = new VIE()
+    v.namespaces.addOrReplace('sc', 'http://schema.org/');
+    v.namespaces.addOrReplace('cw', 'http://schema.org/CreativeWork');
+
+    // Resolve to URI
+    equal(v.namespaces.uri('sc:WebPage'), '<http://schema.org/WebPage>');
+    equal(v.namespaces.uri('cw:audience'), '<http://schema.org/CreativeWorkaudience>');
 });
