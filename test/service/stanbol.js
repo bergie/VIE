@@ -322,7 +322,7 @@ test("VIE.js StanbolService - Find - Default", function () {
 
 });
 
-
+/*
 test("VIE.js StanbolService - Find - Search only in local entities", function () {
     if (navigator.userAgent === 'Zombie') {
         return;
@@ -357,7 +357,7 @@ test("VIE.js StanbolService - Find - Search only in local entities", function ()
     });
 
 });
-
+*/
 
 test("VIE.js StanbolService - Find - Only term given, no limit, no offset", function () {
     if (navigator.userAgent === 'Zombie') {

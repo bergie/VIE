@@ -6,5 +6,6 @@ dist
 docs
 target
 node_modules
+bower_components
 npm-debug.log
 test/service/api_keys.js

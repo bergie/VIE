@@ -8,6 +8,10 @@ See http://viejs.org for more information
   @initConfig
     pkg: @file.readJSON 'package.json'
 
+    # Install dependencies
+    bower:
+      install: {}
+
     # Build setup: concatenate source files
     concat:
       options:
@@ -78,6 +82,9 @@ See http://viejs.org for more information
         'src/**/*.js'
       ]
       tasks: ['test']
+
+  # Dependency installation
+  @loadNpmTasks 'grunt-bower-task'
 
   # Build dependencies
   @loadNpmTasks 'grunt-contrib-concat'

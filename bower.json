@@ -1,0 +1,20 @@
+{
+  "name": "vie",
+  "version": "2.1.0",
+  "main": "./dist/vie-latest.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "lib",
+    "maven",
+    "utils"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.0",
+    "backbone": "1.0.0",
+    "underscore": ">=1.2.0",
+    "jquery-rdfquery": "1.0.0"
+  }
+}
