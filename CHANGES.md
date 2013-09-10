@@ -1,7 +1,7 @@
 VIE ChangeLog
 =============
 
-## 2.1.1 (git master)
+## 2.1.1 (September 10th 2013)
 
 * `VIE.Entity` was refactored to use regular Backbone Model semantics, allowing it to be [extended as needed](https://groups.google.com/d/topic/viejs/Chg-sO7dw6s/discussion)
 * Default [Apache Stanbol](http://stanbol.apache.org/) configuration was swithed to use the IKS-hosted [demo server](http://demo.iks-project.eu/stanbolfull)
