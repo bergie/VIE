@@ -1,7 +1,7 @@
 {
   "name": "vie",
   "version": "2.1.0",
-  "main": "./dist/vie-latest.js",
+  "main": "./dist/vie.js",
   "license": "MIT",
   "ignore": [
     "**/.*",

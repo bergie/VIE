@@ -2,7 +2,7 @@
 CNAME
 demo
 .project
-dist
+dist/vie.min.js
 docs
 target
 node_modules
