@@ -1,0 +1,40 @@
+{
+    "name": "bergie/vie",
+    "description": "Semantic Interaction Framework for JavaScript",
+    "type": "component",
+    "homepage": "http://viejs.org/",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/bergie/VIE/issues",
+        "source": "https://github.com/bergie/VIE"
+    },
+    "authors": [
+        {
+            "name": "Henri Bergius",
+            "email": "henri.bergius@iki.fi",
+            "homepage": "http://bergie.iki.fi/"
+        }
+    ],
+    "require": {
+        "components/jquery": ">=1.8.0",
+        "components/backbone": "1.0.0",
+        "components/underscore": ">=1.2.0",
+        "components/jquery-rdfquery": "1.0.0"
+    },
+    "extra": {
+        "component": {
+            "scripts": [
+                "dist/vie.js"
+            ],
+            "shim": {
+                "deps": [
+                    "jquery",
+                    "backbone",
+                    "underscore",
+                    "jquery-rdfquery"
+                ],
+                "exports": "VIE"
+            }
+        }
+    }
+}
