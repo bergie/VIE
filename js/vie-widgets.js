@@ -10,3 +10,10 @@ jQuery(document).ready(function() {
     });
   });
 });
+
+Backbone.sync = function(method, model, options) {
+  if (console && console.log) {
+    console.log('Model contents', model.toJSONLD());
+  }
+  options.success(model);
+};

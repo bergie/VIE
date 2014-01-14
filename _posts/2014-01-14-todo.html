@@ -1,0 +1,50 @@
+---
+layout: example
+category: examples
+title: "TODO rendering in RDFa"
+js_custom:
+  - "https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"
+  - /js/vendor/underscore.min.js
+  - /js/vendor/backbone.min.js
+  - /js/vendor/jquery.rdfquery.min.js
+  - /js/vie-2.1.0.js
+  - /js/vie-widgets.js
+---
+<p>VIE's RDFa handling can be utilized as a two-way data binding between a web page and a set of RDF entities.<p>
+
+<div class="example">
+  <ul about="#me" rel="task">
+    <li about="#buy_milk" property="description">Buy milk</li>
+  </ul>
+
+  <div>
+    <input type="text" id="new" placeholder="New task">
+    <p>Press enter to add. See the JSON-LD that would be sent to the server in your JavaScript console.</p>
+  </div>
+
+  <textarea>
+    var v = new VIE();
+    v.use(new v.RdfaService());
+    v.load({
+      element: '.example'
+    }).
+    using('rdfa').
+    execute().
+    done(function () {
+    });
+
+    var addTask = function (description) {
+      var taskList = v.entities.get('#me').get('task');
+      taskList.create({
+        description: description
+      });
+    };
+
+    $('#new').on('keyup', function (event) {
+      if (event.keyCode !== 13) {
+        return;
+      }
+      addTask($('#new').val());
+    });
+  </textarea>
+</div>
