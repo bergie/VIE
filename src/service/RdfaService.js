@@ -708,9 +708,9 @@ VIE.prototype.RdfaService.prototype = {
                 var attr = e.attributes[i];
                 if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
                     var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
-                    var value = attr.nodeValue;
+                    var value = attr.value;
                     if (prefix === '' || value !== '') {
-                        obj[prefix] = attr.nodeValue;
+                        obj[prefix] = attr.value;
                     }
                 }
             }
