@@ -233,9 +233,29 @@ VIE.Util = {
         }
         var entities = {};
         try {
-            var rdf = (results instanceof jQuery.rdf)?
-                    results.base(service.vie.namespaces.base()) :
-                        jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
+          // Hotfix for rdfQuery
+          jQuery.typedValue.types['http://www.w3.org/2001/XMLSchema#gYear'] = {
+            regex: /^-?([0-9]{4,}).*$/,
+            /** @ignore */
+            validate: function (v) {
+              var i = parseInt(v, 10);
+              return i !== 0;
+            },
+            strip: true,
+            /** @ignore */
+            value: function (v) {
+              return parseInt(v, 10);
+            }
+          };
+
+            var rdf;
+            if (results instanceof jQuery.rdf) {
+              rdf = results.base(service.vie.namespaces.base());
+            } else {
+              rdf = jQuery.rdf();
+              rdf.base(service.vie.namespaces.base());
+              rdf.load(results, {});
+            }
 
             /* if the service contains rules to apply special transformation, they are executed here.*/
             if (service.rules) {
