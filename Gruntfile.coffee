@@ -9,8 +9,12 @@ See http://viejs.org for more information
     pkg: @file.readJSON 'package.json'
 
     # Install dependencies
-    bower:
-      install: {}
+    'bower-install-simple':
+      deps:
+        options:
+          interactive: false
+          forceLatest: false
+          directory: 'bower_components'
 
     # Build setup: concatenate source files
     concat:
@@ -84,7 +88,7 @@ See http://viejs.org for more information
       tasks: ['test']
 
   # Dependency installation
-  @loadNpmTasks 'grunt-bower-task'
+  @loadNpmTasks 'grunt-bower-install-simple'
 
   # Build dependencies
   @loadNpmTasks 'grunt-contrib-concat'
@@ -98,6 +102,7 @@ See http://viejs.org for more information
 
   # Local tasks
   @registerTask 'build', (target = 'full') =>
+    @task.run 'bower-install-simple'
     @task.run "concat:#{target}"
     @task.run "uglify:#{target}"
   @registerTask 'test', ['jshint', 'build', 'qunit', 'nodeunit']
