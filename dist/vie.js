@@ -1,4 +1,4 @@
-/* VIE.js 2.1.2 - Semantic Interaction Toolkit
+/* VIE.js 2.2.0 - Semantic Interaction Toolkit
 by Henri Bergius and the IKS Project. Available under the MIT license.
 See http://viejs.org for more information
 */(function () {//     VIE - Vienna IKS Editables
@@ -872,9 +872,29 @@ VIE.Util = {
         }
         var entities = {};
         try {
-            var rdf = (results instanceof jQuery.rdf)?
-                    results.base(service.vie.namespaces.base()) :
-                        jQuery.rdf().base(service.vie.namespaces.base()).load(results, {});
+          // Hotfix for rdfQuery
+          jQuery.typedValue.types['http://www.w3.org/2001/XMLSchema#gYear'] = {
+            regex: /^-?([0-9]{4,}).*$/,
+            /** @ignore */
+            validate: function (v) {
+              var i = parseInt(v, 10);
+              return i !== 0;
+            },
+            strip: true,
+            /** @ignore */
+            value: function (v) {
+              return parseInt(v, 10);
+            }
+          };
+
+            var rdf;
+            if (results instanceof jQuery.rdf) {
+              rdf = results.base(service.vie.namespaces.base());
+            } else {
+              rdf = jQuery.rdf();
+              rdf.base(service.vie.namespaces.base());
+              rdf.load(results, {});
+            }
 
             /* if the service contains rules to apply special transformation, they are executed here.*/
             if (service.rules) {
@@ -3860,8 +3880,8 @@ VIE.prototype.DBPediaService.prototype = {
             });
         };
 
-        var error = function (e) {
-            loadable.reject(e);
+        var error = function (e, x, y) {
+            loadable.reject(y);
         };
 
         var entities = (loadable.options.entity)? loadable.options.entity : loadable.options.entities;
@@ -3875,7 +3895,6 @@ VIE.prototype.DBPediaService.prototype = {
                 var tmpEnt = (typeof entities[e] === "string")? entities[e] : entities[e].id;
                 tmpEntities.push(tmpEnt);
             }
-
             this.connector.load(tmpEntities, success, error);
         }
         return this;
@@ -3952,6 +3971,12 @@ VIE.prototype.DBPediaConnector.prototype = {
         jQuery.ajax({
             success: function(response){
                 success(response);
+            },
+            converters: {
+              "text json": function (val) {
+                var search = new RegExp('\\U0', 'g');
+                return JSON.parse(val.replace(search, '\\u0'));
+              }
             },
             error: error,
             type: "GET",
@@ -5066,9 +5091,9 @@ VIE.prototype.RdfaService.prototype = {
                 var attr = e.attributes[i];
                 if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
                     var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
-                    var value = attr.nodeValue;
+                    var value = attr.value;
                     if (prefix === '' || value !== '') {
-                        obj[prefix] = attr.nodeValue;
+                        obj[prefix] = attr.value;
                     }
                 }
             }

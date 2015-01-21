@@ -1,6 +1,11 @@
 VIE ChangeLog
 =============
 
+## 2.2.0 (January 21st 2015)
+
+* Use dependencies from Bower
+* Minor fixes regarding updated dependencies
+
 ## 2.1.2 (September 10th 2013)
 
 * Namespace registration is now less strict, allowing multiple prefixes pointing to same URI
