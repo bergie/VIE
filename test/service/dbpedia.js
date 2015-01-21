@@ -3,7 +3,7 @@ module("vie.js - DBPedia Service");
 test("Test DBPedia connection", function() {
     var z = new VIE();
     ok(z.DBPediaService, "Checking if the DBPedia Service exists.'");
-    z.use(new z.DBPediaService);
+    z.use(new z.DBPediaService());
     ok(z.service('dbpedia'));
 });
 
@@ -27,7 +27,7 @@ test("VIE.js DBPediaService - Load", function () {
         start();
     })
     .fail(function(f){
-        ok(false, f.statusText);
+        ok(false, f.message);
         start();
     });
 });

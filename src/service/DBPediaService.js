@@ -130,8 +130,8 @@ VIE.prototype.DBPediaService.prototype = {
             });
         };
 
-        var error = function (e) {
-            loadable.reject(e);
+        var error = function (e, x, y) {
+            loadable.reject(y);
         };
 
         var entities = (loadable.options.entity)? loadable.options.entity : loadable.options.entities;
@@ -145,7 +145,6 @@ VIE.prototype.DBPediaService.prototype = {
                 var tmpEnt = (typeof entities[e] === "string")? entities[e] : entities[e].id;
                 tmpEntities.push(tmpEnt);
             }
-
             this.connector.load(tmpEntities, success, error);
         }
         return this;
@@ -222,6 +221,12 @@ VIE.prototype.DBPediaConnector.prototype = {
         jQuery.ajax({
             success: function(response){
                 success(response);
+            },
+            converters: {
+              "text json": function (val) {
+                var search = new RegExp('\\U0', 'g');
+                return JSON.parse(val.replace(search, '\\u0'));
+              }
             },
             error: error,
             type: "GET",
