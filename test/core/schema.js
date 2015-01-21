@@ -3,7 +3,7 @@ module("vie.js - Schema.org Ontology");
 // Update these when Schema.org ontologies change
 var schemaOrgNumbers = {
   types: 429,
-  hospitalAttribs: 53
+  hospitalAttribs: 56
 };
 
 test("Initialization", function() {
