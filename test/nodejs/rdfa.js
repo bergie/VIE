@@ -14,13 +14,13 @@ VIE.namespaces.add('dbp', 'http://dbpedia.org/resource/');
 exports['test inheriting subject'] = function(test) {
     var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
-    var jsonldEntities = VIE.RDFa.readEntities(html);
+    var jsonldEntities = VIE.RDFa.readEntities(html).reverse();
     test.equal(jsonldEntities.length, 2, "This RDFa defines two entities but they don't get parsed to JSON");
     test.equal(jsonldEntities[1]['<http://xmlns.com/foaf/0.1/name>'], 'Albert Einstein');
     test.equal(jsonldEntities[0]['<http://dbpedia.org/resource/conventionalLongName>'], 'Federal Republic of Germany');
     test.equal(jsonldEntities[1]['<http://dbpedia.org/resource/birthPlace>'], jsonldEntities[0]['@subject'], "Check that the relation between the person and the birthplace was read correctly");
 
-    var backboneEntities = VIE.RDFaEntities.getInstances(html);
+    var backboneEntities = VIE.RDFaEntities.getInstances(html).reverse();
     test.equal(backboneEntities.length, 2, "This RDFa defines two entities but they don't get to Backbone");
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
     test.equal(backboneEntities[1].get('dbp:birthPlace') instanceof VIE.Collection, true, "Birthplace is a relation, so it should become a collection");
@@ -43,7 +43,7 @@ exports['test inheriting subject'] = function(test) {
 exports['test subject singletons'] = function(test) {
    var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
-    var backboneEntities = VIE.RDFaEntities.getInstances(html);
+    var backboneEntities = VIE.RDFaEntities.getInstances(html).reverse();
 
     test.equal(backboneEntities[1].get('foaf:name'), 'Albert Einstein');
 
@@ -68,7 +68,7 @@ exports['test subject singletons'] = function(test) {
 exports['test updating views'] = function(test) {
     var html = jQuery('<div about="http://dbpedia.org/resource/Albert_Einstein"><span property="foaf:name">Albert Einstein</span><span property="dbp:dateOfBirth" datatype="xsd:date">1879-03-14</span><div rel="dbp:birthPlace" resource="http://dbpedia.org/resource/Germany" /><span about="http://dbpedia.org/resource/Germany" property="dbp:conventionalLongName">Federal Republic of Germany</span></div>');
 
-    var backboneEntities = VIE.RDFaEntities.getInstances(html);
+    var backboneEntities = VIE.RDFaEntities.getInstances(html).reverse();
     
     test.equal(VIE.EntityManager.entities.length, 2);
 
