@@ -443,7 +443,7 @@ if (typeof exports === 'object') {
     exports.VIE = VIE;
 
     if (!jQuery) {
-        jQuery = require('jquery');
+        jQuery = require('jquery')(require('jsdom').jsdom().defaultView);
     }
     if (!Backbone) {
         Backbone = require('backbone');

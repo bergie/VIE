@@ -71,12 +71,22 @@ See http://viejs.org for more information
     jshint:
       all: ['src/*.js', 'src/**/*.js']
 
+    # Web server for the browser tests
+    connect:
+      server:
+        options:
+          port: 8000
+
     # Unit tests
     qunit:
-      all: ['test/*.html']
+      all:
+        options:
+          urls: ['http://localhost:8000/test/index.html']
 
     nodeunit:
       all: ['test/nodejs/*.js']
+      options:
+        reporter: 'verbose'
 
     # Automated recompilation and testing when developing
     watch:
@@ -95,6 +105,7 @@ See http://viejs.org for more information
   @loadNpmTasks 'grunt-contrib-uglify'
 
   # Testing dependencies
+  @loadNpmTasks 'grunt-contrib-connect'
   @loadNpmTasks 'grunt-contrib-jshint'
   @loadNpmTasks 'grunt-contrib-qunit'
   @loadNpmTasks 'grunt-contrib-nodeunit'
@@ -105,4 +116,4 @@ See http://viejs.org for more information
     @task.run 'bower-install-simple'
     @task.run "concat:#{target}"
     @task.run "uglify:#{target}"
-  @registerTask 'test', ['jshint', 'build', 'qunit', 'nodeunit']
+  @registerTask 'test', [ 'jshint', 'build', 'connect', 'qunit', 'nodeunit']

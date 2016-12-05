@@ -1,12 +1,15 @@
 language: node_js
 node_js:
-  - "0.10"
-
+- '4.6'
 before_script:
-  - npm install -g grunt-cli
-
+- npm install -g grunt-cli
 script:
-  - grunt test
-
-notifications:
-  irc: "irc.freenode.org#iks"
+- grunt test
+deploy:
+  provider: npm
+  email: henri.bergius@iki.fi
+  api_key:
+    secure: Vsw0zy+n2P78iFKCjSdVALxqo8TrDfl/Oeh1MyA/4cZHXqprrLxIJ5FLkWLiydaEkbwhklYWkuLzAW7ZnJ5MgrcKIqnMhyk0gjDzPGb40chYHVl83jR3dHYwTY9pU3sY1HrIL6NFQddKLFkzMMh3l9o8wgdIludwaL5r8l9Imcc=
+  on:
+    tags: true
+    repo: bergie/VIE

@@ -446,7 +446,7 @@ if (typeof exports === 'object') {
     exports.VIE = VIE;
 
     if (!jQuery) {
-        jQuery = require('jquery');
+        jQuery = require('jquery')(require('jsdom').jsdom().defaultView);
     }
     if (!Backbone) {
         Backbone = require('backbone');
@@ -2191,7 +2191,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     },
 
     get: function(id) {
-        if (id === null) {
+        if (id === null || !id) {
             return null;
         }
 
@@ -5087,7 +5087,7 @@ VIE.prototype.RdfaService.prototype = {
 
         $elem.each(function () {
             var e = this;
-            for (i = 0; i < e.attributes.length; i += 1) {
+            for (var i = 0; i < e.attributes.length; i += 1) {
                 var attr = e.attributes[i];
                 if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
                     var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
@@ -5343,7 +5343,7 @@ VIE.prototype.StanbolService.prototype = {
             })
             .join("");
         }
-        if(findable.options.field && vie.namespaces.isCurie(field)){
+        if(findable.options.field && vie.namespaces.isCurie(findable.options.field)){
             var field = findable.options.field;
                 findable.options.field = vie.namespaces.uri(field);
         }
