@@ -235,7 +235,7 @@ VIE.prototype.StanbolService.prototype = {
             })
             .join("");
         }
-        if(findable.options.field && vie.namespaces.isCurie(field)){
+        if(findable.options.field && vie.namespaces.isCurie(findable.options.field)){
             var field = findable.options.field;
                 findable.options.field = vie.namespaces.uri(field);
         }
