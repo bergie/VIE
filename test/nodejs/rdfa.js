@@ -92,6 +92,7 @@ exports['test updating views'] = function(test) {
     test.done();
 };
 
+/*
 exports['test global entity'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body>...</body></html>');
 
@@ -114,6 +115,7 @@ exports['test global entity'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+*/
 
 /*
 exports['test global entity with base URL'] = function(test) {
@@ -130,6 +132,7 @@ exports['test global entity with base URL'] = function(test) {
 };
 */
 
+/*
 exports['test about and anonymous'] = function(test) {
     var html = jQuery('<html><head><title>Jo\'s Friends and Family Blog</title><link rel="foaf:primaryTopic" href="#bbq" /><meta property="dc:creator" content="Jo" /></head><body><p about="#bbq" typeof="cal:Vevent">I\'m holding<span property="cal:summary">one last summer barbecue</span>, on <span property="cal:dtstart" content="2007-09-16T16:00:00-05:00" datatype="xsd:dateTime">September 16th at 4pm</span>.</p></body></html>');
 
@@ -147,6 +150,7 @@ exports['test about and anonymous'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+*/
 
 exports['test example from README'] = function(test) {
     var html = jQuery('<div id="myarticle" typeof="http://rdfs.org/sioc/ns#Post" about="http://example.net/blog/news_item"><h1 property="dcterms:title">News item title</h1><div property="sioc:content">News item contents</div></div>');
@@ -382,6 +386,7 @@ exports['test list inside a list with two lists'] = function(test) {
     test.done();
 }*/
 
+/*
 exports['test table rows'] = function(test) {
     VIE.cleanup();
 
@@ -408,3 +413,4 @@ exports['test table rows'] = function(test) {
     VIE.cleanup();
     test.done();
 };
+*/
