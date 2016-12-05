@@ -446,7 +446,7 @@ if (typeof exports === 'object') {
     exports.VIE = VIE;
 
     if (!jQuery) {
-        jQuery = require('jquery');
+        jQuery = require('jquery')(require('jsdom').jsdom().defaultView);
     }
     if (!Backbone) {
         Backbone = require('backbone');
@@ -5343,7 +5343,7 @@ VIE.prototype.StanbolService.prototype = {
             })
             .join("");
         }
-        if(findable.options.field && vie.namespaces.isCurie(field)){
+        if(findable.options.field && vie.namespaces.isCurie(findable.options.field)){
             var field = findable.options.field;
                 findable.options.field = vie.namespaces.uri(field);
         }

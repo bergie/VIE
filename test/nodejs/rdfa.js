@@ -1,4 +1,4 @@
-var jQuery = require('jquery');
+var jQuery = require('jquery')(require('jsdom').jsdom().defaultView);
 var vie = require('../../dist/vie.js');
 var VIE = new vie.VIE({classic: true});
 VIE.use(new VIE.RdfaService({attributeExistenceComparator: ''}), 'rdfa');
