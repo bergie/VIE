@@ -5087,7 +5087,7 @@ VIE.prototype.RdfaService.prototype = {
 
         $elem.each(function () {
             var e = this;
-            for (i = 0; i < e.attributes.length; i += 1) {
+            for (var i = 0; i < e.attributes.length; i += 1) {
                 var attr = e.attributes[i];
                 if (/^xmlns(:(.+))?$/.test(attr.nodeName)) {
                     var prefix = /^xmlns(:(.+))?$/.exec(attr.nodeName)[2] || '';
