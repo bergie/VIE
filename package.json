@@ -3,6 +3,11 @@
   "version": "2.2.0",
   "description": "Editable RDFa with Backbone.js and JSON-LD",
   "url": "http://viejs.org",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bergie/VIE.git"
+  },
   "keywords": [
     "util",
     "rdfa",
