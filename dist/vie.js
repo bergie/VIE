@@ -2191,7 +2191,7 @@ VIE.prototype.Collection = Backbone.Collection.extend({
     },
 
     get: function(id) {
-        if (id === null) {
+        if (id === null || !id) {
             return null;
         }
 
