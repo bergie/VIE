@@ -85,6 +85,8 @@ See http://viejs.org for more information
 
     nodeunit:
       all: ['test/nodejs/*.js']
+      options:
+        reporter: 'verbose'
 
     # Automated recompilation and testing when developing
     watch:
