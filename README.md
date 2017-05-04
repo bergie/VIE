@@ -190,3 +190,4 @@ You can also run the Grunt setup in *watch mode*, where any change in VIE source
 VIE uses [Travis](http://travis-ci.org/) for continuous integration. Simply add your fork there and every time you push you'll get the tests run.
 
 [![Build Status](https://secure.travis-ci.org/bergie/VIE.png)](http://travis-ci.org/bergie/VIE)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bergie/VIE.svg)](https://greenkeeper.io/)
