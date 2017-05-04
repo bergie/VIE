@@ -1,8 +1,6 @@
 ![VIE](https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png) Vienna IKS Editables
 ====================
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bergie/VIE.svg)](https://greenkeeper.io/)
-
 VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://www.iks-project.eu/projects/vienna-iks-editables) the EU-funded [IKS project](http://www.iks-project.eu/).
 
 ![Decoupled CMS communications](https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png)
@@ -192,3 +190,4 @@ You can also run the Grunt setup in *watch mode*, where any change in VIE source
 VIE uses [Travis](http://travis-ci.org/) for continuous integration. Simply add your fork there and every time you push you'll get the tests run.
 
 [![Build Status](https://secure.travis-ci.org/bergie/VIE.png)](http://travis-ci.org/bergie/VIE)
+[![Greenkeeper badge](https://badges.greenkeeper.io/bergie/VIE.svg)](https://greenkeeper.io/)
