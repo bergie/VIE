@@ -1,6 +1,8 @@
 ![VIE](https://raw.github.com/bergie/VIE/master/design/vie_logo_100.png) Vienna IKS Editables
 ====================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bergie/VIE.svg)](https://greenkeeper.io/)
+
 VIE is a utility library for implementing [decoupled Content Management systems](http://bergie.iki.fi/blog/decoupling_content_management/). VIE is developed [as part of](http://www.iks-project.eu/projects/vienna-iks-editables) the EU-funded [IKS project](http://www.iks-project.eu/).
 
 ![Decoupled CMS communications](https://raw.github.com/bergie/VIE/master/design/cms-decoupled-communications.png)
