@@ -30,10 +30,10 @@
     "Johannes Schüth"
   ],
   "dependencies": {
-    "backbone": "1.0.0",
+    "backbone": "1.3.3",
     "underscore": "1.8.3",
     "jquery": "3.2.1",
-    "jsdom": "9.12.0",
+    "jsdom": "10.1.0",
     "request": ">=2.2.0"
   },
   "devDependencies": {
