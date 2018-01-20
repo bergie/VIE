@@ -32,7 +32,7 @@
   "dependencies": {
     "backbone": "~1.0.0",
     "underscore": "^1.8.3",
-    "jquery": "^3.2.1",
+    "jquery": "^3.3.1",
     "jsdom": "^9.1.0",
     "request": "^2.2.0"
   },
