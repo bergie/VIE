@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-bower-install-simple": "^1.0.2",
+    "grunt-bower-install-simple": "^1.2.5",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-connect": "^1.0.2",
     "grunt-contrib-jshint": "^1.1.0",
